@@ -1,6 +1,6 @@
 var express= require('express')
 var path= require('path')
-var app=express()
+var app2=express()
 
 app2.use(express.static(path.join(__dirname, 'ethnicity-viz')))
 
