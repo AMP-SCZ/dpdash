@@ -20,7 +20,7 @@ var methodOverride = require('method-override');
 
 
 var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/ethn');
 var configPath = process.env.DPDASH_CONFIG || './config';
 var config = require(configPath);
 
@@ -148,7 +148,7 @@ app.use('/', indexRouter);
 app.use('/css', express.static(path.join(__dirname, '/public/css')));
 app.use('/js', express.static(path.join(__dirname, '/public/js')));
 app.use('/img', express.static(path.join(__dirname, '/public/img')));
-//app.use('/users', usersRouter);
+app.use('/ethn', usersRouter);
 
 /** error handlers setup */
 
