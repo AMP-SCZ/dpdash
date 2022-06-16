@@ -32,6 +32,18 @@ const csrfProtection = csrf({ cookie: true })
 const parseForm = bodyParser.urlencoded({ limit: '50mb', extended: true })
 const app = express();
 
+if(process.env.NODE_ENV === 'development') {
+  const livereload = require('livereload')
+  const connectLiveReload = require('connect-livereload')
+  const liveReloadServer = livereload.createServer();
+  liveReloadServer.watch(path.join(__dirname, '../public'));
+  liveReloadServer.server.once("connection", () => {
+    setTimeout(() => {
+      liveReloadServer.refresh("/");
+    }, 100);
+  });
+  app.use(connectLiveReload());
+}
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.png')));
 
