@@ -4,17 +4,16 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "build:dev": "webpack && npm run start:dev",
+    "build:watch": "webpack --watch",
     "transpile": "npx babel ./server --out-dir dist",
     "start": "NODE_ENV=production ./node_modules/pm2/bin/pm2 start dist/bin/www.js",
-    "dev": "NODE_ENV=development npm-run-all --parallel watch:server watch:build",
+    "dev": "NODE_ENV=development npm-run-all --parallel serve:watch build:watch",
     "monitor": "./node_modules/pm2/bin/pm2 monit",
     "stop": "./node_modules/pm2/bin/pm2 stop all && ./node_modules/pm2/bin/pm2 delete all",
     "logs": "./node_modules/pm2/bin/pm2 logs --lines 100",
     "restart": "NODE_ENV=production ./node_modules/pm2/bin/pm2 stop all && ./node_modules/pm2/bin/pm2 delete all && ./node_modules/pm2/bin/pm2 start dist/bin/www.js",
     "node": "DEBUG=* node ./dist/bin/www.js",
-    "watch:build": "webpack --watch",
-    "watch:server": "nodemon --ignore ./public --exec babel-node server/bin/www.js --watch \"./server\""
+    "serve:watch": "nodemon --ignore ./public --exec babel-node server/bin/www.js --watch \"./server\""
   },
   "babel": {
     "presets": [
