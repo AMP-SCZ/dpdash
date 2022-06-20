@@ -15,6 +15,7 @@ import Person from '@material-ui/icons/Person';
 import ColorLens from '@material-ui/icons/ColorLens';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Settings from '@material-ui/icons/Settings';
+import { ShowChart } from '@material-ui/icons';
 
 import basePathConfig from '../../server/configs/basePathConfig';
 
@@ -212,6 +213,17 @@ class DrawerComponent extends Component {
             </ListItemIcon>
             <ListItemText primary="Configure" />
 
+          </ListItem>
+          <ListItem
+            button={true}
+            component='a'
+            href={`${basePath}/charts`}
+          >
+            <ListItemIcon>
+              <ShowChart style={{ color: '#97C0CE' }} />
+            </ListItemIcon>
+            <ListItemText primary="Charts" />
+            
           </ListItem>
           <ListItem
             button={true}
