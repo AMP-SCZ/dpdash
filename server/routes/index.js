@@ -261,6 +261,7 @@ router.route('/signup')
     }
   })
   .post(function (req, res, next) {
+    console.log("Is this the place")
     if (config.auth.useLDAP) {
       return res.redirect(`${basePath}/login`);
     } else {
