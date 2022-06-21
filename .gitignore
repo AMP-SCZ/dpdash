@@ -22,3 +22,7 @@ server/configs
 docs/build
 public/js
 dist
+
+#Vagrant
+.vagrant
+Vagrantfile  
