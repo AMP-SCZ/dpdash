@@ -1,10 +1,11 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import RegisterPage from './Register.react';
 import store from '../stores/store';
 
 const reduxStore = store();
-
-render(<Provider store={reduxStore}><RegisterPage /></Provider>, document.getElementById('main'));
+const container = document.getElementById('main');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<Provider store={reduxStore}><RegisterPage /></Provider>);
