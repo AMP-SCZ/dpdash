@@ -1,7 +1,8 @@
 import React from 'react'
-import { render } from 'react-dom'
-
+import { createRoot } from 'react-dom/client';
 import Chart from './Chart.react'
 
+const container = document.getElementById('charts');
+const root = createRoot(container);
 
-render(<Chart />, document.getElementById('charts'))
+root.render(<Chart />);
