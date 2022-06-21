@@ -5,7 +5,7 @@ import MainPage from './Main.react';
 import store from '../stores/store';
 
 const container = document.getElementById('main');
-const root = createRoot(container); // createRoot(container!) if you use TypeScript
+const root = createRoot(container);
 const reduxStore = store();
 
 root.render(<Provider store={reduxStore}><MainPage /></Provider>);
