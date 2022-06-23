@@ -1271,9 +1271,8 @@ router.route('/api/v1/reports/:id')
   /*
    * CHART  
   */ 
-  router.route('/charts')
-  .get(ensureAuthenticated, async (req, res) => {
-    console.log("Charts page")
+router.route('/charts')
+  .get(ensureAuthenticated, async (_, res) => {
     try {
       return res.status(200).send(chartsListPage())
     } catch (err) {

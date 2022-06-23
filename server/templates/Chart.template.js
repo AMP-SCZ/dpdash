@@ -8,7 +8,7 @@ export default () => {
 		<html>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <link rel="stylesheet" href="${basePath}/css/charts.css" />
+        		<link rel="stylesheet" href="${basePath}/css/charts.css" />
 				<title>Charts - DPdash</title>
 			</head>
 			<body>
