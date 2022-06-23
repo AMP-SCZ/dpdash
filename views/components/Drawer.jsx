@@ -18,6 +18,7 @@ import Settings from '@material-ui/icons/Settings';
 import { ShowChart } from '@material-ui/icons';
 
 import basePathConfig from '../../server/configs/basePathConfig';
+import { dark_sky_blue } from '../constants/styles.constants';
 
 const basePath = basePathConfig || '';
 
@@ -187,7 +188,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/`}
           >
             <ListItemIcon>
-              <Home style={{ color: '#97C0CE' }} />
+              <Home style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Home" />
 
@@ -198,7 +199,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/u`}
           >
             <ListItemIcon>
-              <Person style={{ color: '#97C0CE' }} />
+              <Person style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Account" />
 
@@ -209,7 +210,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/u/configure`}
           >
             <ListItemIcon>
-              <ColorLens style={{ color: '#97C0CE' }} />
+              <ColorLens style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Configure" />
 
@@ -220,7 +221,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/charts`}
           >
             <ListItemIcon>
-              <ShowChart style={{ color: '#97C0CE' }} />
+              <ShowChart style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Charts" />
             
@@ -231,7 +232,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/reports`}
           >
             <ListItemIcon>
-              <AssessmentIcon style={{ color: '#97C0CE' }} />
+              <AssessmentIcon style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItem>
@@ -243,7 +244,7 @@ class DrawerComponent extends Component {
               href={`${basePath}/admin`}
             >
               <ListItemIcon>
-                <Settings style={{ color: '#97C0CE' }} />
+                <Settings style={{ color: dark_sky_blue }} />
               </ListItemIcon>
               <ListItemText primary="Admin" />
 
@@ -255,7 +256,7 @@ class DrawerComponent extends Component {
             href={`${basePath}/logout`}
           >
             <ListItemIcon>
-              <ExitToApp style={{ color: '#97C0CE' }} />
+              <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
 
