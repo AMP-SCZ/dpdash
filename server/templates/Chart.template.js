@@ -15,6 +15,5 @@ export default () => {
 		    <div id="charts"></div>
 			  <script src="${basePath}/js/chart.min.js"></script>
 		  </body>
-	  </html>
-	`
+	  </html>`
 }
