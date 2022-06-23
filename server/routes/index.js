@@ -1275,10 +1275,10 @@ router.route('/api/v1/reports/:id')
   .get(ensureAuthenticated, async (req, res) => {
     console.log("Charts page")
     try {
-      return res.status(200).send(chartsListPage());
+      return res.status(200).send(chartsListPage())
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send({ message: err.message });
+      console.error(err.message)
+      return res.status(500).send({ message: err.message })
     }
   });
 

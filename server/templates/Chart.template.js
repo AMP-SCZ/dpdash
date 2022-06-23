@@ -1,6 +1,6 @@
-import basePathConfig from '../configs/basePathConfig';
+import basePathConfig from '../configs/basePathConfig'
 
-const basePath = basePathConfig || '';
+const basePath = basePathConfig || ''
 
 export default () => {
   return `
@@ -16,5 +16,5 @@ export default () => {
 				<script src="${basePath}/js/chart.min.js"></script>
 			</body>
 		</html>
-	`;
-};
+	`
+}
