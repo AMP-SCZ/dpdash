@@ -18,7 +18,7 @@ import Settings from '@material-ui/icons/Settings';
 import { ShowChart } from '@material-ui/icons';
 
 import basePathConfig from '../../server/configs/basePathConfig';
-import { dark_sky_blue } from '../constants/styles.constants';
+import { dark_sky_blue } from '../constants/styles';
 
 const basePath = basePathConfig || '';
 
