@@ -1217,7 +1217,6 @@ router.route('/study-details')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { display_name, role, icon } = req.session;
-
       return res.status(200).send(studyDetailsPage({
         uid: req.user,
         name: display_name,
