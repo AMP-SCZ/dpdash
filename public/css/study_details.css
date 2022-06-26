@@ -1,5 +1,29 @@
+@import './root.css';
+
 body {
   padding: 0px;
   margin: 0px;
   border: 4px;
+}
+
+section { 
+  flex-grow: 1;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+section-content {
+  border-left: 1px solid var(--platinum-grey);
+  flex-grow: 1;
+  background-color: var(--white-background-color);
+}
+
+section-content-padded {
+  padding: 12px;
+  margin-top: 64px;
+  overflow: scroll;
 }

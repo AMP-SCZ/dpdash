@@ -1296,10 +1296,15 @@ router.route('/charts/new')
  * Study Details
  */
 router.route('/study-details')
-  .get(ensureAuthenticated, async (_, res) => {
+  .get(ensureAuthenticated, async (req, res) => {
     try {
-      console.log("THI is a thing")
-      return res.status(200).send(studyDetailsPage())
+      const { display_name, role, icon } = req.session;
+      return res.status(200).send(studyDetailsPage({
+        uid: req.user,
+        name: display_name,
+        role,
+        icon
+      }))
     } catch (error) {
       console.error(error.message)
       return res.status(500).send({ message: err.message})
