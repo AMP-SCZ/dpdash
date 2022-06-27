@@ -107,6 +107,7 @@ const deleteDetails = async (id) => {
   if(res.status !== 200) return new Error(res.message)
   return res.json()
 }
+
 export { 
   fetchStudies,
   fetchStudiesAdmin, 
