@@ -268,7 +268,6 @@ class DrawerComponent extends Component {
               <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
-
           </ListItem>
         </List>
       </div>
