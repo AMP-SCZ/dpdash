@@ -20,24 +20,28 @@ import { fetchSubjects, fetchStudyDetails, deleteDetails } from './fe-utils/fetc
 import getDefaultStyles from './fe-utils/styleUtil';
 import { studyDetailStyles } from './styles/study_details';
 import { routes } from './routes/routes'
+import getAvatar from './fe-utils/avatarUtil';
 
 const StudyDetails = (props) => {
   const { user, classes } = props
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [isLoading, setLoading] = useState(true)
-  const [sideBarState, setSideBarState] = useState({totalDays: 0, totalStudies: 0, totalSubjects: 0})
+  const [sideBarState, setSideBarState] = useState({ totalDays: 0, totalStudies: 0, totalSubjects: 0 })
   const [snackBarState, setSnackBarState] = useState({ errorOpen: false, message: '', autoHideDuration: 4000, })
   const [studyDetailsList, setStudyDetailsList] = useState([]);
+  const [avatar, setAvatar] = useState('');
 
   useEffect(() => {
     fetchSubjects().then(acl => {
-      setSideBarState(getCounts({acl}))
+      setSideBarState(getCounts({ acl }))
     })
-    fetchStudyDetails().then(({ studyDetails }) => {
-      setStudyDetailsList(studyDetails)
+    fetchStudyDetails().then(({ data }) => {
+      setStudyDetailsList(data)
       setLoading(false)
     })
+    setAvatar(getAvatar({ user: user }))
+
   }, [])
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
@@ -58,12 +62,14 @@ const StudyDetails = (props) => {
         body: JSON.stringify({...upload, owner: user.uid })
       })
       if (result.status === 200) {
-        await fetchStudyDetails().then(({ studyDetails }) => {
-          return setStudyDetailsList(studyDetails)
+        await fetchStudyDetails().then(({ data }) => {
+
+          return setStudyDetailsList(data)
         })
       }
     } catch (error) {
       console.error(error);
+      
       return error
     }
   }
@@ -71,8 +77,8 @@ const StudyDetails = (props) => {
     try {
       const deleted = await deleteDetails(id)
       if (deleted.deletedCount > 0) {
-        await fetchStudyDetails().then(({ studyDetails }) => {
-          setStudyDetailsList(studyDetails)
+        await fetchStudyDetails().then(({ data }) => {
+          setStudyDetailsList(data)
         })
       }
     } catch (error) {
@@ -87,7 +93,7 @@ const StudyDetails = (props) => {
         isAccountPage={false}
       />
       <Sidebar
-        avatar={""}
+        avatar={avatar}
         handleDrawerToggle={toggleDrawer}
         mobileOpen={openDrawer}
         totalDays={sideBarState.totalDays}

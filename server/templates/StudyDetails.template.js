@@ -22,5 +22,6 @@ export default (user) => {
         <script src='${basePath}/js/studyDetails.min.js'>
         </script>
       </body>
+    <html>
   `
 }

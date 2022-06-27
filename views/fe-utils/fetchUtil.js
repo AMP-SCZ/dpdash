@@ -85,13 +85,14 @@ const fetchUsernames = async () => {
 }
 
 const fetchStudyDetails = async () => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/study-details/all`, {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
     credentials: 'same-origin'
   })
+
   return res.json()
 }
 
@@ -103,8 +104,8 @@ const deleteDetails = async (id) => {
     },
     credentials: 'same-origin'
   })
-  console.log(res, res.status)
-  if(res.status !== 200) return new Error(res.message)
+  if (res.status !== 200) return new Error(res.message)
+
   return res.json()
 }
 
