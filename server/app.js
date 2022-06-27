@@ -21,6 +21,7 @@ import connectLiveReload from 'connect-livereload'
 import { getMongoURI } from './utils/mongoUtil';
 
 import indexRouter from './routes/index';
+import chartsRouter from './routes/charts'
 
 import config from './configs/config';
 import basePathConfig from './configs/basePathConfig';
@@ -108,7 +109,9 @@ const mongodbPromise = co(function* () {
   return yield MongoClient.connect(mongoURI, config.database.mongo.server);
 }).then(function (res) {
   mongodb = res.db();
-  mongodb.collection('sessions').drop();
+  app.locals.mongoApp = res.db()
+  app.locals.mongoData = res.db(config.database.mongo.dataDB)
+  res.db().collection('sessions').drop();
   return res;
 });
 
@@ -142,6 +145,7 @@ passport.use('local-login', new localStrategy({
   passwordField: config.auth.passwordField
 },
   function (username, password, done) {
+    
     mongodb.collection('users').findOne({ uid: username }).then(function (user) {
       if (!user) {
         return done(null, false);
@@ -172,6 +176,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(`${basePath}/`, indexRouter);
+app.use(`${basePath}/`, chartsRouter);
 app.use(`${basePath}/css`, express.static(path.join(__dirname, '../public/css')));
 app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')));
 app.use(`${basePath}/img`, express.static(path.join(__dirname, '../public/img')));

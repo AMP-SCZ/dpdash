@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { MongoClient, ObjectID } from 'mongodb';
+import { ObjectID } from 'mongodb';
 import { connect } from 'amqplib/callback_api';
 import co from 'co';
 import { createHash } from 'crypto';
 import uuidV4 from 'uuid/v4';
 import passport from 'passport';
 import { hash } from '../utils/crypto/hash';
-import { getMongoURI } from '../utils/mongoUtil';
 import {
   getConfigSchema,
   getConfigForUser,
@@ -18,6 +17,7 @@ import { collections } from '../utils/mongoCollections'
 import LDAP from '../utils/passport/ldap';
 import LocalLogin from '../utils/passport/local-login';
 import LocalSignup from '../utils/passport/local-signup';
+import ensureAuthenticated from '../utils/passport/ensure-authenticated';
 
 import userPage from '../templates/Account.template';
 import adminPage from '../templates/Admin.template';
@@ -33,8 +33,6 @@ import studyPage from '../templates/Study.template';
 import reportsListPage from '../templates/ReportsList.template';
 import editReportPage from '../templates/EditReport.template';
 import viewReportPage from '../templates/Report.template';
-import chartsListPage from '../templates/Chart.template'
-import newChartPage from '../templates/NewChart.template'
 import studyDetailsPage from '../templates/StudyDetails.template'
 
 import config from '../configs/config';
@@ -44,38 +42,7 @@ import basePathConfig from '../configs/basePathConfig';
 
 const router = Router();
 
-const mongoURI = getMongoURI({ settings: config.database.mongo });
-
 const basePath = basePathConfig || '';
-
-let mongoClient;
-let mongoApp;
-let mongoData;
-MongoClient.connect(mongoURI, config.database.mongo.server, function (err, client) {
-  if (err) {
-    console.error(err.message);
-    console.log('Could not connect to the database.');
-    process.exit();
-  }
-  mongoClient = client;
-  mongoApp = mongoClient.db();
-  mongoData = mongoClient.db(config.database.mongo.dataDB);
-});
-
-function checkMongo() {
-  if (!mongoClient.isConnected()) {
-    MongoClient.connect(mongoURI, config.database.mongo.server, function (err, client) {
-      if (err) {
-        console.error(err.message);
-        console.log('Could not connect to the database.');
-        process.exit();
-      }
-      mongoClient = client;
-      mongoApp = mongoClient.db();
-      mongoData = mongoClient.db(config.database.mongo.dataDB);
-    });
-  }
-}
 
 var amqpAddress = 'amqp://' + config.rabbitmq.username + ':' + config.rabbitmq.password + '@' + config.rabbitmq.host + ':' + config.rabbitmq.port;
 let rabbitmq_conn;
@@ -85,38 +52,14 @@ connect(amqpAddress, config.rabbitmq.opts, function (err, conn) {
 });
 
 //User authentication middleware
-function ensureAuthenticated(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`);
-  }
-  checkMongo();
-  mongoApp.collection('users').findOne(
-    { uid: req.user },
-    { _id: 0, access: 1, blocked: 1, role: 1 },
-    function (err, data) {
-      if (err) {
-        console.log(err);
-        return res.redirect(`${basePath}/logout?e=forbidden`);
-      } else if (!data || Object.keys(data).length === 0) {
-        return res.redirect(`${basePath}/logout?e=forbidden`);
-      } else if (('role' in data) && data['role'] === 'admin') {
-        return next();
-      } else if (('blocked' in data) && data['blocked'] == true) {
-        return res.redirect(`${basePath}/logout?e=forbidden`);
-      } else if (!('access' in data) || data.access.length == 0) {
-        return res.redirect(`${basePath}/logout?e=unauthorized`);
-      } else {
-        return next();
-      }
-    });
-}
+
 //Admin privilege checking middleware
 function ensureAdmin(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  checkMongo();
-  mongoApp.collection('users').findOne(
+  
+  req.app.locals.mongoApp.collection('users').findOne(
     { uid: req.user, role: 'admin' },
     { _id: 0, uid: 1 }
     , function (err, data) {
@@ -146,8 +89,8 @@ function ensurePermission(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  checkMongo();
-  mongoApp.collection('users').findOne(
+  
+  req.app.locals.mongoApp.collection('users').findOne(
     { uid: req.user },
     { _id: 0, access: 1, blocked: 1, role: 1 },
     function (err, data) {
@@ -284,8 +227,8 @@ router.get('/logout', function (req, res) {
 
 //deepdive page
 router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermission, function (req, res) {
-  checkMongo();
-  mongoData.collection('toc').find(
+  
+  req.app.locals.mongoData.collection('toc').find(
     {
       study: req.params.study,
       subject: req.params.subject,
@@ -303,7 +246,7 @@ router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermi
       co(function* () {
         var dataPiece = [];
         for (var doc = 0; doc < docs.length; doc++) {
-          var data = yield mongoData.collection(docs[doc].collection).find({
+          var data = yield req.app.locals.mongoData.collection(docs[doc].collection).find({
             day: parseInt(req.params.day)
           }).toArray();
           Array.prototype.push.apply(dataPiece, data);
@@ -321,14 +264,14 @@ router.get('/deepdive/:study/:subject/:day', ensurePermission, function (req, re
 //Dashboard page
 router.get('/dashboard/:study/:subject', ensurePermission, async function (req, res) {
   try {
-    checkMongo();
+    
     const defaultConfig = await getConfigForUser({
-      db: mongoApp,
+      db: req.app.locals.mongoApp,
       user: req.user,
       defaultConfig: defaultUserConfig,
     });
     const dashboardState = await getDashboardState({
-      db: mongoData,
+      db: req.app.locals.mongoData,
       study: req.params.study,
       subject: req.params.subject,
       defaultConfig,
@@ -365,8 +308,8 @@ router.route('/resetpw')
       return res.redirect(`${basePath}/resetpw?e=unmatched`);
     } else {
       var hashedPW = hash(req.body.password);
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.body.username, reset_key: req.body.reset_key },
         { $set: { password: hashedPW, reset_key: '', force_reset_pw: false } },
         { returnOriginal: false },
@@ -428,23 +371,23 @@ function publisher(conn, ch, correlationId, args, replyTo) {
 
 router.get('/dashboard/:study', ensurePermission, function (req, res) {
   co(function* () {
-    checkMongo();
+    
     // couple StudyConfig and UserConfig
     // var configs_heatmap = defaultStudyConfig['colormap'];
     const defaultStudyConfig = yield getConfigForUser({
-      db: mongoApp,
+      db: req.app.locals.mongoApp,
       user: req.user,
       defaultConfig: defaultStudyConfig,
     });
     var configs_heatmap = defaultStudyConfig;
-    var metadocReference = yield mongoData.collection('metadata').findOne({
+    var metadocReference = yield req.app.locals.mongoData.collection('metadata').findOne({
       study: req.params.study,
       role: 'metadata'
     });
     if (!metadocReference) {
       return res.status(500).send("Please contact the administrator.");
     }
-    var metadoc = yield mongoData.collection(metadocReference['collection']).find({}).toArray();
+    var metadoc = yield req.app.locals.mongoData.collection(metadocReference['collection']).find({}).toArray();
     var dashboardData = [];
     for (const item in metadoc) {
       var dashboardState = {
@@ -464,7 +407,7 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
         const query = [{
           $project: { _id: 0, day: 1, [escapedVarName]: `$${varName}` }
         }];
-        var data = yield mongoData.collection(encrypted.toString()).aggregate(query).toArray();
+        var data = yield req.app.locals.mongoData.collection(encrypted.toString()).aggregate(query).toArray();
         var dataPiece = {};
         dataPiece.text = configs_heatmap[configItem].text;
         dataPiece.analysis = configs_heatmap[configItem].analysis;
@@ -489,8 +432,8 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.user },
       { _id: 0, access: 1 }
       , function (err, data) {
@@ -508,8 +451,8 @@ router.route('/api/v1/studies')
   });
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
-  checkMongo();
-  mongoData.collection('toc').distinct('study'
+  
+  req.app.locals.mongoData.collection('toc').distinct('study'
     , function (err, studies) {
       if (err) {
         console.log(err);
@@ -523,8 +466,8 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
-  checkMongo();
-  mongoData.collection('metadata').aggregate([
+  
+  req.app.locals.mongoData.collection('metadata').aggregate([
     { $match: { study: { $in: JSON.parse(req.query.q) } } },
     { $addFields: { numOfSubjects: { $size: { "$ifNull": ["$subjects", []] } } } },
     { $sort: { study: 1 } }
@@ -541,8 +484,8 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
-  checkMongo();
-  mongoApp.collection('users').find(
+  
+  req.app.locals.mongoApp.collection('users').find(
     {}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 }).toArray(function (err, users) {
       if (err) {
         console.log(err);
@@ -555,8 +498,8 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
     });
 });
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  checkMongo();
-  mongoApp.collection('users').find(
+  
+  req.app.locals.mongoApp.collection('users').find(
     {}, { uid: 1 }).toArray(function (err, users) {
       if (err) {
         console.log(err);
@@ -571,8 +514,8 @@ router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
 
 router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.params.uid },
       {
         configs: 0,
@@ -599,8 +542,8 @@ router.route('/api/v1/users/:uid')
       });
   })
   .post(ensureUser, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOneAndUpdate(
+    
+    req.app.locals.mongoApp.collection('users').findOneAndUpdate(
       { uid: req.params.uid },
       {
         $set: {
@@ -632,8 +575,8 @@ router.route('/api/v1/users/:uid')
 
 router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
-    checkMongo();
-    mongoApp.collection('configs').find(
+    
+    req.app.locals.mongoApp.collection('configs').find(
       { readers: req.params.uid }
     ).toArray(function (err, data) {
       if (err) {
@@ -648,8 +591,8 @@ router.route('/api/v1/users/:uid/configs')
   })
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
-      checkMongo();
-      mongoApp.collection('configs').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.disable) },
         { $pull: { readers: req.params.uid } },
         { returnOriginal: false },
@@ -662,8 +605,8 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'remove')) {
-      checkMongo();
-      mongoApp.collection('configs').deleteOne(
+      
+      req.app.locals.mongoApp.collection('configs').deleteOne(
         { _id: new ObjectID(req.body.remove) },
         function (err) {
           if (err) {
@@ -674,8 +617,8 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'share')) {
-      checkMongo();
-      mongoApp.collection('configs').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.share) },
         { $set: { readers: req.body.shared } },
         { returnOriginal: false },
@@ -688,8 +631,8 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'edit')) {
-      checkMongo();
-      mongoApp.collection('configs').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.edit._id) },
         {
           $set: {
@@ -709,8 +652,8 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'add')) {
-      checkMongo();
-      mongoApp.collection('configs').insertOne(req.body.add
+      
+      req.app.locals.mongoApp.collection('configs').insertOne(req.body.add
         , function (err, doc) {
           if (err) {
             console.log(err);
@@ -734,8 +677,8 @@ router.route('/api/v1/users/:uid/configs')
 router.route('/api/v1/users/:uid/resetpw')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') && Object.prototype.hasOwnProperty.call(req.body, 'reset_key')) {
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { force_reset_pw: req.body.force_reset_pw, reset_key: req.body.reset_key } },
         { returnOriginal: false },
@@ -754,8 +697,8 @@ router.route('/api/v1/users/:uid/resetpw')
 
 router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').deleteOne(
+    
+    req.app.locals.mongoApp.collection('users').deleteOne(
       { uid: req.params.uid },
       function (err) {
         if (err) {
@@ -769,8 +712,8 @@ router.route('/api/v1/users/:uid/delete')
 
 router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, role: 1 }
       , function (err, data) {
@@ -786,8 +729,8 @@ router.route('/api/v1/users/:uid/role')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { role: req.body.role } },
         { returnOriginal: false },
@@ -806,8 +749,8 @@ router.route('/api/v1/users/:uid/role')
 
 router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, blocked: 1 }
       , function (err, data) {
@@ -823,8 +766,8 @@ router.route('/api/v1/users/:uid/blocked')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { blocked: req.body.blocked } },
         { returnOriginal: false },
@@ -843,8 +786,8 @@ router.route('/api/v1/users/:uid/blocked')
 
 router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, access: 1 },
       function (err) {
@@ -858,8 +801,8 @@ router.route('/api/v1/users/:uid/studies')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { access: req.body.acl } },
         { returnOriginal: false },
@@ -878,8 +821,8 @@ router.route('/api/v1/users/:uid/studies')
 
 router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
-    checkMongo();
-    mongoApp.collection('configs').findOne(
+    
+    req.app.locals.mongoApp.collection('configs').findOne(
       { readers: req.params.uid, _id: new ObjectID(req.params.config_id) }
       , function (err, data) {
         if (err) {
@@ -896,8 +839,8 @@ router.route('/api/v1/users/:uid/configs/:config_id')
 
 router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
-    checkMongo();
-    mongoApp.collection('users').findOne(
+    
+    req.app.locals.mongoApp.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, preferences: 1 }
       , function (err, data) {
@@ -913,8 +856,8 @@ router.route('/api/v1/users/:uid/preferences')
   })
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
-      checkMongo();
-      mongoApp.collection('users').findOneAndUpdate(
+      
+      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { preferences: req.body.preferences } },
         { returnOriginal: false },
@@ -936,7 +879,7 @@ router.route('/api/v1/users/:uid/preferences')
 
 router.route('/api/v1/users/:uid/config/file')
   .post(ensureUser, async function (req, res) {
-    checkMongo();
+    
     if (req.body && req.body.config) {
       try {
         let data = req.body.config;       
@@ -970,7 +913,7 @@ router.route('/api/v1/users/:uid/config/file')
           readers: [req.user],
           created: (new Date()).toUTCString()
         };
-        await mongoApp.collection('configs').insertOne(newConfig);
+        await req.app.locals.mongoApp.collection('configs').insertOne(newConfig);
         return res.status(200).send();
 
       } catch (err) {
@@ -989,7 +932,7 @@ router.route('/api/v1/users/:uid/config/file')
 
 router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try { 
       const { display_name, role, icon } = req.session;
       return res.status(200).send(reportsListPage({
@@ -1006,7 +949,7 @@ router.route('/reports')
 
 router.route('/reports/:id/view')
 .get(ensureAuthenticated, async (req, res) => {
-  checkMongo();
+  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -1027,7 +970,7 @@ router.route('/reports/:id/view')
 
 router.route('/reports/:id/edit')
 .get(ensureAuthenticated, async (req, res) => {
-  checkMongo();
+  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -1049,7 +992,7 @@ router.route('/reports/:id/edit')
 
 router.route('/reports/new')
 .get(ensureAuthenticated, async (req, res) => {
-  checkMongo();
+  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -1070,9 +1013,9 @@ router.route('/reports/new')
 
 router.route('/api/v1/studies/:study/enrollment')
   .get(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try { 
-      const metadoc = await mongoData.collection('metadata').findOne({
+      const metadoc = await req.app.locals.mongoData.collection('metadata').findOne({
         study: req.params.study,
         role: 'metadata'
       }, { _id: 0, subjects: 1, collection: 1 });
@@ -1087,7 +1030,7 @@ router.route('/api/v1/studies/:study/enrollment')
         }
       } else {
         const filteredByDate = await filterSubjectsByConsentDate({
-          db: mongoData,
+          db: req.app.locals.mongoData,
           collection,
           start: req.query.start,
           end: req.query.end,
@@ -1101,23 +1044,23 @@ router.route('/api/v1/studies/:study/enrollment')
     }
   })
   .post(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { assessment, varName } = req.body;
       if (!assessment || !varName) {
         return res.status(400).send({ message: 'Bad request' });
       }
-      const metadoc = await mongoData.collection('metadata').findOne({
+      const metadoc = await req.app.locals.mongoData.collection('metadata').findOne({
         study: req.params.study,
         role: 'metadata'
       }, { _id: 0, collection: 1 });
       const { collection } = metadoc;
       let allSubjects = [];
       if (!req.query.start && !req.query.end) {
-        allSubjects = await mongoData.collection(collection).find({}).toArray();
+        allSubjects = await req.app.locals.mongoData.collection(collection).find({}).toArray();
       } else {
         allSubjects = await filterSubjectsByConsentDate({
-          db: mongoData,
+          db: req.app.locals.mongoData,
           collection,
           start: req.query.start,
           end: req.query.end,
@@ -1129,7 +1072,7 @@ router.route('/api/v1/studies/:study/enrollment')
       }));
       let enrollmentsList = [];
       await Promise.all(matchingSubjectIDs.map(async subject => {
-        const assessmentCollection = await mongoData
+        const assessmentCollection = await req.app.locals.mongoData
           .collection('toc')
           .findOne({
             study: req.params.study,
@@ -1137,7 +1080,7 @@ router.route('/api/v1/studies/:study/enrollment')
             subject: subject.id,
           }, { _id: 0, collection: 1 });
         if (assessmentCollection !== null) {
-          const foundData = await mongoData
+          const foundData = await req.app.locals.mongoData
             .collection(assessmentCollection.collection)
             .findOne(
               { [varName]: { $exists: true, $ne: '' } },
@@ -1171,10 +1114,10 @@ router.route('/api/v1/studies/:study/enrollment')
 
 router.route('/api/v1/reports')
   .get(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { user } = req;
-      const reports = await mongoApp
+      const reports = await req.app.locals.mongoApp
         .collection('reports')
         .find({
           $or: [
@@ -1190,10 +1133,10 @@ router.route('/api/v1/reports')
     }
   })
   .post(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { body, user } = req;
-      await mongoApp
+      await req.app.locals.mongoApp
         .collection('reports')
         .insertOne({ 
           ...body,
@@ -1210,10 +1153,10 @@ router.route('/api/v1/reports')
 
 router.route('/api/v1/reports/:id')
   .get(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { user } = req;
-      const report = await mongoApp
+      const report = await req.app.locals.mongoApp
         .collection('reports')
         .findOne({
           _id: ObjectID(req.params.id),
@@ -1232,10 +1175,10 @@ router.route('/api/v1/reports/:id')
     }
   })
   .patch(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { body, user, params } = req;
-      await mongoApp
+      await req.app.locals.mongoApp
         .collection('reports')
         .findOneAndUpdate({
           _id: ObjectID(params.id),
@@ -1252,10 +1195,10 @@ router.route('/api/v1/reports/:id')
     }
   })
   .delete(ensureAuthenticated, async (req, res) => {
-    checkMongo();
+    
     try {
       const { user } = req;
-      const deletionRes = await mongoApp
+      const deletionRes = await req.app.locals.mongoApp
         .collection('reports')
         .deleteOne({
           _id: ObjectID(req.params.id),
@@ -1271,27 +1214,6 @@ router.route('/api/v1/reports/:id')
       return res.status(500).send({ message: err.message });
     }
   });
-  /*
-   * CHART  
-  */ 
-router.route('/charts')
-  .get(ensureAuthenticated, async (_, res) => {
-    try {
-      return res.status(200).send(chartsListPage())
-    } catch (err) {
-      console.error(err.message)
-      return res.status(500).send({ message: err.message })
-    }
-  });
-router.route('/charts/new')
-  .get(ensureAuthenticated, async (_, res) => {
-    try {
-      return res.status(200).send(newChartPage())
-    } catch (error) {
-      console.error(err.message)
-      return res.status(500).send({ message: err.message })
-    }
-})
 
 /**
  * Study Details
