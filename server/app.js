@@ -109,8 +109,8 @@ const mongodbPromise = co(function* () {
   return yield MongoClient.connect(mongoURI, config.database.mongo.server);
 }).then(function (res) {
   mongodb = res.db();
-  app.locals.mongoApp = res.db()
-  app.locals.mongoData = res.db(config.database.mongo.dataDB)
+  app.locals.appDb = res.db()
+  app.locals.dataDb = res.db(config.database.mongo.dataDB)
   res.db().collection('sessions').drop();
   return res;
 });

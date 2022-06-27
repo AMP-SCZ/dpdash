@@ -58,8 +58,8 @@ function ensureAdmin(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  
-  req.app.locals.mongoApp.collection('users').findOne(
+  const appDb = req.app.locals.appDb
+  appDb.collection('users').findOne(
     { uid: req.user, role: 'admin' },
     { _id: 0, uid: 1 }
     , function (err, data) {
@@ -89,8 +89,8 @@ function ensurePermission(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  
-  req.app.locals.mongoApp.collection('users').findOne(
+  const appDb = req.app.locals.appDb
+  appDb.collection('users').findOne(
     { uid: req.user },
     { _id: 0, access: 1, blocked: 1, role: 1 },
     function (err, data) {
@@ -228,7 +228,8 @@ router.get('/logout', function (req, res) {
 //deepdive page
 router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermission, function (req, res) {
   
-  req.app.locals.mongoData.collection('toc').find(
+  const dataDb = req.app.locals.dataDb
+  dataDb.collection('toc').find(
     {
       study: req.params.study,
       subject: req.params.subject,
@@ -246,7 +247,7 @@ router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermi
       co(function* () {
         var dataPiece = [];
         for (var doc = 0; doc < docs.length; doc++) {
-          var data = yield req.app.locals.mongoData.collection(docs[doc].collection).find({
+          var data = yield dataDb.collection(docs[doc].collection).find({
             day: parseInt(req.params.day)
           }).toArray();
           Array.prototype.push.apply(dataPiece, data);
@@ -264,14 +265,15 @@ router.get('/deepdive/:study/:subject/:day', ensurePermission, function (req, re
 //Dashboard page
 router.get('/dashboard/:study/:subject', ensurePermission, async function (req, res) {
   try {
-    
+    const dataDb = req.app.locals.dataDb
+    const appDb = req.app.locals.appDb
     const defaultConfig = await getConfigForUser({
-      db: req.app.locals.mongoApp,
+      db: appDb,
       user: req.user,
       defaultConfig: defaultUserConfig,
     });
     const dashboardState = await getDashboardState({
-      db: req.app.locals.mongoData,
+      db: dataDb,
       study: req.params.study,
       subject: req.params.subject,
       defaultConfig,
@@ -307,9 +309,10 @@ router.route('/resetpw')
     if (req.body.password !== req.body.confirmpw) {
       return res.redirect(`${basePath}/resetpw?e=unmatched`);
     } else {
+      const appDb = req.app.locals.appDb
       var hashedPW = hash(req.body.password);
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.body.username, reset_key: req.body.reset_key },
         { $set: { password: hashedPW, reset_key: '', force_reset_pw: false } },
         { returnOriginal: false },
@@ -370,24 +373,26 @@ function publisher(conn, ch, correlationId, args, replyTo) {
 }
 
 router.get('/dashboard/:study', ensurePermission, function (req, res) {
+  const dataDb = req.app.locals.dataDb
+  const appDb = req.app.locals.appDb
   co(function* () {
     
     // couple StudyConfig and UserConfig
     // var configs_heatmap = defaultStudyConfig['colormap'];
     const defaultStudyConfig = yield getConfigForUser({
-      db: req.app.locals.mongoApp,
+      db: appDb,
       user: req.user,
       defaultConfig: defaultStudyConfig,
     });
     var configs_heatmap = defaultStudyConfig;
-    var metadocReference = yield req.app.locals.mongoData.collection('metadata').findOne({
+    var metadocReference = yield dataDb.collection('metadata').findOne({
       study: req.params.study,
       role: 'metadata'
     });
     if (!metadocReference) {
       return res.status(500).send("Please contact the administrator.");
     }
-    var metadoc = yield req.app.locals.mongoData.collection(metadocReference['collection']).find({}).toArray();
+    var metadoc = yield dataDb.collection(metadocReference['collection']).find({}).toArray();
     var dashboardData = [];
     for (const item in metadoc) {
       var dashboardState = {
@@ -407,7 +412,7 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
         const query = [{
           $project: { _id: 0, day: 1, [escapedVarName]: `$${varName}` }
         }];
-        var data = yield req.app.locals.mongoData.collection(encrypted.toString()).aggregate(query).toArray();
+        var data = yield dataDb.collection(encrypted.toString()).aggregate(query).toArray();
         var dataPiece = {};
         dataPiece.text = configs_heatmap[configItem].text;
         dataPiece.analysis = configs_heatmap[configItem].analysis;
@@ -432,8 +437,9 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
-    
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+
+    appDb.collection('users').findOne(
       { uid: req.user },
       { _id: 0, access: 1 }
       , function (err, data) {
@@ -451,8 +457,10 @@ router.route('/api/v1/studies')
   });
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
-  
-  req.app.locals.mongoData.collection('toc').distinct('study'
+
+  const dataDb = req.app.locals.dataDb
+
+  dataDb.collection('toc').distinct('study'
     , function (err, studies) {
       if (err) {
         console.log(err);
@@ -466,8 +474,9 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
-  
-  req.app.locals.mongoData.collection('metadata').aggregate([
+  const dataDb = req.app.locals.dataDb
+
+  dataDb.collection('metadata').aggregate([
     { $match: { study: { $in: JSON.parse(req.query.q) } } },
     { $addFields: { numOfSubjects: { $size: { "$ifNull": ["$subjects", []] } } } },
     { $sort: { study: 1 } }
@@ -484,8 +493,9 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
-  
-  req.app.locals.mongoApp.collection('users').find(
+
+  const appDb = req.app.locals.appDb
+  appDb.collection('users').find(
     {}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 }).toArray(function (err, users) {
       if (err) {
         console.log(err);
@@ -499,7 +509,8 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
 });
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
   
-  req.app.locals.mongoApp.collection('users').find(
+  const appDb = req.app.locals.appDb
+  appDb.collection('users').find(
     {}, { uid: 1 }).toArray(function (err, users) {
       if (err) {
         console.log(err);
@@ -515,7 +526,8 @@ router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
 router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOne(
       { uid: req.params.uid },
       {
         configs: 0,
@@ -543,7 +555,8 @@ router.route('/api/v1/users/:uid')
   })
   .post(ensureUser, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOneAndUpdate(
       { uid: req.params.uid },
       {
         $set: {
@@ -576,7 +589,8 @@ router.route('/api/v1/users/:uid')
 router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
     
-    req.app.locals.mongoApp.collection('configs').find(
+    const appDb = req.app.locals.appDb
+    appDb.collection('configs').find(
       { readers: req.params.uid }
     ).toArray(function (err, data) {
       if (err) {
@@ -590,9 +604,12 @@ router.route('/api/v1/users/:uid/configs')
     });
   })
   .post(ensureUser, function (req, res) {
+
+    const appDb = req.app.locals.appDb
+    
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
       
-      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
+      appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.disable) },
         { $pull: { readers: req.params.uid } },
         { returnOriginal: false },
@@ -606,7 +623,7 @@ router.route('/api/v1/users/:uid/configs')
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'remove')) {
       
-      req.app.locals.mongoApp.collection('configs').deleteOne(
+      appDb.collection('configs').deleteOne(
         { _id: new ObjectID(req.body.remove) },
         function (err) {
           if (err) {
@@ -618,7 +635,7 @@ router.route('/api/v1/users/:uid/configs')
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'share')) {
       
-      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
+      appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.share) },
         { $set: { readers: req.body.shared } },
         { returnOriginal: false },
@@ -632,7 +649,7 @@ router.route('/api/v1/users/:uid/configs')
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'edit')) {
       
-      req.app.locals.mongoApp.collection('configs').findOneAndUpdate(
+      appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.edit._id) },
         {
           $set: {
@@ -653,7 +670,7 @@ router.route('/api/v1/users/:uid/configs')
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'add')) {
       
-      req.app.locals.mongoApp.collection('configs').insertOne(req.body.add
+      appDb.collection('configs').insertOne(req.body.add
         , function (err, doc) {
           if (err) {
             console.log(err);
@@ -676,9 +693,12 @@ router.route('/api/v1/users/:uid/configs')
 
 router.route('/api/v1/users/:uid/resetpw')
   .post(ensureAdmin, function (req, res) {
+
+    const appDb = req.app.locals.appDb
+
     if (Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') && Object.prototype.hasOwnProperty.call(req.body, 'reset_key')) {
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { force_reset_pw: req.body.force_reset_pw, reset_key: req.body.reset_key } },
         { returnOriginal: false },
@@ -698,7 +718,8 @@ router.route('/api/v1/users/:uid/resetpw')
 router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').deleteOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').deleteOne(
       { uid: req.params.uid },
       function (err) {
         if (err) {
@@ -713,7 +734,8 @@ router.route('/api/v1/users/:uid/delete')
 router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, role: 1 }
       , function (err, data) {
@@ -730,7 +752,8 @@ router.route('/api/v1/users/:uid/role')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      const appDb = req.app.locals.appDb
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { role: req.body.role } },
         { returnOriginal: false },
@@ -750,7 +773,8 @@ router.route('/api/v1/users/:uid/role')
 router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, blocked: 1 }
       , function (err, data) {
@@ -767,7 +791,8 @@ router.route('/api/v1/users/:uid/blocked')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      const appDb = req.app.locals.appDb
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { blocked: req.body.blocked } },
         { returnOriginal: false },
@@ -787,7 +812,8 @@ router.route('/api/v1/users/:uid/blocked')
 router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, access: 1 },
       function (err) {
@@ -802,7 +828,8 @@ router.route('/api/v1/users/:uid/studies')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      const appDb = req.app.locals.appDb
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { access: req.body.acl } },
         { returnOriginal: false },
@@ -822,7 +849,8 @@ router.route('/api/v1/users/:uid/studies')
 router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
     
-    req.app.locals.mongoApp.collection('configs').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('configs').findOne(
       { readers: req.params.uid, _id: new ObjectID(req.params.config_id) }
       , function (err, data) {
         if (err) {
@@ -840,7 +868,8 @@ router.route('/api/v1/users/:uid/configs/:config_id')
 router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
     
-    req.app.locals.mongoApp.collection('users').findOne(
+    const appDb = req.app.locals.appDb
+    appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, preferences: 1 }
       , function (err, data) {
@@ -857,7 +886,8 @@ router.route('/api/v1/users/:uid/preferences')
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
       
-      req.app.locals.mongoApp.collection('users').findOneAndUpdate(
+      const appDb = req.app.locals.appDb
+      appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { preferences: req.body.preferences } },
         { returnOriginal: false },
@@ -880,6 +910,8 @@ router.route('/api/v1/users/:uid/preferences')
 router.route('/api/v1/users/:uid/config/file')
   .post(ensureUser, async function (req, res) {
     
+    const appDb = req.app.locals.appDb
+
     if (req.body && req.body.config) {
       try {
         let data = req.body.config;       
@@ -913,7 +945,7 @@ router.route('/api/v1/users/:uid/config/file')
           readers: [req.user],
           created: (new Date()).toUTCString()
         };
-        await req.app.locals.mongoApp.collection('configs').insertOne(newConfig);
+        await appDb.collection('configs').insertOne(newConfig);
         return res.status(200).send();
 
       } catch (err) {
@@ -1015,11 +1047,13 @@ router.route('/api/v1/studies/:study/enrollment')
   .get(ensureAuthenticated, async (req, res) => {
     
     try { 
-      const metadoc = await req.app.locals.mongoData.collection('metadata').findOne({
+      const dataDb = req.app.locals.dataDb
+      const metadoc = await dataDb.collection('metadata').findOne({
         study: req.params.study,
         role: 'metadata'
       }, { _id: 0, subjects: 1, collection: 1 });
       const { subjects, collection } = metadoc;
+      console.log(collection, subjects)
       if (!metadoc) {
         return res.status(404).send({ message: 'Study not found' });
       }
@@ -1030,7 +1064,7 @@ router.route('/api/v1/studies/:study/enrollment')
         }
       } else {
         const filteredByDate = await filterSubjectsByConsentDate({
-          db: req.app.locals.mongoData,
+          db: dataDb,
           collection,
           start: req.query.start,
           end: req.query.end,
@@ -1039,28 +1073,31 @@ router.route('/api/v1/studies/:study/enrollment')
       }
       return res.status(200).send({ enrollment });
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       return res.status(500).send({ message: err.message });
     }
   })
   .post(ensureAuthenticated, async (req, res) => {
     
     try {
+      const dataDb = req.app.locals.dataDb
       const { assessment, varName } = req.body;
       if (!assessment || !varName) {
         return res.status(400).send({ message: 'Bad request' });
       }
-      const metadoc = await req.app.locals.mongoData.collection('metadata').findOne({
+      const metadoc = await dataDb
+      .collection('metadata')
+      .findOne({
         study: req.params.study,
         role: 'metadata'
       }, { _id: 0, collection: 1 });
       const { collection } = metadoc;
       let allSubjects = [];
       if (!req.query.start && !req.query.end) {
-        allSubjects = await req.app.locals.mongoData.collection(collection).find({}).toArray();
+        allSubjects = await dataDb.collection(collection).find({}).toArray();
       } else {
         allSubjects = await filterSubjectsByConsentDate({
-          db: req.app.locals.mongoData,
+          db: dataDb,
           collection,
           start: req.query.start,
           end: req.query.end,
@@ -1072,7 +1109,7 @@ router.route('/api/v1/studies/:study/enrollment')
       }));
       let enrollmentsList = [];
       await Promise.all(matchingSubjectIDs.map(async subject => {
-        const assessmentCollection = await req.app.locals.mongoData
+        const assessmentCollection = await dataDb
           .collection('toc')
           .findOne({
             study: req.params.study,
@@ -1080,7 +1117,7 @@ router.route('/api/v1/studies/:study/enrollment')
             subject: subject.id,
           }, { _id: 0, collection: 1 });
         if (assessmentCollection !== null) {
-          const foundData = await req.app.locals.mongoData
+          const foundData = await dataDb
             .collection(assessmentCollection.collection)
             .findOne(
               { [varName]: { $exists: true, $ne: '' } },
@@ -1114,10 +1151,11 @@ router.route('/api/v1/studies/:study/enrollment')
 
 router.route('/api/v1/reports')
   .get(ensureAuthenticated, async (req, res) => {
-    
+
     try {
+      const appDb = req.app.locals.appDb
       const { user } = req;
-      const reports = await req.app.locals.mongoApp
+      const reports = await appDb
         .collection('reports')
         .find({
           $or: [
@@ -1135,8 +1173,9 @@ router.route('/api/v1/reports')
   .post(ensureAuthenticated, async (req, res) => {
     
     try {
+      const appDb = req.app.locals.appDb
       const { body, user } = req;
-      await req.app.locals.mongoApp
+      await appDb
         .collection('reports')
         .insertOne({ 
           ...body,
@@ -1155,8 +1194,9 @@ router.route('/api/v1/reports/:id')
   .get(ensureAuthenticated, async (req, res) => {
     
     try {
+      const appDb = req.app.locals.appDb
       const { user } = req;
-      const report = await req.app.locals.mongoApp
+      const report = await appDb
         .collection('reports')
         .findOne({
           _id: ObjectID(req.params.id),
@@ -1177,8 +1217,9 @@ router.route('/api/v1/reports/:id')
   .patch(ensureAuthenticated, async (req, res) => {
     
     try {
+      const appDb = req.app.locals.appDb
       const { body, user, params } = req;
-      await req.app.locals.mongoApp
+      await appDb
         .collection('reports')
         .findOneAndUpdate({
           _id: ObjectID(params.id),
@@ -1197,8 +1238,9 @@ router.route('/api/v1/reports/:id')
   .delete(ensureAuthenticated, async (req, res) => {
     
     try {
+      const appDb = req.app.locals.appDb
       const { user } = req;
-      const deletionRes = await req.app.locals.mongoApp
+      const deletionRes = await appDb
         .collection('reports')
         .deleteOne({
           _id: ObjectID(req.params.id),
@@ -1239,12 +1281,10 @@ router.route('/study-details')
 router.route('/api/v1/study-details')
   .get(ensureAuthenticated, async(req, res) => {
     try {
-      const data = await mongoData
-        .collection(collections.studyDetails)
-        .find({ owner: req.user })
-        .toArray()
-
-      return res.status(200).json({ data })
+      const dataDb = req.app.locals.dataDb
+      const studyDetails = await dataDb.collection(collections.studyDetails)
+      .find({ owner: req.user }).toArray()
+      return res.status(200).json({ studyDetails })
     } catch (error) {
 
       return res.status(500).json({ message: error.message })
@@ -1253,7 +1293,8 @@ router.route('/api/v1/study-details')
   .post(ensureAuthenticated, async (req, res) => {
     const { study, owner, targetEnrollment } = req.body
     try {
-      const data = await mongoData
+      const dataDb = req.app.locals.dataDb
+      const data = await dataDb
         .collection(collections.studyDetails)
         .findOneAndUpdate({ study },
           { 

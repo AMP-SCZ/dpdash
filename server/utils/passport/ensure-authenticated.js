@@ -6,8 +6,8 @@ export default function ensureAuthenticated(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  
-  req.app.locals.mongoApp.collection('users').findOne(
+  const appDb = req.app.locals.appDb
+  appDb.collection('users').findOne(
     { uid: req.user },
     { _id: 0, access: 1, blocked: 1, role: 1 },
     function (err, data) {
