@@ -603,7 +603,6 @@ router.route('/api/v1/users/:uid/configs')
     const appDb = req.app.locals.appDb
     
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
-      
       appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.disable) },
         { $pull: { readers: req.params.uid } },
