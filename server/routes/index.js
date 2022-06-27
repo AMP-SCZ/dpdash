@@ -931,7 +931,6 @@ router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
     try { 
       const { display_name, role, icon } = req.session;
-
       return res.status(200).send(reportsListPage({
         uid: req.user,
         name: display_name,
@@ -1014,7 +1013,6 @@ router.route('/api/v1/studies/:study/enrollment')
         role: 'metadata'
       }, { _id: 0, subjects: 1, collection: 1 });
       const { subjects, collection } = metadoc;
-      console.log(collection, subjects)
       if (!metadoc) {
         return res.status(404).send({ message: 'Study not found' });
       }
