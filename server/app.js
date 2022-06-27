@@ -145,7 +145,6 @@ passport.use('local-login', new localStrategy({
   passwordField: config.auth.passwordField
 },
   function (username, password, done) {
-    
     mongodb.collection('users').findOne({ uid: username }).then(function (user) {
       if (!user) {
         return done(null, false);

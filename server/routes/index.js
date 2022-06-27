@@ -51,8 +51,6 @@ connect(amqpAddress, config.rabbitmq.opts, function (err, conn) {
   rabbitmq_conn = conn;
 });
 
-//User authentication middleware
-
 //Admin privilege checking middleware
 function ensureAdmin(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -227,7 +225,7 @@ router.get('/logout', function (req, res) {
 
 //deepdive page
 router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermission, function (req, res) {
-  
+
   const dataDb = req.app.locals.dataDb
   dataDb.collection('toc').find(
     {
@@ -373,10 +371,11 @@ function publisher(conn, ch, correlationId, args, replyTo) {
 }
 
 router.get('/dashboard/:study', ensurePermission, function (req, res) {
+
   const dataDb = req.app.locals.dataDb
   const appDb = req.app.locals.appDb
-  co(function* () {
-    
+
+  co(function* () {  
     // couple StudyConfig and UserConfig
     // var configs_heatmap = defaultStudyConfig['colormap'];
     const defaultStudyConfig = yield getConfigForUser({
@@ -437,6 +436,7 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
+
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -474,6 +474,7 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
+
   const dataDb = req.app.locals.dataDb
 
   dataDb.collection('metadata').aggregate([
@@ -495,6 +496,7 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
 
   const appDb = req.app.locals.appDb
+
   appDb.collection('users').find(
     {}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 }).toArray(function (err, users) {
       if (err) {
@@ -510,6 +512,7 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
   
   const appDb = req.app.locals.appDb
+
   appDb.collection('users').find(
     {}, { uid: 1 }).toArray(function (err, users) {
       if (err) {
@@ -527,6 +530,7 @@ router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       {
@@ -556,6 +560,7 @@ router.route('/api/v1/users/:uid')
   .post(ensureUser, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOneAndUpdate(
       { uid: req.params.uid },
       {
@@ -590,6 +595,7 @@ router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('configs').find(
       { readers: req.params.uid }
     ).toArray(function (err, data) {
@@ -719,6 +725,7 @@ router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').deleteOne(
       { uid: req.params.uid },
       function (err) {
@@ -735,6 +742,7 @@ router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, role: 1 }
@@ -753,6 +761,7 @@ router.route('/api/v1/users/:uid/role')
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
       
       const appDb = req.app.locals.appDb
+
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { role: req.body.role } },
@@ -774,6 +783,7 @@ router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, blocked: 1 }
@@ -792,6 +802,7 @@ router.route('/api/v1/users/:uid/blocked')
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
       
       const appDb = req.app.locals.appDb
+
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { blocked: req.body.blocked } },
@@ -813,6 +824,7 @@ router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, access: 1 },
@@ -829,6 +841,7 @@ router.route('/api/v1/users/:uid/studies')
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
       
       const appDb = req.app.locals.appDb
+
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { access: req.body.acl } },
@@ -850,6 +863,7 @@ router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('configs').findOne(
       { readers: req.params.uid, _id: new ObjectID(req.params.config_id) }
       , function (err, data) {
@@ -869,6 +883,7 @@ router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
     
     const appDb = req.app.locals.appDb
+
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, preferences: 1 }
@@ -967,6 +982,7 @@ router.route('/reports')
     
     try { 
       const { display_name, role, icon } = req.session;
+      
       return res.status(200).send(reportsListPage({
         uid: req.user,
         name: display_name,
@@ -1053,7 +1069,6 @@ router.route('/api/v1/studies/:study/enrollment')
         role: 'metadata'
       }, { _id: 0, subjects: 1, collection: 1 });
       const { subjects, collection } = metadoc;
-      console.log(collection, subjects)
       if (!metadoc) {
         return res.status(404).send({ message: 'Study not found' });
       }
