@@ -1308,7 +1308,7 @@ router.route('/study-details')
       }))
     } catch (error) {
       console.error(error.message)
-      return res.status(500).send({ message: err.message})
+      return res.status(500).send({ message: err.message })
     }
   })
 router.route('/api/v1/study-details/all')
