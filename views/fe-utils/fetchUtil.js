@@ -119,7 +119,6 @@ const deleteStudyDetails = async (id) => {
     },
     credentials: 'same-origin'
   })
-
   if (res.status !== 200) return new Error(res.message)
 
   return res.json()
