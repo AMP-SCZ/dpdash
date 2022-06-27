@@ -24,7 +24,6 @@ router.route('/charts/new')
       return res.status(200).send(newChartPage())
     } catch (error) {
       console.error(err.message)
-
       return res.status(500).send({ message: err.message })
     }
 })
