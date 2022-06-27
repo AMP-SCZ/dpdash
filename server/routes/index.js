@@ -13,6 +13,7 @@ import {
   getDashboardState,
   filterSubjectsByConsentDate
 } from '../utils/routerUtil';
+import { collections } from '../utils/mongoCollections'
 
 import LDAP from '../utils/passport/ldap';
 import LocalLogin from '../utils/passport/local-login';
@@ -40,7 +41,6 @@ import config from '../configs/config';
 import defaultStudyConfig from '../configs/defaultStudyConfig';
 import defaultUserConfig from '../configs/defaultUserConfig';
 import basePathConfig from '../configs/basePathConfig';
-import { collections } from '../utils/mongoCollections'
 
 const router = Router();
 
@@ -1300,6 +1300,7 @@ router.route('/study-details')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { display_name, role, icon } = req.session;
+
       return res.status(200).send(studyDetailsPage({
         uid: req.user,
         name: display_name,
@@ -1308,40 +1309,52 @@ router.route('/study-details')
       }))
     } catch (error) {
       console.error(error.message)
+
       return res.status(500).send({ message: err.message })
     }
   })
+
 router.route('/api/v1/study-details/all')
   .get(ensureAuthenticated, async(req, res) => {
     try {
-      const studyDetails = await mongoData.collection(collections.studyDetails)
-      .find({ owner: req.user }).toArray()
-      return res.status(200).json({ studyDetails })
+      const data = await mongoData
+        .collection(collections.studyDetails)
+        .find({ owner: req.user })
+        .toArray()
+
+      return res.status(200).json({ data })
     } catch (error) {
+
       return res.status(500).json({ message: error.message })
     }
   })
+
   router.route('/api/v1/study-details/:detailId')
-  .delete(ensureAuthenticated, async(req, res) =>{
-    const { detailId } = req.params;
-    try {
-      const deleted = await mongoData.collection(collections.studyDetails).deleteOne({
-        _id: ObjectID(detailId)
-      })
+    .delete(ensureAuthenticated, async(req, res) =>{
+      const { detailId } = req.params;
+      try {
+        const deleted = await mongoData
+          .collection(collections.studyDetails)
+          .deleteOne({ _id: ObjectID(detailId) })
+
       if (deleted.deletedCount > 0) {
-        return res.status(200).json({ deletedCount: deleted.deletedCount });
+
+        return res.status(200).json({ data: deleted.deletedCount });
       } else {
+
         return res.status(404).json({ message: 'Study Details Not Found' });
       }
     } catch (error) {
+
       return res.status(500).json({ message: error.message })
     }
   })
+
 router.route('/api/v1/study-details/upload')
   .post(ensureAuthenticated, async (req, res) => {
     const { study, owner, targetEnrollment } = req.body
     try {
-      const inserted = await mongoData
+      const data = await mongoData
         .collection(collections.studyDetails)
         .findOneAndUpdate({ study },
           { 
@@ -1356,8 +1369,10 @@ router.route('/api/v1/study-details/upload')
             upsert: true
           }
         )
-      return res.status(200).json({ inserted })
+
+      return res.status(200).json({ data })
     } catch (error) {
+
       return res.status(500).json({ message: error.message})
     }
   })
