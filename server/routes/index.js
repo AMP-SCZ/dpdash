@@ -1376,4 +1376,5 @@ router.route('/api/v1/study-details/upload')
       return res.status(500).json({ message: error.message})
     }
   })
+  
 export default router;
