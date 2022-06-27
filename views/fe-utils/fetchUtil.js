@@ -1,5 +1,5 @@
 import basePathConfig from '../../server/configs/basePathConfig';
-
+import { routes } from '../routes/routes'
 const basePath = basePathConfig || '';
 
 const fetchStudiesAdmin = async () => {
@@ -84,4 +84,35 @@ const fetchUsernames = async () => {
   return res.json()
 }
 
-export { fetchStudies, fetchStudiesAdmin, fetchSubjects, fetchUsers, fetchUsernames };
+const fetchStudyDetails = async () => {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details/all`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+  return res.json()
+}
+
+const deleteDetails = async (id) => {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+  console.log(res, res.status)
+  if(res.status !== 200) return new Error(res.message)
+  return res.json()
+}
+export { 
+  fetchStudies,
+  fetchStudiesAdmin, 
+  fetchSubjects, 
+  fetchUsers, 
+  fetchUsernames, 
+  fetchStudyDetails, 
+  deleteDetails 
+};

@@ -40,6 +40,7 @@ import config from '../configs/config';
 import defaultStudyConfig from '../configs/defaultStudyConfig';
 import defaultUserConfig from '../configs/defaultUserConfig';
 import basePathConfig from '../configs/basePathConfig';
+import { collections } from '../utils/mongoCollections'
 
 const router = Router();
 
@@ -1308,6 +1309,55 @@ router.route('/study-details')
     } catch (error) {
       console.error(error.message)
       return res.status(500).send({ message: err.message})
+    }
+  })
+router.route('/api/v1/study-details/all')
+  .get(ensureAuthenticated, async(req, res) => {
+    try {
+      const studyDetails = await mongoData.collection(collections.studyDetails)
+      .find({ owner: req.user }).toArray()
+      console.log(studyDetails)
+      return res.status(200).json({ studyDetails })
+    } catch (error) {
+      return res.status(500).json({ message: error.message })
+    }
+  })
+  router.route('/api/v1/study-details/:detailId')
+  .delete(ensureAuthenticated, async(req, res) =>{
+    const { detailId } = req.params;
+    try {
+      const deleted = await mongoData.collection(collections.studyDetails).deleteOne({
+        _id: ObjectID(detailId)
+      })
+      console.log(deleted)
+      if (deleted.deletedCount > 0) {
+        return res.status(200).json({ deletedCount: deleted.deletedCount });
+      } else {
+        return res.status(404).json({ message: 'Study Details Not Found' });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: error.message })
+    }
+  })
+router.route('/api/v1/study-details/upload')
+  .post(ensureAuthenticated, async (req, res) => {
+    const { study } = req.body
+    checkMongo();
+    try {
+      mongoData.collection(collections.studyDetails).findOneAndUpdate({
+        study
+      }, { 
+        $set: {
+          ...req.body,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      {
+        upsert: true
+      })
+      return res.status(200)
+    } catch (error) {
+      return res.status(500).json({ message: error.message})
     }
   })
 export default router;
