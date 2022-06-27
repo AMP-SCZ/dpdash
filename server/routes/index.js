@@ -41,6 +41,7 @@ import config from '../configs/config';
 import defaultStudyConfig from '../configs/defaultStudyConfig';
 import defaultUserConfig from '../configs/defaultUserConfig';
 import basePathConfig from '../configs/basePathConfig';
+import { collections } from '../utils/mongoCollections'
 
 const router = Router();
 
