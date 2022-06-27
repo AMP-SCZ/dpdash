@@ -952,7 +952,6 @@ router.route('/api/v1/users/:uid/config/file')
 
 router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
-
     try { 
       const { display_name, role, icon } = req.session;
       
@@ -970,7 +969,6 @@ router.route('/reports')
 
 router.route('/reports/:id/view')
 .get(ensureAuthenticated, async (req, res) => {
-  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -991,7 +989,6 @@ router.route('/reports/:id/view')
 
 router.route('/reports/:id/edit')
 .get(ensureAuthenticated, async (req, res) => {
-  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -1013,7 +1010,6 @@ router.route('/reports/:id/edit')
 
 router.route('/reports/new')
 .get(ensureAuthenticated, async (req, res) => {
-  
   try { 
     const { display_name, role, icon } = req.session;
     const user = {
@@ -1034,7 +1030,6 @@ router.route('/reports/new')
 
 router.route('/api/v1/studies/:study/enrollment')
   .get(ensureAuthenticated, async (req, res) => {
-    
     try { 
       const dataDb = req.app.locals.dataDb
       const metadoc = await dataDb.collection('metadata').findOne({
@@ -1066,7 +1061,6 @@ router.route('/api/v1/studies/:study/enrollment')
     }
   })
   .post(ensureAuthenticated, async (req, res) => {
-    
     try {
       const dataDb = req.app.locals.dataDb
       const { assessment, varName } = req.body;
@@ -1139,7 +1133,6 @@ router.route('/api/v1/studies/:study/enrollment')
 
 router.route('/api/v1/reports')
   .get(ensureAuthenticated, async (req, res) => {
-
     try {
       const appDb = req.app.locals.appDb
       const { user } = req;
@@ -1159,7 +1152,6 @@ router.route('/api/v1/reports')
     }
   })
   .post(ensureAuthenticated, async (req, res) => {
-    
     try {
       const appDb = req.app.locals.appDb
       const { body, user } = req;
@@ -1180,7 +1172,6 @@ router.route('/api/v1/reports')
 
 router.route('/api/v1/reports/:id')
   .get(ensureAuthenticated, async (req, res) => {
-    
     try {
       const appDb = req.app.locals.appDb
       const { user } = req;
@@ -1203,7 +1194,6 @@ router.route('/api/v1/reports/:id')
     }
   })
   .patch(ensureAuthenticated, async (req, res) => {
-    
     try {
       const appDb = req.app.locals.appDb
       const { body, user, params } = req;
@@ -1224,7 +1214,6 @@ router.route('/api/v1/reports/:id')
     }
   })
   .delete(ensureAuthenticated, async (req, res) => {
-    
     try {
       const appDb = req.app.locals.appDb
       const { user } = req;
