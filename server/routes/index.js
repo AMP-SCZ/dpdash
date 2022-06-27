@@ -1316,7 +1316,6 @@ router.route('/api/v1/study-details/all')
     try {
       const studyDetails = await mongoData.collection(collections.studyDetails)
       .find({ owner: req.user }).toArray()
-      console.log(studyDetails)
       return res.status(200).json({ studyDetails })
     } catch (error) {
       return res.status(500).json({ message: error.message })
@@ -1329,7 +1328,6 @@ router.route('/api/v1/study-details/all')
       const deleted = await mongoData.collection(collections.studyDetails).deleteOne({
         _id: ObjectID(detailId)
       })
-      console.log(deleted)
       if (deleted.deletedCount > 0) {
         return res.status(200).json({ deletedCount: deleted.deletedCount });
       } else {
@@ -1341,21 +1339,24 @@ router.route('/api/v1/study-details/all')
   })
 router.route('/api/v1/study-details/upload')
   .post(ensureAuthenticated, async (req, res) => {
-    const { study } = req.body
-    checkMongo();
+    const { study, owner, targetEnrollment } = req.body
     try {
-      mongoData.collection(collections.studyDetails).findOneAndUpdate({
-        study
-      }, { 
-        $set: {
-          ...req.body,
-          updatedAt: new Date().toISOString()
-        }
-      },
-      {
-        upsert: true
-      })
-      return res.status(200)
+      const inserted = await mongoData
+        .collection(collections.studyDetails)
+        .findOneAndUpdate({ study },
+          { 
+            $set: {
+              study,
+              owner,
+              targetEnrollment,
+              updatedAt: new Date().toISOString()
+            }
+          },
+          {
+            upsert: true
+          }
+        )
+      return res.status(200).json({ inserted })
     } catch (error) {
       return res.status(500).json({ message: error.message})
     }

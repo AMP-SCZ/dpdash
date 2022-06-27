@@ -40,10 +40,10 @@ const StudyDetails = (props) => {
   useEffect(() => {
     fetchSubjects().then(acl => {
       setSideBarState(getCounts({acl}))
-      setLoading(false)
     })
     fetchStudyDetails().then(({ studyDetails }) => {
       setStudyDetailsList(studyDetails)
+      setLoading(false)
     })
   }, [])
   const handleChangeFile = async (e) => {
@@ -58,15 +58,11 @@ const StudyDetails = (props) => {
         credentials: 'same-origin',
         body: JSON.stringify({...upload, owner: user.uid })
       })
-      console.log(result )
       if (result.status === 200) {
-        console.log("THIS ONE")
         await fetchStudyDetails().then(({ studyDetails }) => {
-          console.log('this is the ting')
-          setStudyDetailsList(studyDetails)
+          return setStudyDetailsList(studyDetails)
         })
       }
-      return result 
     } catch (error) {
       console.error(error);
       return error
@@ -75,15 +71,13 @@ const StudyDetails = (props) => {
   const removeDetails = async (id) => {
     try {
       const deleted = await deleteDetails(id)
-      console.log(deleted )
       if (deleted.deletedCount > 0) {
         await fetchStudyDetails().then(({ studyDetails }) => {
-          console.log('this is the ting')
           setStudyDetailsList(studyDetails)
         })
       }
     } catch (error) {
-      console.log(error, "*****")
+      console.error(error, "*****")
     }
   }
   return (
@@ -126,8 +120,7 @@ const StudyDetails = (props) => {
                 </TableRow>
              </TableHead>
              <TableBody>
-               {studyDetailsList.length &&
-                 studyDetailsList.map(({study, targetEnrollment, _id}) => (
+               { studyDetailsList.map(({study, targetEnrollment, _id}) => (
                   <TableRow key={_id}>
                     <TableCell align="center">
                       {study}
@@ -151,29 +144,31 @@ const StudyDetails = (props) => {
           </Table>
           </div>
           <div className={classes.uploadButtonContainer}>
-            <input
-                accept='.json'
-                name='file'
-                id="raised-button-file"
-                multiple
-                type="file"
-                style={{ display: 'none' }}
-                onChange={handleChangeFile}
-              />
-              <label htmlFor="raised-button-file">
-              <Button
-                  component="span"
-                  variant="fab"
-                  focusRipple
-                style={{
-                  marginBottom: '8px'
-                }}
-              >
-            <Tooltip title="Upload Details">
-                <Add />
-            </Tooltip>
-              </Button>
-            </label>
+            <form>
+              <input
+                  accept='.json'
+                  name='file'
+                  id="raised-button-file"
+                  multiple
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={handleChangeFile}
+                />
+                <label htmlFor="raised-button-file">
+                <Button
+                    component="span"
+                    variant="fab"
+                    focusRipple
+                  style={{
+                    marginBottom: '8px'
+                  }}
+                >
+              <Tooltip title="Upload Details">
+                  <Add />
+              </Tooltip>
+                </Button>
+              </label>
+            </form>
           </div>
         </>
       )}     
