@@ -225,7 +225,6 @@ router.get('/logout', function (req, res) {
 
 //deepdive page
 router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermission, function (req, res) {
-
   const dataDb = req.app.locals.dataDb
   dataDb.collection('toc').find(
     {
@@ -371,7 +370,6 @@ function publisher(conn, ch, correlationId, args, replyTo) {
 }
 
 router.get('/dashboard/:study', ensurePermission, function (req, res) {
-
   const dataDb = req.app.locals.dataDb
   const appDb = req.app.locals.appDb
 
@@ -436,7 +434,6 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
-
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -457,7 +454,6 @@ router.route('/api/v1/studies')
   });
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
-
   const dataDb = req.app.locals.dataDb
 
   dataDb.collection('toc').distinct('study'
@@ -474,7 +470,6 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
-
   const dataDb = req.app.locals.dataDb
 
   dataDb.collection('metadata').aggregate([
@@ -494,7 +489,6 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
-
   const appDb = req.app.locals.appDb
 
   appDb.collection('users').find(
@@ -510,7 +504,6 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
     });
 });
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  
   const appDb = req.app.locals.appDb
 
   appDb.collection('users').find(
@@ -528,7 +521,6 @@ router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
 
 router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -558,7 +550,6 @@ router.route('/api/v1/users/:uid')
       });
   })
   .post(ensureUser, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOneAndUpdate(
@@ -593,7 +584,6 @@ router.route('/api/v1/users/:uid')
 
 router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('configs').find(
@@ -610,7 +600,6 @@ router.route('/api/v1/users/:uid/configs')
     });
   })
   .post(ensureUser, function (req, res) {
-
     const appDb = req.app.locals.appDb
     
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
@@ -628,7 +617,6 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'remove')) {
-      
       appDb.collection('configs').deleteOne(
         { _id: new ObjectID(req.body.remove) },
         function (err) {
@@ -640,7 +628,6 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'share')) {
-      
       appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.share) },
         { $set: { readers: req.body.shared } },
@@ -654,7 +641,6 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'edit')) {
-      
       appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.edit._id) },
         {
@@ -675,7 +661,6 @@ router.route('/api/v1/users/:uid/configs')
           }
         });
     } else if (Object.prototype.hasOwnProperty.call(req.body, 'add')) {
-      
       appDb.collection('configs').insertOne(req.body.add
         , function (err, doc) {
           if (err) {
@@ -699,11 +684,9 @@ router.route('/api/v1/users/:uid/configs')
 
 router.route('/api/v1/users/:uid/resetpw')
   .post(ensureAdmin, function (req, res) {
-
     const appDb = req.app.locals.appDb
 
     if (Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') && Object.prototype.hasOwnProperty.call(req.body, 'reset_key')) {
-      
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { force_reset_pw: req.body.force_reset_pw, reset_key: req.body.reset_key } },
@@ -723,7 +706,6 @@ router.route('/api/v1/users/:uid/resetpw')
 
 router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').deleteOne(
@@ -740,7 +722,6 @@ router.route('/api/v1/users/:uid/delete')
 
 router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -759,7 +740,6 @@ router.route('/api/v1/users/:uid/role')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
-      
       const appDb = req.app.locals.appDb
 
       appDb.collection('users').findOneAndUpdate(
@@ -781,7 +761,6 @@ router.route('/api/v1/users/:uid/role')
 
 router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -800,7 +779,6 @@ router.route('/api/v1/users/:uid/blocked')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
-      
       const appDb = req.app.locals.appDb
 
       appDb.collection('users').findOneAndUpdate(
@@ -822,7 +800,6 @@ router.route('/api/v1/users/:uid/blocked')
 
 router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -839,7 +816,6 @@ router.route('/api/v1/users/:uid/studies')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
-      
       const appDb = req.app.locals.appDb
 
       appDb.collection('users').findOneAndUpdate(
@@ -861,7 +837,6 @@ router.route('/api/v1/users/:uid/studies')
 
 router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('configs').findOne(
@@ -881,7 +856,6 @@ router.route('/api/v1/users/:uid/configs/:config_id')
 
 router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     appDb.collection('users').findOne(
@@ -900,8 +874,8 @@ router.route('/api/v1/users/:uid/preferences')
   })
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
-      
       const appDb = req.app.locals.appDb
+
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { preferences: req.body.preferences } },
@@ -924,7 +898,6 @@ router.route('/api/v1/users/:uid/preferences')
 
 router.route('/api/v1/users/:uid/config/file')
   .post(ensureUser, async function (req, res) {
-    
     const appDb = req.app.locals.appDb
 
     if (req.body && req.body.config) {
@@ -979,7 +952,7 @@ router.route('/api/v1/users/:uid/config/file')
 
 router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
-    
+
     try { 
       const { display_name, role, icon } = req.session;
       
@@ -1279,7 +1252,7 @@ router.route('/study-details')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { display_name, role, icon } = req.session;
-      console.log(req.user)
+
       return res.status(200).send(studyDetailsPage({
         uid: req.user,
         name: display_name,
@@ -1297,9 +1270,12 @@ router.route('/api/v1/study-details')
   .get(ensureAuthenticated, async(req, res) => {
     try {
       const dataDb = req.app.locals.dataDb
-      const studyDetails = await dataDb.collection(collections.studyDetails)
-      .find({ owner: req.user }).toArray()
-      return res.status(200).json({ studyDetails })
+      const data = await dataDb
+        .collection(collections.studyDetails)
+        .find({ owner: req.user })
+        .toArray()
+
+      return res.status(200).json({ data })
     } catch (error) {
 
       return res.status(500).json({ message: error.message })
