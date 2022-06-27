@@ -1309,7 +1309,6 @@ router.route('/study-details')
       }))
     } catch (error) {
       console.error(error.message)
-
       return res.status(500).send({ message: err.message })
     }
   })
@@ -1324,7 +1323,6 @@ router.route('/api/v1/study-details')
 
       return res.status(200).json({ data })
     } catch (error) {
-
       return res.status(500).json({ message: error.message })
     }
   })
@@ -1349,7 +1347,6 @@ router.route('/api/v1/study-details')
 
       return res.status(200).json({ data })
     } catch (error) {
-
       return res.status(500).json({ message: error.message})
     }
   })
