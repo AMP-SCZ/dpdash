@@ -1,3 +1,5 @@
+import { dark_grey } from "../constants/styles";
+
 const getDefaultStyles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -18,7 +20,7 @@ const getDefaultStyles = (theme) => ({
     padding: '12px',
     marginTop: '64px',
     overflow: 'scroll',
-  },
+  }
 });
 
 export default getDefaultStyles;

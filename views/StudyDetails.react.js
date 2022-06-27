@@ -21,21 +21,14 @@ import getDefaultStyles from './fe-utils/styleUtil';
 import { studyDetailStyles } from './styles/study_details';
 import { routes } from './routes/routes'
 
-
 const StudyDetails = (props) => {
+  const { user, classes } = props
+
   const [openDrawer, setOpenDrawer] = useState(false)
   const [isLoading, setLoading] = useState(true)
   const [sideBarState, setSideBarState] = useState({totalDays: 0, totalStudies: 0, totalSubjects: 0})
   const [snackBarState, setSnackBarState] = useState({ errorOpen: false, message: '', autoHideDuration: 4000, })
-  const [ studyDetailsList, setStudyDetailsList ] = useState([]);
-  const toggleDrawer = () => setOpenDrawer(!openDrawer)
-  const handleCloseError = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackBarState(state => ({errorOpen: false, ...state }))
-  }
-  const { user, classes } = props
+  const [studyDetailsList, setStudyDetailsList] = useState([]);
 
   useEffect(() => {
     fetchSubjects().then(acl => {
@@ -46,6 +39,12 @@ const StudyDetails = (props) => {
       setLoading(false)
     })
   }, [])
+
+  const toggleDrawer = () => setOpenDrawer(!openDrawer)
+  const handleCloseError = (event, reason) => {
+    if (reason === 'clickaway')return;
+    setSnackBarState(state => ({errorOpen: false, ...state }))
+  }
   const handleChangeFile = async (e) => {
     const file = e.target.files ? e.target.files[0] : '';
     try {
@@ -110,7 +109,6 @@ const StudyDetails = (props) => {
       {!isLoading && (
         <>
           <div className={`${classes.content} ${classes.contentPadded}`}>
-          
           <Table>
             <TableHead>
               <TableRow>
@@ -120,7 +118,7 @@ const StudyDetails = (props) => {
                 </TableRow>
              </TableHead>
              <TableBody>
-               { studyDetailsList.map(({study, targetEnrollment, _id}) => (
+                {studyDetailsList.map(({study, targetEnrollment, _id}) => (
                   <TableRow key={_id}>
                     <TableCell align="center">
                       {study}
@@ -138,8 +136,7 @@ const StudyDetails = (props) => {
                       </Button>
                     </TableCell>
                   </TableRow>
-                 ))
-               }
+                ))}
              </TableBody>
           </Table>
           </div>
@@ -154,18 +151,18 @@ const StudyDetails = (props) => {
                   style={{ display: 'none' }}
                   onChange={handleChangeFile}
                 />
-                <label htmlFor="raised-button-file">
+              <label htmlFor="raised-button-file">
                 <Button
-                    component="span"
-                    variant="fab"
-                    focusRipple
+                  component="span"
+                  variant="fab"
+                  focusRipple
                   style={{
                     marginBottom: '8px'
                   }}
                 >
-              <Tooltip title="Upload Details">
-                  <Add />
-              </Tooltip>
+                  <Tooltip title="Upload Details">
+                    <Add />
+                  </Tooltip>
                 </Button>
               </label>
             </form>
