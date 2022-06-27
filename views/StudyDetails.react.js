@@ -76,7 +76,7 @@ const StudyDetails = (props) => {
   const removeDetails = async (id) => {
     try {
       const deleted = await deleteDetails(id)
-      if (deleted.deletedCount > 0) {
+      if (deleted.data > 0) {
         await fetchStudyDetails().then(({ data }) => {
           setStudyDetailsList(data)
         })
