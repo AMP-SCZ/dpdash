@@ -127,6 +127,7 @@ const getDashboardState = async ({ db, study, subject, defaultConfig }) => {
 };
 
 const filterSubjectsByConsentDate = async ({ db, collection, start, end }) => {
+  console.log(db, collection, "&&&&&&&&&")
   const allSubjects = await db.collection(collection).find({}).toArray();
   const startDate = start ? new Date(start) : 0;
   const endDate = end ? new Date(end) : Infinity;
