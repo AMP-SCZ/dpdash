@@ -39,7 +39,6 @@ import config from '../configs/config';
 import defaultStudyConfig from '../configs/defaultStudyConfig';
 import defaultUserConfig from '../configs/defaultUserConfig';
 import basePathConfig from '../configs/basePathConfig';
-import { collections } from '../utils/mongoCollections'
 
 const router = Router();
 
@@ -1218,6 +1217,7 @@ router.route('/study-details')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { display_name, role, icon } = req.session;
+
       return res.status(200).send(studyDetailsPage({
         uid: req.user,
         name: display_name,
@@ -1226,6 +1226,7 @@ router.route('/study-details')
       }))
     } catch (error) {
       console.error(error.message)
+
       return res.status(500).send({ message: err.message })
     }
   })
