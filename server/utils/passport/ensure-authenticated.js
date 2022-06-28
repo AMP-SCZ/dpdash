@@ -12,7 +12,12 @@ export default function ensureAuthenticated(req, res, next) {
     .collection('users')
     .findOne(
       { uid: req.user },
-      { _id: 0, access: 1, blocked: 1, role: 1 },
+      { 
+        _id: 0, 
+        access: 1, 
+        blocked: 1, 
+        role: 1 
+      },
       function (err, data) {
         if (err) {
           console.log(err);
