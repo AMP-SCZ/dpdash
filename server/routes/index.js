@@ -1300,7 +1300,8 @@ router.route('/api/v1/study-details')
     .delete(ensureAuthenticated, async(req, res) =>{
       const { detailId } = req.params;
       try {
-        const deleted = await mongoData
+        const dataDb = req.app.locals.dataDb
+        const deleted = await dataDb
           .collection(collections.studyDetails)
           .deleteOne({ _id: ObjectID(detailId) })
 

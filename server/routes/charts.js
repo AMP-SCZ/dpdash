@@ -8,7 +8,6 @@ const router = Router();
 router.route('/charts')
   .get(ensureAuthenticated, async (_, res) => {
     try {
-
       return res.status(200).send(chartsListPage())
     } catch (err) {
       console.error(err.message)
@@ -20,7 +19,6 @@ router.route('/charts')
 router.route('/charts/new')
   .get(ensureAuthenticated, async (_, res) => {
     try {
-      
       return res.status(200).send(newChartPage())
     } catch (error) {
       console.error(err.message)
