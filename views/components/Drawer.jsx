@@ -234,7 +234,6 @@ class DrawerComponent extends Component {
             <ListItemText primary="Charts" />
             
           </ListItem>
-
           <ListItem
             button={true}
             component='a'
@@ -268,7 +267,7 @@ class DrawerComponent extends Component {
               <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
-            
+
           </ListItem>
         </List>
       </div>
