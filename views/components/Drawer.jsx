@@ -234,6 +234,7 @@ class DrawerComponent extends Component {
             <ListItemText primary="Charts" />
             
           </ListItem>
+
           <ListItem
             button={true}
             component='a'
@@ -244,6 +245,7 @@ class DrawerComponent extends Component {
             </ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItem>
+
           {this.props.user.role == 'admin' ?
             <ListItem
               button={true}
@@ -254,6 +256,7 @@ class DrawerComponent extends Component {
                 <Settings style={{ color: dark_sky_blue }} />
               </ListItemIcon>
               <ListItemText primary="Admin" />
+
             </ListItem> :
             null}
           <ListItem
@@ -265,6 +268,7 @@ class DrawerComponent extends Component {
               <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
+            
           </ListItem>
         </List>
       </div>
