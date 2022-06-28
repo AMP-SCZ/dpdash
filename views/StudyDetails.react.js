@@ -52,7 +52,7 @@ const StudyDetails = (props) => {
       const upload = await new Response(file).json()
       const body = { ...upload, owner: user.uid }
       const { data } = await createStudyDetails(body)
-      
+
       if (data.ok > 0) {
         await fetchStudyDetails().then(({ data }) => {
 
@@ -140,8 +140,8 @@ const StudyDetails = (props) => {
           </Table>
           </div>
           < UploadFile 
-            classes={ classes } 
-            handleChangeFile={ handleChangeFile }
+            classes={classes}
+            handleChangeFile={handleChangeFile }
           />
         </>
       )}

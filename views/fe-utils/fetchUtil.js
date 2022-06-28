@@ -85,7 +85,7 @@ const fetchUsernames = async () => {
 }
 
 const fetchStudyDetails = async () => {
-  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details`, {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ const fetchStudyDetails = async () => {
 }
 
 const createStudyDetails = async (body) => {
-  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details`, {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ const createStudyDetails = async (body) => {
 }
 
 const deleteStudyDetails = async (id) => {
-  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details/${ id }`, {
+  const res = await window.fetch(`${routes.basePath}/api/v1/study-details/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'

@@ -3,7 +3,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Add from '@material-ui/icons/Add';
 
 const UploadFile = ({ classes, handleChangeFile }) => {
-  
+
   return (
     <div className={ classes.uploadButtonContainer }>
       <input
@@ -13,7 +13,7 @@ const UploadFile = ({ classes, handleChangeFile }) => {
         multiple
         type="file"
         style={{ display: 'none' }}
-        onChange={ handleChangeFile }
+        onChange={handleChangeFile}
       />
       <label htmlFor="raised-button-file">
         <Button
