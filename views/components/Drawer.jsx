@@ -16,7 +16,6 @@ import ColorLens from '@material-ui/icons/ColorLens';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Settings from '@material-ui/icons/Settings';
 import { ShowChart } from '@material-ui/icons';
-import { Assignment } from '@material-ui/icons'
 
 import { dark_sky_blue } from '../constants/styles';
 import { routes } from '../routes/routes'
@@ -110,72 +109,70 @@ class DrawerComponent extends Component {
                 textAlign: 'center'
               }}
             >
-              <tbody>
-                <tr>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {this.props.totalStudies}
-                    </Typography>
-                  </td>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {this.props.totalSubjects}
-                    </Typography>
-                  </td>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {this.props.totalDays}
-                    </Typography>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        color: 'rgba(0, 0, 0, 0.75)'
-                      }}
-                    >
-                      {'studies'}
-                    </Typography>
-                  </td>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        color: 'rgba(0, 0, 0, 0.75)'
-                      }}
-                    >
-                      {'subjects'}
-                    </Typography>
-                  </td>
-                  <td style={{ width: '30%' }}>
-                    <Typography
-                      noWrap={true}
-                      style={{
-                        color: 'rgba(0, 0, 0, 0.75)'
-                      }}
-                    >
-                      {'days'}
-                    </Typography>
-                  </td>
-                </tr>
-              </tbody>
+              <tr>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    {this.props.totalStudies}
+                  </Typography>
+                </td>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    {this.props.totalSubjects}
+                  </Typography>
+                </td>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    {this.props.totalDays}
+                  </Typography>
+                </td>
+              </tr>
+              <tr>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      color: 'rgba(0, 0, 0, 0.75)'
+                    }}
+                  >
+                    {'studies'}
+                  </Typography>
+                </td>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      color: 'rgba(0, 0, 0, 0.75)'
+                    }}
+                  >
+                    {'subjects'}
+                  </Typography>
+                </td>
+                <td style={{ width: '30%' }}>
+                  <Typography
+                    noWrap={true}
+                    style={{
+                      color: 'rgba(0, 0, 0, 0.75)'
+                    }}
+                  >
+                    {'days'}
+                  </Typography>
+                </td>
+              </tr>
             </table>
           </div>
         </div>
@@ -214,17 +211,7 @@ class DrawerComponent extends Component {
               <ColorLens style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Configure" />
-          </ListItem>
-          <ListItem
-            button={true}
-            component='a'
-            href={routes.studyDetails}
-          >
-            <ListItemIcon>
-              <Assignment style={{ color: dark_sky_blue }} />
-            </ListItemIcon>
-            <ListItemText primary="Study Details" />
-            
+
           </ListItem>
           <ListItem
             button={true}
@@ -270,6 +257,7 @@ class DrawerComponent extends Component {
               <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
+
           </ListItem>
         </List>
       </div>
