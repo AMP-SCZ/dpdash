@@ -1300,7 +1300,6 @@ router.route('/study-details')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { display_name, role, icon } = req.session;
-      console.log(req.user)
       return res.status(200).send(studyDetailsPage({
         uid: req.user,
         name: display_name,
@@ -1337,20 +1336,20 @@ router.route('/api/v1/study-details')
           .collection(collections.studyDetails)
           .deleteOne({ _id: ObjectID(detailId) })
 
-      if (deleted.deletedCount > 0) {
+        if (deleted.deletedCount > 0) {
 
-        return res.status(200).json({ data: deleted.deletedCount });
-      } else {
+          return res.status(200).json({ data: deleted.deletedCount });
+        } else {
 
-        return res.status(404).json({ message: 'Study Details Not Found' });
+          return res.status(404).json({ message: 'Study Details Not Found' });
+        }
+      } catch (error) {
+
+        return res.status(500).json({ message: error.message })
       }
-    } catch (error) {
-
-      return res.status(500).json({ message: error.message })
-    }
   })
 
-router.route('/api/v1/study-details/upload')
+router.route('/api/v1/study-details')
   .post(ensureAuthenticated, async (req, res) => {
     const { study, owner, targetEnrollment } = req.body
     try {

@@ -85,7 +85,7 @@ const fetchUsernames = async () => {
 }
 
 const fetchStudyDetails = async () => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
+  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -96,14 +96,30 @@ const fetchStudyDetails = async () => {
   return res.json()
 }
 
-const deleteDetails = async (id) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/study-details/${id}`, {
+const createStudyDetails = async (body) => {
+  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(body)
+  })
+
+  if (res.status !== 200) return new Error(res.message)
+
+  return res.json()
+}
+
+const deleteStudyDetails = async (id) => {
+  const res = await window.fetch(`${ routes.basePath }/api/v1/study-details/${ id }`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
     credentials: 'same-origin'
   })
+
   if (res.status !== 200) return new Error(res.message)
 
   return res.json()
@@ -116,5 +132,6 @@ export {
   fetchUsers, 
   fetchUsernames, 
   fetchStudyDetails, 
-  deleteDetails 
+  deleteStudyDetails,
+  createStudyDetails
 };

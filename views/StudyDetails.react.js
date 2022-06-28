@@ -8,18 +8,21 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import Add from '@material-ui/icons/Add';
 import Delete from '@material-ui/icons/Delete';
+
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import UploadFile from './components/StudyDetails/UploadFile'
 import getCounts from './fe-utils/countUtil';
-import { fetchSubjects, fetchStudyDetails, deleteDetails } from './fe-utils/fetchUtil';
+import { 
+  fetchSubjects, 
+  fetchStudyDetails, 
+  deleteStudyDetails,
+  createStudyDetails
+} from './fe-utils/fetchUtil';
 import getDefaultStyles from './fe-utils/styleUtil';
 import { studyDetailStyles } from './styles/study_details';
-import { routes } from './routes/routes'
 import getAvatar from './fe-utils/avatarUtil';
 
 const StudyDetails = (props) => {
@@ -28,7 +31,6 @@ const StudyDetails = (props) => {
   const [openDrawer, setOpenDrawer] = useState(false)
   const [isLoading, setLoading] = useState(true)
   const [sideBarState, setSideBarState] = useState({ totalDays: 0, totalStudies: 0, totalSubjects: 0 })
-  const [snackBarState, setSnackBarState] = useState({ errorOpen: false, message: '', autoHideDuration: 4000, })
   const [studyDetailsList, setStudyDetailsList] = useState([]);
   const [avatar, setAvatar] = useState('');
 
@@ -40,28 +42,18 @@ const StudyDetails = (props) => {
       setStudyDetailsList(data)
       setLoading(false)
     })
-    setAvatar(getAvatar({ user: user }))
-
+    setAvatar(getAvatar({ user }))
   }, [])
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
-  const handleCloseError = (event, reason) => {
-    if (reason === 'clickaway')return;
-    setSnackBarState(state => ({errorOpen: false, ...state }))
-  }
   const handleChangeFile = async (e) => {
     const file = e.target.files ? e.target.files[0] : '';
     try {
       const upload = await new Response(file).json()
-      const result = await window.fetch(`${routes.basePath}/api/v1/study-details/upload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({...upload, owner: user.uid })
-      })
-      if (result.status === 200) {
+      const body = { ...upload, owner: user.uid }
+      const { data } = await createStudyDetails(body)
+      
+      if (data.ok > 0) {
         await fetchStudyDetails().then(({ data }) => {
 
           return setStudyDetailsList(data)
@@ -75,7 +67,8 @@ const StudyDetails = (props) => {
   }
   const removeDetails = async (id) => {
     try {
-      const deleted = await deleteDetails(id)
+      const deleted = await deleteStudyDetails(id)
+
       if (deleted.data > 0) {
         await fetchStudyDetails().then(({ data }) => {
           setStudyDetailsList(data)
@@ -146,41 +139,12 @@ const StudyDetails = (props) => {
              </TableBody>
           </Table>
           </div>
-          <div className={classes.uploadButtonContainer}>
-            <form>
-              <input
-                  accept='.json'
-                  name='file'
-                  id="raised-button-file"
-                  multiple
-                  type="file"
-                  style={{ display: 'none' }}
-                  onChange={handleChangeFile}
-                />
-              <label htmlFor="raised-button-file">
-                <Button
-                  component="span"
-                  variant="fab"
-                  focusRipple
-                  style={{
-                    marginBottom: '8px'
-                  }}
-                >
-                  <Tooltip title="Upload Details">
-                    <Add />
-                  </Tooltip>
-                </Button>
-              </label>
-            </form>
-          </div>
+          < UploadFile 
+            classes={ classes } 
+            handleChangeFile={ handleChangeFile }
+          />
         </>
-      )}     
-      <Snackbar
-        open={snackBarState.errorOpen}
-        message={snackBarState.error}
-        autoHideDuration={4000}
-        onClose={handleCloseError}
-      />
+      )}
     </div>
   )
 }
@@ -194,4 +158,4 @@ const mapStateToProps = (state) => ({
   user: state.user
 })
 
-export default compose(withStyles(styles, { withTheme:true }), connect(mapStateToProps))(StudyDetails)
+export default compose(withStyles(styles, { withTheme: true }), connect(mapStateToProps))(StudyDetails)
