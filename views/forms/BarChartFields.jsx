@@ -11,7 +11,9 @@ const BarChartFields = ({
   updateFormValues,
   formValues,
   valueAndLabelFields,
-  addValueAndLabelField
+  addValueAndLabelField,
+  removeField,
+  updateFieldValues
 }) => {
   const [chartTitle, setTitle] = useState('')
   
@@ -22,7 +24,7 @@ const BarChartFields = ({
 
   return(
     <>
-      <Typography variant="subtitle1" align="center" gutterBottom>
+      <Typography variant="subtitle1"  gutterBottom>
         {chartTitle} 
       </Typography>
       <TextField
@@ -54,21 +56,23 @@ const BarChartFields = ({
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label="Value"
-              // onChange={(e) => handleValueLabelChange(e, idx, 'value')}
+              name='value'
+              onChange={(e) => updateFieldValues(e, idx)}
               className={`${classes.formLabelCol} ${classes.variableListInput}`}
             />
             <TextField
               label="Label"
+              name='label'
               className={`${classes.variableListInput}`}
-              // onChange={(e) => handleValueLabelChange(e, idx, 'label')}
+              onChange={(e) => updateFieldValues(e, idx)}
             />
-                                              <Button
-                        type="button"
-                        variant="text"
-                        // onClick={() => removeDetails(_id)}
-                      >
-                        <Delete className={classes.icon} />
-                      </Button>
+            <Button
+              type="button"
+              variant="text"
+              onClick={() => removeField(idx)}
+            >
+              <Delete className={classes.icon} />
+            </Button>
           </div>
         ))
       }

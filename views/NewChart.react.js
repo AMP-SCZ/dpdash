@@ -19,27 +19,32 @@ const NewChart = ({ user, classes }) => {
   const [sideBarState, setSideBarState] = useState({ totalDays: 0, totalStudies: 0, totalSubjects: 0 })
   const [avatar, setAvatar] = useState('');
 
+  const toggleDrawer = () => setOpenDrawer(!openDrawer)
+  const updateFormValues = (e,) => setFormValues({...formValues, [e.target.name]: e.target.value})
+  const addValueAndLabelField = () => setValueAndLabelFields(prevState => [{ value: '', label: '' }, ...prevState ])
+  const removeValueAndLabelField = (id) => setValueAndLabelFields(prevState => [...prevState.filter((_, index) => index !== id)])
+  const handleValueAndLabelFieldUpdate = (e, id) => setValueAndLabelFields(prevState => 
+    [...prevState
+      .map((field, idx) => 
+        id === idx
+        ? 
+          ({ ...field, [e.target.name]: e.target.value }) 
+        : 
+          ({...field})
+        )
+      ])
+  const handleSubmit = (e) => { 
+    e.preventDefault()
+    console.log("This button", formValues, valueAndLabelFields)
+  }
+
   useEffect(() => {
     fetchSubjects().then(acl => {
       setSideBarState(getCounts({ acl }))
     })
     setAvatar(getAvatar({ user: user }))
-
   }, [])
 
-  const toggleDrawer = () => setOpenDrawer(!openDrawer)
-  const updateFormValues = (e,) => {
-    console.log(e.target.value, e.target.name)
-    setFormValues({...formValues, [e.target.name]: e.target.value})
-  }
-  const handleSubmit = (e) => { 
-    e.preventDefault()
-    console.log("This button", formValues)
-  }
-  const addValueAndLabelField = (e) => {
-    e.preventDefault();
-    setValueAndLabelFields(prevState => [{ value: '', label: '' }, ...prevState ])
-  };
   return (
     <div className={ classes.root }>
       <Header
@@ -65,6 +70,8 @@ const NewChart = ({ user, classes }) => {
               formValues={ formValues }
               valueAndLabelFields={valueAndLabelFields}
               addValueAndLabelField={addValueAndLabelField}
+              removeField={removeValueAndLabelField}
+              updateFieldValues={handleValueAndLabelFieldUpdate}
             />
             <>
               <Button
