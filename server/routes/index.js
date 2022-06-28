@@ -1013,7 +1013,6 @@ router.route('/api/v1/studies/:study/enrollment')
         role: 'metadata'
       }, { _id: 0, subjects: 1, collection: 1 });
       const { subjects, collection } = metadoc;
-      console.log(collection, subjects)
       if (!metadoc) {
         return res.status(404).send({ message: 'Study not found' });
       }

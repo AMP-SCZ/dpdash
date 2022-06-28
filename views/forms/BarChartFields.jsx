@@ -19,7 +19,6 @@ const BarChartFields = ({
   
   useEffect(() => {
     setTitle(formValues[title])
-    console.log(valueAndLabelFields)
   }, [formValues, valueAndLabelFields])
 
   return(
