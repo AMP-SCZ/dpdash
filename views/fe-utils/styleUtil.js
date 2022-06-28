@@ -1,5 +1,3 @@
-import { dark_grey } from "../constants/styles";
-
 const getDefaultStyles = (theme) => ({
   root: {
     flexGrow: 1,
