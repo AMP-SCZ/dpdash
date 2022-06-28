@@ -77,14 +77,14 @@ const BarChartFields = ({
         ))
       }
       <div className={classes.addLabelContainer}>
-      <Button
-        variant='text'
-        type='button'
-        className={classes.textButton}
-        onClick={addValueAndLabelField}
-      >
-        + Add label and value group combination
-      </Button>
+        <Button
+          variant='text'
+          type='button'
+          className={classes.textButton}
+          onClick={addValueAndLabelField}
+        >
+          + Add label and value group combination
+        </Button>
       </div>
   </>
   )
