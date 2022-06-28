@@ -245,8 +245,8 @@ class DrawerComponent extends Component {
             </ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItem>
-          {this.props.user.role == 'admin' ?
 
+          {this.props.user.role == 'admin' ?
             <ListItem
               button={true}
               component='a'
@@ -256,9 +256,9 @@ class DrawerComponent extends Component {
                 <Settings style={{ color: dark_sky_blue }} />
               </ListItemIcon>
               <ListItemText primary="Admin" />
+
             </ListItem> :
             null}
-
           <ListItem
             button={true}
             component='a'
