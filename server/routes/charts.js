@@ -16,6 +16,7 @@ router.route('/charts')
       return res.status(500).send({ message: err.message })
     }
   });
+  
 router.route('/charts/new')
   .get(ensureAuthenticated, async (_, res) => {
     try {
