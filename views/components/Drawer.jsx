@@ -201,7 +201,7 @@ class DrawerComponent extends Component {
               <Person style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Account" />
-            
+
           </ListItem>
           <ListItem
             button={true}
