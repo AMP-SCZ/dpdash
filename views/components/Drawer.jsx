@@ -16,6 +16,7 @@ import ColorLens from '@material-ui/icons/ColorLens';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Settings from '@material-ui/icons/Settings';
 import { ShowChart } from '@material-ui/icons';
+import { Assignment } from '@material-ui/icons'
 
 import { dark_sky_blue } from '../constants/styles';
 import { routes } from '../routes/routes'
@@ -211,7 +212,17 @@ class DrawerComponent extends Component {
               <ColorLens style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Configure" />
-
+          </ListItem>
+          <ListItem
+            button={true}
+            component='a'
+            href={routes.studyDetails}
+          >
+            <ListItemIcon>
+              <Assignment style={{ color: dark_sky_blue }} />
+            </ListItemIcon>
+            <ListItemText primary="Study Details" />
+            
           </ListItem>
           <ListItem
             button={true}
@@ -234,7 +245,6 @@ class DrawerComponent extends Component {
             </ListItemIcon>
             <ListItemText primary="Reports" />
           </ListItem>
-
           {this.props.user.role == 'admin' ?
             <ListItem
               button={true}
@@ -245,7 +255,6 @@ class DrawerComponent extends Component {
                 <Settings style={{ color: dark_sky_blue }} />
               </ListItemIcon>
               <ListItemText primary="Admin" />
-
             </ListItem> :
             null}
           <ListItem
@@ -257,7 +266,6 @@ class DrawerComponent extends Component {
               <ExitToApp style={{ color: dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary="Logout" />
-
           </ListItem>
         </List>
       </div>
