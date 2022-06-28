@@ -24,27 +24,28 @@ const BarChartFields = ({
 
   return(
     <>
-      <Typography variant="subtitle1"  gutterBottom>
+      <Typography variant='subtitle1'  gutterBottom>
         {chartTitle} 
       </Typography>
       <TextField
         className={classes.textInput}
-        label="Title"
-        name="title"
+        label='Title'
+        name='title'
         onChange={updateFormValues}
         required
         fullWidth
       />
       <TextField
         className={classes.textInput}
-        label="Assessment"
-        name="assessment"
+        label='Assessment'
+        name='assessment'
         onChange={updateFormValues}
         required
         fullWidth
       />
       <TextField
-        label="Variable Name"
+        label='Variable Name'
+        name='variable'
         className={classes.textInput}
         onChange={updateFormValues}
         required
@@ -55,20 +56,20 @@ const BarChartFields = ({
         valueAndLabelFields.map((field, idx) => (
           <div key={idx} className={classes.formLabelRow}>
             <TextField
-              label="Value"
+              label='Value'
               name='value'
               onChange={(e) => updateFieldValues(e, idx)}
               className={`${classes.formLabelCol} ${classes.variableListInput}`}
             />
             <TextField
-              label="Label"
+              label='Label'
               name='label'
               className={`${classes.variableListInput}`}
               onChange={(e) => updateFieldValues(e, idx)}
             />
             <Button
-              type="button"
-              variant="text"
+              type='button'
+              variant='text'
               onClick={() => removeField(idx)}
             >
               <Delete className={classes.icon} />
@@ -78,12 +79,12 @@ const BarChartFields = ({
       }
       <div className={classes.addLabelContainer}>
       <Button
-        variant="text"
-        type="button"
+        variant='text'
+        type='button'
         className={classes.textButton}
         onClick={addValueAndLabelField}
       >
-        + Add label/grouping for variable value
+        + Add label and value group combination
       </Button>
       </div>
   </>

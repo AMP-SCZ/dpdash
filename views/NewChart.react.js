@@ -8,7 +8,7 @@ import Sidebar from './components/Sidebar';
 import BarChartFields from './forms/BarChartFields'
 import getCounts from './fe-utils/countUtil';
 import getAvatar from './fe-utils/avatarUtil';
-import { fetchSubjects } from './fe-utils/fetchUtil';
+import { fetchSubjects, createChart } from './fe-utils/fetchUtil';
 import getDefaultStyles from './fe-utils/styleUtil';
 import { chartStyles } from './styles/chart_styles';
 
@@ -33,9 +33,10 @@ const NewChart = ({ user, classes }) => {
           ({...field})
         )
       ])
-  const handleSubmit = (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("This button", formValues, valueAndLabelFields)
+    const values = { ...formValues, fields: valueAndLabelFields, owner: user.uid }
+    await createChart(values)
   }
 
   useEffect(() => {
