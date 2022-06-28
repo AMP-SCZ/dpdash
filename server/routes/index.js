@@ -56,7 +56,7 @@ function ensureAdmin(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  const appDb = req.app.locals.appDb
+  const { appDb } = req.app.locals
   appDb.collection('users').findOne(
     { uid: req.user, role: 'admin' },
     { _id: 0, uid: 1 }
@@ -87,7 +87,7 @@ function ensurePermission(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.redirect(`${basePath}/logout`);
   }
-  const appDb = req.app.locals.appDb
+  const { appDb } = req.app.locals
   appDb.collection('users').findOne(
     { uid: req.user },
     { _id: 0, access: 1, blocked: 1, role: 1 },
@@ -225,7 +225,7 @@ router.get('/logout', function (req, res) {
 
 //deepdive page
 router.get('/api/v1/studies/:study/subjects/:subject/deepdive/:day', ensurePermission, function (req, res) {
-  const dataDb = req.app.locals.dataDb
+  const { dataDb } = req.app.locals
   dataDb.collection('toc').find(
     {
       study: req.params.study,
@@ -262,8 +262,7 @@ router.get('/deepdive/:study/:subject/:day', ensurePermission, function (req, re
 //Dashboard page
 router.get('/dashboard/:study/:subject', ensurePermission, async function (req, res) {
   try {
-    const dataDb = req.app.locals.dataDb
-    const appDb = req.app.locals.appDb
+    const { appDb, dataDb } = req.app.locals
     const defaultConfig = await getConfigForUser({
       db: appDb,
       user: req.user,
@@ -306,7 +305,7 @@ router.route('/resetpw')
     if (req.body.password !== req.body.confirmpw) {
       return res.redirect(`${basePath}/resetpw?e=unmatched`);
     } else {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       var hashedPW = hash(req.body.password);
       
       appDb.collection('users').findOneAndUpdate(
@@ -370,8 +369,7 @@ function publisher(conn, ch, correlationId, args, replyTo) {
 }
 
 router.get('/dashboard/:study', ensurePermission, function (req, res) {
-  const dataDb = req.app.locals.dataDb
-  const appDb = req.app.locals.appDb
+  const { appDb, dataDb } = req.app.locals
 
   co(function* () {  
     // couple StudyConfig and UserConfig
@@ -434,7 +432,7 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.user },
@@ -454,7 +452,7 @@ router.route('/api/v1/studies')
   });
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
-  const dataDb = req.app.locals.dataDb
+  const { dataDb } = req.app.locals
 
   dataDb.collection('toc').distinct('study'
     , function (err, studies) {
@@ -470,7 +468,7 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
-  const dataDb = req.app.locals.dataDb
+  const { dataDb } = req.app.locals
 
   dataDb.collection('metadata').aggregate([
     { $match: { study: { $in: JSON.parse(req.query.q) } } },
@@ -489,7 +487,7 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
-  const appDb = req.app.locals.appDb
+  const { appDb } = req.app.locals
 
   appDb.collection('users').find(
     {}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 }).toArray(function (err, users) {
@@ -504,7 +502,7 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
     });
 });
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  const appDb = req.app.locals.appDb
+  const { appDb } = req.app.locals
 
   appDb.collection('users').find(
     {}, { uid: 1 }).toArray(function (err, users) {
@@ -521,7 +519,7 @@ router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
 
 router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.params.uid },
@@ -550,7 +548,7 @@ router.route('/api/v1/users/:uid')
       });
   })
   .post(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOneAndUpdate(
       { uid: req.params.uid },
@@ -584,7 +582,7 @@ router.route('/api/v1/users/:uid')
 
 router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('configs').find(
       { readers: req.params.uid }
@@ -600,7 +598,7 @@ router.route('/api/v1/users/:uid/configs')
     });
   })
   .post(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
     
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
       appDb.collection('configs').findOneAndUpdate(
@@ -683,7 +681,7 @@ router.route('/api/v1/users/:uid/configs')
 
 router.route('/api/v1/users/:uid/resetpw')
   .post(ensureAdmin, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     if (Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') && Object.prototype.hasOwnProperty.call(req.body, 'reset_key')) {
       appDb.collection('users').findOneAndUpdate(
@@ -705,7 +703,7 @@ router.route('/api/v1/users/:uid/resetpw')
 
 router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').deleteOne(
       { uid: req.params.uid },
@@ -721,7 +719,7 @@ router.route('/api/v1/users/:uid/delete')
 
 router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.params.uid },
@@ -739,7 +737,7 @@ router.route('/api/v1/users/:uid/role')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
 
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
@@ -760,7 +758,7 @@ router.route('/api/v1/users/:uid/role')
 
 router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.params.uid },
@@ -778,7 +776,7 @@ router.route('/api/v1/users/:uid/blocked')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
 
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
@@ -799,7 +797,7 @@ router.route('/api/v1/users/:uid/blocked')
 
 router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.params.uid },
@@ -815,7 +813,7 @@ router.route('/api/v1/users/:uid/studies')
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
 
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
@@ -836,7 +834,7 @@ router.route('/api/v1/users/:uid/studies')
 
 router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('configs').findOne(
       { readers: req.params.uid, _id: new ObjectID(req.params.config_id) }
@@ -855,7 +853,7 @@ router.route('/api/v1/users/:uid/configs/:config_id')
 
 router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     appDb.collection('users').findOne(
       { uid: req.params.uid },
@@ -873,7 +871,7 @@ router.route('/api/v1/users/:uid/preferences')
   })
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
 
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
@@ -897,7 +895,7 @@ router.route('/api/v1/users/:uid/preferences')
 
 router.route('/api/v1/users/:uid/config/file')
   .post(ensureUser, async function (req, res) {
-    const appDb = req.app.locals.appDb
+    const { appDb } = req.app.locals
 
     if (req.body && req.body.config) {
       try {
@@ -1030,7 +1028,7 @@ router.route('/reports/new')
 router.route('/api/v1/studies/:study/enrollment')
   .get(ensureAuthenticated, async (req, res) => {
     try { 
-      const dataDb = req.app.locals.dataDb
+      const { dataDb } = req.app.locals
       const metadoc = await dataDb.collection('metadata').findOne({
         study: req.params.study,
         role: 'metadata'
@@ -1061,17 +1059,17 @@ router.route('/api/v1/studies/:study/enrollment')
   })
   .post(ensureAuthenticated, async (req, res) => {
     try {
-      const dataDb = req.app.locals.dataDb
+      const { dataDb } = req.app.locals
       const { assessment, varName } = req.body;
       if (!assessment || !varName) {
         return res.status(400).send({ message: 'Bad request' });
       }
       const metadoc = await dataDb
-      .collection('metadata')
-      .findOne({
-        study: req.params.study,
-        role: 'metadata'
-      }, { _id: 0, collection: 1 });
+        .collection('metadata')
+        .findOne({
+          study: req.params.study,
+          role: 'metadata'
+        }, { _id: 0, collection: 1 });
       const { collection } = metadoc;
       let allSubjects = [];
       if (!req.query.start && !req.query.end) {
@@ -1133,7 +1131,7 @@ router.route('/api/v1/studies/:study/enrollment')
 router.route('/api/v1/reports')
   .get(ensureAuthenticated, async (req, res) => {
     try {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       const { user } = req;
       const reports = await appDb
         .collection('reports')
@@ -1152,7 +1150,7 @@ router.route('/api/v1/reports')
   })
   .post(ensureAuthenticated, async (req, res) => {
     try {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       const { body, user } = req;
       await appDb
         .collection('reports')
@@ -1172,7 +1170,7 @@ router.route('/api/v1/reports')
 router.route('/api/v1/reports/:id')
   .get(ensureAuthenticated, async (req, res) => {
     try {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       const { user } = req;
       const report = await appDb
         .collection('reports')
@@ -1194,7 +1192,7 @@ router.route('/api/v1/reports/:id')
   })
   .patch(ensureAuthenticated, async (req, res) => {
     try {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       const { body, user, params } = req;
       await appDb
         .collection('reports')
@@ -1214,7 +1212,7 @@ router.route('/api/v1/reports/:id')
   })
   .delete(ensureAuthenticated, async (req, res) => {
     try {
-      const appDb = req.app.locals.appDb
+      const { appDb } = req.app.locals
       const { user } = req;
       const deletionRes = await appDb
         .collection('reports')
@@ -1257,7 +1255,7 @@ router.route('/study-details')
 router.route('/api/v1/study-details')
   .get(ensureAuthenticated, async(req, res) => {
     try {
-      const dataDb = req.app.locals.dataDb
+      const { dataDb } = req.app.locals
       const data = await dataDb
         .collection(collections.studyDetails)
         .find({ owner: req.user })
@@ -1272,7 +1270,7 @@ router.route('/api/v1/study-details')
   .post(ensureAuthenticated, async (req, res) => {
     const { study, owner, targetEnrollment } = req.body
     try {
-      const dataDb = req.app.locals.dataDb
+      const { dataDb } = req.app.locals
       const data = await dataDb
         .collection(collections.studyDetails)
         .findOneAndUpdate({ study },
@@ -1300,7 +1298,7 @@ router.route('/api/v1/study-details')
     .delete(ensureAuthenticated, async(req, res) =>{
       const { detailId } = req.params;
       try {
-        const dataDb = req.app.locals.dataDb
+        const { dataDb } = req.app.locals
         const deleted = await dataDb
           .collection(collections.studyDetails)
           .deleteOne({ _id: ObjectID(detailId) })

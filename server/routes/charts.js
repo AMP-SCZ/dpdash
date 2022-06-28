@@ -1,7 +1,10 @@
 import { Router } from 'express';
+
+import ensureAuthenticated from '../utils/passport/ensure-authenticated';
+
 import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
-import ensureAuthenticated from '../utils/passport/ensure-authenticated';
+
 
 const router = Router();
 
