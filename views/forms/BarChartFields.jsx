@@ -58,7 +58,10 @@ const BarChartFields = ({
               label='Value'
               name='value'
               onChange={(e) => updateFieldValues(e, idx)}
-              className={`${classes.formLabelCol} ${classes.variableListInput}`}
+              className={`
+                ${classes.formLabelCol} 
+                ${classes.variableListInput}
+              `}
             />
             <TextField
               label='Label'
