@@ -307,7 +307,6 @@ router.route('/resetpw')
     } else {
       const { appDb } = req.app.locals
       var hashedPW = hash(req.body.password);
-      
       appDb.collection('users').findOneAndUpdate(
         { uid: req.body.username, reset_key: req.body.reset_key },
         { $set: { password: hashedPW, reset_key: '', force_reset_pw: false } },
@@ -433,7 +432,6 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 router.route('/api/v1/studies')
   .get(ensureAuthenticated, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.user },
       { _id: 0, access: 1 }
@@ -453,7 +451,6 @@ router.route('/api/v1/studies')
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
   const { dataDb } = req.app.locals
-
   dataDb.collection('toc').distinct('study'
     , function (err, studies) {
       if (err) {
@@ -469,7 +466,6 @@ router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
 
 router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
   const { dataDb } = req.app.locals
-
   dataDb.collection('metadata').aggregate([
     { $match: { study: { $in: JSON.parse(req.query.q) } } },
     { $addFields: { numOfSubjects: { $size: { "$ifNull": ["$subjects", []] } } } },
@@ -488,7 +484,6 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
 
 router.get('/api/v1/users', ensureAdmin, function (req, res) {
   const { appDb } = req.app.locals
-
   appDb.collection('users').find(
     {}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 }).toArray(function (err, users) {
       if (err) {
@@ -503,7 +498,6 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
 });
 router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
   const { appDb } = req.app.locals
-
   appDb.collection('users').find(
     {}, { uid: 1 }).toArray(function (err, users) {
       if (err) {
@@ -520,7 +514,6 @@ router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
 router.route('/api/v1/users/:uid')
   .get(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       {
@@ -549,7 +542,6 @@ router.route('/api/v1/users/:uid')
   })
   .post(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOneAndUpdate(
       { uid: req.params.uid },
       {
@@ -583,7 +575,6 @@ router.route('/api/v1/users/:uid')
 router.route('/api/v1/users/:uid/configs')
   .get(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('configs').find(
       { readers: req.params.uid }
     ).toArray(function (err, data) {
@@ -599,7 +590,6 @@ router.route('/api/v1/users/:uid/configs')
   })
   .post(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-    
     if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
       appDb.collection('configs').findOneAndUpdate(
         { _id: new ObjectID(req.body.disable) },
@@ -704,7 +694,6 @@ router.route('/api/v1/users/:uid/resetpw')
 router.route('/api/v1/users/:uid/delete')
   .post(ensureAdmin, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').deleteOne(
       { uid: req.params.uid },
       function (err) {
@@ -720,7 +709,6 @@ router.route('/api/v1/users/:uid/delete')
 router.route('/api/v1/users/:uid/role')
   .get(ensureAdmin, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, role: 1 }
@@ -738,7 +726,6 @@ router.route('/api/v1/users/:uid/role')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
       const { appDb } = req.app.locals
-
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { role: req.body.role } },
@@ -759,7 +746,6 @@ router.route('/api/v1/users/:uid/role')
 router.route('/api/v1/users/:uid/blocked')
   .get(ensureAdmin, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, blocked: 1 }
@@ -777,7 +763,6 @@ router.route('/api/v1/users/:uid/blocked')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
       const { appDb } = req.app.locals
-
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { blocked: req.body.blocked } },
@@ -798,7 +783,6 @@ router.route('/api/v1/users/:uid/blocked')
 router.route('/api/v1/users/:uid/studies')
   .get(ensureAdmin, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, access: 1 },
@@ -814,7 +798,6 @@ router.route('/api/v1/users/:uid/studies')
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
       const { appDb } = req.app.locals
-
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { access: req.body.acl } },
@@ -835,7 +818,6 @@ router.route('/api/v1/users/:uid/studies')
 router.route('/api/v1/users/:uid/configs/:config_id')
   .get(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('configs').findOne(
       { readers: req.params.uid, _id: new ObjectID(req.params.config_id) }
       , function (err, data) {
@@ -854,7 +836,6 @@ router.route('/api/v1/users/:uid/configs/:config_id')
 router.route('/api/v1/users/:uid/preferences')
   .get(ensureUser, function (req, res) {
     const { appDb } = req.app.locals
-
     appDb.collection('users').findOne(
       { uid: req.params.uid },
       { _id: 0, preferences: 1 }
@@ -872,7 +853,6 @@ router.route('/api/v1/users/:uid/preferences')
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
       const { appDb } = req.app.locals
-
       appDb.collection('users').findOneAndUpdate(
         { uid: req.params.uid },
         { $set: { preferences: req.body.preferences } },
@@ -951,7 +931,7 @@ router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
     try { 
       const { display_name, role, icon } = req.session;
-      
+
       return res.status(200).send(reportsListPage({
         uid: req.user,
         name: display_name,
