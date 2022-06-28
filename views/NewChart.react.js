@@ -64,7 +64,7 @@ const NewChart = ({ user, classes }) => {
       />
       <>
         <div className={`${ classes.content } ${ classes.contentPadded }`}>
-          <form autoComplete="off" onSubmit={ handleSubmit }>
+          <form autoComplete='off' onSubmit={ handleSubmit }>
             <BarChartFields 
               classes={ classes } 
               updateFormValues={ updateFormValues } 
@@ -74,15 +74,16 @@ const NewChart = ({ user, classes }) => {
               removeField={removeValueAndLabelField}
               updateFieldValues={handleValueAndLabelFieldUpdate}
             />
-            <>
+            <div className={classes.submitButtonContainer}>
               <Button
-                type="submit"
+                type='submit'
+                variant='raised'
                 className={classes.textButton}
                 onClick={handleSubmit}
               >
                 Submit Form
               </Button>
-            </>
+            </div>
           </form>
         </div>
       </>

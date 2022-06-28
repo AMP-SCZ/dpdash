@@ -20,7 +20,7 @@ export const chartStyles = (theme) => ({
     display: 'flex'
   },
   variableListInput: {
-    width: '33%'
+    width: '30%'
   },
   icon: {
     padding: '15px'
@@ -29,4 +29,9 @@ export const chartStyles = (theme) => ({
     color: neutral_blue,
     textTransform: 'none',
   },
+  submitButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    width: '66%'
+  }
 })
