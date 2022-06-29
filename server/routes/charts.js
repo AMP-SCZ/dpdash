@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import ensureAuthenticated from '../utils/passport/ensure-authenticated';
 import { collections } from '../utils/mongoCollections'
+import { userProps } from '../utils/pagePropsUtil';
 
 import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
@@ -22,13 +23,7 @@ router.route('/charts')
 router.route('/charts/new')
   .get(ensureAuthenticated, async (req, res) => {
     try {
-      const { display_name, role, icon } = req.session;
-      const user = {
-        uid: req.user,
-        name: display_name,
-        role, 
-        icon,
-      };
+      const user = userProps(req)
 
       return res.status(200).send(newChartPage(user))
     } catch (error) {
