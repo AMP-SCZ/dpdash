@@ -931,6 +931,7 @@ router.route('/reports')
   .get(ensureAuthenticated, async (req, res) => {
     try { 
       const { display_name, role, icon } = req.session;
+      
       return res.status(200).send(reportsListPage({
         uid: req.user,
         name: display_name,
