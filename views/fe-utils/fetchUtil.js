@@ -126,7 +126,7 @@ const deleteStudyDetails = async (id) => {
 }
 
 const createChart = async (formValues) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/chart`, {
+  const res = await window.fetch(`${routes.basePath}/api/v1/charts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

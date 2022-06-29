@@ -38,7 +38,7 @@ router.route('/charts/new')
     }
 })
 
-router.route('/api/v1/chart')
+router.route('/api/v1/charts')
   .post(ensureAuthenticated, async (req, res) => {
     try {
       const additionalVariables = {}
