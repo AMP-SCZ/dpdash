@@ -1033,7 +1033,7 @@ router.route('/api/v1/studies/:study/enrollment')
       }
       return res.status(200).send({ enrollment });
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
       return res.status(500).send({ message: err.message });
     }
   })

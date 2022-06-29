@@ -5,7 +5,6 @@ import ensureAuthenticated from '../utils/passport/ensure-authenticated';
 import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
 
-
 const router = Router();
 
 router.route('/charts')
