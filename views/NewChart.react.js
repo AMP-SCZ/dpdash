@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { compose } from 'redux'
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 
 import Header from './components/Header'
@@ -34,7 +33,7 @@ const NewChart = ({ user, classes }) => {
   }, [])
 
   return (
-    <div className={ classes.root }>
+    <div className={classes.root}>
       <Header
         handleDrawerToggle={toggleDrawer}
         title='Create a New Chart'
@@ -49,7 +48,7 @@ const NewChart = ({ user, classes }) => {
         totalSubjects={sideBarState.totalSubjects}
         user={user}
       />
-        <div className={`${ classes.content } ${ classes.contentPadded }`}>
+        <div className={`${classes.content} ${classes.contentPadded}`}>
           <ChartForm 
             classes={classes}
           />

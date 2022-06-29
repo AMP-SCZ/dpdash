@@ -10,7 +10,7 @@ const ChartForm = ({ classes }) => {
   const [formValues, setFormValues] = useState({})
   const [fieldLabelValueMap, setFieldLabelValueMap] = useState([])
 
-  const updateFormValues = (e,) => setFormValues({...formValues, [e.target.name]: e.target.value})
+  const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
   const addValueAndLabelField = () => setFieldLabelValueMap(prevState => [{ value: '', label: '' }, ...prevState ])
   const removeValueAndLabelField = (id) => setFieldLabelValueMap(prevState => [...prevState.filter((_, index) => index !== id)])
   const handleValueAndLabelFieldUpdate = (e, id) => setFieldLabelValueMap(prevState => 
@@ -20,12 +20,12 @@ const ChartForm = ({ classes }) => {
         ? 
           ({ ...field, [e.target.name]: e.target.value }) 
         : 
-          ({...field})
+          ({ ...field })
         )
       ])
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const values = { ...formValues, fieldLabelValueMap: fieldLabelValueMap }
+    const values = { ...formValues, fieldLabelValueMap }
     await createChart(values)
   }
 
@@ -43,7 +43,7 @@ const ChartForm = ({ classes }) => {
       <div className={classes.submitButtonContainer}>
         <Button
           type='submit'
-          variant='raised'
+          variant='contained'
           className={classes.textButton}
         >
           Submit Form

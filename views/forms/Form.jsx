@@ -1,4 +1,4 @@
-const Form = ({children, handleSubmit }) => {
+const Form = ({ children, handleSubmit }) => {
   return (
     <form autoComplete='off' onSubmit={handleSubmit}>
       {children}

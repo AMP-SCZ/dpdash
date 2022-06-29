@@ -52,7 +52,7 @@ const BarChartFields = ({
       />
       {
         fieldLabelValueMap.length > 0 && 
-        fieldLabelValueMap.map((field, idx) => (
+        fieldLabelValueMap.map((_, idx) => (
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
@@ -62,12 +62,14 @@ const BarChartFields = ({
                 ${classes.formLabelCol} 
                 ${classes.variableListInput}
               `}
+              required
             />
             <TextField
               label='Label'
               name='label'
               className={classes.variableListInput}
               onChange={(e) => updateFieldValues(e, idx)}
+              required
             />
             <Button
               type='button'
