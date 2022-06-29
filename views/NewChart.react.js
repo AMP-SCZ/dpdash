@@ -29,7 +29,7 @@ const NewChart = ({ user, classes }) => {
     fetchSubjects().then(acl => {
       setSideBarState(getCounts({ acl }))
     })
-    setAvatar(getAvatar({ user: user }))
+    setAvatar(getAvatar({ user }))
   }, [])
 
   return (
