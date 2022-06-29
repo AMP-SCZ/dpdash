@@ -10,7 +10,7 @@ const BarChartFields = ({
   classes,
   updateFormValues,
   formValues,
-  valueAndLabelFields,
+  fieldLabelValueMap,
   addValueAndLabelField,
   removeField,
   updateFieldValues
@@ -19,11 +19,11 @@ const BarChartFields = ({
   
   useEffect(() => {
     setTitle(formValues[title])
-  }, [formValues, valueAndLabelFields])
+  }, [formValues, fieldLabelValueMap])
 
   return(
     <>
-      <Typography variant='subtitle1'  gutterBottom>
+      <Typography variant='subtitle1' gutterBottom>
         {chartTitle} 
       </Typography>
       <TextField
@@ -51,8 +51,8 @@ const BarChartFields = ({
         fullWidth
       />
       {
-        valueAndLabelFields.length > 0 && 
-        valueAndLabelFields.map((field, idx) => (
+        fieldLabelValueMap.length > 0 && 
+        fieldLabelValueMap.map((field, idx) => (
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
@@ -66,7 +66,7 @@ const BarChartFields = ({
             <TextField
               label='Label'
               name='label'
-              className={`${classes.variableListInput}`}
+              className={classes.variableListInput}
               onChange={(e) => updateFieldValues(e, idx)}
             />
             <Button

@@ -38,27 +38,27 @@ router.route('/charts/new')
     }
 })
 
-router.route('/api/v1/chart-create')
+router.route('/api/v1/chart')
   .post(ensureAuthenticated, async (req, res) => {
     try {
       const additionalVariables = {}
-      const { fields, title, variable, assessment, owner } = req.body
+      const { fieldLabelValueMap, title, variable, assessment } = req.body
       
-      if (fields.length) {
-        for (let index = 0; index < fields.length; index++) {
-          const field = fields[index];
+      if (fieldLabelValueMap.length) {
+        for (let index = 0; index < fieldLabelValueMap.length; index++) {
+          const field = fieldLabelValueMap[index];
           additionalVariables[field.label] = field.value
         }
       }
 
-      const dataDb = req.app.locals.dataDb
+      const { dataDb } = req.app.locals
       const { result } = await dataDb
         .collection(collections.charts)
         .insertOne({
           title, 
           variable, 
           assessment, 
-          owner, 
+          owner: req.user, 
           ...additionalVariables 
         })
 
