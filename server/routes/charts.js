@@ -12,9 +12,16 @@ const router = Router();
 router.route('/charts')
   .get(ensureAuthenticated, async (req, res) => {
     try {
-      return res.status(200).send(chartsListPage())
-    } catch (error) {
-      console.error(error.message)
+      const { display_name, role, icon } = req.session;
+
+      return res.status(200).send(chartsListPage({
+        uid: req.user,
+        name: display_name,
+        role,
+        icon
+      }))
+    } catch (err) {
+      console.error(err.message)
 
       return res.status(500).send({ message: err.message })
     }
