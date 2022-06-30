@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import ensureAuthenticated from '../utils/passport/ensure-authenticated';
 import { collections } from '../utils/mongoCollections'
-import { userProps } from '../utils/pagePropsUtil';
+import { userFromRequest } from '../utils/userFromRequestUtil';
 
 import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
@@ -23,7 +23,7 @@ router.route('/charts')
 router.route('/charts/new')
   .get(ensureAuthenticated, async (req, res) => {
     try {
-      const user = userProps(req)
+      const user = userFromRequest(req)
 
       return res.status(200).send(newChartPage(user))
     } catch (error) {
@@ -36,16 +36,7 @@ router.route('/charts/new')
 router.route('/api/v1/charts')
   .post(ensureAuthenticated, async (req, res) => {
     try {
-      const additionalVariables = {}
       const { fieldLabelValueMap, title, variable, assessment } = req.body
-      
-      if (fieldLabelValueMap.length) {
-        for (let index = 0; index < fieldLabelValueMap.length; index++) {
-          const field = fieldLabelValueMap[index];
-          additionalVariables[field.label] = field.value
-        }
-      }
-
       const { dataDb } = req.app.locals
       const { result } = await dataDb
         .collection(collections.charts)
@@ -54,7 +45,7 @@ router.route('/api/v1/charts')
           variable, 
           assessment, 
           owner: req.user, 
-          ...additionalVariables 
+          fieldLabelValueMap 
         })
 
       return res.status(200).json({ data: result })

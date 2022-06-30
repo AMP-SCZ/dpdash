@@ -1,44 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
-
-import { createChart } from '../fe-utils/fetchUtil'
 
 import Form from './Form'
 import BarChartFields from './BarChartFields'
 
-const ChartForm = ({ classes }) => {
-  const [formValues, setFormValues] = useState({})
-  const [fieldLabelValueMap, setFieldLabelValueMap] = useState([])
+const ChartForm = ({ classes, handleSubmit }) => {
+  const [formValues, setFormValues] = useState({
+    title: '',
+    assessment: '',
+    variable: '',
+    fieldLabelValueMap: [
+      {
+        value: '',
+        label: ''
+      }
+    ]
+  })
 
   const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
-  const addValueAndLabelField = () => setFieldLabelValueMap(prevState => [{ value: '', label: '' }, ...prevState ])
-  const removeValueAndLabelField = (id) => setFieldLabelValueMap(prevState => [...prevState.filter((_, index) => index !== id)])
-  const handleValueAndLabelFieldUpdate = (e, id) => setFieldLabelValueMap(prevState => 
-    [...prevState
-      .map((field, idx) => 
-        id === idx
-        ? 
-          ({ ...field, [e.target.name]: e.target.value }) 
-        : 
-          ({ ...field })
-        )
-      ])
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const values = { ...formValues, fieldLabelValueMap }
-    await createChart(values)
-  }
 
   return (
-    <Form handleSubmit={handleSubmit}>
+    <Form handleSubmit={(e) => handleSubmit(e, formValues)}>
       <BarChartFields 
         classes={classes} 
         updateFormValues={updateFormValues} 
         formValues={formValues}
-        fieldLabelValueMap={fieldLabelValueMap}
-        addValueAndLabelField={addValueAndLabelField}
-        removeField={removeValueAndLabelField}
-        updateFieldValues={handleValueAndLabelFieldUpdate}
+        setFormValues={setFormValues}
       />
       <div className={classes.submitButtonContainer}>
         <Button

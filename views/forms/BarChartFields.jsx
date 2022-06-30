@@ -4,22 +4,52 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
 
-const title = 'title'
-
 const BarChartFields = ({ 
   classes,
   updateFormValues,
   formValues,
-  fieldLabelValueMap,
-  addValueAndLabelField,
-  removeField,
-  updateFieldValues
+  setFormValues,
 }) => {
-  const [chartTitle, setTitle] = useState('')
+  const { title } = formValues
+
+  const [chartTitle, setChartTitle] = useState('')
   
+  const addValueAndLabelField = () => setFormValues(prevState => ({
+    ...prevState,
+    fieldLabelValueMap: [...prevState
+      .fieldLabelValueMap,
+      { 
+        value: '', 
+        label: '' 
+      }
+    ]})
+  )
+  const removeValueAndLabelField = (id) => setFormValues((prevState) => ({ 
+    ...prevState,
+    fieldLabelValueMap: [...prevState
+      .fieldLabelValueMap
+      .filter((_, index) => index !== id)
+      ]
+    })
+  )
+  const handleValueAndLabelFieldUpdate = (e, id) => setFormValues((prevState) => ({
+    ...prevState, 
+    fieldLabelValueMap: [...prevState
+      .fieldLabelValueMap
+        .map((field, idx) => 
+          id === idx
+          ? 
+            ({ ...field, [e.target.name]: e.target.value }) 
+          : 
+            ({ ...field })
+          )
+        ]
+      })
+    )
+
   useEffect(() => {
-    setTitle(formValues[title])
-  }, [formValues, fieldLabelValueMap])
+    setChartTitle(title || '')
+  }, [title, formValues])
 
   return(
     <>
@@ -31,6 +61,7 @@ const BarChartFields = ({
         label='Title'
         name='title'
         onChange={updateFormValues}
+        value={formValues.title}
         required
         fullWidth
       />
@@ -39,6 +70,7 @@ const BarChartFields = ({
         label='Assessment'
         name='assessment'
         onChange={updateFormValues}
+        value={formValues.assessment}
         required
         fullWidth
       />
@@ -47,17 +79,18 @@ const BarChartFields = ({
         name='variable'
         className={classes.textInput}
         onChange={updateFormValues}
+        value={formValues.variable}
         required
         fullWidth
       />
       {
-        fieldLabelValueMap.length > 0 && 
-        fieldLabelValueMap.map((_, idx) => (
+        formValues.fieldLabelValueMap.length > 0 && 
+        formValues.fieldLabelValueMap.map((_, idx) => (
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
               name='value'
-              onChange={(e) => updateFieldValues(e, idx)}
+              onChange={(e) => handleValueAndLabelFieldUpdate(e, idx)}
               className={`
                 ${classes.formLabelCol} 
                 ${classes.variableListInput}
@@ -68,13 +101,13 @@ const BarChartFields = ({
               label='Label'
               name='label'
               className={classes.variableListInput}
-              onChange={(e) => updateFieldValues(e, idx)}
+              onChange={(e) => handleValueAndLabelFieldUpdate(e, idx)}
               required
             />
             <Button
               type='button'
               variant='text'
-              onClick={() => removeField(idx)}
+              onClick={() => removeValueAndLabelField(idx)}
             >
               <Delete className={classes.icon} />
             </Button>

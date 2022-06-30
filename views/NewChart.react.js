@@ -10,7 +10,7 @@ import ChartForm from './forms/ChartForm'
 
 import getCounts from './fe-utils/countUtil'
 import getAvatar from './fe-utils/avatarUtil'
-import { fetchSubjects } from './fe-utils/fetchUtil'
+import { fetchSubjects, createChart } from './fe-utils/fetchUtil'
 import getDefaultStyles from './fe-utils/styleUtil'
 import { chartStyles } from './styles/chart_styles'
 
@@ -24,6 +24,10 @@ const NewChart = ({ user, classes }) => {
   const [avatar, setAvatar] = useState('')
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
+  const handleSubmit = async (e, formValues) => {
+    e.preventDefault()
+    await createChart(formValues)
+  }
 
   useEffect(() => {
     fetchSubjects().then(acl => {
@@ -51,6 +55,7 @@ const NewChart = ({ user, classes }) => {
         <div className={`${classes.content} ${classes.contentPadded}`}>
           <ChartForm 
             classes={classes}
+            handleSubmit={handleSubmit}
           />
         </div>
     </div>

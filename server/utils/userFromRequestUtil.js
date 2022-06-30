@@ -1,4 +1,4 @@
-export const userProps = (req) => {
+export const userFromRequest = (req) => {
   const { user, session: { role, display_name, icon }} = req
   
   return {
