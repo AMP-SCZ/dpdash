@@ -7,8 +7,13 @@ import { createChart } from './fe-utils/fetchUtil'
 
 const NewChart = () => {
   const handleSubmit = async (e, formValues) => {
-    e.preventDefault()
-    await createChart(formValues)
+    try {
+      e.preventDefault()
+      const { data } = await createChart(formValues)
+      window.location.replace(`${routes.charts}/${data}`)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
