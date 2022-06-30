@@ -11,7 +11,6 @@ import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 import getDefaultStyles from '../fe-utils/styleUtil'
 
-
 const AppLayout = ({
   user,
   classes,
