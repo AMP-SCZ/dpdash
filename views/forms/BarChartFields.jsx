@@ -18,11 +18,12 @@ const BarChartFields = ({
     ...prevState,
     fieldLabelValueMap: [...prevState
       .fieldLabelValueMap,
-      { 
-        value: '', 
-        label: '' 
-      }
-    ]})
+        { 
+          value: '', 
+          label: '' 
+        }
+      ]
+    })
   )
   const removeValueAndLabelField = (id) => setFormValues((prevState) => ({ 
     ...prevState,
