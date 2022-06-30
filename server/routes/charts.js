@@ -43,7 +43,7 @@ router.route('/charts/:chart_id')
       const user = userFromRequest(req)
       const graph = { chart_id }
 
-      return res.status(200).send(viewChartPage(user, grap))
+      return res.status(200).send(viewChartPage(user, graph))
     } catch (err) {
       console.error(err.message)
 

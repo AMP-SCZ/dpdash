@@ -5,6 +5,8 @@ import ChartForm from './forms/ChartForm'
 
 import { createChart } from './fe-utils/fetchUtil'
 
+import { routes } from './routes/routes'
+
 const NewChart = () => {
   const handleSubmit = async (e, formValues) => {
     try {
