@@ -6,56 +6,38 @@ import Typography from '@material-ui/core/Typography';
 
 const BarChartFields = ({ 
   classes,
-  updateFormValues,
   formValues,
   setFormValues,
 }) => {
   const { title } = formValues
-
-  const [chartTitle, setChartTitle] = useState('')
   
+  const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
   const addValueAndLabelField = () => setFormValues(prevState => ({
     ...prevState,
     fieldLabelValueMap: [...prevState
       .fieldLabelValueMap,
-        { 
-          value: '', 
-          label: '' 
-        }
+        {  value: '', label: '' }
       ]
-    })
-  )
+    }))
   const removeValueAndLabelField = (id) => setFormValues((prevState) => ({ 
     ...prevState,
-    fieldLabelValueMap: [...prevState
-      .fieldLabelValueMap
-      .filter((_, index) => index !== id)
-      ]
-    })
-  )
+    fieldLabelValueMap: prevState.fieldLabelValueMap.filter((_, index) => index !== id)
+  }))
   const handleValueAndLabelFieldUpdate = (e, id) => setFormValues((prevState) => ({
     ...prevState, 
-    fieldLabelValueMap: [...prevState
+    fieldLabelValueMap: prevState
       .fieldLabelValueMap
         .map((field, idx) => 
           id === idx
-          ? 
-            ({ ...field, [e.target.name]: e.target.value }) 
-          : 
-            ({ ...field })
-          )
-        ]
-      })
-    )
-
-  useEffect(() => {
-    setChartTitle(title || '')
-  }, [title, formValues])
+          ? { ...field, [e.target.name]: e.target.value }
+          : field
+        )
+      }))
 
   return(
     <>
       <Typography variant='subtitle1' gutterBottom>
-        {chartTitle} 
+        {title} 
       </Typography>
       <TextField
         className={classes.textInput}
@@ -86,7 +68,7 @@ const BarChartFields = ({
       />
       {
         formValues.fieldLabelValueMap.length > 0 && 
-        formValues.fieldLabelValueMap.map((_, idx) => (
+        formValues.fieldLabelValueMap.map((field, idx) => (
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
@@ -96,6 +78,7 @@ const BarChartFields = ({
                 ${classes.formLabelCol} 
                 ${classes.variableListInput}
               `}
+              value={field.value}
               required
             />
             <TextField
@@ -103,6 +86,7 @@ const BarChartFields = ({
               name='label'
               className={classes.variableListInput}
               onChange={(e) => handleValueAndLabelFieldUpdate(e, idx)}
+              value={field.label}
               required
             />
             <Button

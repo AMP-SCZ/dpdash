@@ -10,20 +10,14 @@ const ChartForm = ({ classes, handleSubmit }) => {
     assessment: '',
     variable: '',
     fieldLabelValueMap: [
-      {
-        value: '',
-        label: ''
-      }
+      { value: '', label: '' }
     ]
   })
-
-  const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
 
   return (
     <Form handleSubmit={(e) => handleSubmit(e, formValues)}>
       <BarChartFields 
         classes={classes} 
-        updateFormValues={updateFormValues} 
         formValues={formValues}
         setFormValues={setFormValues}
       />
