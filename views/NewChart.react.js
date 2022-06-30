@@ -12,12 +12,8 @@ const NewChart = () => {
   }
 
   return (
-    <AppLayout
-      title='Create a Chart'
-    >
-      <ChartForm 
-        handleSubmit={handleSubmit}
-      />
+    <AppLayout title='Create a Chart'>
+      <ChartForm handleSubmit={handleSubmit} />
     </AppLayout>
   )
 }

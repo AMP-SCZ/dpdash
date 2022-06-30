@@ -8,9 +8,7 @@ import { routes } from './routes/routes'
 
 const Charts = () => {
   return (
-    <AppLayout
-      title='Charts'
-    >
+    <AppLayout title='Charts'>
       <Button
         variant="outlined"
         color="primary"
