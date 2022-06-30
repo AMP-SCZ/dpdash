@@ -41,10 +41,4 @@ const mapStateToProps = (state) => ({
   user: state.user
 })
 
-export default compose(
-  withStyles(
-    styles, 
-    { withTheme: true }
-  ), 
-  connect(mapStateToProps)
-)(Charts)
+export default compose(withStyles(styles, { withTheme: true }), connect(mapStateToProps))(Charts)
