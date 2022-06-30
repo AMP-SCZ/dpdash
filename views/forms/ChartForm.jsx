@@ -42,7 +42,6 @@ const ChartForm = ({ classes, handleSubmit }) => {
 const styles = theme => ({
   ...chartStyles(theme)
 })
-
 const mapStateToProps = (state) => ({
   user: state.user
 })
