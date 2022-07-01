@@ -12,7 +12,7 @@ const NewChart = () => {
     try {
       e.preventDefault()
       const { data } = await createChart(formValues)
-      window.location.replace(routes.chart(data.chart_id))
+      window.location.assign(routes.chart(data.chart_id))
     } catch (error) {
       console.error(error)
     }
