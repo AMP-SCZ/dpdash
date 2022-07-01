@@ -49,7 +49,7 @@ router.route('/charts/:chart_id')
 
       return res.status(500).send({ message: err.message })
     }
-})
+  })
 
 router.route('/api/v1/charts')
   .post(ensureAuthenticated, async (req, res) => {
@@ -66,7 +66,7 @@ router.route('/api/v1/charts')
           fieldLabelValueMap 
         })
 
-      return res.status(200).json({ data: insertedId })
+      return res.status(200).json({ data: { chart_id: insertedId }})
     } catch (error) {
       console.error(error)
 
