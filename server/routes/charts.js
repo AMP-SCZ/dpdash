@@ -54,7 +54,7 @@ router.route('/charts/:chart_id')
         .findOne({ _id: new ObjectID(chart_id) })
 
       for await (const study of access ){
-        const result = { siteName: study }
+        // const result = { siteName: study }
         const subjectList = await dataDb
           .collection(collections.toc)
           .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
@@ -63,7 +63,6 @@ router.route('/charts/:chart_id')
 
           for await (const field of fieldLabelValueMap) {
             const { label, value } = field;
-            const dataArray = []
             let count = 0;
 
             for await (const doc of subjectList) {
@@ -74,12 +73,8 @@ router.route('/charts/:chart_id')
               count = counted ? count+=1 : count
             }
 
-            dataArray.push({ count, label })
-            result['data'] = dataArray
+            data.push({ count, siteName: study, label })
           }
-          
-          data.push(result)
-          result['totalSubjects'] = subjectList.length
         }
       const user = userFromRequest(req)
       const graph = { chart_id, data, title }
