@@ -157,6 +157,36 @@ router.route('/charts/:chart_id')
       const user = userFromRequest(req)
       const graph = { chart_id, data, title: chartTitle }
 
+      for await (const study of access ){
+        const result = { siteName: study }
+        const subjectList = await dataDb
+          .collection(collections.toc)
+          .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
+          .map(doc => ({ ...doc, variable }))
+          .toArray()
+
+          for await (const field of fieldLabelValueMap) {
+            const { label, value } = field;
+            const dataArray = []
+            let count = 0;
+
+            for await (const doc of subjectList) {
+              const { collection, study, variable, subject } = doc
+              const counted = await dataDb
+                .collection(collection)
+                .findOne({ site: study, [variable]: value, subject_id: subject }, { projection: { [variable]: 1, _id: 0 }})
+              count = counted ? count+=1 : count
+            }
+
+            dataArray.push({ count, label })
+            result['data'] = dataArray
+          }
+          
+          data.push(result)
+          result['totalSubjects'] = subjectList.length
+        }
+      const user = userFromRequest(req)
+      const graph = { chart_id, data, title }
       return res.status(200).send(viewChartPage(user, graph))
     } catch (err) {
       console.error(err.message)
