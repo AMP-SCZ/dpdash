@@ -41,6 +41,7 @@ const BarGraph = ({ graph }) => {
         ))}
       </VictoryStack>
     </VictoryChart>
+    
   )
 }
 
