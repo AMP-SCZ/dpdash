@@ -157,16 +157,17 @@ router.route('/charts/:chart_id')
       const user = userFromRequest(req)
       const graph = { chart_id, data, title: chartTitle }
 
-      for await (const study of access ){
-        const subjectList = await dataDb
-          .collection(collections.toc)
-          .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
-          .map(doc => ({ ...doc, variable }))
-          .toArray()
+      for await (const field of fieldLabelValueMap) {
+        const interim = []
 
-          for await (const field of fieldLabelValueMap) {
-            const { label, value } = field;
-            let count = 0;
+        for await (const study of access ){
+          let count = 0;
+          const { label, value } = field;
+          const subjectList = await dataDb
+            .collection(collections.toc)
+            .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
+            .map(doc => ({ ...doc, variable }))
+            .toArray()
 
             for await (const doc of subjectList) {
               const { collection, study, variable, subject } = doc
@@ -175,11 +176,9 @@ router.route('/charts/:chart_id')
                 .findOne({ site: study, [variable]: value, subject_id: subject }, { projection: { [variable]: 1, _id: 0 }})
               count = counted ? count+=1 : count
             }
-
-            data.push({ count, siteName: study, 
-            valueLabel: label 
-            })
+            interim.push({ count, siteName: study, fieldLabel: label })
           }
+          data.push(interim)
         }
       const user = userFromRequest(req)
       const graph = { chart_id, data, title }
