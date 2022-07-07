@@ -158,7 +158,6 @@ router.route('/charts/:chart_id')
       const graph = { chart_id, data, title: chartTitle }
 
       for await (const study of access ){
-        // const result = { siteName: study }
         const subjectList = await dataDb
           .collection(collections.toc)
           .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
@@ -177,7 +176,9 @@ router.route('/charts/:chart_id')
               count = counted ? count+=1 : count
             }
 
-            data.push({ count, siteName: study, label })
+            data.push({ count, siteName: study, 
+            valueLabel: label 
+            })
           }
         }
       const user = userFromRequest(req)
