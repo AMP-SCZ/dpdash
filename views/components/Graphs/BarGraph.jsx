@@ -1,20 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { VictoryBar, VictoryChart, VictoryAxis } from 'victory';
+import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme } from 'victory';
 
 
 const BarGraph = ({ graph }) => {
-  console.log(graph)
+  const tickValues = Object.keys(graph.data).map((value) => ++value)
+  const tickFormat = [...new Set(graph.data.map(({siteName}) => (siteName)))]
   return(
     <VictoryChart
       domainPadding={20}
+      theme={VictoryTheme.material}
     >
-        <VictoryBar 
-          data={graph.data}
-          x='siteName'
-          y='count'
-        />
+      <VictoryBar data={graph.data} x="siteName" y="count"
+          alignment="start"
+          />
+      <VictoryAxis
+      tickValues={tickValues}
+      tickFormat={tickFormat}
+    />
+                     <VictoryAxis
+      dependentAxis
+    />
     </VictoryChart>
+    
   )
 }
 
