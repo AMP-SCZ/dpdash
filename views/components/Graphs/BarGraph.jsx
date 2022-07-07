@@ -11,9 +11,6 @@ const BarGraph = ({ graph }) => {
       domainPadding={20}
       theme={VictoryTheme.material}
     >
-      <VictoryBar data={graph.data} x="siteName" y="count"
-          alignment="start"
-          />
       <VictoryAxis
       tickValues={tickValues}
       tickFormat={tickFormat}
@@ -21,6 +18,8 @@ const BarGraph = ({ graph }) => {
                      <VictoryAxis
       dependentAxis
     />
+      <VictoryBar data={graph.data} x="siteName" y="count"
+          />
     </VictoryChart>
     
   )
