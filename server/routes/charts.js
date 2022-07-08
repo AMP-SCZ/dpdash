@@ -54,7 +54,7 @@ router.route('/charts/:chart_id')
         .findOne({ _id: new ObjectID(chart_id) })
 
       for await (const field of fieldLabelValueMap) {
-        const interim = []
+        const valueCountData = []
 
         for await (const study of access ){
           let count = 0;
@@ -72,12 +72,14 @@ router.route('/charts/:chart_id')
                 .findOne({ site: study, [variable]: value, subject_id: subject }, { projection: { [variable]: 1, _id: 0 }})
               count = counted ? count+=1 : count
             }
-            interim.push({ count, siteName: study, fieldLabel: label })
+            
+            valueCountData.push({ count, siteName: study, fieldLabel: label })
           }
-          data.push(interim)
+          data.push(valueCountData)
         }
       const user = userFromRequest(req)
-      const graph = { chart_id, data, title }
+      const graph = { chart_id, data, title, variable, assessment }
+
       return res.status(200).send(viewChartPage(user, graph))
     } catch (err) {
       console.error(err.message)
