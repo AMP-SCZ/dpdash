@@ -7,7 +7,7 @@ import AppLayout from './layouts/AppLayout'
 import BarGraph from './components/Graphs/BarGraph'
 
 const ViewChart = ({ graph }) => {
-  const { title } = graph
+  const { title, assessment, variable } = graph
   return (
     <AppLayout
       title={'Chart View'}
