@@ -140,6 +140,34 @@ const createChart = async (formValues) => {
     return res.json()
 }
 
+const getCharts = async () => {
+  const res = await window.fetch(`${routes.basePath}/api/v1/charts`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin',
+  })
+
+  if (res.status !== 200) return new Error(res.message)
+
+  return res.json()
+}
+
+const deleteChart = async (id) => {
+  const res = await window.fetch(`${routes.basePath}/api/v1/charts/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+
+  if (res.status !== 200) return new Error(res.message)
+
+  return res.json()
+}
+
 export { 
   fetchStudies,
   fetchStudiesAdmin, 
@@ -149,5 +177,7 @@ export {
   fetchStudyDetails, 
   deleteStudyDetails,
   createStudyDetails,
-  createChart
+  createChart,
+  getCharts,
+  deleteChart
 };
