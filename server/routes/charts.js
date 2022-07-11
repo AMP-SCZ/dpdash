@@ -190,7 +190,10 @@ router.route('/api/v1/charts')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { dataDb } = req.app.locals
-      const chartList = await dataDb.collection(collections.charts).find({ owner: req.user }).toArray()
+      const chartList = await dataDb
+        .collection(collections.charts)
+        .find({ owner: req.user })
+        .toArray()
 
       return res.status(200).json({ data: chartList })
     } catch (error) {
