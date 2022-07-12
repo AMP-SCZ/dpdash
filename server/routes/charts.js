@@ -157,32 +157,98 @@ router.route('/charts/:chart_id')
       const user = userFromRequest(req)
       const graph = { chart_id, data, title: chartTitle }
 
-      for await (const field of fieldLabelValueMap) {
-        const valueCountData = []
-
-        for await (const study of access ){
-          let count = 0;
-          const { label, value } = field;
-          const subjectList = await dataDb
-            .collection(collections.toc)
-            .find({ assessment, study }, { projection: { collection: 1, subject: 1, study: 1, _id: 0 }})
-            .map(doc => ({ ...doc, variable }))
-            .toArray()
-
-            for await (const doc of subjectList) {
-              const { collection, study, variable, subject } = doc
-              const counted = await dataDb
-                .collection(collection)
-                .findOne({ site: study, [variable]: value, subject_id: subject }, { projection: { [variable]: 1, _id: 0 }})
-              count = counted ? count+=1 : count
+        const query = [
+   
+          {
+            "$match" : {
+                "_id" : new ObjectID(chart_id)
             }
-            
-            valueCountData.push({ count, siteName: study, fieldLabel: label })
+        },
+            {
+                "$project" : {
+                    "_id" : 0.0,
+                    "assessment" : 1.0,
+                    "variable" : 1.0,
+                    "fieldLabelValueMap" : 1.0,
+                    "title" : 1.0
+                }
+            }, 
+            {
+                "$lookup" : {
+                    "from" : "toc",
+                    "localField" : "assessment",
+                    "foreignField" : "assessment",
+                    "as" : "tocList",
+                    "pipeline" : [
+                        {
+                            "$match" : {
+                                "study" : {
+                                    "$not" : {
+                                        "$eq" : "files"
+                                    },
+                                    "$in": access
+                                }
+                            }
+                        },
+                        {
+                            "$project" : {
+                                "collection" : 1.0,
+                                "subject" : 1.0,
+                                "study" : 1.0,
+                                "_id" : 0.0
+                            }
+                        }
+                    ]
+                }
+            }, 
+            {
+                "$unwind" : {
+                    "path" : "$tocList"
+                }
+            }, 
+            {
+                "$unwind" : {
+                    "path" : "$fieldLabelValueMap"
+                }
+            }
+        ]
+      const result = await dataDb.collection(collections.charts).aggregate(query).toArray()
+      const individualCountsList = []
+      for await (const dcmnt of result) {
+        const { fieldLabelValueMap: { value, label }, tocList: { collection, study }, variable, title } = dcmnt
+        if(!chartTitle) chartTitle = title
+        await dataDb.collection(collection).aggregate(    [
+          {
+              "$match" : {
+                  [variable] : value
+              }
+          }, 
+          {
+              "$group" : {
+                  "_id" : study,
+                  count : {
+                      "$sum" : 1.0
+                  }
+              }
           }
-          data.push(valueCountData)
-        }
+      ]).forEach(({ _id, count }) => individualCountsList.push({ siteName: _id, count, fieldLabel: label }));
+      }
+      const data = Object.values(individualCountsList.reduce(function (r, a) {
+        r[a.fieldLabel] = r[a.fieldLabel] || [];
+        r[a.fieldLabel].push(a);
+        return r;
+    }, Object.create(null))
+)
+.map((groupedCounts) => 
+Object.values(groupedCounts.reduce((acc, siteData) => {
+  acc[siteData.siteName] = acc[siteData.siteName]
+    ? { ...siteData, count: siteData.count + acc[siteData.siteName].count }
+    : siteData;
+  return acc;
+}, {}))
+)
       const user = userFromRequest(req)
-      const graph = { chart_id, data, title, variable, assessment }
+      const graph = { chart_id, data, title: chartTitle }
 
       return res.status(200).send(viewChartPage(user, graph))
     } catch (err) {
