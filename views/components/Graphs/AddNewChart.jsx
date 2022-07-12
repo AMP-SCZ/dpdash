@@ -15,7 +15,7 @@ const AddNewChart = () => {
         component="span"
         variant="fab"
         focusRipple
-        href={routes.newChart}
+        onClick={() => window.location.assign(routes.newChart)}
         style={{ marginBottom: '8px' }}
       >
         <Tooltip title="Create A New Chart">
