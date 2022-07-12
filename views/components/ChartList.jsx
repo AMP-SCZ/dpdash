@@ -10,6 +10,8 @@ import Delete from '@material-ui/icons/Delete';
 
 import { getCharts, deleteChart } from '../fe-utils/fetchUtil'
 
+import { routes } from '../routes/routes'
+
 const ChartList = () => {
   const [chartList, setChartList] = useState([])
 
@@ -45,7 +47,14 @@ const ChartList = () => {
         {chartList.map(({title, assessment, variable, _id}) => (
           <TableRow key={_id}>
             <TableCell align="center">
-              {title}
+              <Button
+                type="button"
+                variant="text"
+                fullWidth
+                href={routes.chart(_id)}
+              >
+                {title}
+              </Button>
             </TableCell>
             <TableCell align="center">
               {assessment}
