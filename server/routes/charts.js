@@ -9,6 +9,8 @@ import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template';
 
+import { handleNumberStringInput } from '../utils/inputHandlers'
+
 const router = Router();
 
 router.route('/charts')
@@ -119,7 +121,7 @@ router.route('/charts/:chart_id')
         const subjectDocumentCount = [
           {
             $match : {
-              [variable] : value
+              [variable] : handleNumberStringInput(value)
             }
           }, 
           {
