@@ -1,24 +1,14 @@
 import React from 'react'
 
-import Button from '@material-ui/core/Button'
-
 import AppLayout from './layouts/AppLayout'
 import ChartList from './components/ChartList'
-
-import { routes } from './routes/routes'
+import AddNewChart from './components/Graphs/AddNewChart'
 
 const Charts = () => {
   return (
     <AppLayout title='Charts'>
       <ChartList />
-      <Button
-        variant="outlined"
-        color="primary"
-        href={routes.newChart}
-        fullWidth
-      >
-        {'create a new chart'.toUpperCase()}
-      </Button>
+      <AddNewChart />
     </AppLayout>
   )
 }
