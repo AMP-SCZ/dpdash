@@ -140,7 +140,6 @@ router.route('/charts/:chart_id')
           .aggregate(subjectDocumentCount)
           .forEach(({ _id, count }) => individualCountsList.push({ siteName: _id, count, fieldLabel: label }));
       }
-
       const data = Object
         .values(individualCountsList
         .reduce(function (currentSiteData, nextSiteData) {
