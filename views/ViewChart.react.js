@@ -10,7 +10,7 @@ const ViewChart = ({ graph }) => {
   const { title, description } = graph
   return (
     <AppLayout
-      title={title}
+      title={title.toUpperCase()}
     >
       <Typography variant='title' gutterBottom>
         {description.toUpperCase()}
