@@ -120,8 +120,8 @@ router.route('/charts/:chart_id')
           description
         } = dcmnt
 
-        if(!chartTitle) chartTitle = title
-        if(!chartDescription) chartDescription = description
+        chartTitle ??= title
+        chartDescription ??= description
         const subjectDocumentCount = [
           {
             $match : {
@@ -177,10 +177,24 @@ router.route('/charts/:chart_id')
 router.route('/api/v1/charts')
   .post(ensureAuthenticated, async (req, res) => {
     try {
+      const { 
+        fieldLabelValueMap, 
+        title, 
+        variable, 
+        assessment, 
+        description 
+      } = req.body
       const { dataDb } = req.app.locals
       const { insertedId } = await dataDb
         .collection(collections.charts)
-        .insertOne({ ...req.body, owner: req.user })
+        .insertOne({ 
+          title,
+          variable,
+          assessment,
+          description,
+          fieldLabelValueMap,
+          owner: req.user
+        })
 
       return res.status(200).json({ data: { chart_id: insertedId }})
     } catch (error) {
