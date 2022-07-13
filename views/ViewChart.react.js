@@ -8,7 +8,6 @@ import BarGraph from './components/Graphs/BarGraph'
 
 const ViewChart = ({ graph }) => {
   const { title } = graph
-  console.log(graph)
   return (
     <AppLayout
       title={'Chart View'}
@@ -16,7 +15,7 @@ const ViewChart = ({ graph }) => {
       <Typography variant='title' gutterBottom>
         {title.toUpperCase()}
       </Typography>
-      <BarGraph />
+      <BarGraph graph={graph} />
     </AppLayout>
   )
 }
