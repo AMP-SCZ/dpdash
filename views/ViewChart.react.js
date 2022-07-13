@@ -8,7 +8,6 @@ import BarGraph from './components/Graphs/BarGraph'
 
 const ViewChart = ({ graph }) => {
   const { title } = graph
-  console.log(graph)
   return (
     <AppLayout
       title={'Chart View'}
