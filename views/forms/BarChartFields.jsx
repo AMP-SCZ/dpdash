@@ -36,7 +36,7 @@ const BarChartFields = ({
           : field
         )
       }))
-  
+
   return(
     <>
       <Typography variant='subtitle1' gutterBottom>
