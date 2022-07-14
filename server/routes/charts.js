@@ -10,6 +10,7 @@ import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template';
 
 import { handleNumberStringInput } from '../utils/inputHandlers'
+import { legendColors } from '../utils/legentThemeColors'
 
 const router = Router();
 
@@ -140,7 +141,7 @@ router.route('/charts/:chart_id')
           .aggregate(subjectDocumentCount)
           .forEach(({ _id, count }) => individualCountsList.push({ siteName: _id, count, fieldLabel: label }));
       }
-      
+
       const data = Object
         .values(individualCountsList
         .reduce(function (currentSiteData, nextSiteData) {
@@ -158,12 +159,41 @@ router.route('/charts/:chart_id')
               return currentSite;
             }, {}))
         )
+
+      const legenquery = [
+        {
+          $match : { _id : new ObjectID(chart_id) }
+        },
+        {
+          $project : {
+            _id : 0.0,
+            fieldLabelValueMap : 1.0,
+          }
+        },
+        {
+          $unwind: { path: '$fieldLabelValueMap' }
+        }
+      ]
+      const getFieldValues = await dataDb
+        .collection(collections.charts)
+        .aggregate(legenquery)
+        .toArray()
+      const legend = getFieldValues
+        .map(({fieldLabelValueMap: { label }}, idx) => ({ 
+          name: label, 
+          symbol: { 
+            fill: legendColors[idx], 
+            type: 'square' 
+          }
+        }))
+
       const user = userFromRequest(req)
       const graph = { 
         chart_id, 
         data, 
         title: chartTitle, 
-        description: chartDescription 
+        description: chartDescription,
+        legend
       }
 
       return res.status(200).send(viewChartPage(user, graph))
