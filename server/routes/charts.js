@@ -160,7 +160,7 @@ router.route('/charts/:chart_id')
             }, {}))
         )
 
-      const legenquery = [
+      const legendquery = [
         {
           $match : { _id : new ObjectID(chart_id) }
         },
@@ -176,7 +176,7 @@ router.route('/charts/:chart_id')
       ]
       const getFieldValues = await dataDb
         .collection(collections.charts)
-        .aggregate(legenquery)
+        .aggregate(legendquery)
         .toArray()
       const legend = getFieldValues
         .map(({fieldLabelValueMap: { label }}, idx) => ({ 
