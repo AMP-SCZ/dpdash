@@ -11,6 +11,8 @@ const BarChartFields = ({
   classes,
   formValues,
   setFormValues,
+  isColorPickerOpen,
+  setColorPickerToggle
 }) => {
   const { title } = formValues
 
