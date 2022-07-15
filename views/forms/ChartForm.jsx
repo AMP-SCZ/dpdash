@@ -8,6 +8,7 @@ import Form from './Form'
 import BarChartFields from './BarChartFields'
 
 import { chartStyles } from '../styles/chart_styles'
+import { dark_sky_blue } from '../constants/styles'
 
 const ChartForm = ({ classes, handleSubmit }) => {
   const [formValues, setFormValues] = useState({
@@ -16,9 +17,10 @@ const ChartForm = ({ classes, handleSubmit }) => {
     assessment: '',
     variable: '',
     fieldLabelValueMap: [
-      { value: '', label: '' }
+      { value: '', label: '', color: dark_sky_blue }
     ]
   })
+  const [isColorPickerOpen, setColorPickerToggle] = useState(false)
 
   return (
     <Form handleSubmit={(e) => handleSubmit(e, formValues)}>
@@ -26,6 +28,8 @@ const ChartForm = ({ classes, handleSubmit }) => {
         classes={classes} 
         formValues={formValues}
         setFormValues={setFormValues}
+        isColorPickerOpen={isColorPickerOpen}
+        setColorPickerToggle={setColorPickerToggle}
       />
       <div className={classes.submitButtonContainer}>
         <Button

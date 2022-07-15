@@ -3,11 +3,16 @@ import Delete from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
+import ColorPicker from '../components/colorPicker';
+
+import { dark_sky_blue } from '../constants/styles'
 
 const BarChartFields = ({ 
   classes,
   formValues,
   setFormValues,
+  isColorPickerOpen,
+  setColorPickerToggle
 }) => {
   const { title } = formValues
   
@@ -16,7 +21,7 @@ const BarChartFields = ({
     ...prevState,
     fieldLabelValueMap: [...prevState
       .fieldLabelValueMap,
-        {  value: '', label: '' }
+        {  value: '', label: '', color: dark_sky_blue  }
       ]
     }))
   const removeValueAndLabelField = (id) => setFormValues((prevState) => ({ 
@@ -100,13 +105,19 @@ const BarChartFields = ({
               value={field.label}
               required
             />
-            <Button
-              type='button'
-              variant='text'
-              onClick={() => removeValueAndLabelField(idx)}
-            >
-              <Delete className={classes.icon} />
-            </Button>
+            <ColorPicker classes={classes} setColorPickerToggle={setColorPickerToggle} isColorPickerOpen={isColorPickerOpen}
+             onColorChange={handleValueAndLabelFieldUpdate} idx={idx}
+             color={field.color}
+             />
+            {!isColorPickerOpen &&(
+              <Button
+                type='button'
+                variant='text'
+                onClick={() => removeValueAndLabelField(idx)}
+              >
+                <Delete className={classes.icon} />
+              </Button>
+            )}
           </div>
         ))
       }

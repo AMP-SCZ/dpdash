@@ -12,6 +12,9 @@ export const chartStyles = (theme) => ({
     marginTop: '8px',
     marginBottom: '8px',
   },
+  formLabelRow: {
+    display: 'flex'
+  },
   formLabelCol: {
     marginRight: '8px',
   },
@@ -20,10 +23,18 @@ export const chartStyles = (theme) => ({
     display: 'flex'
   },
   variableListInput: {
-    width: '30%'
+    width: '20%'
+  },
+  colorLabel: {
+    alignSelf: 'center',
+    marginLeft: '10px',
+    fontSize: '18px',
+    marginRight: '15px'
   },
   icon: {
-    padding: '15px'
+    padding: '15px',
+    marginBottom: '10px',
+    marginRight: '5px'
   },
   textButton: {
     color: neutral_blue,
@@ -33,5 +44,20 @@ export const chartStyles = (theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
     width: '66%'
+  },
+  swatchContainer: {
+    position: 'relative', 
+    display: 'flex', 
+    flexDirection: 'row', 
+    width: '10%',
+    justifyContent: 'center', 
+    alignItems: 'center',
+    marginLeft: '15px',
+    marginBottom: '10px'
+  },
+  swatch: {
+    width: '100%',
+    height: '18px',
+    cursor: 'pointer',
   }
 })

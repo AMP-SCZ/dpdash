@@ -183,14 +183,15 @@ router.route('/charts/:chart_id')
             type: 'square' 
           }
         }))
-
+      const barStackColors = getFieldValues.map(({ fieldLabelValueMap: { color }}) => color)
       const user = userFromRequest(req)
       const graph = { 
         chart_id, 
         data, 
         title: chartTitle, 
         description: chartDescription,
-        legend
+        legend,
+        barStackColors
       }
 
       return res.status(200).send(viewChartPage(user, graph))
