@@ -10,7 +10,6 @@ import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template';
 
 import { handleNumberStringInput } from '../utils/inputHandlers'
-import { legendColors } from '../utils/legentThemeColors'
 
 const router = Router();
 
@@ -179,10 +178,9 @@ router.route('/charts/:chart_id')
         .aggregate(legendquery)
         .toArray()
       const legend = getFieldValues
-        .map(({fieldLabelValueMap: { label }}, idx) => ({ 
+        .map(({fieldLabelValueMap: { label }}) => ({ 
           name: label, 
           symbol: { 
-            fill: legendColors[idx], 
             type: 'square' 
           }
         }))
