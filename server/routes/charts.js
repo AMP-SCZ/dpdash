@@ -177,13 +177,14 @@ router.route('/charts/:chart_id')
         .aggregate(legendQuery)
         .toArray()
       const legend = fieldValues
-        .map(({fieldLabelValueMap: { label }}) => ({ 
+        .map(({fieldLabelValueMap: { label, color }}) => ({ 
           name: label, 
           symbol: { 
-            type: 'square' 
+            type: 'square',
+            fill: color
           }
         }))
-      const barStackColors = getFieldValues.map(({ fieldLabelValueMap: { color }}) => color)
+      const chartVariableColors = fieldValues.map(({ fieldLabelValueMap: { color }}) => color)
       const user = userFromRequest(req)
       const graph = { 
         chart_id, 
@@ -191,7 +192,7 @@ router.route('/charts/:chart_id')
         title: chartTitle, 
         description: chartDescription,
         legend,
-        barStackColors
+        chartVariableColors
       }
 
       return res.status(200).send(viewChartPage(user, graph))

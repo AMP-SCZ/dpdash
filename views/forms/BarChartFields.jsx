@@ -11,11 +11,9 @@ const BarChartFields = ({
   classes,
   formValues,
   setFormValues,
-  isColorPickerOpen,
-  setColorPickerToggle
 }) => {
   const { title } = formValues
-  
+
   const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
   const addValueAndLabelField = () => setFormValues(prevState => ({
     ...prevState,
@@ -105,19 +103,20 @@ const BarChartFields = ({
               value={field.label}
               required
             />
-            <ColorPicker classes={classes} setColorPickerToggle={setColorPickerToggle} isColorPickerOpen={isColorPickerOpen}
-             onColorChange={handleValueAndLabelFieldUpdate} idx={idx}
+            <ColorPicker 
+             classes={classes} 
+             onColorChange={handleValueAndLabelFieldUpdate} 
+             idx={idx}
              color={field.color}
-             />
-            {!isColorPickerOpen &&(
-              <Button
-                type='button'
-                variant='text'
-                onClick={() => removeValueAndLabelField(idx)}
-              >
-                <Delete className={classes.icon} />
-              </Button>
-            )}
+            />
+            <Button
+              type='button'
+              variant='text'
+              onClick={() => removeValueAndLabelField(idx)}
+              className={classes.deleteContainer}
+            >
+              <Delete className={classes.icon} />
+            </Button>
           </div>
         ))
       }

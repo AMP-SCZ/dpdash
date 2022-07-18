@@ -1,13 +1,17 @@
 import { Paper, Typography } from "@material-ui/core"
-import React, { useCallback, useRef } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { HexColorPicker } from "react-colorful"
 
 import useClickOutside from "../hooks/useClickOutside"
 
-const ColorPicker = ({ classes, color, onColorChange,   isColorPickerOpen,
-  setColorPickerToggle, idx }) => {
+const ColorPicker = ({ 
+  classes, 
+  color, 
+  onColorChange, 
+  idx
+}) => {
+  const [isColorPickerOpen, setColorPickerToggle] = useState(false)
   const popover = useRef()
-
   const close = useCallback(() => setColorPickerToggle(false), [])
   useClickOutside(popover, close)
 
@@ -27,7 +31,7 @@ const ColorPicker = ({ classes, color, onColorChange,   isColorPickerOpen,
 
       )}
       {isColorPickerOpen && (
-        <div className="popover" ref={popover}>
+        <div className={classes.popover} ref={popover}>
           <HexColorPicker color={color} onChange={(newColor) => onColorChange({target: { name: 'color', value: newColor }}, idx)} />
         </div>
       )}

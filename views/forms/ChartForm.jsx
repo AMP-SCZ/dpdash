@@ -20,7 +20,6 @@ const ChartForm = ({ classes, handleSubmit }) => {
       { value: '', label: '', color: dark_sky_blue }
     ]
   })
-  const [isColorPickerOpen, setColorPickerToggle] = useState(false)
 
   return (
     <Form handleSubmit={(e) => handleSubmit(e, formValues)}>
@@ -28,8 +27,6 @@ const ChartForm = ({ classes, handleSubmit }) => {
         classes={classes} 
         formValues={formValues}
         setFormValues={setFormValues}
-        isColorPickerOpen={isColorPickerOpen}
-        setColorPickerToggle={setColorPickerToggle}
       />
       <div className={classes.submitButtonContainer}>
         <Button

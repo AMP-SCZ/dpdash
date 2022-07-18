@@ -30,7 +30,7 @@ const BarGraph = ({ graph }) => {
       <VictoryAxis
         dependentAxis
       />
-      <VictoryStack colorScale={graph.barStackColors}>
+      <VictoryStack colorScale={graph.chartVariableColors}>
         {graph.data.map((data, idx) => (
           <VictoryBar 
             data={data} 

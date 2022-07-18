@@ -31,10 +31,12 @@ export const chartStyles = (theme) => ({
     fontSize: '18px',
     marginRight: '15px'
   },
+  deleteContainer: {
+    marginLeft: '30px'
+  },
   icon: {
     padding: '15px',
     marginBottom: '10px',
-    marginRight: '5px'
   },
   textButton: {
     color: neutral_blue,
@@ -59,5 +61,12 @@ export const chartStyles = (theme) => ({
     width: '100%',
     height: '18px',
     cursor: 'pointer',
+  },
+  popover: {
+    position: 'absolute',
+    top: 'calc(100% + 2px)',
+    borderRadius: '9px',
+    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)',
+    zIndex: '10'
   }
 })
