@@ -173,11 +173,11 @@ router.route('/charts/:chart_id')
           $unwind: { path: '$fieldLabelValueMap' }
         }
       ]
-      const getFieldValues = await dataDb
+      const fieldValues = await dataDb
         .collection(collections.charts)
         .aggregate(legendquery)
         .toArray()
-      const legend = getFieldValues
+      const legend = fieldValues
         .map(({fieldLabelValueMap: { label }}) => ({ 
           name: label, 
           symbol: { 
