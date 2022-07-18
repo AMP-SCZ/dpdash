@@ -10,7 +10,6 @@ import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template';
 
 import { handleNumberStringInput } from '../utils/inputHandlers'
-import { legendColors } from '../utils/legentThemeColors'
 
 const router = Router();
 
