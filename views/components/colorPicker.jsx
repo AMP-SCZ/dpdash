@@ -10,6 +10,7 @@ const ColorPicker = ({
   onColorChange, 
   idx
 }) => {
+  const colorKey = 'color'
   const [isColorPickerOpen, setColorPickerToggle] = useState(false)
   const popover = useRef()
   const close = useCallback(() => setColorPickerToggle(false), [])
@@ -17,24 +18,22 @@ const ColorPicker = ({
 
   return (
     <div className={classes.swatchContainer}>
-      {!isColorPickerOpen &&(
-        <>    
-          <Typography variant='caption' className={classes.colorLabel}>
-            Color
-          </Typography>
-          <Paper
-            className={classes.swatch}
-            style={{ backgroundColor: color }}
-            onClick={() => setColorPickerToggle(true)}
-          />
-        </>
-
-      )}
-      {isColorPickerOpen && (
-        <div className={classes.popover} ref={popover}>
-          <HexColorPicker color={color} onChange={(newColor) => onColorChange({target: { name: 'color', value: newColor }}, idx)} />
-        </div>
-      )}
+      <Typography variant='caption' className={classes.colorLabel}>
+          Color
+      </Typography>
+      <Paper
+        className={classes.swatch}
+        style={{ backgroundColor: color }}
+        onClick={() => setColorPickerToggle(true)}
+      />
+    {isColorPickerOpen && (
+      <div className={classes.popover} ref={popover}>
+        <HexColorPicker 
+          color={color} 
+          onChange={(newColor) => onColorChange({target: { name: colorKey, value: newColor }}, idx)} 
+        />
+      </div>
+    )}
     </div>
   )
 }
