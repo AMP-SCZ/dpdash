@@ -8,7 +8,7 @@ const ColorPicker = ({
   classes, 
   color, 
   onColorChange, 
-  id
+  idx
 }) => {
   const colorKey = 'color'
   const [isColorPickerOpen, setColorPickerToggle] = useState(false)
@@ -30,7 +30,7 @@ const ColorPicker = ({
       <div className={classes.popover} ref={popover}>
         <HexColorPicker 
           color={color} 
-          onChange={(newColor) => onColorChange({target: { name: colorKey, value: newColor }}, id)} 
+          onChange={(newColor) => onColorChange({target: { name: colorKey, value: newColor }}, idx)} 
         />
       </div>
     )}
