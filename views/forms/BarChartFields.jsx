@@ -29,15 +29,11 @@ const BarChartFields = ({
       .fieldLabelValueMap
         .map((field, idx) => 
           id === idx
-          ? { ...field, [e.target.name]: handleDigits(e.target.value) }
+          ? { ...field, [e.target.name]: e.target.value }
           : field
         )
       }))
-  const handleDigits = (input) => {
-    const regex = new RegExp(/^[0-9]*$/)
-    return regex.test(input) ? parseFloat(input) : input
-  }
-  
+
   return(
     <>
       <Typography variant='subtitle1' gutterBottom>
