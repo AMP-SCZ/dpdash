@@ -186,15 +186,15 @@ router.route('/charts/:chart_id')
         }))
       const chartVariableColors = fieldValues.map(({ fieldLabelValueMap: { color }}) => color)
       const groupTargetValuesByFieldValues = fieldValues
-        .reduce((a, b) => {
-          a[b.fieldLabelValueMap.label] = b.fieldLabelValueMap
+        .reduce((currentGroup, nextGroup) => {
+          currentGroup[nextGroup.fieldLabelValueMap.label] = nextGroup.fieldLabelValueMap
             .targetValues
-              .reduce((c, d) => {
-                c[d.site] = { color: b.color, value: d.value }
+              .reduce((currentSites, nextSites) => {
+                currentSites[nextSites.site] = { value: nextSites.value }
 
-                return c
+                return currentSites
               }, {})
-          return a
+          return currentGroup
         }, {})
       const user = userFromRequest(req)
       const graph = { 
