@@ -14,7 +14,7 @@ import { graphStyles } from '../../styles/chart_styles';
 
 const BarGraph = ({ graph }) => {
   const { targetValuesMap } = graph
-  
+
   return(
     <VictoryChart
       domainPadding={20}
@@ -45,7 +45,7 @@ const BarGraph = ({ graph }) => {
             x='siteName'
             y='count' 
             key={idx}
-            labels={({ datum: { count, fieldLabel, siteName } }) => `Current: ${count} \n Target: ${targetValuesMap[fieldLabel][siteName].value ? targetValuesMap[fieldLabel][siteName].value : 'N/A'}`}
+            labels={({ datum: { count, fieldLabel, siteName } }) => `Current: ${count} \n Target: ${(targetValuesMap[fieldLabel][siteName] && targetValuesMap[fieldLabel][siteName].value) ? targetValuesMap[fieldLabel][siteName].value : 'N/A'}`}
             labelComponent={
               <VictoryTooltip 
                 constrainToVisibleArea 
