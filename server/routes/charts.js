@@ -185,6 +185,17 @@ router.route('/charts/:chart_id')
           }
         }))
       const chartVariableColors = fieldValues.map(({ fieldLabelValueMap: { color }}) => color)
+      const groupTargetValuesByFieldValues = fieldValues
+        .reduce((a, b) => {
+          a[b.fieldLabelValueMap.label] = b.fieldLabelValueMap
+            .targetValues
+              .reduce((c, d) => {
+                c[d.site] = { color: b.color, value: d.value }
+
+                return c
+              }, {})
+          return a
+        }, {})
       const user = userFromRequest(req)
       const graph = { 
         chart_id, 
@@ -192,7 +203,8 @@ router.route('/charts/:chart_id')
         title: chartTitle, 
         description: chartDescription,
         legend,
-        chartVariableColors
+        chartVariableColors,
+        targetValuesMap: groupTargetValuesByFieldValues
       }
 
       return res.status(200).send(viewChartPage(user, graph))

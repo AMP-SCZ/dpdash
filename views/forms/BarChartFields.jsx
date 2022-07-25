@@ -48,10 +48,15 @@ const BarChartFields = ({
       fieldLabelValueMap: prevState
       .fieldLabelValueMap
         .map((field, idx) => 
-          id === idx
-          ? { 
+          id === idx ? 
+            { 
               ...field, 
-              targetValues: field.targetValues.map((target, tidx) => tid === tidx ? { ...target, value: e.target.value } : target) 
+              targetValues: field.targetValues
+                .map((target, tidx) => 
+                  tid === tidx 
+                  ? { ...target, value: e.target.value } 
+                  : target
+                ) 
             }
           : field
         )
@@ -140,15 +145,23 @@ const BarChartFields = ({
               <Delete className={classes.icon} />
             </Button>
           </div>
+          <div key={idx} className={classes.formLabelRow}>
+            <Typography variant='h6' color="textSecondary">
+              Target Values
+            </Typography>
+          </div>
           {field.targetValues.length > 0 && field.targetValues.map((target, tidx) => (
             <div key={idx+target.site+tidx} className={classes.formLabelRow}>
-              <Typography variant='caption'>
-                {target.site}
+              <Typography 
+                variant='subtitle1' 
+                gutterBottom={false} 
+                color="textSecondary" 
+                className={classes.targetValueContainer}
+              >
+                {`${target.site}:`}
               </Typography>
-
               <TextField 
                 name={target.site}
-                label='target'
                 value={target.value}
                 onChange={(e) => handleTargetValues(e, idx, tidx)}
               />
