@@ -41,11 +41,11 @@ const BarGraph = ({ graph }) => {
       <VictoryStack colorScale={graph.chartVariableColors}>
         {graph.data.map((data, idx) => (
           <VictoryBar 
-            data={data} 
+            data={data}
             x='siteName'
             y='count' 
             key={idx}
-            labels={({ datum: { count, fieldLabel, siteName } }) => `Current: ${count} \n Target: ${(targetValuesMap[fieldLabel][siteName] && targetValuesMap[fieldLabel][siteName].value) ? targetValuesMap[fieldLabel][siteName].value : 'N/A'}`}
+            labels={({ datum: { count, fieldLabel, siteName } }) => `Current: ${count} \n Target: ${targetValuesMap[fieldLabel][siteName]?.value || 'N/A'}`}
             labelComponent={
               <VictoryTooltip 
                 constrainToVisibleArea 

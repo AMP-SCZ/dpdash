@@ -107,10 +107,10 @@ const BarChartFields = ({
         fullWidth
       />
       {
-        formValues.fieldLabelValueMap.length > 0 && 
+        formValues.fieldLabelValueMap.length && 
         formValues.fieldLabelValueMap.map((field, idx) => (
           <>
-          <div key={idx} className={classes.formLabelRow}>
+          <div key={'field-map'+idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
               name='value'
@@ -145,20 +145,15 @@ const BarChartFields = ({
               <Delete className={classes.icon} />
             </Button>
           </div>
-          <div key={idx} className={classes.formLabelRow}>
-            <Typography variant='h6' color="textSecondary">
-              Target Values
-            </Typography>
-          </div>
-          {field.targetValues.length > 0 && field.targetValues.map((target, tidx) => (
+          {field.targetValues.length && field.targetValues.map((target, tidx) => (
             <div key={idx+target.site+tidx} className={classes.formLabelRow}>
               <Typography 
                 variant='subtitle1' 
                 gutterBottom={false} 
-                color="textSecondary" 
+                color='textSecondary' 
                 className={classes.targetValueContainer}
               >
-                {`${target.site}:`}
+                {target.site}:
               </Typography>
               <TextField 
                 name={target.site}

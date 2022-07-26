@@ -21,7 +21,7 @@ const ChartForm = ({ classes, handleSubmit, user }) => {
         value: '', 
         label: '', 
         color: dark_sky_blue,
-        targetValues: user.userAccess.map((site) => ({ site, value: '' })) || []
+        targetValues: user.userAccess.map((site) => ({ site, value: '' }))
       }
     ]
   })
