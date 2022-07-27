@@ -45,6 +45,6 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
 }
 
 export const fieldValuesController = async(dataDb, chart_id) => await dataDb
-.collection(collections.charts)
-.aggregate(legendQuery(chart_id))
-.toArray()
+  .collection(collections.charts)
+  .aggregate(legendQuery(chart_id))
+  .toArray()

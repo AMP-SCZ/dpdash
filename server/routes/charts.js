@@ -12,8 +12,7 @@ import viewChartPage from '../templates/ViewChart.template';
 import { 
   legend, 
   chartVariableColors,
-  groupTargetValuesByFieldValues,
-  chartDataAbstractor
+  chartDataAbstractor,
 } from '../abstractors/chartsAbstractor'
 import { 
   fieldValuesController,
@@ -61,14 +60,14 @@ router.route('/charts/:chart_id')
       } = await graphDataController(dataDb, userAccess, chart_id)
       const fieldValues = await fieldValuesController(dataDb, chart_id)
       const user = userFromRequest(req)
+      const data = chartDataAbstractor(individualCountsList, fieldValues)
       const graph = { 
         chart_id, 
-        data: chartDataAbstractor(individualCountsList), 
+        data,
         title: chartTitle, 
         description: chartDescription,
         legend: legend(fieldValues),
         chartVariableColors: chartVariableColors(fieldValues),
-        targetValuesMap: groupTargetValuesByFieldValues(fieldValues)
       }
 
       return res.status(200).send(viewChartPage(user, graph))
