@@ -25,6 +25,29 @@ const postProcessData = (data) => {
   return processedData
 }
 
+var postProcessData = (data) => {
+  const processedData = {}
+
+  Object.entries(data).forEach((entry) => {
+    const [key, count] = entry
+    const [study, label, color] = key.split('-')
+    const newEntry = {
+      color,
+      count,
+      label,
+      study,
+    }
+
+    if (processedData[label]) {
+      processedData[label] = processedData[label].concat(newEntry)
+    } else {
+      processedData[label] = [newEntry]
+    }
+  })
+
+  return processedData
+}
+
 export const graphDataController = async (dataDb, userAccess, chart_id) => {
   const data = {}
   const chart = await dataDb
