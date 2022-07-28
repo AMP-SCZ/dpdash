@@ -4,6 +4,29 @@ import {
   legendQuery,
 } from '../aggregates/chartAggregates'
 
+var postProcessData = (data) => {
+  const processedData = {}
+
+  Object.entries(data).forEach((entry) => {
+    const [key, count] = entry
+    const [study, label, color] = key.split('-')
+    const newEntry = {
+      color,
+      count,
+      label,
+      study,
+    }
+
+    if (processedData[label]) {
+      processedData[label] = processedData[label].concat(newEntry)
+    } else {
+      processedData[label] = [newEntry]
+    }
+  })
+
+  return processedData
+}
+
 export const graphDataController = async (dataDb, userAccess, chart_id) => {
   // Get all the assessment's subjects for each site
   const chart = await dataDb
@@ -14,31 +37,73 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     .aggregate(siteAndAssessmentSubjects(chart_id, userAccess))
     .toArray()
 
-  const allCounts = {}
-  chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-    allCounts[fieldLabelValueMap.label] = {}
-  })
+  const data = {}
+
   // For each site's subjects
   for await (const subject of allSubjects) {
     const { study } = subject // site and study are the same thing
-    allCounts[fieldLabelValueMap.label][study] =
-      allCounts[fieldLabelValueMap.label][study] || 0
 
     // For each value/label pair
     chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-      const hasValue = subject[chart.variable] === fieldLabelValueMap.value
+      const { color, label, value } = fieldLabelValueMap
+      const hasValue = subject[chart.variable] === value
 
       if (hasValue) {
-        allCounts[fieldLabelValueMap.label][study] += 1
+        const dataKey = `${study}-${label}-${color}`
+
+        if (data[dataKey]) {
+          data[dataKey] += 1
+        } else {
+          data[dataKey] = 1
+        }
       }
     })
   }
 
   return {
     chart,
-    allCounts,
+    data: postProcessData(data),
   }
 }
+
+  // dataObj
+  // var dataObj = {
+  //   'Yale-Male-#000': 10,
+  //   'MGB-Male-#000': 5,
+  //   'Yale-Female-#000': 4,
+  //   'MGB-Female-#000': 18,
+  // }
+
+  // var formattedData = {
+  //   Male: [
+  //     {
+  //       count: 10,
+  //       site: 'Yale',
+  //       target: 15,
+  //       value: 'Male',
+  //     },
+  //     {
+  //       count: 5,
+  //       site: 'MGB',
+  //       target: 12,
+  //       value: 'Male',
+  //     },
+  //   ],
+  //   Female: [
+  //     {
+  //       count: 4,
+  //       site: 'Yale',
+  //       target: 18,
+  //       value: 'Female',
+  //     },
+  //     {
+  //       count: 18,
+  //       site: 'MGB',
+  //       target: 13,
+  //       value: 'Female',
+  //     },
+  //   ],
+  // }
 
 // Front-end logic
 // const labels = Object.keys(allCounts)
@@ -47,6 +112,22 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
 //     return { x: site, y: allCounts[label][site] }
 //   })
 // })
+
+// data []
+// [
+// {
+//   study: 'Yale',
+//   label: 'Gender',
+//   value: 'male',
+//   color: '#fff',
+// },
+// {
+//   study: 'Yale',
+//   label: 'Gender',
+//   value: 'female',
+//   color: '#000',
+// },
+// ]
 
 // allCounts
 // {
