@@ -1,8 +1,7 @@
+import { ObjectID } from 'mongodb'
+
 import { collections } from '../utils/mongoCollections'
-import {
-  siteAndAssessmentSubjects,
-  legendQuery,
-} from '../aggregates/chartAggregates'
+import { legendQuery } from '../aggregates/chartAggregates'
 
 const postProcessData = (data) => {
   const processedData = {}
@@ -30,23 +29,31 @@ const postProcessData = (data) => {
 export const graphDataController = async (dataDb, userAccess, chart_id) => {
   const chart = await dataDb
     .collection(collections.charts)
-    .findOne({ _id: ObjectId(chart_id) })
+    .findOne({ _id: ObjectID(chart_id) })
   const allSubjects = await dataDb
-    .collection(collections.charts)
-    .aggregate(siteAndAssessmentSubjects(chart_id, userAccess))
+    .collection(collections.toc)
+    .find(
+      { assessment: chart.assessment },
+      { $project: { collection: 1, _id: 0 } }
+    )
     .toArray()
 
   const data = {}
 
   for await (const subject of allSubjects) {
-    const { study } = subject
+    const subjectDayData = await dataDb
+      .collection(subject.collection)
+      .find({})
+      .toArray()
 
     chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
       const { color, label, value } = fieldLabelValueMap
-      const hasValue = subject[chart.variable] === value
+      const hasValue = subjectDayData.some((dayData) => {
+        return dayData[chart.variable] == value
+      })
 
       if (hasValue) {
-        const dataKey = `${study}-${label}-${color}`
+        const dataKey = `${subject.study}-${label}-${color}`
 
         if (data[dataKey]) {
           data[dataKey] += 1
