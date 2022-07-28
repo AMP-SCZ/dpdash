@@ -25,7 +25,7 @@ const postProcessData = (data) => {
   return processedData
 }
 
-var postProcessData = (data) => {
+const postProcessData = (data) => {
   const processedData = {}
 
   Object.entries(data).forEach((entry) => {
