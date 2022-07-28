@@ -1,30 +1,7 @@
 import { ObjectID } from 'mongodb'
 
 import { collections } from '../utils/mongoCollections'
-
-const postProcessData = (data) => {
-  const processedData = {}
-
-  Object.entries(data).forEach((entry) => {
-    const [key, count] = entry
-    const [study, valueLabel, color, studyTarget] = key.split('-')
-    const newEntry = {
-      color,
-      count,
-      valueLabel,
-      study,
-      studyTarget,
-    }
-
-    if (processedData[valueLabel]) {
-      processedData[valueLabel] = processedData[valueLabel].concat(newEntry)
-    } else {
-      processedData[valueLabel] = [newEntry]
-    }
-  })
-
-  return processedData
-}
+import { legendQuery } from '../aggregates/chartAggregates'
 
 const postProcessData = (data) => {
   const processedData = {}
