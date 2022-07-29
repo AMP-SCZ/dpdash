@@ -9,11 +9,8 @@ import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template'
 
-import { legend, chartVariableColors } from '../abstractors/chartsAbstractor'
-import {
-  fieldValuesController,
-  graphDataController,
-} from '../controllers/chartsController'
+import { legend } from '../helpers/chartsHelpers'
+import { graphDataController } from '../controllers/chartsController'
 
 const router = Router()
 
@@ -46,21 +43,17 @@ router.route('/charts/:chart_id').get(ensureAuthenticated, async (req, res) => {
     const { dataDb } = req.app.locals
     const { chart_id } = req.params
     const { userAccess } = req.session
-    const { chart, data } = await graphDataController(
-      dataDb,
-      userAccess,
-      chart_id
-    )
-    console.log(data)
-    const fieldValues = await fieldValuesController(dataDb, chart_id)
+    const {
+      chart: { title, description, fieldLabelValueMap },
+      data,
+    } = await graphDataController(dataDb, userAccess, chart_id)
     const user = userFromRequest(req)
     const graph = {
       chart_id,
       data,
-      title: chart.title,
-      description: chart.description,
-      legend: legend(fieldValues),
-      chartVariableColors: chartVariableColors(fieldValues),
+      title: title,
+      description: description,
+      legend: legend(fieldLabelValueMap),
     }
 
     return res.status(200).send(viewChartPage(user, graph))

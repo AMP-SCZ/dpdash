@@ -1,7 +1,6 @@
 import { ObjectID } from 'mongodb'
 
 import { collections } from '../utils/mongoCollections'
-import { legendQuery } from '../aggregates/chartAggregates'
 
 const postProcessData = (data) => {
   const processedData = {}
@@ -69,9 +68,3 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     data: postProcessData(data),
   }
 }
-
-export const fieldValuesController = async (dataDb, chart_id) =>
-  await dataDb
-    .collection(collections.charts)
-    .aggregate(legendQuery(chart_id))
-    .toArray()

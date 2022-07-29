@@ -13,25 +13,7 @@ import {
 import { graphStyles } from '../../styles/chart_styles'
 
 const BarGraph = ({ graph }) => {
-  const transformDataToPercentage = (dataset) => {
-    const totals =
-      dataset[0]?.map((data, i) => {
-        return dataset.reduce((memo, curr) => {
-          return memo + curr[i].count
-        }, 0)
-      }) || []
-    return dataset.map((data) => {
-      return data.map((datum, i) => {
-        return {
-          siteName: datum.siteName,
-          count: (datum.count / totals[i]) * 100,
-          fieldLabel: datum.fieldLabel,
-          current: datum.current,
-          target: datum.target,
-        }
-      })
-    })
-  }
+  const groupDataByValue = (data) => Object.values(data)
 
   return (
     <VictoryChart
@@ -54,22 +36,18 @@ const BarGraph = ({ graph }) => {
         style={graphStyles.yAxis}
         tickFormat={(tick) => `${tick}%`}
       />
-      <VictoryStack colorScale={graph.chartVariableColors}>
-        {transformDataToPercentage(graph.data).map((data, idx) => (
+      <VictoryStack>
+        {groupDataByValue(graph.data).map((data, idx) => (
           <VictoryBar
             data={data}
-            x="siteName"
+            x="study"
             y="count"
             key={idx}
-            labels={({ datum: { siteName, current, target, fieldLabel } }) =>
-              `Site: ${siteName} \n Value: ${fieldLabel} \n Current: ${current} \n Target: ${target}`
-            }
-            labelComponent={
-              <VictoryTooltip
-                constrainToVisibleArea
-                style={{ fill: graph.chartVariableColors[idx] }}
-              />
-            }
+            style={{
+              data: {
+                fill: ({ datum }) => datum.color,
+              },
+            }}
           />
         ))}
       </VictoryStack>
