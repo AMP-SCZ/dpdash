@@ -34,7 +34,7 @@ const BarGraph = ({ graph }) => {
             data={data}
             x='study'
             y='count'
-            key={data[idx].study + idx}
+            key={idx}
             style={{
               data: {
                 fill: ({ datum }) => datum.color,
