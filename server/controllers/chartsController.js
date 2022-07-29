@@ -26,6 +26,7 @@ const postProcessData = (data) => {
 }
 
 export const graphDataController = async (dataDb, userAccess, chart_id) => {
+  const data = {}
   const chart = await dataDb
     .collection(collections.charts)
     .findOne({ _id: ObjectID(chart_id) })
@@ -33,11 +34,9 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     .collection(collections.toc)
     .find(
       { assessment: chart.assessment },
-      { $project: { collection: 1, _id: 0 } }
+      { projection: { collection: 1, study: 1, _id: 0 } }
     )
     .toArray()
-
-  const data = {}
 
   for await (const subject of allSubjects) {
     const subjectDayData = await dataDb
@@ -47,9 +46,9 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
 
     chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
       const { color, label, value } = fieldLabelValueMap
-      const hasValue = subjectDayData.some((dayData) => {
-        return dayData[chart.variable] == value
-      })
+      const hasValue = subjectDayData.some(
+        (dayData) => dayData[chart.variable] == value
+      )
 
       if (hasValue) {
         const dataKey = `${subject.study}-${label}-${color}`
