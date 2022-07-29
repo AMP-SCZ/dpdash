@@ -1,7 +1,6 @@
 import { ObjectID } from 'mongodb'
 
 import { collections } from '../utils/mongoCollections'
-import { legendQuery } from '../aggregates/chartAggregates'
 
 const postProcessData = (data) => {
   const processedData = {}
