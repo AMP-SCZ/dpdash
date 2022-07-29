@@ -22,16 +22,16 @@ const BarGraph = ({ graph }) => {
       theme={VictoryTheme.material}
     >
       <VictoryLegend
-        orientation="horizontal"
+        orientation='horizontal'
         gutter={20}
         data={graph.legend}
         x={150}
         y={20}
         labelComponent={<VictoryLabel />}
       />
-      <VictoryAxis label="Site" style={graphStyles.xAxis} />
+      <VictoryAxis label='Site' style={graphStyles.xAxis} />
       <VictoryAxis
-        label="Total(%)"
+        label='Total(%)'
         dependentAxis
         style={graphStyles.yAxis}
         tickFormat={(tick) => `${tick}%`}
@@ -40,8 +40,8 @@ const BarGraph = ({ graph }) => {
         {groupDataByValue(graph.data).map((data, idx) => (
           <VictoryBar
             data={data}
-            x="study"
-            y="count"
+            x='study'
+            y='count'
             key={idx}
             style={{
               data: {
