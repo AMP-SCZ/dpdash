@@ -42,11 +42,10 @@ router.route('/charts/:chart_id').get(ensureAuthenticated, async (req, res) => {
   try {
     const { dataDb } = req.app.locals
     const { chart_id } = req.params
-    const { userAccess } = req.session
     const {
       chart: { title, description, fieldLabelValueMap },
       data,
-    } = await graphDataController(dataDb, userAccess, chart_id)
+    } = await graphDataController(dataDb, chart_id)
     const user = userFromRequest(req)
     const graph = {
       chart_id,

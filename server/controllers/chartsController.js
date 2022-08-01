@@ -2,7 +2,7 @@ import { ObjectID } from 'mongodb'
 
 import { collections } from '../utils/mongoCollections'
 
-const postProcessData = (data) => {
+const postProcessData = (data, studyTotals) => {
   const processedData = {}
 
   Object.entries(data).forEach((entry) => {
@@ -23,11 +23,32 @@ const postProcessData = (data) => {
     }
   })
 
+  // need the largest horizontal section so that all sites are accounted for
+  const largestHorizontalSection = Object.values(processedData).sort(
+    (arr1, arr2) => arr2.length - arr1.length
+  )[0]
+
+  const notAvailableArray = largestHorizontalSection.map((siteSection) => {
+    const totals = studyTotals[siteSection.study]
+    const count = totals.targetTotal ? totals.targetTotal - totals.count : 0
+
+    return {
+      color: 'grey',
+      count,
+      valueLabel: 'N/A',
+      study: siteSection.study,
+      studyTarget: '',
+    }
+  })
+
+  processedData['N/A'] = notAvailableArray
+
   return processedData
 }
 
-export const graphDataController = async (dataDb, userAccess, chart_id) => {
+export const graphDataController = async (dataDb, chart_id) => {
   const data = {}
+  const studyTotals = {}
   const chart = await dataDb
     .collection(collections.charts)
     .findOne({ _id: ObjectID(chart_id) })
@@ -51,17 +72,30 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
 
     chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
       const { color, label, value, targetValues } = fieldLabelValueMap
+      const targetValue = targetValues[study]
       const hasValue = subjectDayData.some(
         (dayData) => dayData[chart.variable] == value
       )
 
       if (hasValue) {
-        const dataKey = `${study}-${label}-${color}-${targetValues[study]}`
+        const dataKey = `${study}-${label}-${color}-${targetValue}`
 
         if (data[dataKey]) {
           data[dataKey] += 1
         } else {
           data[dataKey] = 1
+        }
+
+        if (studyTotals[study]) {
+          studyTotals[study].count += 1
+          if (!!studyTotals[study].targetValue && !!targetValue) {
+            studyTotals[study].targetValue += parseInt(targetValue)
+          }
+        } else {
+          studyTotals[study] = {
+            count: 1,
+            targetValue: targetValue ? parseInt(targetValue) : undefined,
+          }
         }
       }
     })
@@ -69,6 +103,6 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
 
   return {
     chart,
-    data: postProcessData(data),
+    data: postProcessData(data, studyTotals),
   }
 }
