@@ -183,7 +183,7 @@ router
             upsert: true,
           }
         )
-      console.dir(value, { depth: null })
+
       return ok === 1
         ? res.status(200).json({ data: value })
         : res.status(400).json({ message: 'Chart information not found' })
