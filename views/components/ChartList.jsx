@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Button from '@material-ui/core/Button'
 import Delete from '@material-ui/icons/Delete'
+import Edit from '@material-ui/icons/Edit'
 
 import { getCharts, deleteChart } from '../fe-utils/fetchUtil'
 
@@ -32,6 +33,7 @@ const ChartList = () => {
       console.error(error, '*****')
     }
   }
+  const editChart = async (id) => window.location.assign(routes.editChart(id))
 
   return (
     <Table>
@@ -39,6 +41,7 @@ const ChartList = () => {
         <TableRow>
           <TableCell align='center'>Title</TableCell>
           <TableCell align='center'>Description</TableCell>
+          <TableCell align='center'>Edit</TableCell>
           <TableCell align='center'>Delete</TableCell>
         </TableRow>
       </TableHead>
@@ -56,6 +59,15 @@ const ChartList = () => {
               </Button>
             </TableCell>
             <TableCell align='center'>{description?.toUpperCase()}</TableCell>
+            <TableCell align='center'>
+              <Button
+                type='button'
+                variant='text'
+                onClick={() => editChart(_id)}
+              >
+                <Edit />
+              </Button>
+            </TableCell>
             <TableCell align='center'>
               <Button
                 type='button'

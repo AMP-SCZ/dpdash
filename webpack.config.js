@@ -24,6 +24,7 @@ module.exports = {
     newChart: './views/NewChart.render.react.js',
     studyDetails: './views/StudyDetails.render.react.js',
     viewChart: './views/ViewChart.render.react.js',
+    editChart: './views/EditChart.render.react.js',
   },
   module: {
     rules: [

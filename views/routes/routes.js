@@ -15,6 +15,7 @@ export const routes = {
   logout: `${basePath}/logout`,
   studyDetails: `${basePath}/study-details`,
   chart: (chart_id) => `${basePath}/charts/${chart_id}`,
+  editChart: (chart_id) => `${basePath}/charts/edit/${chart_id}`,
 }
 
 export const defaultApiOptions = {

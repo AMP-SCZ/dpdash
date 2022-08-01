@@ -8,6 +8,7 @@ import { userFromRequest } from '../utils/userFromRequestUtil'
 import chartsListPage from '../templates/Chart.template'
 import newChartPage from '../templates/NewChart.template'
 import viewChartPage from '../templates/ViewChart.template'
+import editChartPage from '../templates/EditChart.template'
 
 import { legend } from '../helpers/chartsHelpers'
 import { graphDataController } from '../controllers/chartsController'
@@ -65,6 +66,23 @@ router.route('/charts/:chart_id').get(ensureAuthenticated, async (req, res) => {
     return res.status(500).send({ message: err.message })
   }
 })
+
+router
+  .route('/charts/edit/:chart_id')
+  .get(ensureAuthenticated, async (req, res) => {
+    try {
+      const user = userFromRequest(req)
+      const graph = {
+        chart_id: req.params.chart_id,
+      }
+
+      return res.status(200).send(editChartPage(user, graph))
+    } catch (error) {
+      console.error(error.message)
+
+      return res.status(500).send({ message: err.message })
+    }
+  })
 
 router
   .route('/api/v1/charts')
@@ -128,5 +146,49 @@ router
       return res.status(500).json({ message: error.message })
     }
   })
+  .get(ensureAuthenticated, async (req, res) => {
+    try {
+      const { dataDb } = req.app.locals
+      const chartForm = await dataDb
+        .collection(collections.charts)
+        .findOne({ _id: new ObjectID(req.params.chart_id) })
+      return res.status(200).json({ data: chartForm })
+    } catch (error) {
+      console.error(error)
 
+      return res.status(500).json({ message: error.message })
+    }
+  })
+  .put(ensureAuthenticated, async (req, res) => {
+    try {
+      const { dataDb } = req.app.locals
+      const { chart_id } = req.params
+      const { title, variable, assessment, description, fieldLabelValueMap } =
+        req.body
+      const { value, ok } = await dataDb
+        .collection(collections.charts)
+        .findOneAndUpdate(
+          { _id: new ObjectID(chart_id) },
+          {
+            $set: {
+              title,
+              variable,
+              assessment,
+              description,
+              fieldLabelValueMap,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+          {
+            upsert: true,
+          }
+        )
+      console.dir(value, { depth: null })
+      return ok === 1
+        ? res.status(200).json({ data: value })
+        : res.status(400).json({ message: 'Chart information not found' })
+    } catch (error) {
+      return res.status(500).json({ message: error.message })
+    }
+  })
 export default router
