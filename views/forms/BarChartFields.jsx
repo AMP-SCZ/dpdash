@@ -3,9 +3,12 @@ import Delete from '@material-ui/icons/Delete'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
 import ColorPicker from '../components/ColorPicker'
 
 import { dark_sky_blue } from '../constants/styles'
+
+import { targetValuesFields } from '../fe-utils/targetValuesUtil'
 
 const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
   const { title } = formValues
@@ -21,7 +24,7 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
           value: '',
           label: '',
           color: dark_sky_blue,
-          targetValues: user.userAccess.map((site) => ({ site, value: '' })),
+          targetValues: targetValuesFields(user.userAccess),
         },
       ],
     }))
@@ -39,19 +42,17 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
         id === idx ? { ...field, [e.target.name]: e.target.value } : field
       ),
     }))
-  const handleTargetValues = (e, id, tid) => {
+  const handleTargetValues = (e, id) => {
     setFormValues((prevState) => ({
       ...prevState,
-      fieldLabelValueMap: prevState.fieldLabelValueMap.map((field, idx) =>
-        id === idx
-          ? {
-              ...field,
-              targetValues: field.targetValues.map((target, tidx) =>
-                tid === tidx ? { ...target, value: e.target.value } : target
-              ),
-            }
-          : field
-      ),
+      fieldLabelValueMap: prevState.fieldLabelValueMap.map((field, idx) => {
+        if (id === idx) {
+          field.targetValues[e.target.name] = e.target.value
+          return field
+        } else {
+          return field
+        }
+      }),
     }))
   }
 
@@ -135,26 +136,31 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
               <Delete className={classes.icon} />
             </Button>
           </div>
-          {field.targetValues.map((target, tidx) => (
-            <div
-              key={idx + target.site + tidx}
-              className={classes.formLabelRow}
-            >
+          <div className={classes.formLabelRow}>
+            <Typography variant='h6' color='textSecondary'>
+              Targets
+            </Typography>
+          </div>
+          {Object.keys(field.targetValues).map((study, tidx) => (
+            <div key={idx + study + tidx} className={classes.formLabelRow}>
               <Typography
                 variant='subtitle1'
                 gutterBottom={false}
                 color='textSecondary'
                 className={classes.targetValueContainer}
               >
-                {target.site}:
+                {study}:
               </Typography>
               <TextField
-                name={target.site}
-                value={target.value}
-                onChange={(e) => handleTargetValues(e, idx, tidx)}
+                name={study}
+                value={field.targetValues[study]}
+                onChange={(e) => handleTargetValues(e, idx)}
               />
             </div>
           ))}
+          <div key={idx} className={classes.formLabelRow}>
+            <Divider variant='middle' />
+          </div>
         </>
       ))}
       <div className={classes.addLabelContainer}>

@@ -10,6 +10,8 @@ import BarChartFields from './BarChartFields'
 import { chartStyles } from '../styles/chart_styles'
 import { dark_sky_blue } from '../constants/styles'
 
+import { targetValuesFields } from '../fe-utils/targetValuesUtil'
+
 const ChartForm = ({ classes, handleSubmit, user }) => {
   const [formValues, setFormValues] = useState({
     title: '',
@@ -21,7 +23,7 @@ const ChartForm = ({ classes, handleSubmit, user }) => {
         value: '',
         label: '',
         color: dark_sky_blue,
-        targetValues: user.userAccess.map((site) => ({ site, value: '' })),
+        targetValues: targetValuesFields(user.userAccess),
       },
     ],
   })
