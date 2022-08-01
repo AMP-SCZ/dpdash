@@ -7,6 +7,7 @@ import {
   VictoryStack,
   VictoryLegend,
   VictoryLabel,
+  VictoryTooltip,
 } from 'victory'
 
 import { graphStyles } from '../../styles/chart_styles'
