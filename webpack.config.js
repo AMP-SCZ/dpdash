@@ -1,6 +1,6 @@
-require('@babel/register');
-const webpack = require('webpack');
-const path = require('path');
+require('@babel/register')
+const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   target: 'web',
@@ -30,31 +30,36 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            plugins: [
-              'react-html-attrs',
-              '@babel/plugin-proposal-class-properties',
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-              ['@babel/plugin-transform-runtime', { legacy: true }]
-            ],
-            presets: [
-              ["@babel/preset-react", {
-                "runtime": "automatic"
-              }],
-              '@babel/preset-env',
-            ],
-            cacheDirectory: true,
-          }
-        }],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              plugins: [
+                'react-html-attrs',
+                '@babel/plugin-proposal-class-properties',
+                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                ['@babel/plugin-transform-runtime', { legacy: true }],
+              ],
+              presets: [
+                [
+                  '@babel/preset-react',
+                  {
+                    runtime: 'automatic',
+                  },
+                ],
+                '@babel/preset-env',
+              ],
+              cacheDirectory: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'static/[hash][ext][query]'
-        }
+          filename: 'static/[hash][ext][query]',
+        },
       },
     ],
   },
@@ -62,9 +67,9 @@ module.exports = {
     minimize: true,
   },
   output: {
-    path: path.resolve(__dirname, 'public')+'/js/',
+    path: path.resolve(__dirname, 'public') + '/js/',
     filename: '[name].min.js',
-    publicPath: path.resolve(__dirname, 'public')+'/js/',
+    publicPath: path.resolve(__dirname, 'public') + '/js/',
   },
   resolve: {
     fallback: {
@@ -72,13 +77,13 @@ module.exports = {
       net: false,
       tls: false,
     },
-    extensions: [".js", ".jsx"]
+    extensions: ['.js', '.jsx'],
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      }
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
     }),
   ],
-};
+}
