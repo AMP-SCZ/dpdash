@@ -7,66 +7,58 @@ import ColorPicker from '../components/ColorPicker'
 
 import { dark_sky_blue } from '../constants/styles'
 
-const BarChartFields = ({ 
-  classes,
-  formValues,
-  setFormValues,
-  user
-}) => {
+const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
   const { title } = formValues
 
-  const updateFormValues = (e,) => setFormValues({ ...formValues, [e.target.name]: e.target.value })
-  const addValueAndLabelField = () => setFormValues(prevState => ({
-    ...prevState,
-    fieldLabelValueMap: [...prevState
-      .fieldLabelValueMap,
-        {  
-          value: '', 
-          label: '', 
-          color: dark_sky_blue, 
-          targetValues: user.userAccess.map((site) => ({ site, value: '' }))
-        }
-      ]
+  const updateFormValues = (e) =>
+    setFormValues({ ...formValues, [e.target.name]: e.target.value })
+  const addValueAndLabelField = () =>
+    setFormValues((prevState) => ({
+      ...prevState,
+      fieldLabelValueMap: [
+        ...prevState.fieldLabelValueMap,
+        {
+          value: '',
+          label: '',
+          color: dark_sky_blue,
+          targetValues: user.userAccess.map((site) => ({ site, value: '' })),
+        },
+      ],
     }))
-  const removeValueAndLabelField = (id) => setFormValues((prevState) => ({ 
-    ...prevState,
-    fieldLabelValueMap: prevState.fieldLabelValueMap.filter((_, index) => index !== id)
-  }))
-  const handleValueAndLabelFieldUpdate = (e, id) => setFormValues((prevState) => ({
-    ...prevState, 
-    fieldLabelValueMap: prevState
-      .fieldLabelValueMap
-        .map((field, idx) => 
-          id === idx
-          ? { ...field, [e.target.name]: e.target.value }
-          : field
-        )
-      }))
+  const removeValueAndLabelField = (id) =>
+    setFormValues((prevState) => ({
+      ...prevState,
+      fieldLabelValueMap: prevState.fieldLabelValueMap.filter(
+        (_, index) => index !== id
+      ),
+    }))
+  const handleValueAndLabelFieldUpdate = (e, id) =>
+    setFormValues((prevState) => ({
+      ...prevState,
+      fieldLabelValueMap: prevState.fieldLabelValueMap.map((field, idx) =>
+        id === idx ? { ...field, [e.target.name]: e.target.value } : field
+      ),
+    }))
   const handleTargetValues = (e, id, tid) => {
     setFormValues((prevState) => ({
       ...prevState,
-      fieldLabelValueMap: prevState
-      .fieldLabelValueMap
-        .map((field, idx) => 
-          id === idx ? 
-            { 
-              ...field, 
-              targetValues: field.targetValues
-                .map((target, tidx) => 
-                  tid === tidx 
-                  ? { ...target, value: e.target.value } 
-                  : target
-                ) 
+      fieldLabelValueMap: prevState.fieldLabelValueMap.map((field, idx) =>
+        id === idx
+          ? {
+              ...field,
+              targetValues: field.targetValues.map((target, tidx) =>
+                tid === tidx ? { ...target, value: e.target.value } : target
+              ),
             }
           : field
-        )
+      ),
     }))
   }
 
-  return(
+  return (
     <>
       <Typography variant='subtitle1' gutterBottom>
-        {title} 
+        {title}
       </Typography>
       <TextField
         className={classes.textInput}
@@ -106,9 +98,8 @@ const BarChartFields = ({
         required
         fullWidth
       />
-      {
-        formValues.fieldLabelValueMap.map((field, idx) => (
-          <>
+      {formValues.fieldLabelValueMap.map((field, idx) => (
+        <>
           <div key={idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
@@ -129,11 +120,11 @@ const BarChartFields = ({
               value={field.label}
               required
             />
-            <ColorPicker 
-             classes={classes} 
-             onColorChange={handleValueAndLabelFieldUpdate} 
-             idx={idx}
-             color={field.color}
+            <ColorPicker
+              classes={classes}
+              onColorChange={handleValueAndLabelFieldUpdate}
+              idx={idx}
+              color={field.color}
             />
             <Button
               type='button'
@@ -145,25 +136,27 @@ const BarChartFields = ({
             </Button>
           </div>
           {field.targetValues.map((target, tidx) => (
-            <div key={idx+target.site+tidx} className={classes.formLabelRow}>
-              <Typography 
-                variant='subtitle1' 
-                gutterBottom={false} 
-                color='textSecondary' 
+            <div
+              key={idx + target.site + tidx}
+              className={classes.formLabelRow}
+            >
+              <Typography
+                variant='subtitle1'
+                gutterBottom={false}
+                color='textSecondary'
                 className={classes.targetValueContainer}
               >
                 {target.site}:
               </Typography>
-              <TextField 
+              <TextField
                 name={target.site}
                 value={target.value}
                 onChange={(e) => handleTargetValues(e, idx, tidx)}
               />
             </div>
           ))}
-          </>
-        ))
-      }
+        </>
+      ))}
       <div className={classes.addLabelContainer}>
         <Button
           variant='text'
@@ -174,7 +167,7 @@ const BarChartFields = ({
           + Add label and value group combination
         </Button>
       </div>
-  </>
+    </>
   )
 }
 
