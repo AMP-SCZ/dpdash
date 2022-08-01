@@ -101,7 +101,7 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
       />
       {formValues.fieldLabelValueMap.map((field, idx) => (
         <>
-          <div key={idx} className={classes.formLabelRow}>
+          <div key={'field' + idx} className={classes.formLabelRow}>
             <TextField
               label='Value'
               name='value'
@@ -141,8 +141,8 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
               Targets
             </Typography>
           </div>
-          {Object.keys(field.targetValues).map((study, tidx) => (
-            <div key={idx + study + tidx} className={classes.formLabelRow}>
+          {Object.keys(field.targetValues).map((study) => (
+            <div key={idx + study} className={classes.formLabelRow}>
               <Typography
                 variant='subtitle1'
                 gutterBottom={false}
