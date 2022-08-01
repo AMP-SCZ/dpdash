@@ -99,6 +99,9 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
         required
         fullWidth
       />
+      <div className={classes.formLabelRow}>
+        <br />
+      </div>
       {formValues.fieldLabelValueMap.map((field, idx) => (
         <>
           <div key={'field' + idx} className={classes.formLabelRow}>
@@ -158,8 +161,8 @@ const BarChartFields = ({ classes, formValues, setFormValues, user }) => {
               />
             </div>
           ))}
-          <div key={idx} className={classes.formLabelRow}>
-            <Divider variant='middle' />
+          <div className={classes.formLabelRow}>
+            <br />
           </div>
         </>
       ))}
