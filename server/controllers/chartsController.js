@@ -7,18 +7,19 @@ const postProcessData = (data) => {
 
   Object.entries(data).forEach((entry) => {
     const [key, count] = entry
-    const [study, label, color] = key.split('-')
+    const [study, valueLabel, color, studyTarget] = key.split('-')
     const newEntry = {
       color,
       count,
-      label,
+      valueLabel,
       study,
+      studyTarget,
     }
 
-    if (processedData[label]) {
-      processedData[label] = processedData[label].concat(newEntry)
+    if (processedData[valueLabel]) {
+      processedData[valueLabel] = processedData[valueLabel].concat(newEntry)
     } else {
-      processedData[label] = [newEntry]
+      processedData[valueLabel] = [newEntry]
     }
   })
 
