@@ -7,14 +7,11 @@ import {
   VictoryStack,
   VictoryLegend,
   VictoryLabel,
-  VictoryTooltip,
 } from 'victory'
 
 import { graphStyles } from '../../styles/chart_styles'
 
 const BarGraph = ({ graph }) => {
-  const groupDataByValue = (data) => Object.values(data)
-
   return (
     <VictoryChart
       domainPadding={20}
@@ -30,19 +27,14 @@ const BarGraph = ({ graph }) => {
         labelComponent={<VictoryLabel />}
       />
       <VictoryAxis label='Site' style={graphStyles.xAxis} />
-      <VictoryAxis
-        label='Total(%)'
-        dependentAxis
-        style={graphStyles.yAxis}
-        tickFormat={(tick) => `${tick}%`}
-      />
+      <VictoryAxis label='Total' dependentAxis style={graphStyles.yAxis} />
       <VictoryStack>
-        {groupDataByValue(graph.data).map((data, idx) => (
+        {Object.values(graph.data).map((data, idx) => (
           <VictoryBar
             data={data}
             x='study'
             y='count'
-            key={idx}
+            key={data[idx].study + idx}
             style={{
               data: {
                 fill: ({ datum }) => datum.color,
