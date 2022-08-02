@@ -46,6 +46,17 @@ const postProcessData = (data, studyTotals) => {
   return processedData
 }
 
+// const studyTotals = {
+//   MGB: {
+//     count: 0,
+//     targetTotal: 20,
+//   },
+//   Yale: {
+//     count: 0,
+//     targetTotal: undefined,
+//   },
+// }
+
 export const graphDataController = async (dataDb, chart_id) => {
   const data = {}
   const studyTotals = {}
@@ -62,6 +73,27 @@ export const graphDataController = async (dataDb, chart_id) => {
       { projection: { collection: 1, study: 1, _id: 0 } }
     )
     .toArray()
+
+  chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
+    const { targetValues } = fieldLabelValueMap
+
+    Object.keys(targetValues).forEach((study) => {
+      const newTargetValue = targetValues[study]
+
+      if (studyTotals[study]) {
+        if (!!studyTotals[study].targetValue) {
+          studyTotals[study].targetValue = !!newTargetValue
+            ? studyTotals[study].targetValue + parseInt(newTargetValue)
+            : undefined
+        }
+      } else {
+        studyTotals[study] = {
+          count: 0,
+          targetValue: newTargetValue ? parseInt(newTargetValue) : undefined,
+        }
+      }
+    })
+  })
 
   for await (const subject of allSubjects) {
     const { study } = subject
@@ -85,18 +117,8 @@ export const graphDataController = async (dataDb, chart_id) => {
         } else {
           data[dataKey] = 1
         }
-
-        if (studyTotals[study]) {
-          studyTotals[study].count += 1
-          if (!!studyTotals[study].targetValue && !!targetValue) {
-            studyTotals[study].targetValue += parseInt(targetValue)
-          }
-        } else {
-          studyTotals[study] = {
-            count: 1,
-            targetValue: targetValue ? parseInt(targetValue) : undefined,
-          }
-        }
+        console.log(studyTotals, study)
+        studyTotals[study].count += 1
       }
     })
   }
