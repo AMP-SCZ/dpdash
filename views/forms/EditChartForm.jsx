@@ -8,23 +8,16 @@ import Form from './Form'
 import BarChartFields from './BarChartFields'
 
 import { chartStyles } from '../styles/chart_styles'
-import { getChartForm } from '../fe-utils/fetchUtil'
+import { getChart } from '../fe-utils/fetchUtil'
 
 const ChartForm = ({ classes, handleSubmit, user, graph }) => {
   const [formValues, setFormValues] = useState({})
   const [load, setLoading] = useState(true)
 
-  useEffect(() => {
-    getChartForm(graph.chart_id).then((res) => {
-      setFormValues(res.data)
-      setLoading(false)
-    })
-  }, [])
-
   return (
     <>
       {!load && (
-        <Form handleSubmit={(e) => handleSubmit(e, formValues)}>
+        <Form handleSubmit={(e) => handleSubmit(e, formValues, graph.chart_id)}>
           <BarChartFields
             classes={classes}
             formValues={formValues}

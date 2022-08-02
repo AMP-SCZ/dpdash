@@ -1,13 +1,34 @@
 import React from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
 
 import AppLayout from './layouts/AppLayout'
 import ChartForm from './forms/ChartForm'
 
 import { createChart } from './fe-utils/fetchUtil'
+import { chartStyles } from './styles/chart_styles'
+import { targetValuesFields } from './fe-utils/targetValuesUtil'
 
 import { routes } from './routes/routes'
+import { dark_sky_blue } from './constants/styles'
 
-const NewChart = () => {
+const initialValues = (user) => ({
+  title: '',
+  description: '',
+  assessment: '',
+  variable: '',
+  fieldLabelValueMap: [
+    {
+      value: '',
+      label: '',
+      color: dark_sky_blue,
+      targetValues: targetValuesFields(user.userAccess),
+    },
+  ],
+})
+
+const NewChart = ({ classes, user }) => {
   const handleSubmit = async (e, formValues) => {
     try {
       e.preventDefault()
@@ -19,10 +40,25 @@ const NewChart = () => {
   }
 
   return (
-    <AppLayout title='Create a Chart'>
-      <ChartForm handleSubmit={handleSubmit} />
+    <AppLayout title='Create chart'>
+      <ChartForm
+        classes={classes}
+        handleSubmit={handleSubmit}
+        initialValues={initialValues(user)}
+        studies={user.userAccess}
+      />
     </AppLayout>
   )
 }
 
-export default NewChart
+const styles = (theme) => ({
+  ...chartStyles(theme),
+})
+const mapStateToProps = (state) => ({
+  user: state.user,
+})
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps)
+)(NewChart)

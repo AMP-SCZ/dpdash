@@ -149,10 +149,13 @@ router
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const { dataDb } = req.app.locals
-      const chartForm = await dataDb
+      const chart = await dataDb
         .collection(collections.charts)
-        .findOne({ _id: new ObjectID(req.params.chart_id) })
-      return res.status(200).json({ data: chartForm })
+        .findOne(
+          { _id: new ObjectID(req.params.chart_id) },
+          { projection: { _id: 0 } }
+        )
+      return res.status(200).json({ data: chart })
     } catch (error) {
       console.error(error)
 
@@ -165,28 +168,23 @@ router
       const { chart_id } = req.params
       const { title, variable, assessment, description, fieldLabelValueMap } =
         req.body
-      const { value, ok } = await dataDb
-        .collection(collections.charts)
-        .findOneAndUpdate(
-          { _id: new ObjectID(chart_id) },
-          {
-            $set: {
-              title,
-              variable,
-              assessment,
-              description,
-              fieldLabelValueMap,
-              updatedAt: new Date().toISOString(),
-            },
+      const { result } = await dataDb.collection(collections.charts).updateOne(
+        { _id: new ObjectID(chart_id) },
+        {
+          $set: {
+            title,
+            variable,
+            assessment,
+            description,
+            fieldLabelValueMap,
+            updatedAt: new Date().toISOString(),
           },
-          {
-            upsert: true,
-          }
-        )
+        }
+      )
 
-      return ok === 1
-        ? res.status(200).json({ data: value })
-        : res.status(400).json({ message: 'Chart information not found' })
+      return result.ok === 1
+        ? res.status(200).json({ data: result })
+        : res.status(404).json({ message: 'Chart not found' })
     } catch (error) {
       return res.status(500).json({ message: error.message })
     }

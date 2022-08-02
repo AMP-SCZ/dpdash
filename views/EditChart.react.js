@@ -1,26 +1,58 @@
 import React from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
 
 import AppLayout from './layouts/AppLayout'
-import EditChartForm from './forms/EditChartForm'
-
-import { editChartForm } from './fe-utils/fetchUtil'
+import ChartForm from './forms/ChartForm'
+import { chartStyles } from './styles/chart_styles'
+import { editChart, getChart } from './fe-utils/fetchUtil'
 import { routes } from './routes/routes'
 
-const EditChart = () => {
+const EditChart = ({ classes, graph, user }) => {
+  const chartID = graph.chart_id
+  const [chart, setChart] = React.useState()
   const handleSubmit = async (e, formValues) => {
     try {
       e.preventDefault()
-      const { data } = await editChartForm(formValues)
-      window.location.assign(routes.chart(data._id))
+      const { data } = await editChart(chartID, formValues)
+
+      if (data.ok === 1) window.location.assign(routes.chart(chartID))
     } catch (error) {
       console.error(error)
     }
   }
+
+  React.useEffect(() => {
+    getChart(chartID).then(({ data }) => setChart(data))
+  }, [chartID])
+
+  if (!chart) {
+    return null
+  }
+
   return (
-    <AppLayout title='Edit a Chart'>
-      <EditChartForm handleSubmit={handleSubmit} />
+    <AppLayout title='Edit chart'>
+      <ChartForm
+        classes={classes}
+        handleSubmit={handleSubmit}
+        initialValues={chart}
+        studies={user.userAccess}
+      />
     </AppLayout>
   )
 }
 
-export default EditChart
+const styles = (theme) => ({
+  ...chartStyles(theme),
+})
+
+const mapStateToProps = (state) => ({
+  graph: state.graph,
+  user: state.user,
+})
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps)
+)(EditChart)
