@@ -1,5 +1,5 @@
 import basePathConfig from '../../server/configs/basePathConfig'
-import { routes, defaultApiOptions } from '../routes/routes'
+import { routes, defaultApiOptions, apiRoutes } from '../routes/routes'
 const basePath = basePathConfig || ''
 
 const fetchStudiesAdmin = async () => {
@@ -34,13 +34,10 @@ const fetchSubjects = async () => {
   }
   const studiesJson = await userAccess.json()
   const studies = studiesJson ? studiesJson : []
-  const subjectsResponse = await window.fetch(
-    `${basePath}/api/v1/subjects?q=${JSON.stringify(studies)}`,
-    {
-      ...defaultApiOptions,
-      method: 'GET',
-    }
-  )
+  const subjectsResponse = await window.fetch(apiRoutes.subjects(studies), {
+    ...defaultApiOptions,
+    method: 'GET',
+  })
   if (subjectsResponse.status !== 200) {
     throw new Error(subjectsResponse.statusText)
   }
@@ -70,7 +67,7 @@ const fetchUsernames = async () => {
 }
 
 const fetchStudyDetails = async () => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
+  const res = await window.fetch(apiRoutes.studyDetails, {
     ...defaultApiOptions,
     method: 'GET',
   })
@@ -79,7 +76,7 @@ const fetchStudyDetails = async () => {
 }
 
 const createStudyDetails = async (body) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/study-details`, {
+  const res = await window.fetch(apiRoutes.studyDetails, {
     ...defaultApiOptions,
     method: 'POST',
     body: JSON.stringify(body),
@@ -91,13 +88,10 @@ const createStudyDetails = async (body) => {
 }
 
 const deleteStudyDetails = async (id) => {
-  const res = await window.fetch(
-    `${routes.basePath}/api/v1/study-details/${id}`,
-    {
-      ...defaultApiOptions,
-      method: 'DELETE',
-    }
-  )
+  const res = await window.fetch(apiRoutes.studyDetail(id), {
+    ...defaultApiOptions,
+    method: 'DELETE',
+  })
 
   if (res.status !== 200) return new Error(res.message)
 
@@ -105,7 +99,7 @@ const deleteStudyDetails = async (id) => {
 }
 
 const createChart = async (formValues) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/charts`, {
+  const res = await window.fetch(apiRoutes.charts, {
     ...defaultApiOptions,
     method: 'POST',
     body: JSON.stringify(formValues),
@@ -117,7 +111,7 @@ const createChart = async (formValues) => {
 }
 
 const getCharts = async () => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/charts`, {
+  const res = await window.fetch(apiRoutes.charts, {
     ...defaultApiOptions,
     method: 'GET',
   })
@@ -128,7 +122,7 @@ const getCharts = async () => {
 }
 
 const deleteChart = async (id) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/charts/${id}`, {
+  const res = await window.fetch(apiRoutes.chart(id), {
     ...defaultApiOptions,
     method: 'DELETE',
   })
@@ -139,19 +133,19 @@ const deleteChart = async (id) => {
 }
 
 const editChart = async (id, formValues) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/charts/${id}`, {
+  const res = await window.fetch(apiRoutes.chart(id), {
     ...defaultApiOptions,
     method: 'PUT',
     body: JSON.stringify(formValues),
   })
-  console.log(res)
+
   if (res.status !== 200) return new Error(res.message)
 
   return res.json()
 }
 
 const getChart = async (id) => {
-  const res = await window.fetch(`${routes.basePath}/api/v1/charts/${id}`, {
+  const res = await window.fetch(apiRoutes.chart(id), {
     ...defaultApiOptions,
     method: 'GET',
   })

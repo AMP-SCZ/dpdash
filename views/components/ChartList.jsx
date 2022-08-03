@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Button from '@material-ui/core/Button'
+import Link from '@material-ui/core/Link'
 import Delete from '@material-ui/icons/Delete'
 import Edit from '@material-ui/icons/Edit'
 
@@ -33,7 +34,6 @@ const ChartList = () => {
       console.error(error, '*****')
     }
   }
-  const editChart = async (id) => window.location.assign(routes.editChart(id))
 
   return (
     <Table>
@@ -49,24 +49,15 @@ const ChartList = () => {
         {chartList.map(({ title, description, _id }) => (
           <TableRow key={_id}>
             <TableCell align='center'>
-              <Button
-                type='button'
-                variant='text'
-                fullWidth
-                href={routes.chart(_id)}
-              >
+              <Link color='textPrimary' href={routes.chart(_id)}>
                 {title?.toUpperCase()}
-              </Button>
+              </Link>
             </TableCell>
             <TableCell align='center'>{description?.toUpperCase()}</TableCell>
             <TableCell align='center'>
-              <Button
-                type='button'
-                variant='text'
-                onClick={() => editChart(_id)}
-              >
+              <Link href={routes.editChart(_id)} color='textPrimary'>
                 <Edit />
-              </Button>
+              </Link>
             </TableCell>
             <TableCell align='center'>
               <Button

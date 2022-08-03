@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
@@ -11,7 +11,7 @@ import { routes } from './routes/routes'
 
 const EditChart = ({ classes, graph, user }) => {
   const chartID = graph.chart_id
-  const [chart, setChart] = React.useState()
+  const [chart, setChart] = useState()
   const handleSubmit = async (e, formValues) => {
     try {
       e.preventDefault()
@@ -23,7 +23,7 @@ const EditChart = ({ classes, graph, user }) => {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     getChart(chartID).then(({ data }) => setChart(data))
   }, [chartID])
 

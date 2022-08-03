@@ -68,7 +68,7 @@ router.route('/charts/:chart_id').get(ensureAuthenticated, async (req, res) => {
 })
 
 router
-  .route('/charts/edit/:chart_id')
+  .route('/charts/:chart_id/edit')
   .get(ensureAuthenticated, async (req, res) => {
     try {
       const user = userFromRequest(req)
