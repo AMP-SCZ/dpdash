@@ -22,7 +22,6 @@ const postProcessData = (data, studyTotals) => {
       processedData[valueLabel] = [newEntry]
     }
   })
-
   // need the largest horizontal section so that all sites are accounted for
   const largestHorizontalSection = Object.values(processedData).sort(
     (arr1, arr2) => arr2.length - arr1.length
@@ -57,7 +56,7 @@ const postProcessData = (data, studyTotals) => {
 //   },
 // }
 
-export const graphDataController = async (dataDb, chart_id) => {
+export const graphDataController = async (dataDb, userAccess, chart_id) => {
   const data = {}
   const studyTotals = {}
   const chart = await dataDb
@@ -81,15 +80,15 @@ export const graphDataController = async (dataDb, chart_id) => {
       const newTargetValue = targetValues[study]
 
       if (studyTotals[study]) {
-        if (!!studyTotals[study].targetValue) {
-          studyTotals[study].targetValue = !!newTargetValue
-            ? studyTotals[study].targetValue + parseInt(newTargetValue)
+        if (!!studyTotals[study].targetTotal) {
+          studyTotals[study].targetTotal = !!newTargetValue
+            ? studyTotals[study].targetTotal + parseInt(newTargetValue)
             : undefined
         }
       } else {
         studyTotals[study] = {
           count: 0,
-          targetValue: newTargetValue ? parseInt(newTargetValue) : undefined,
+          targetTotal: newTargetValue ? parseInt(newTargetValue) : undefined,
         }
       }
     })
@@ -117,7 +116,6 @@ export const graphDataController = async (dataDb, chart_id) => {
         } else {
           data[dataKey] = 1
         }
-        console.log(studyTotals, study)
         studyTotals[study].count += 1
       }
     })
