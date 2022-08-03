@@ -184,7 +184,7 @@ router
 
       return result.ok === 1
         ? res.status(200).json({ data: result })
-        : res.status(404).json({ message: 'Chart not found' })
+        : res.status(404).json({ message: 'Chart could not be updated' })
     } catch (error) {
       return res.status(500).json({ message: error.message })
     }
