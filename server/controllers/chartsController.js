@@ -22,19 +22,21 @@ const postProcessData = (data, studyTotals) => {
       processedData[valueLabel] = [newEntry]
     }
   })
+
+  // need the largest horizontal section so that all sites are accounted for
   const largestHorizontalSection = Object.values(processedData).sort(
     (arr1, arr2) => arr2.length - arr1.length
   )[0]
 
-  const notAvailableArray = largestHorizontalSection.map((siteSection) => {
-    const totals = studyTotals[siteSection.study]
+  const notAvailableArray = largestHorizontalSection.map((studySection) => {
+    const totals = studyTotals[studySection.study]
     const count = totals.targetTotal ? totals.targetTotal - totals.count : 0
 
     return {
       color: 'grey',
       count,
       valueLabel: 'N/A',
-      study: siteSection.study,
+      study: studySection.study,
       studyTarget: '',
     }
   })
@@ -65,18 +67,21 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     const { targetValues } = fieldLabelValueMap
 
     Object.keys(targetValues).forEach((study) => {
-      const newTargetValue = targetValues[study]
+      const rawNewTargetValue = targetValues[study]
+      const newTargetValue = !!rawNewTargetValue
+        ? +rawNewTargetValue
+        : undefined
 
       if (studyTotals[study]) {
         if (!!studyTotals[study].targetTotal) {
           studyTotals[study].targetTotal = !!newTargetValue
-            ? studyTotals[study].targetTotal + parseInt(newTargetValue)
+            ? studyTotals[study].targetTotal + newTargetValue
             : undefined
         }
       } else {
         studyTotals[study] = {
           count: 0,
-          targetTotal: newTargetValue ? parseInt(newTargetValue) : undefined,
+          targetTotal: newTargetValue,
         }
       }
     })
