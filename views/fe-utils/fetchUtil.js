@@ -155,6 +155,16 @@ const getChart = async (id) => {
   return res.json()
 }
 
+const duplicateChart = async (id) => {
+  const res = await window.fetch(apiRoutes.chart(id), {
+    ...defaultApiOptions,
+    method: 'PATCH',
+  })
+  if (res.status !== 200) return new Error(res.message)
+
+  return res.json()
+}
+
 export {
   fetchStudies,
   fetchStudiesAdmin,
@@ -169,4 +179,5 @@ export {
   deleteChart,
   editChart,
   getChart,
+  duplicateChart,
 }
