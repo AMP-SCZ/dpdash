@@ -38,7 +38,12 @@ const BarGraph = ({ graph }) => {
         labelComponent={<VictoryLabel />}
       />
       <VictoryAxis label='Site' style={graphStyles.xAxis} />
-      <VictoryAxis label='Total' dependentAxis style={graphStyles.yAxis} />
+      <VictoryAxis
+        label='Total'
+        dependentAxis
+        style={graphStyles.yAxis}
+        tickFormat={(yAxisValue) => `${yAxisValue}%`}
+      />
       <VictoryStack>
         {Object.values(graph.data).map((data, idx) => (
           <VictoryBar
