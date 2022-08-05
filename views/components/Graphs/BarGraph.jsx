@@ -7,7 +7,7 @@ import {
   VictoryStack,
   VictoryLegend,
   VictoryLabel,
-  VictoryTooltip,
+  VictoryVoronoiContainer,
 } from 'victory'
 
 import { graphStyles } from '../../styles/chart_styles'
@@ -18,6 +18,16 @@ const BarGraph = ({ graph }) => {
       domainPadding={20}
       domain={{ x: [0, 6] }}
       theme={VictoryTheme.material}
+      containerComponent={
+        <VictoryVoronoiContainer
+          labels={({ datum: { study, studyTarget, count, valueLabel } }) => {
+            const showToolTip = study && count
+            return valueLabel !== 'N/A' && showToolTip
+              ? `Site:${study} \n Current: ${count} \n Target: ${studyTarget}`
+              : null
+          }}
+        />
+      }
     >
       <VictoryLegend
         orientation='horizontal'
@@ -34,20 +44,21 @@ const BarGraph = ({ graph }) => {
           <VictoryBar
             data={data}
             x='study'
-            y='count'
+            y='percent'
             key={'bar' + idx}
             style={{
               data: {
                 fill: ({ datum }) => datum.color,
               },
             }}
-            labels={({ datum: { count, studyTarget, study } }) =>
-              `Study: ${study} \n Current: ${count} \n Target: ${studyTarget}`
+            labels={({ datum }) =>
+              !!datum.percent ? `${datum?.percent}%` : null
             }
             labelComponent={
-              <VictoryTooltip
-                constrainToVisibleArea
-                style={{ fill: ({ datum }) => datum.color }}
+              <VictoryLabel
+                dy={15}
+                labelPlacement='perpendicular'
+                style={{ fill: '#EDEFFA', fontSize: 8 }}
               />
             }
           />
