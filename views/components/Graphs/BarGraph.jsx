@@ -11,6 +11,7 @@ import {
 } from 'victory'
 
 import { graphStyles } from '../../styles/chart_styles'
+import { anti_flash_white } from '../../constants/styles'
 
 const BarGraph = ({ graph }) => {
   return (
@@ -57,13 +58,13 @@ const BarGraph = ({ graph }) => {
               },
             }}
             labels={({ datum }) =>
-              !!datum.percent ? `${datum?.percent}%` : null
+              !!datum?.percent ? `${datum?.percent}%` : null
             }
             labelComponent={
               <VictoryLabel
                 dy={15}
                 labelPlacement='perpendicular'
-                style={{ fill: '#EDEFFA', fontSize: 8 }}
+                style={{ fill: anti_flash_white, fontSize: 8 }}
               />
             }
           />
