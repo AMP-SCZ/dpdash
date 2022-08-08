@@ -35,7 +35,7 @@ const ChartList = () => {
       console.error(error, '*****')
     }
   }
-  const toDuplicate = async (id) => {
+  const onDuplicateChart = async (id) => {
     try {
       const duplicated = await duplicateChart(id)
       if (duplicated?.data) {
@@ -72,7 +72,7 @@ const ChartList = () => {
               <Button
                 type='button'
                 variant='text'
-                onClick={() => toDuplicate(_id)}
+                onClick={() => onDuplicateChart(_id)}
               >
                 <PlaylistAdd />
               </Button>

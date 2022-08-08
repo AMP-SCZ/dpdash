@@ -135,7 +135,7 @@ const deleteChart = async (id) => {
 const editChart = async (id, formValues) => {
   const res = await window.fetch(apiRoutes.chart(id), {
     ...defaultApiOptions,
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(formValues),
   })
 
@@ -158,7 +158,7 @@ const getChart = async (id) => {
 const duplicateChart = async (id) => {
   const res = await window.fetch(apiRoutes.chart(id), {
     ...defaultApiOptions,
-    method: 'PATCH',
+    method: 'PUT',
   })
   if (res.status !== 200) return new Error(res.message)
 
