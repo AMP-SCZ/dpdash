@@ -11,7 +11,7 @@ import {
 } from 'victory'
 
 import { graphStyles } from '../../styles/chart_styles'
-import { anti_flash_white } from '../../constants/styles'
+import { colors } from '../../constants/styles'
 
 const BarGraph = ({ graph }) => {
   return (
@@ -64,7 +64,7 @@ const BarGraph = ({ graph }) => {
               <VictoryLabel
                 dy={15}
                 labelPlacement='perpendicular'
-                style={{ fill: anti_flash_white, fontSize: 8 }}
+                style={{ fill: colors.anti_flash_white, fontSize: 8 }}
               />
             }
           />

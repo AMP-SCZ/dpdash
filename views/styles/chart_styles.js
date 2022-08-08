@@ -1,4 +1,4 @@
-import { neutral_blue } from '../constants/styles'
+import { colors } from '../constants/styles'
 
 export const chartStyles = (theme) => ({
   textInput: {
@@ -39,7 +39,7 @@ export const chartStyles = (theme) => ({
     marginBottom: '10px',
   },
   textButton: {
-    color: neutral_blue,
+    color: colors.neutral_blue,
     textTransform: 'none',
   },
   submitButtonContainer: {

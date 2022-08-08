@@ -18,7 +18,7 @@ import Settings from '@material-ui/icons/Settings'
 import { ShowChart } from '@material-ui/icons'
 import { Assignment } from '@material-ui/icons'
 
-import { dark_sky_blue } from '../constants/styles'
+import { colors } from '../constants/styles'
 import { routes } from '../routes/routes'
 
 class DrawerComponent extends Component {
@@ -176,37 +176,37 @@ class DrawerComponent extends Component {
         <List dense={true}>
           <ListItem button={true} component='a' href={routes.home}>
             <ListItemIcon>
-              <Home style={{ color: dark_sky_blue }} />
+              <Home style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Home' />
           </ListItem>
           <ListItem button={true} component='a' href={routes.userAccount}>
             <ListItemIcon>
-              <Person style={{ color: dark_sky_blue }} />
+              <Person style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Account' />
           </ListItem>
           <ListItem button={true} component='a' href={routes.configure}>
             <ListItemIcon>
-              <ColorLens style={{ color: dark_sky_blue }} />
+              <ColorLens style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Configure' />
           </ListItem>
           <ListItem button={true} component='a' href={routes.studyDetails}>
             <ListItemIcon>
-              <Assignment style={{ color: dark_sky_blue }} />
+              <Assignment style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Study Details' />
           </ListItem>
           <ListItem button={true} component='a' href={routes.charts}>
             <ListItemIcon>
-              <ShowChart style={{ color: dark_sky_blue }} />
+              <ShowChart style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Charts' />
           </ListItem>
           <ListItem button={true} component='a' href={routes.reports}>
             <ListItemIcon>
-              <AssessmentIcon style={{ color: dark_sky_blue }} />
+              <AssessmentIcon style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Reports' />
           </ListItem>
@@ -214,14 +214,14 @@ class DrawerComponent extends Component {
           {this.props.user.role == 'admin' ? (
             <ListItem button={true} component='a' href={routes.admin}>
               <ListItemIcon>
-                <Settings style={{ color: dark_sky_blue }} />
+                <Settings style={{ color: colors.dark_sky_blue }} />
               </ListItemIcon>
               <ListItemText primary='Admin' />
             </ListItem>
           ) : null}
           <ListItem button={true} component='a' href={routes.logout}>
             <ListItemIcon>
-              <ExitToApp style={{ color: dark_sky_blue }} />
+              <ExitToApp style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
             <ListItemText primary='Logout' />
           </ListItem>
