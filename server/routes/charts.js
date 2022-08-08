@@ -162,7 +162,7 @@ router
       return res.status(500).json({ message: error.message })
     }
   })
-  .patch(ensureAuthenticated, async (req, res) => {
+  .put(ensureAuthenticated, async (req, res) => {
     try {
       const { dataDb } = req.app.locals
       const { chart_id } = req.params
@@ -189,10 +189,12 @@ router
       return res.status(500).json({ message: error.message })
     }
   })
-  .put(ensureAuthenticated, async (req, res) => {
+router
+  .route('/api/v1/charts/duplicate')
+  .post(ensureAuthenticated, async (req, res) => {
     try {
       const { dataDb } = req.app.locals
-      const { chart_id } = req.params
+      const { chart_id } = req.body
       const sourceChart = await dataDb.collection(collections.charts).findOne(
         {
           _id: new ObjectID(chart_id),
@@ -206,11 +208,9 @@ router
           title: sourceChart.title + ' Duplicate',
         })
 
-      if (insertedId) return res.status(200).json({ data: insertedId })
-      return res.status(404).json({ message: 'Chart was not duplicated' })
+      return res.status(200).json({ data: insertedId })
     } catch (error) {
-      return res.status(500).json({ message: error.message })
+      return res.status(404).json({ message: 'Chart was not duplicated' })
     }
   })
-
 export default router

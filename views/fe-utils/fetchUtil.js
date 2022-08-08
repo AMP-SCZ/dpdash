@@ -155,10 +155,11 @@ const getChart = async (id) => {
   return res.json()
 }
 
-const duplicateChart = async (id) => {
-  const res = await window.fetch(apiRoutes.chart(id), {
+const duplicateChart = async (chart_id) => {
+  const res = await window.fetch(apiRoutes.chartDuplicate, {
     ...defaultApiOptions,
-    method: 'PUT',
+    method: 'POST',
+    body: JSON.stringify({ chart_id }),
   })
   if (res.status !== 200) return new Error(res.message)
 
