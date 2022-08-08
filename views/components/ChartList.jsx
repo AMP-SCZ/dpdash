@@ -31,9 +31,7 @@ const ChartList = () => {
           setChartList(data)
         })
       }
-    } catch (error) {
-      console.error(error, '*****')
-    }
+    } catch (error) {}
   }
   const onDuplicateChart = async (id) => {
     try {
