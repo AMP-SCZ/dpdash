@@ -26,6 +26,8 @@ export const apiRoutes = {
   subjects: (studies) => `${apiPath}/subjects?q=${JSON.stringify(studies)}`,
   studyDetail: (study_id) => `${apiPath}/study-details/${study_id}`,
   studyDetails: `${apiPath}/study-details`,
+  configs: (uid) => `${apiPath}/users/${uid}/configs`,
+  preferences: (uid) => `${apiPath}/users/${uid}/preferences`,
 }
 
 export const defaultApiOptions = {

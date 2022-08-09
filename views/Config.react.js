@@ -48,7 +48,12 @@ import Header from './components/Header'
 
 import getAvatar from './fe-utils/avatarUtil'
 import getCounts from './fe-utils/countUtil'
-import { fetchSubjects, fetchUsernames } from './fe-utils/fetchUtil'
+import {
+  fetchSubjects,
+  fetchUsernames,
+  fetchConfigurations,
+  fetchPreferences,
+} from './fe-utils/fetchUtil'
 import openNewWindow from './fe-utils/windowUtil'
 
 import basePathConfig from '../server/configs/basePathConfig'
@@ -259,7 +264,6 @@ class ConfigPage extends Component {
   handleDrawerToggle = () => {
     this.setState((state) => ({ mobileOpen: !state.mobileOpen }))
   }
-  componentDidUpdate() {}
   // eslint-disable-next-line react/no-deprecated
   async componentWillMount() {
     try {
@@ -272,8 +276,14 @@ class ConfigPage extends Component {
           label: username,
         })),
       })
-      this.fetchConfigurations(this.props.user.uid)
-      this.fetchPreferences(this.props.user.uid)
+      const configurations = await fetchConfigurations(this.props.user.uid)
+      this.setState({
+        configurations,
+      })
+      const preferences = await fetchPreferences(this.props.user.uid)
+      this.setState({
+        preferences: this.babyProofPreferences(preferences),
+      })
     } catch (err) {
       console.error(err.message)
     }
@@ -365,27 +375,6 @@ class ConfigPage extends Component {
         }
       })
   }
-  fetchPreferences = (uid) => {
-    return window
-      .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      })
-      .then((response) => {
-        if (response.status !== 200) {
-          return
-        }
-        return response.json()
-      })
-      .then((response) => {
-        this.setState({
-          preferences: this.babyProofPreferences(response),
-        })
-      })
-  }
   fetchConfigItem = (uid, _id) => {
     return window
       .fetch(`${basePath}/api/v1/users/${uid}/configs/${_id}`, {
@@ -402,27 +391,6 @@ class ConfigPage extends Component {
         return response.json()
       })
       .then(() => {})
-  }
-  fetchConfigurations = (uid) => {
-    return window
-      .fetch(`${basePath}/api/v1/users/${uid}/configs`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      })
-      .then((response) => {
-        if (response.status !== 200) {
-          return
-        }
-        return response.json()
-      })
-      .then((response) => {
-        this.setState({
-          configurations: response,
-        })
-      })
   }
   updateConfigurations = (configID, ownsConfig) => {
     if (ownsConfig) {
@@ -522,7 +490,11 @@ class ConfigPage extends Component {
       })
       .then((response) => {
         if (response.status == 201) {
-          this.fetchConfigurations(this.props.user.uid)
+          fetchConfigurations(this.props.user.uid).then((data) =>
+            this.setState({
+              configurations: data,
+            })
+          )
         }
       })
   }
