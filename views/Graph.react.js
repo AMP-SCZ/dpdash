@@ -489,7 +489,7 @@ class Graph extends Component {
   }
   updateUserPreferences = (configuration) => {
     let { uid } = this.props.user
-    const createNewPreference = preparePreferences(
+    const selectedUserPreference = preparePreferences(
       configuration,
       this.state.preferences
     )
@@ -501,7 +501,7 @@ class Graph extends Component {
         },
         credentials: 'same-origin',
         body: JSON.stringify({
-          preferences: createNewPreference,
+          preferences: selectedUserPreference,
         }),
       })
       .then((res) => {
