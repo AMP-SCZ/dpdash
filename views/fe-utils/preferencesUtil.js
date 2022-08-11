@@ -8,10 +8,9 @@ export const babyProofPreferences = (preferences) => {
   return preference
 }
 
-export const preparePreferences = (configurations, preferences) => {
-  console.log(configurations, preferences)
+export const preparePreferences = (configuration, preferences) => {
   let preference = {}
-  preference['config'] = configurations._id
+  preference['config'] = configuration
   preference['complete'] =
     'complete' in preferences ? preferences['complete'] : {}
   preference['star'] = 'star' in preferences ? preferences['star'] : {}

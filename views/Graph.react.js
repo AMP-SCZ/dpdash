@@ -38,7 +38,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-import ConfigDropDown from './components/ConfigDropdown'
+import SelectConfigurationForm from './components/SelectConfigurationForm'
 
 import getAvatar from './fe-utils/avatarUtil'
 import getCounts from './fe-utils/countUtil'
@@ -49,7 +49,7 @@ import {
 } from './fe-utils/fetchUtil'
 import { preparePreferences } from './fe-utils/preferencesUtil'
 import basePathConfig from '../server/configs/basePathConfig'
-import { routes } from './routes/routes'
+import { routes, apiRoutes } from './routes/routes'
 import { graphPageStyles } from './styles/graph_page_styles'
 
 const drawerWidth = 200
@@ -280,12 +280,16 @@ class Graph extends Component {
   // eslint-disable-next-line react/no-deprecated
   async componentWillMount() {
     try {
-      const acl = await fetchSubjects()
-      this.setState(getCounts({ acl }))
-      const preferences = await fetchPreferences(this.props.user.uid)
-      this.setState({ preferences })
-      const configurations = await fetchConfigurations(this.props.user.uid)
-      this.setState(() => ({ configurationsList: configurations }))
+      const [acl, preferences, configurations] = await Promise.all([
+        fetchSubjects(),
+        fetchPreferences(this.props.user.uid),
+        fetchConfigurations(this.props.user.uid),
+      ])
+      this.setState({
+        ...getCounts({ acl }),
+        preferences,
+        configurationsList: configurations,
+      })
     } catch (err) {
       console.error(err.message)
     }
@@ -484,13 +488,13 @@ class Graph extends Component {
     window.removeEventListener('resize', this.handleResize)
   }
   updateUserPreferences = (configuration) => {
-    let uid = this.props.user.uid
+    let { uid } = this.props.user
     const createNewPreference = preparePreferences(
       configuration,
       this.state.preferences
     )
     return window
-      .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
+      .fetch(apiRoutes.preferences(uid), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -553,10 +557,10 @@ class Graph extends Component {
               <Typography className={classes.dropDownText}>
                 Configuration Settings
               </Typography>
-              <ConfigDropDown
+              <SelectConfigurationForm
                 configurations={this.state.configurationsList}
                 updatePreferences={this.updateUserPreferences}
-                currentConfig={this.state.preferences}
+                currentPreference={this.state.preferences}
                 classes={classes}
               />
             </div>
