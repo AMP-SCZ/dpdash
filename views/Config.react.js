@@ -55,6 +55,7 @@ import {
   fetchPreferences,
 } from './fe-utils/fetchUtil'
 import openNewWindow from './fe-utils/windowUtil'
+import { babyProofPreferences } from './fe-utils/preferencesUtil'
 
 import basePathConfig from '../server/configs/basePathConfig'
 
@@ -282,7 +283,7 @@ class ConfigPage extends Component {
       })
       const preferences = await fetchPreferences(this.props.user.uid)
       this.setState({
-        preferences: this.babyProofPreferences(preferences),
+        preferences: babyProofPreferences(preferences),
       })
     } catch (err) {
       console.error(err.message)
@@ -319,15 +320,6 @@ class ConfigPage extends Component {
       })
     }
   }
-  babyProofPreferences = (preferences) => {
-    let preference = {}
-    preference['star'] = 'star' in preferences ? preferences['star'] : {}
-    preference['sort'] = 'sort' in preferences ? preferences['sort'] : 0
-    preference['config'] = 'config' in preferences ? preferences['config'] : ''
-    preference['complete'] =
-      'complete' in preferences ? preferences['complete'] : {}
-    return preference
-  }
   updateUserPreferences = (index, type) => {
     let uid = this.props.user.uid
     let preference = {}
@@ -349,8 +341,7 @@ class ConfigPage extends Component {
       'star' in this.state.preferences ? this.state.preferences['star'] : {}
     preference['sort'] =
       'sort' in this.state.preferences ? this.state.preferences['sort'] : 0
-    preference = this.babyProofPreferences(preference)
-
+    preference = babyProofPreferences(preference)
     return window
       .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
         method: 'POST',

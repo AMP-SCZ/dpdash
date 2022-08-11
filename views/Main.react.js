@@ -30,9 +30,15 @@ import SearchIcon from '@material-ui/icons/Search'
 
 import Sidebar from './components/Sidebar'
 import getAvatar from './fe-utils/avatarUtil'
-import { fetchSubjects } from './fe-utils/fetchUtil'
+import {
+  fetchSubjects,
+  fetchPreferences,
+  fetchConfigurations,
+} from './fe-utils/fetchUtil'
+import { preparePreferences } from './fe-utils/preferencesUtil'
 
 import basePathConfig from '../server/configs/basePathConfig'
+import ConfigDropDown from './components/ConfigDropdown'
 
 const basePath = basePathConfig || ''
 const drawerWidth = 200
@@ -250,6 +256,7 @@ class MainPage extends Component {
       preferences: {},
       star: {},
       complete: {},
+      configurations: [],
     }
   }
   componentDidUpdate() {}
@@ -496,7 +503,10 @@ class MainPage extends Component {
     try {
       const acl = await fetchSubjects()
       this.autocomplete(this.aggregateSubjects(acl), acl)
-      this.fetchUserPreferences(this.props.user.uid)
+      const preferences = await fetchPreferences(this.props.user.uid)
+      this.setState({ preferences })
+      const configurations = await fetchConfigurations(this.props.user.uid)
+      this.setState({ configurations })
     } catch (err) {
       console.error(err.message)
     }
@@ -627,6 +637,35 @@ class MainPage extends Component {
       return <span style={{ color: data.lastSyncedColor }}>{data.synced}</span>
     }
   }
+  updateUserPreferences = (configuration) => {
+    let uid = this.props.user.uid
+    const createNewPreference = preparePreferences(
+      configuration,
+      this.state.preferences
+    )
+    return window
+      .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          preferences: createNewPreference,
+        }),
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          this.setState({
+            preferences: createNewPreference,
+          })
+        } else {
+          this.setState({
+            preferences: createNewPreference,
+          })
+        }
+      })
+  }
   render() {
     const { classes } = this.props
     const components = {
@@ -675,6 +714,13 @@ class MainPage extends Component {
                   isMulti
                 />
               </NoSsr>
+            </div>
+            <div style={{ width: '30%' }}>
+              <ConfigDropDown
+                configurations={this.state.configurations}
+                updatePreferences={this.updateUserPreferences}
+                currentConfig={this.state.preferences}
+              />
             </div>
           </Toolbar>
         </AppBar>
