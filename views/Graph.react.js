@@ -487,10 +487,10 @@ class Graph extends Component {
     socket.close()
     window.removeEventListener('resize', this.handleResize)
   }
-  updateUserPreferences = (configuration) => {
+  updateUserPreferences = (configurationId) => {
     let { uid } = this.props.user
     const selectedUserPreference = preparePreferences(
-      configuration,
+      configurationId,
       this.state.preferences
     )
     return window
@@ -559,7 +559,7 @@ class Graph extends Component {
               </Typography>
               <SelectConfigurationForm
                 configurations={this.state.configurationsList}
-                updatePreferences={this.updateUserPreferences}
+                onChange={this.updateUserPreferences}
                 currentPreference={this.state.preferences}
                 classes={classes}
               />
