@@ -35,10 +35,7 @@ import {
   fetchPreferences,
   fetchConfigurations,
 } from './fe-utils/fetchUtil'
-import { preparePreferences } from './fe-utils/preferencesUtil'
-
 import basePathConfig from '../server/configs/basePathConfig'
-import ConfigDropDown from './components/ConfigDropdown'
 
 const basePath = basePathConfig || ''
 const drawerWidth = 200
@@ -637,35 +634,7 @@ class MainPage extends Component {
       return <span style={{ color: data.lastSyncedColor }}>{data.synced}</span>
     }
   }
-  updateUserPreferences = (configuration) => {
-    let uid = this.props.user.uid
-    const createNewPreference = preparePreferences(
-      configuration,
-      this.state.preferences
-    )
-    return window
-      .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          preferences: createNewPreference,
-        }),
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          this.setState({
-            preferences: createNewPreference,
-          })
-        } else {
-          this.setState({
-            preferences: createNewPreference,
-          })
-        }
-      })
-  }
+
   render() {
     const { classes } = this.props
     const components = {
@@ -714,13 +683,6 @@ class MainPage extends Component {
                   isMulti
                 />
               </NoSsr>
-            </div>
-            <div style={{ width: '30%' }}>
-              <ConfigDropDown
-                configurations={this.state.configurations}
-                updatePreferences={this.updateUserPreferences}
-                currentConfig={this.state.preferences}
-              />
             </div>
           </Toolbar>
         </AppBar>

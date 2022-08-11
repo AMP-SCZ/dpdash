@@ -38,10 +38,19 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
+import ConfigDropDown from './components/ConfigDropdown'
+
 import getAvatar from './fe-utils/avatarUtil'
 import getCounts from './fe-utils/countUtil'
-import { fetchSubjects } from './fe-utils/fetchUtil'
+import {
+  fetchSubjects,
+  fetchConfigurations,
+  fetchPreferences,
+} from './fe-utils/fetchUtil'
+import { preparePreferences } from './fe-utils/preferencesUtil'
 import basePathConfig from '../server/configs/basePathConfig'
+import { routes } from './routes/routes'
+import { graphPageStyles } from './styles/graph_page_styles'
 
 const drawerWidth = 200
 
@@ -114,6 +123,7 @@ const styles = (theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  ...graphPageStyles(theme),
 })
 
 const CustomTableCell = withStyles((theme) => ({
@@ -160,6 +170,8 @@ class Graph extends Component {
       success: false,
       cardSize: 50,
       openStat: false,
+      configurationsList: [],
+      preferences: {},
     }
   }
   fetchMetadata = (study, subject, day) => {
@@ -270,6 +282,10 @@ class Graph extends Component {
     try {
       const acl = await fetchSubjects()
       this.setState(getCounts({ acl }))
+      const preferences = await fetchPreferences(this.props.user.uid)
+      this.setState({ preferences })
+      const configurations = await fetchConfigurations(this.props.user.uid)
+      this.setState(() => ({ configurationsList: configurations }))
     } catch (err) {
       console.error(err.message)
     }
@@ -467,7 +483,34 @@ class Graph extends Component {
     socket.close()
     window.removeEventListener('resize', this.handleResize)
   }
-
+  updateUserPreferences = (configuration) => {
+    let uid = this.props.user.uid
+    const createNewPreference = preparePreferences(
+      configuration,
+      this.state.preferences
+    )
+    return window
+      .fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          preferences: createNewPreference,
+        }),
+      })
+      .then((res) => {
+        if (res.status === 201) {
+          window.location.replace(
+            routes.subjectView(
+              this.state.subject.project,
+              this.state.subject.sid
+            )
+          )
+        }
+      })
+  }
   render() {
     const { loading, success } = this.state
     const { classes, theme } = this.props
@@ -506,6 +549,17 @@ class Graph extends Component {
             >
               {this.state.subject.sid + ' - ' + this.state.subject.project}
             </Typography>
+            <div className={classes.configDropDownContainer}>
+              <Typography className={classes.dropDownText}>
+                Configuration Setting
+              </Typography>
+              <ConfigDropDown
+                configurations={this.state.configurationsList}
+                updatePreferences={this.updateUserPreferences}
+                currentConfig={this.state.preferences}
+                classes={classes}
+              />
+            </div>
             <IconButton
               color='rgba(0, 0, 0, 0.54)'
               aria-label='Open Stat'

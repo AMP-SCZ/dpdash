@@ -17,6 +17,7 @@ export const routes = {
   studyDetails: `${basePath}/study-details`,
   chart: (chart_id) => `${basePath}/charts/${chart_id}`,
   editChart: (chart_id) => `${basePath}/charts/${chart_id}/edit`,
+  subjectView: (study, subject) => `${basePath}/dashboard/${study}/${subject}`,
 }
 
 export const apiRoutes = {

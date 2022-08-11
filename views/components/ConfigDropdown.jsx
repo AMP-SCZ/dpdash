@@ -8,6 +8,7 @@ const ConfigDropDown = ({
   configurations,
   updatePreferences,
   currentConfig,
+  classes,
 }) => {
   const [selectValue, setSelectValue] = useState('')
   const handleConfigChange = (e) => {
@@ -26,12 +27,9 @@ const ConfigDropDown = ({
   }, [configurations])
 
   return (
-    <form autoComplete='off'>
-      <FormControl style={{ width: '100%' }}>
-        <InputLabel
-          htmlFor='config'
-          style={{ marginTop: '25px', marginLeft: '30px' }}
-        >
+    <form autoComplete='off' className={classes.configForm}>
+      <FormControl className={classes.configFormControl}>
+        <InputLabel htmlFor='config' className={classes.configLabel}>
           {selectValue}
         </InputLabel>
         <Select
