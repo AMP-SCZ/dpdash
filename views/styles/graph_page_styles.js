@@ -4,7 +4,7 @@ export const graphPageStyles = (theme) => ({
     display: 'flex',
     flexDirection: 'row',
   },
-  dropDownText: { alignSelf: 'end' },
+  dropDownText: { alignSelf: 'end', paddingRight: '15px' },
   configForm: { width: '45%' },
   configFormControl: { width: '100%' },
   configLabel: { marginTop: '25px', marginLeft: '30px' },

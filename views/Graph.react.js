@@ -551,7 +551,7 @@ class Graph extends Component {
             </Typography>
             <div className={classes.configDropDownContainer}>
               <Typography className={classes.dropDownText}>
-                Configuration Setting
+                Configuration Settings
               </Typography>
               <ConfigDropDown
                 configurations={this.state.configurationsList}
