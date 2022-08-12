@@ -488,11 +488,12 @@ class Graph extends Component {
     window.removeEventListener('resize', this.handleResize)
   }
   updateUserPreferences = (configurationId) => {
-    let { uid } = this.props.user
+    const { uid } = this.props.user
     const selectedUserPreference = preparePreferences(
       configurationId,
       this.state.preferences
     )
+
     return window
       .fetch(apiRoutes.preferences(uid), {
         method: 'POST',
