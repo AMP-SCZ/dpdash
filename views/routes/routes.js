@@ -29,6 +29,8 @@ export const apiRoutes = {
   studyDetails: `${apiPath}/study-details`,
   configs: (uid) => `${apiPath}/users/${uid}/configs`,
   preferences: (uid) => `${apiPath}/users/${uid}/preferences`,
+  searchStudies: `${apiPath}/search/studies`,
+  subject: `${apiPath}/subjects`,
 }
 
 export const defaultApiOptions = {
