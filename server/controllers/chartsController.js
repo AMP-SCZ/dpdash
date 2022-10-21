@@ -13,7 +13,7 @@ const studyCountsToPercentage = (studyCount, targetTotal) => {
   return (+studyCount / +targetTotal) * 100
 }
 
-const postProcessData = (data, studyTotals) => {
+const postProcessData = (data, studyTotals, chart) => {
   const processedDataBySite = new Map()
   const totalsValueTargets = {}
 
@@ -24,19 +24,14 @@ const postProcessData = (data, studyTotals) => {
     const percent = studyCountsToPercentage(count, totals)
     const existingEntriesForStudy = processedDataBySite.get(study)
     const hasTargetValue = !!targetValue && study !== TOTALS_STUDY
-    const isTargetValueMissing = !targetValue && study !== TOTALS_STUDY
 
-    if (hasTargetValue) {
+    if (
+      hasTargetValue &&
+      isTargetValueOnAllSites(chart.fieldLabelValueMap, valueLabel)
+    ) {
       totalsValueTargets[valueLabel] = calculateTotalsTargetValue(
         totalsValueTargets[valueLabel],
         targetValue
-      )
-    }
-
-    if (isTargetValueMissing) {
-      totalsValueTargets[valueLabel] = calculateTotalsTargetValue(
-        totalsValueTargets[valueLabel],
-        totalsForStudy.count
       )
     }
 
@@ -130,33 +125,34 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     .toArray()
 
   chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-    const { targetValues } = fieldLabelValueMap
+    const { targetValues, value } = fieldLabelValueMap
+    if (!isNoValueGroup(value)) {
+      Object.keys(targetValues).forEach((study) => {
+        const rawNewTargetValue = targetValues[study]
+        const newTargetValue = !!rawNewTargetValue
+          ? +rawNewTargetValue
+          : undefined
 
-    Object.keys(targetValues).forEach((study) => {
-      const rawNewTargetValue = targetValues[study]
-      const newTargetValue = !!rawNewTargetValue
-        ? +rawNewTargetValue
-        : undefined
+        if (studyTotals[study]) {
+          if (studyTotals[study].targetTotal !== undefined) {
+            studyTotals[study].targetTotal = !!newTargetValue
+              ? studyTotals[study].targetTotal + newTargetValue
+              : undefined
+          }
+        } else {
+          studyTotals[study] = {
+            count: 0,
+            targetTotal: newTargetValue,
+          }
+        }
 
-      if (studyTotals[study]) {
-        if (studyTotals[study].targetTotal !== undefined) {
-          studyTotals[study].targetTotal = !!newTargetValue
-            ? studyTotals[study].targetTotal + newTargetValue
+        if (studyTotals[TOTALS_STUDY].targetTotal !== undefined) {
+          studyTotals[TOTALS_STUDY].targetTotal = !!newTargetValue
+            ? studyTotals[TOTALS_STUDY].targetTotal + newTargetValue
             : undefined
         }
-      } else {
-        studyTotals[study] = {
-          count: 0,
-          targetTotal: newTargetValue,
-        }
-      }
-
-      if (studyTotals[TOTALS_STUDY].targetTotal !== undefined) {
-        studyTotals[TOTALS_STUDY].targetTotal = !!newTargetValue
-          ? studyTotals[TOTALS_STUDY].targetTotal + newTargetValue
-          : undefined
-      }
-    })
+      })
+    }
   })
 
   for await (const subject of allSubjects) {
@@ -169,8 +165,7 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
       const { color, label, value, targetValues } = fieldLabelValueMap
       const targetValue = targetValues[study]
-      const isVariableValueEmpty = value === ''
-      const shouldCountSubject = isVariableValueEmpty
+      const shouldCountSubject = isNoValueGroup(value)
         ? subjectDayData.every((day) => day[chart.variable] === value)
         : subjectDayData.some((dayData) => dayData[chart.variable] == value)
 
@@ -211,7 +206,7 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     })
   }
 
-  const dataBySite = postProcessData(data, studyTotals)
+  const dataBySite = postProcessData(data, studyTotals, chart)
 
   if (isAnyTargetIncluded(studyTotals)) {
     labelMap.set(N_A, { name: N_A, color: '#808080' })
@@ -248,4 +243,14 @@ function isAnyTargetIncluded(studyTotals) {
   return Object.keys(studyTotals)
     .filter((site) => site !== TOTALS_STUDY)
     .some((site) => studyTotals[site]?.targetTotal !== undefined)
+}
+
+function isTargetValueOnAllSites(fieldLabelValueMap, valueLabel) {
+  return Object.values(
+    fieldLabelValueMap.find(({ label }) => label === valueLabel).targetValues
+  ).every((target) => !!target)
+}
+
+function isNoValueGroup(value) {
+  return value === ''
 }
