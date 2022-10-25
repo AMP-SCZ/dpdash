@@ -5,6 +5,7 @@ import { collections } from '../utils/mongoCollections'
 const TOTALS_STUDY = 'Totals'
 const STUDIES_TO_OMIT = ['files', 'combined']
 const N_A = 'N/A'
+const NO_VALUE_GROUP = ''
 const studyCountsToPercentage = (studyCount, targetTotal) => {
   if (!targetTotal || Number.isNaN(+studyCount) || Number.isNaN(+targetTotal)) {
     return 0
@@ -27,7 +28,7 @@ const postProcessData = (data, studyTotals, chart) => {
 
     if (
       hasTargetValue &&
-      isTargetValueOnAllSites(chart.fieldLabelValueMap, valueLabel)
+      hasTargetValueOnAllSites(chart.fieldLabelValueMap, valueLabel)
     ) {
       totalsValueTargets[valueLabel] = calculateTotalsTargetValue(
         totalsValueTargets[valueLabel],
@@ -125,34 +126,32 @@ export const graphDataController = async (dataDb, userAccess, chart_id) => {
     .toArray()
 
   chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-    const { targetValues, value } = fieldLabelValueMap
-    if (!isNoValueGroup(value)) {
-      Object.keys(targetValues).forEach((study) => {
-        const rawNewTargetValue = targetValues[study]
-        const newTargetValue = !!rawNewTargetValue
-          ? +rawNewTargetValue
-          : undefined
+    const { targetValues } = fieldLabelValueMap
+    Object.keys(targetValues).forEach((study) => {
+      const rawNewTargetValue = targetValues[study]
+      const newTargetValue = !!rawNewTargetValue
+        ? +rawNewTargetValue
+        : undefined
 
-        if (studyTotals[study]) {
-          if (studyTotals[study].targetTotal !== undefined) {
-            studyTotals[study].targetTotal = !!newTargetValue
-              ? studyTotals[study].targetTotal + newTargetValue
-              : undefined
-          }
-        } else {
-          studyTotals[study] = {
-            count: 0,
-            targetTotal: newTargetValue,
-          }
-        }
-
-        if (studyTotals[TOTALS_STUDY].targetTotal !== undefined) {
-          studyTotals[TOTALS_STUDY].targetTotal = !!newTargetValue
-            ? studyTotals[TOTALS_STUDY].targetTotal + newTargetValue
+      if (studyTotals[study]) {
+        if (studyTotals[study].targetTotal !== undefined) {
+          studyTotals[study].targetTotal = !!newTargetValue
+            ? studyTotals[study].targetTotal + newTargetValue
             : undefined
         }
-      })
-    }
+      } else {
+        studyTotals[study] = {
+          count: 0,
+          targetTotal: newTargetValue,
+        }
+      }
+
+      if (studyTotals[TOTALS_STUDY].targetTotal !== undefined) {
+        studyTotals[TOTALS_STUDY].targetTotal = !!newTargetValue
+          ? studyTotals[TOTALS_STUDY].targetTotal + newTargetValue
+          : undefined
+      }
+    })
   })
 
   for await (const subject of allSubjects) {
@@ -245,12 +244,14 @@ function isAnyTargetIncluded(studyTotals) {
     .some((site) => studyTotals[site]?.targetTotal !== undefined)
 }
 
-function isTargetValueOnAllSites(fieldLabelValueMap, valueLabel) {
-  return Object.values(
-    fieldLabelValueMap.find(({ label }) => label === valueLabel).targetValues
-  ).every((target) => !!target)
+function hasTargetValueOnAllSites(fieldLabelValueMap, valueLabel) {
+  const fieldTargetValues = fieldLabelValueMap.find(
+    ({ label }) => label === valueLabel
+  ).targetValues
+
+  return Object.values(fieldTargetValues).every(Boolean)
 }
 
 function isNoValueGroup(value) {
-  return value === ''
+  return value === NO_VALUE_GROUP
 }
