@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DPDMONGO_DATABASE_URL")
+}
+
+type ConfigsConfig {
+  /// This field was commented out because of an invalid name. Please provide a valid one that matches [a-zA-Z][a-zA-Z0-9_]*
+  // 0 ConfigsConfig0[] @map("0")
+  colormap ConfigsConfigColormap[]
+}
+
+type ConfigsConfig0 {
+  id       Int      @map("_id")
+  analysis String
+  category String
+  color    String[]
+  label    String
+  range    Int[]
+  text     Boolean
+  variable String
+}
+
+type ConfigsConfigColormap {
+  analysis String
+  category String
+  color    String[]
+  label    String
+  range    Int[]
+  text     Boolean
+  variable String
+}
+
+type ReportsCharts {
+  assessmentSingle String
+  chartType        String
+  title            String
+  valueLabels      ReportsChartsValueLabels[]
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  variableMulti    Json?
+  variableSingle   String
+}
+
+type ReportsChartsValueLabels {
+  label String
+  value String
+}
+
+type UsersPreferences {
+  complete UsersPreferencesComplete
+  config   String
+  sort     Int
+  star     UsersPreferencesStar
+}
+
+type UsersPreferencesComplete {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  CA Json?
+}
+
+type UsersPreferencesStar {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  CA Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  LA Json?
+}
+
+model configs {
+  id      String        @id @default(auto()) @map("_id") @db.ObjectId
+  config  ConfigsConfig
+  created String
+  name    String
+  owner   String
+  readers String[]
+  type    String
+}
+
+model reports {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  charts     ReportsCharts[]
+  created    String
+  readers    String[]
+  reportName String
+  user       String
+}
+
+model sessions {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  expires Json?
+
+  @@index([expires], map: "expires_1")
+}
+
+model users {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  access          String[]
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  account_expires Json?
+  bad_pwd_count   Int
+  blocked         Boolean
+  company         String
+  department      String
+  display_name    String
+  force_reset_pw  Boolean
+  icon            String
+  last_logoff     Float
+  last_logon      Float
+  ldap            Boolean
+  lockout_time    Int
+  mail            String
+  member_of       String
+  password        String
+  preferences     UsersPreferences?
+  realms          String[]
+  role            String
+  title           String
+  uid             String
+}
