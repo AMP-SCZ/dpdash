@@ -51,7 +51,8 @@ enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc" >> /etc/yum.repos.d/mongodb-org-6.0.repo
 
     yum -y install mongodb-org
-    
+    yum install -y mongodb-mongosh
+
 
     ## install the Celery asyncronous task queue
     pip install "celery==4.3.0" "vine<5.0.0"
