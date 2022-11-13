@@ -18,6 +18,7 @@ import methodOverride from 'method-override'
 import noCache from 'nocache'
 import livereload from 'livereload'
 import connectLiveReload from 'connect-livereload'
+import { PrismaClient } from '@prisma/client'
 import { getMongoURI } from './utils/mongoUtil'
 
 import indexRouter from './routes/index'
@@ -103,14 +104,13 @@ app.post('/process', parseForm, csrfProtection, function (req, res) {
 app.set('view engine', 'html')
 app.use(methodOverride())
 
+const prisma = new PrismaClient()
 /* database setup */
-let mongodb
 const mongoURI = getMongoURI({ settings: config.database.mongo })
 const mongodbPromise = co(function* () {
   return yield MongoClient.connect(mongoURI, config.database.mongo.server)
 }).then(function (res) {
-  mongodb = res.db()
-  app.locals.appDb = res.db()
+  app.locals.appDb = prisma
   app.locals.dataDb = res.db(config.database.mongo.dataDB)
   res.db().collection('sessions').drop()
 
@@ -154,9 +154,10 @@ passport.use(
       passwordField: config.auth.passwordField,
     },
     function (username, password, done) {
-      mongodb
-        .collection('users')
-        .findOne({ uid: username })
+      prisma.users
+        .findUniqueOrThrow({
+          where: { uid: username },
+        })
         .then(function (user) {
           if (!user) {
             return done(null, false)

@@ -588,22 +588,20 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
   })
 })
 
-router.route('/api/v1/studies').get(ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne({ uid: req.user }, { _id: 0, access: 1 }, function (err, data) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!data || Object.keys(data).length == 0) {
-        return res.status(404).send([])
-      } else if (!('access' in data) || data.access.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).json(data.access.sort())
-      }
+router.route('/api/v1/studies').get(ensureAuthenticated, async (req, res) => {
+  try {
+    const { appDb } = req.app.locals
+    const user = await appDb.users.findUniqueOrThrow({
+      where: { uid: req.user },
+      select: { access: true },
     })
+    if (!user || Object.keys(user).length == 0) return res.status(404).send([])
+    if (!('access' in user) || user.access.length == 0)
+      return res.status(404).send([])
+    return res.status(200).json(user.access.sort())
+  } catch (error) {
+    return res.status(502).send([])
+  }
 })
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
@@ -1064,24 +1062,19 @@ router
 
 router
   .route('/api/v1/users/:uid/preferences')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, preferences: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({})
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send({})
-          } else {
-            return res.status(200).json(data['preferences'])
-          }
-        }
-      )
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { appDb } = req.app.locals
+      const userPreferences = await appDb.users.findUnique({
+        where: { uid: req.params.uid },
+        select: { preferences: true },
+      })
+      if (!userPreferences || Object.keys(userPreferences).length === 0)
+        return res.status(404).send({})
+      return res.status(200).json(userPreferences)
+    } catch (error) {
+      return res.status(502).send({})
+    }
   })
   .post(ensureUser, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {

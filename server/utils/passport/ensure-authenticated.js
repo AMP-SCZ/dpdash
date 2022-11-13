@@ -9,25 +9,23 @@ export default function ensureAuthenticated(req, res, next) {
     return res.redirect(`${basePath}/logout`)
   }
   const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user },
-      { 
-        _id: 0, 
-        access: 1, 
-        blocked: 1, 
-        role: 1 
+  appDb.users
+    .findUniqueOrThrow({
+      where: { uid: req.user },
+      select: {
+        access: true,
+        blocked: true,
+        role: true,
       },
-      function (err, data) {
-        switch(true) {
-          case !data || Object.keys(data).length === 0 || !!data.blocked || err:
-            return res.redirect(logoutForbiddenRoute)
-          case data.access && data.access.length === 0:
-            return res.redirect(unauthorizedRoute)
-          default:
-            return next()
-        }
+    })
+    .then((data) => {
+      switch (true) {
+        case !data || Object.keys(data).length === 0 || !!data.blocked:
+          return res.redirect(logoutForbiddenRoute)
+        case data.access && data.access.length === 0:
+          return res.redirect(unauthorizedRoute)
+        default:
+          return next()
       }
-    )
+    })
 }
