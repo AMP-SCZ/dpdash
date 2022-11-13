@@ -118,5 +118,5 @@ model users {
   realms          String[]
   role            String
   title           String
-  uid             String
+  uid             String @unique
 }
