@@ -14,10 +14,7 @@
     "restart": "NODE_ENV=production ./node_modules/pm2/bin/pm2 stop all && ./node_modules/pm2/bin/pm2 delete all && ./node_modules/pm2/bin/pm2 start dist/bin/www.js",
     "serve:watch": "nodemon --ignore ./public --ignore *.test.js --exec babel-node server/bin/www.js --watch \"./server\"",
     "node": "DEBUG=* node ./dist/bin/www.js",
-    "test": "jest",
-    "prisma:generate": "npm-run-all -s prisma:dpmongo prisma:dpdata",
-    "prisma:dpmongo": "prisma generate --schema prisma/schema.prisma",
-    "prisma:dpdata": "prisma generate --schema prisma/schema2.prisma"
+    "test": "jest"
   },
   "babel": {
     "presets": [
