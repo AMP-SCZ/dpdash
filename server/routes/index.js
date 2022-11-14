@@ -734,9 +734,8 @@ router
   .route('/api/v1/users/:uid/configs')
   .get(ensureUser, async (req, res) => {
     const { appDb } = req.app.locals
-    const data = await appDb
-      .collection(collections.configs)
-      .aggregate([
+    const data = await appDb.configs.aggregateRaw({
+      pipeline: [
         { $match: { readers: req.params.uid } },
         {
           $lookup: {
@@ -761,8 +760,9 @@ router
           },
         },
         { $unwind: '$ownerUser' },
-      ])
-      .toArray()
+      ],
+    })
+
     return res.status(200).json(data)
   })
   .post(ensureUser, async (req, res) => {
