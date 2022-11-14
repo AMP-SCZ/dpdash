@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { connect } from 'amqplib/callback_api'
 import co from 'co'
 import { createHash } from 'crypto'
@@ -402,29 +402,25 @@ router
       return res.send(resetPage(message))
     }
   })
-  .post(function (req, res) {
-    if (req.body.password !== req.body.confirmpw) {
-      return res.redirect(`${basePath}/resetpw?e=unmatched`)
-    } else {
-      const { appDb } = req.app.locals
-      var hashedPW = hash(req.body.password)
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.body.username, reset_key: req.body.reset_key },
-        {
-          $set: { password: hashedPW, reset_key: '', force_reset_pw: false },
-        },
-        { returnOriginal: false },
-        function (err, doc) {
-          if (err) {
-            console.log(err)
-            return res.redirect(`${basePath}/resetpw?e=db`)
-          } else if (!doc || doc['value'] === null) {
-            return res.redirect(`${basePath}/resetpw?e=nouser`)
-          } else {
-            return res.redirect(`${basePath}/login?e=resetpw`)
-          }
-        }
-      )
+  .post(async (req, res) => {
+    try {
+      if (req.body.password !== req.body.confirmpw) {
+        return res.redirect(`${basePath}/resetpw?e=unmatched`)
+      } else {
+        const { appDb } = req.app.locals
+        const hashedPW = hash(req.body.password)
+        const user = await appDb.users.update({
+          where: { uid: req.body.username, reset_key: req.body.reset_key },
+          data: { password: hashedPW, reset_key: '', force_reset_pw: false },
+        })
+
+        if (!user || user['value'] === null)
+          return res.redirect(`${basePath}/resetpw?e=nouser`)
+
+        return res.redirect(`${basePath}/login?e=resetpw`)
+      }
+    } catch (error) {
+      return res.redirect(`${basePath}/resetpw?e=db`)
     }
   })
 
@@ -595,9 +591,12 @@ router.route('/api/v1/studies').get(ensureAuthenticated, async (req, res) => {
       where: { uid: req.user },
       select: { access: true },
     })
+
     if (!user || Object.keys(user).length == 0) return res.status(404).send([])
+
     if (!('access' in user) || user.access.length == 0)
       return res.status(404).send([])
+
     return res.status(200).json(user.access.sort())
   } catch (error) {
     return res.status(502).send([])
@@ -659,64 +658,54 @@ router.get('/api/v1/users', ensureAdmin, function (req, res) {
       }
     })
 })
-router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .find({}, { uid: 1 })
-    .toArray(function (err, users) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!users || users.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).send(
-          users.map(function (u) {
-            return u.uid
-          })
-        )
-      }
-    })
+router.get('/api/v1/search/users', ensureAuthenticated, async (req, res) => {
+  try {
+    const { appDb } = req.app.locals
+    const users = await appDb.users.findMany({ select: { uid: true } })
+
+    if (users.length == 0) return res.status(404).send([])
+
+    return res.status(200).send(users)
+  } catch (error) {
+    return res.status(502).send([])
+  }
 })
 
 router
   .route('/api/v1/users/:uid')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOne(
-      { uid: req.params.uid },
-      {
-        configs: 0,
-        member_of: 0,
-        bad_pwd_count: 0,
-        lockout_time: 0,
-        last_logoff: 0,
-        last_logon: 0,
-        account_expires: 0,
-        force_reset_pw: 0,
-        realms: 0,
-        role: 0,
-        preferences: 0,
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({})
-        } else if (!user || Object.keys(user).length === 0) {
-          return res.status(404).send({})
-        } else {
-          return res.status(200).json(user)
-        }
-      }
-    )
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { appDb } = req.app.locals
+      const user = await appDb.users.findUniqueOrThrow({
+        where: { uid: req.params.uid },
+        select: {
+          configs: false,
+          member_of: false,
+          bad_pwd_count: false,
+          lockout_time: false,
+          last_logoff: false,
+          last_logon: false,
+          account_expires: false,
+          force_reset_pw: false,
+          realms: false,
+          role: false,
+          preferences: false,
+        },
+      })
+
+      if (!user) return res.status(404).send({})
+
+      return res.status(200).json(user)
+    } catch (error) {
+      return res.status(502).send({})
+    }
   })
-  .post(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOneAndUpdate(
-      { uid: req.params.uid },
-      {
-        $set: {
+  .post(ensureUser, async (req, res) => {
+    try {
+      const { appDb } = req.app.locals
+      const user = await appDb.users.update({
+        where: { uid: req.params.uid },
+        data: {
           display_name: req.body.user.display_name,
           title: req.body.user.title,
           department: req.body.user.department,
@@ -724,24 +713,21 @@ router
           mail: req.body.user.mail,
           icon: req.body.user.icon,
         },
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.sendStatus(502)
-        } else if (!user) {
-          return res.sendStatus(404)
-        } else {
-          req.session.display_name = req.body.user.display_name
-          req.session.title = req.body.user.title
-          req.session.department = req.body.user.department
-          req.session.company = req.body.user.company
-          req.session.mail = req.body.user.mail
-          req.session.icon = req.body.user.icon
-          return res.sendStatus(201)
-        }
-      }
-    )
+      })
+
+      if (!user) return res.sendStatus(404)
+
+      req.session.display_name = req.body.user.display_name
+      req.session.title = req.body.user.title
+      req.session.department = req.body.user.department
+      req.session.company = req.body.user.company
+      req.session.mail = req.body.user.mail
+      req.session.icon = req.body.user.icon
+
+      return res.sendStatus(201)
+    } catch (error) {
+      return res.sendStatus(502)
+    }
   })
 
 router
@@ -779,120 +765,84 @@ router
       .toArray()
     return res.status(200).json(data)
   })
-  .post(ensureUser, function (req, res) {
+  .post(ensureUser, async (req, res) => {
     const { appDb } = req.app.locals
-    if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
-      appDb
-        .collection('configs')
-        .findOneAndUpdate(
-          { _id: new ObjectID(req.body.disable) },
-          { $pull: { readers: req.params.uid } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else if (Object.prototype.hasOwnProperty.call(req.body, 'remove')) {
-      appDb
-        .collection('configs')
-        .deleteOne({ _id: new ObjectID(req.body.remove) }, function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({ message: 'fail' })
-          } else {
-            return res.status(201).send({ message: 'success' })
-          }
+    try {
+      if (Object.prototype.hasOwnProperty.call(req.body, 'disable')) {
+        await appDb.configs.update({
+          where: { _id: new ObjectId(req.body.disable) },
+          data: { PULL: { readers: req.params.uid } },
         })
-    } else if (Object.prototype.hasOwnProperty.call(req.body, 'share')) {
-      appDb
-        .collection('configs')
-        .findOneAndUpdate(
-          { _id: new ObjectID(req.body.share) },
-          { $set: { readers: req.body.shared } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else if (Object.prototype.hasOwnProperty.call(req.body, 'edit')) {
-      appDb.collection('configs').findOneAndUpdate(
-        { _id: new ObjectID(req.body.edit._id) },
-        {
-          $set: {
+
+        return res.status(201).send({ message: 'success' })
+      } else if (Object.prototype.hasOwnProperty.call(req.body, 'remove')) {
+        await appDb.configs.delete({
+          where: { _id: new ObjectId(req.body.remove) },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      } else if (Object.prototype.hasOwnProperty.call(req.body, 'share')) {
+        appDb.configs.update({
+          where: { _id: new ObjectId(req.body.share) },
+          data: { readers: req.body.shared },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      } else if (Object.prototype.hasOwnProperty.call(req.body, 'edit')) {
+        await appDb.configs.update({
+          where: { _id: new ObjectId(req.body.edit._id) },
+          data: {
             readers: req.body.edit.readers,
             config: req.body.edit.config,
             name: req.body.edit.name,
             type: req.body.edit.type,
           },
-        },
-        { returnOriginal: false },
-        function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({ message: 'fail' })
-          } else {
-            return res.status(201).send({ message: 'success' })
-          }
+        })
+
+        return res.status(201).send({ message: 'success' })
+      } else if (Object.prototype.hasOwnProperty.call(req.body, 'add')) {
+        const createConfig = await appDb.configs.create({
+          data: req.body.add,
+        })
+
+        if (createConfig.hasOwnProperty('_id')) {
+          const { _id } = createConfig
+          const uri = `${basePath}/u/configure?s=edit&id=${_id}`
+
+          return res.status(201).send({ uri: uri })
         }
-      )
-    } else if (Object.prototype.hasOwnProperty.call(req.body, 'add')) {
-      appDb.collection('configs').insertOne(req.body.add, function (err, doc) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({ message: 'fail' })
-        } else {
-          if ('insertedId' in doc) {
-            var _id = doc['insertedId']
-            var uri = `${basePath}/u/configure?s=edit&id=${_id}`
-            return res.status(201).send({ uri: uri })
-          } else {
-            return res.status(502).send({ message: 'fail' })
-          }
-        }
-      })
-    } else {
+        if (!createConfig) return res.status(502).send({ message: 'fail' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/resetpw')
-  .post(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const { appDb } = req.app.locals
 
-    if (
-      Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') &&
-      Object.prototype.hasOwnProperty.call(req.body, 'reset_key')
-    ) {
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.params.uid },
-        {
-          $set: {
+      if (
+        Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') &&
+        Object.prototype.hasOwnProperty.call(req.body, 'reset_key')
+      ) {
+        await appDb.users.update({
+          where: { uid: req.params.uid },
+          data: {
             force_reset_pw: req.body.force_reset_pw,
             reset_key: req.body.reset_key,
           },
-        },
-        { returnOriginal: false },
-        function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({ message: 'fail' })
-          } else {
-            return res.status(201).send({ message: 'success' })
-          }
-        }
-      )
-    } else {
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
       return res.status(502).send({ message: 'fail' })
     }
   })
@@ -1065,12 +1015,14 @@ router
   .get(ensureUser, async (req, res) => {
     try {
       const { appDb } = req.app.locals
-      const userPreferences = await appDb.users.findUnique({
+      const userPreferences = await appDb.users.findUniqueOrThrow({
         where: { uid: req.params.uid },
         select: { preferences: true },
       })
+
       if (!userPreferences || Object.keys(userPreferences).length === 0)
         return res.status(404).send({})
+
       return res.status(200).json(userPreferences)
     } catch (error) {
       return res.status(502).send({})
@@ -1107,8 +1059,8 @@ router
   .post(ensureUser, async function (req, res) {
     const { appDb } = req.app.locals
 
-    if (req.body && req.body.config) {
-      try {
+    try {
+      if (req.body && req.body.config) {
         let data = req.body.config
         const defaultColors = [
           '#4575b4',
@@ -1149,18 +1101,14 @@ router
           readers: [req.user],
           created: new Date().toUTCString(),
         }
-        await appDb.collection('configs').insertOne(newConfig)
+        await appDb.configs.create({ data: newConfig })
+
         return res.status(200).send()
-      } catch (err) {
-        if (err.name === 'ValidationError') {
-          return res.status(400).send()
-        } else {
-          console.log('Error occurred while uploading a configuration file.')
-          console.error(err)
-          return res.status(500).send()
-        }
       }
-    } else {
+    } catch (err) {
+      if (err.name === 'ValidationError') return res.status(400).send()
+
+      console.error(err)
       return res.status(500).send()
     }
   })
@@ -1380,12 +1328,15 @@ router
     try {
       const { appDb } = req.app.locals
       const { body, user } = req
-      await appDb.collection('reports').insertOne({
-        ...body,
-        user,
-        readers: [user],
-        created: new Date().toUTCString(),
+      await appDb.reports.create({
+        data: {
+          ...body,
+          user,
+          readers: [user],
+          created: new Date().toUTCString(),
+        },
       })
+
       return res.status(200).send()
     } catch (err) {
       console.error(err.message)
@@ -1399,13 +1350,15 @@ router
     try {
       const { appDb } = req.app.locals
       const { user } = req
-      const report = await appDb.collection('reports').findOne({
-        _id: ObjectID(req.params.id),
-        $or: [{ user }, { readers: user }],
+      const report = await appDb.reports.findUniqueOrThrow({
+        where: {
+          _id: ObjectId(req.params.id),
+          OR: [{ user }, { readers: user }],
+        },
       })
-      if (report === null) {
-        return res.status(404).send({ message: 'Report not found' })
-      }
+
+      if (!report) return res.status(404).send({ message: 'Report not found' })
+
       return res.status(200).send({ report })
     } catch (err) {
       console.error(err.message)
@@ -1416,20 +1369,13 @@ router
     try {
       const { appDb } = req.app.locals
       const { body, user, params } = req
-      await appDb.collection('reports').findOneAndUpdate(
-        {
-          _id: ObjectID(params.id),
-          user,
-        },
-        {
-          $set: {
-            ...body,
-          },
-        }
-      )
+      await appDb.reports.update({
+        where: { user, _id: ObjectId(params.id) },
+        data: { ...body },
+      })
+
       return res.status(200).send()
     } catch (err) {
-      console.error(err.message)
       return res.status(500).send({ message: err.message })
     }
   })
@@ -1437,11 +1383,11 @@ router
     try {
       const { appDb } = req.app.locals
       const { user } = req
-      const deletionRes = await appDb.collection('reports').deleteOne({
-        _id: ObjectID(req.params.id),
-        user,
+      const deleteReport = await appDb.reports.delete({
+        where: { _id: ObjectId(req.params.id), user },
       })
-      if (deletionRes.deletedCount > 0) {
+
+      if (deleteReport.deletedCount > 0) {
         return res.status(200).send()
       } else {
         return res.status(404).send({ message: 'Report not found' })

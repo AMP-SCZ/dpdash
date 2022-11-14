@@ -84,7 +84,7 @@ model reports {
   created    String
   readers    String[]
   reportName String
-  user       String
+  user       String @unique
 }
 
 model sessions {
