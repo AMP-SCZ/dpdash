@@ -15,3 +15,40 @@ model sessions {
   expires DateTime
   session Json?
 }
+
+model users {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  uid String @unique
+  access String[] @default([])
+  bad_pwd_count Int?
+  blocked Boolean? @default(false)
+  company String?
+  department String?
+  display_name String
+  force_reset_pw Boolean @default(false)
+  icon String?
+  last_logoff Int
+  last_logon Int
+  ldap Boolean?
+  lockout_time Int?
+  mail String?
+  member_of String?
+  password String
+  realms String[] @default([])
+  role String
+  title String?
+  preferences userPreferences
+  legacyPreferences Json?
+  siteSubjects siteSubjects[]
+}
+
+type userPreferences {
+  sort Int? @default(0)
+  config String?
+}
+
+type siteSubjects {
+  site String
+  starredSubjects String[] @default([])
+  completedSubjects String[] @default([])
+}

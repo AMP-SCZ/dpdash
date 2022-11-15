@@ -1,96 +1,86 @@
-import passport from 'passport';
-import config from '../../configs/config';
-import { MongoClient } from 'mongodb';
-import { hash } from '../crypto/hash';
-import { getMongoURI } from '../mongoUtil';
-import defaultUserConfig from '../../configs/defaultUserConfig';
-import basePathConfig from '../../configs/basePathConfig';
-
-const basePath = basePathConfig || '';
+import passport from 'passport'
+import config from '../../configs/config'
+import { hash } from '../crypto/hash'
+import { collections } from '../mongoCollections'
+import defaultUserConfig from '../../configs/defaultUserConfig'
+import { routeErrors, routes } from '../routes'
 
 export default (req, res, next) => {
-  passport.authenticate('local-signup', { session: true }, function (err, user, reqBody) {
-    if (err) {
-      return res.redirect(`${basePath}/login?e=${err}`);
-    }
-    if (user) {
-      return res.redirect(`${basePath}/signup?e=existingUser`);
-    }
-    const password = reqBody.password;
-    const username = reqBody.username;
-    const email = reqBody.email;
-    const display_name = reqBody.display_name;
-
-    const mongoURI = getMongoURI({ settings: config.database.mongo });
-    MongoClient.connect(mongoURI, config.database.mongo.server, function (err, client) {
+  passport.authenticate(
+    'local-signup',
+    { session: true },
+    async function (err, user, reqBody) {
       if (err) {
-        console.error(err.message);
-        return res.redirect(`${basePath}/login?e=forbidden`);
+        return res.redirect(routes.loginWithError(err))
       }
-      const mongodb = client.db(config.database.mongo.appDB);
-      const hashedPW = hash(password);
-      mongodb.collection('users').findOneAndUpdate(
-        { uid: username },
-        {
-          $set: {
-            display_name: display_name,
-            title: '',
-            department: '',
-            company: '',
-            mail: email,
-            member_of: '',
-            bad_pwd_count: 0,
-            lockout_time: 0,
-            last_logoff: Date.now(),
-            last_logon: Date.now(),
-            account_expires: null,
-            password: hashedPW,
-            ldap: false,
-            force_reset_pw: false,
-            realms: config.app.realms,
-            icon: '',
-            access: [],
-            blocked: false,
-            role: "member"
-          }
-        },
-        {
-          projection: {
-            _id: 0,
-            uid: 1,
-            display_name: 1,
-            acl: 1,
-            role: 1,
-            icon: 1,
-            mail: 1
+      if (user) {
+        return res.redirect(routes.signUpWithError(routeErrors.existingUser))
+      }
+      try {
+        const password = reqBody.password
+        const username = reqBody.username
+        const mail = reqBody.email
+        const display_name = reqBody.display_name
+        const hashedPW = hash(password)
+        const newUserData = {
+          uid: username,
+          display_name,
+          title: '',
+          department: '',
+          company: '',
+          mail,
+          member_of: '',
+          bad_pwd_count: 0,
+          lockout_time: 0,
+          last_logoff: Date.now(),
+          last_logon: Date.now(),
+          password: hashedPW,
+          ldap: false,
+          force_reset_pw: false,
+          realms: config.app.realms,
+          icon: '',
+          access: [],
+          blocked: false,
+          role: 'member',
+          preferences: {
+            config: '',
+            sort: 0,
           },
-          returnOriginal: false,
-          upsert: true
-        },
-        function (err, userinfo) {
-          if (err) {
-            console.error(err.message);
-          }
+          siteSubjects: [],
+        }
+        const { prisma, appDb } = req.app.locals
+        const newUser = await prisma.users.create({
+          data: newUserData,
+          select: {
+            uid: true,
+            display_name: true,
+            access: true,
+            role: true,
+            icon: true,
+            mail: true,
+          },
+        })
+        const defaultConfig = {
+          owner: username,
+          config: defaultUserConfig,
+          name: 'default',
+          type: 'matrix',
+          readers: [username],
+          created: new Date().toUTCString(),
+        }
+        await appDb.collection(collections.configs).insertOne(defaultConfig)
 
-          var defaultConfig = {
-            owner: username,
-            config: defaultUserConfig,
-            name: 'default',
-            type: 'matrix',
-            readers: [username],
-            created: (new Date()).toUTCString()
-          };
-          mongodb.collection('configs').insertOne(defaultConfig);
-          client.close();
+        req.session.role = newUser.role
+        req.session.uid = newUser.uid
+        req.session.display_name = newUser.display_name
+        req.session.mail = newUser.mail
+        req.session.celery_tasks = []
+        req.session.icon = newUser.icon
 
-          req.session.role = userinfo.value.role;
-          req.session.uid = userinfo.value.uid;
-          req.session.display_name = userinfo.value.display_name;
-          req.session.mail = userinfo.value.mail;
-          req.session.celery_tasks = [];
-          req.session.icon = userinfo.value.icon;
-          return res.redirect(`${basePath}/`);
-        });
-    });
-  })(req, res, next);
-};
+        return res.redirect(routes.root)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  )(req, res, next)
+}

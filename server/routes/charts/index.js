@@ -1,19 +1,19 @@
 import { Router } from 'express'
 import { ObjectId } from 'mongodb'
 
-import ensureAuthenticated from '../utils/passport/ensure-authenticated'
-import { collections } from '../utils/mongoCollections'
-import { userFromRequest } from '../utils/userFromRequestUtil'
+import ensureAuthenticated from '../../utils/passport/ensure-authenticated'
+import { collections } from '../../utils/mongoCollections'
+import { userFromRequest } from '../../utils/userFromRequestUtil'
 
-import chartsListPage from '../templates/Chart.template'
-import newChartPage from '../templates/NewChart.template'
-import viewChartPage from '../templates/ViewChart.template'
-import editChartPage from '../templates/EditChart.template'
+import chartsListPage from '../../templates/Chart.template'
+import newChartPage from '../../templates/NewChart.template'
+import viewChartPage from '../../templates/ViewChart.template'
+import editChartPage from '../../templates/EditChart.template'
 
-import { legend } from '../helpers/chartsHelpers'
-import { graphDataController } from '../controllers/chartsController'
-import { routes } from '../utils/routes'
-import { defaultTargetValueMap } from '../utils/defaultTargetValueMap'
+import { legend } from '../../helpers/chartsHelpers'
+import { graphDataController } from '../../controllers/chartsController'
+import { routes } from '../../utils/routes'
+import { defaultTargetValueMap } from '../../utils/defaultTargetValueMap'
 
 const router = Router()
 

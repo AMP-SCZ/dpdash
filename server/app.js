@@ -21,15 +21,14 @@ import connectLiveReload from 'connect-livereload'
 import { PrismaClient } from '@prisma/client'
 import { getMongoURI } from './utils/mongoUtil'
 
+import { routes } from './utils/routes'
 import indexRouter from './routes/index'
-import chartsRouter from './routes/charts'
+import chartsRouter from './routes/charts/'
+import userRouter from './routes/user/'
 
 import config from './configs/config'
-import basePathConfig from './configs/basePathConfig'
 
 const localStrategy = Strategy
-
-const basePath = basePathConfig || ''
 
 /* csrf protection according to http://expressjs.com/en/resources/middleware/csurf.html#simple-express-example */
 const csrfProtection = csrf({ cookie: true })
@@ -156,17 +155,15 @@ passport.use(
       usernameField: config.auth.usernameField,
       passwordField: config.auth.passwordField,
     },
-    function (username, password, done) {
-      mongodb
-        .collection('users')
-        .findOne({ uid: username })
-        .then(function (user) {
-          if (!user) {
-            return done(null, false)
-          } else {
-            return done(null, user)
-          }
+    async function (username, password, done) {
+      try {
+        const user = await prisma.users.findFirst({
+          where: { uid: username },
         })
+        return done(null, user)
+      } catch (error) {
+        return done(null, false)
+      }
     }
   )
 )
@@ -180,16 +177,16 @@ passport.use(
       passwordField: config.auth.passwordField,
       passReqToCallback: true,
     },
-    function (req, username, password, done) {
-      mongodb
-        .collection('users')
-        .findOne({ uid: username })
-        .then(function (err, user) {
-          if (!user) {
-            return done(null, false, req.body)
-          }
-          return done(null, true, null)
+    async function (req, username, password, done) {
+      try {
+        const user = await prisma.users.findFirst({
+          where: { uid: username },
         })
+        if (!user) return done(null, false, req.body)
+        else return done(null, true, null)
+      } catch (error) {
+        return res.redirect(routes.loginWithError(error))
+      }
     }
   )
 )
@@ -197,15 +194,19 @@ passport.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use(`${basePath}/`, indexRouter)
-app.use(`${basePath}/`, chartsRouter)
+app.use(routes.root, indexRouter)
+app.use(routes.root, chartsRouter)
+app.use(routes.root, userRouter)
 app.use(
-  `${basePath}/css`,
+  routes.root + 'css',
   express.static(path.join(__dirname, '../public/css'))
 )
-app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')))
 app.use(
-  `${basePath}/img`,
+  routes.root + 'js',
+  express.static(path.join(__dirname, '../public/js'))
+)
+app.use(
+  routes.root + 'img',
   express.static(path.join(__dirname, '../public/img'))
 )
 //app.use('/users', usersRouter);

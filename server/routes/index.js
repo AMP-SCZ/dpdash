@@ -18,6 +18,9 @@ import LDAP from '../utils/passport/ldap'
 import LocalLogin from '../utils/passport/local-login'
 import LocalSignup from '../utils/passport/local-signup'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
+import ensureAdmin from '../utils/passport/ensure-admin'
+import ensurePermission from '../utils/passport/ensure-permission'
+import { routeErrors, routes } from '../utils/routes'
 
 import userPage from '../templates/Account.template'
 import adminPage from '../templates/Admin.template'
@@ -36,13 +39,9 @@ import viewReportPage from '../templates/Report.template'
 import studyDetailsPage from '../templates/StudyDetails.template'
 
 import config from '../configs/config'
-import defaultStudyConfig from '../configs/defaultStudyConfig'
 import defaultUserConfig from '../configs/defaultUserConfig'
-import basePathConfig from '../configs/basePathConfig'
 
 const router = Router()
-
-const basePath = basePathConfig || ''
 
 var amqpAddress =
   'amqp://' +
@@ -59,71 +58,18 @@ connect(amqpAddress, config.rabbitmq.opts, function (err, conn) {
   rabbitmq_conn = conn
 })
 
-//Admin privilege checking middleware
-function ensureAdmin(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`)
-  }
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user, role: 'admin' },
-      { _id: 0, uid: 1 },
-      function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if (!data || Object.keys(data).length === 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else {
-          return next()
-        }
-      }
-    )
-}
-
 //Check if the information requested is for the user
 function ensureUser(req, res, next) {
   if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout?e=forbidden`)
+    return res.redirect(routes.logoutWithError(routeErrors.forbidden))
   } else if (req.params.uid !== req.user) {
-    return res.redirect(`${basePath}/?e=forbidden`)
+    return res.redirect(rootWithError(routeErrors.forbidden))
   } else {
     return next()
   }
 }
 //Check user privilege for the study
-function ensurePermission(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`)
-  }
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user },
-      { _id: 0, access: 1, blocked: 1, role: 1 },
-      function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if (!data || Object.keys(data).length === 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if ('role' in data && data['role'] === 'admin') {
-          return next()
-        } else if ('blocked' in data && data['blocked'] == true) {
-          return res.redirect(`${basePath}/logout?e=forbidden`)
-        } else if (!('access' in data) || data.access.length == 0) {
-          return res.redirect(`${basePath}/logout?e=unauthorized`)
-        } else if (data.access.indexOf(req.params.study) < 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else {
-          return next()
-        }
-      }
-    )
-}
+
 //Home
 router.get('/', ensureAuthenticated, function (req, res) {
   return res.send(
@@ -236,20 +182,20 @@ router
       function (err, user) {
         if (err) {
           console.error(err)
-          return res.redirect(`${basePath}/login?e=${err}`)
+          return res.redirect(routes.loginWithError(err))
         }
         if (!user) {
           if (config.auth.useLDAP) {
             return LDAP(req, res, next)
           } else {
-            return res.redirect(`${basePath}/login`)
+            return res.redirect(routes.login)
           }
         }
         if (user.ldap) {
           if (config.auth.useLDAP) {
             return LDAP(req, res, next)
           } else {
-            return res.redirect(`${basePath}/login`)
+            return res.redirect(routes.login)
           }
         } else {
           return LocalLogin(req, res, next, user)
@@ -263,7 +209,7 @@ router
   .route('/signup')
   .get(function (req, res) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
+      return res.redirect(routes.loginWithError(routeErrors.N_A))
     } else if (req.query.e === 'existingUser') {
       return res.send(
         registerPage('The username already exists. Please choose another.')
@@ -274,7 +220,7 @@ router
   })
   .post(function (req, res, next) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login`)
+      return res.redirect(routes.login)
     } else {
       return LocalSignup(req, res, next)
     }
@@ -285,9 +231,9 @@ router.get('/logout', function (req, res) {
   req.session.destroy()
   req.logout()
   if (req.query.e) {
-    return res.redirect(`${basePath}/login?e=${req.query.e}`)
+    return res.redirect(routes.loginWithError(req.query.e))
   } else {
-    return res.redirect(`${basePath}/login`)
+    return res.redirect(routes.login)
   }
 })
 
@@ -385,7 +331,7 @@ router
   .route('/resetpw')
   .get(function (req, res) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
+      return res.redirect(routes.loginWithError(routeErrors.N_A))
     } else {
       let message = ''
       if (req.query.e) {
@@ -402,29 +348,25 @@ router
       return res.send(resetPage(message))
     }
   })
-  .post(function (req, res) {
-    if (req.body.password !== req.body.confirmpw) {
-      return res.redirect(`${basePath}/resetpw?e=unmatched`)
-    } else {
-      const { appDb } = req.app.locals
-      var hashedPW = hash(req.body.password)
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.body.username, reset_key: req.body.reset_key },
-        {
-          $set: { password: hashedPW, reset_key: '', force_reset_pw: false },
-        },
-        { returnOriginal: false },
-        function (err, doc) {
-          if (err) {
-            console.log(err)
-            return res.redirect(`${basePath}/resetpw?e=db`)
-          } else if (!doc || doc['value'] === null) {
-            return res.redirect(`${basePath}/resetpw?e=nouser`)
-          } else {
-            return res.redirect(`${basePath}/login?e=resetpw`)
-          }
-        }
-      )
+  .post(async (req, res) => {
+    try {
+      if (req.body.password !== req.body.confirmpw)
+        return res.redirect(routes.resetPwWithError(routeErrors.unmatched))
+
+      const { prisma } = req.app.locals
+      const hashedPW = hash(req.body.password)
+      const userDocument = await prisma.users.update({
+        where: { uid: req.body.username, reset_key: req.body.reset_key },
+        data: { password: hashedPW, reset_key: '', force_reset_pw: false },
+      })
+
+      if (!userDocument || !userDocument.value)
+        return res.redirect(routes.resetPwWithError(routeErrors.noUser))
+
+      return res.redirect(routes.loginWithError(routeErrors.resetpw))
+    } catch (error) {
+      console.log(error)
+      return res.redirect(routes.resetPwWithError(routeErrors.db))
     }
   })
 
@@ -588,22 +530,18 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
   })
 })
 
-router.route('/api/v1/studies').get(ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne({ uid: req.user }, { _id: 0, access: 1 }, function (err, data) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!data || Object.keys(data).length == 0) {
-        return res.status(404).send([])
-      } else if (!('access' in data) || data.access.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).json(data.access.sort())
-      }
-    })
+router.route('/api/v1/studies').get(ensureAuthenticated, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const user = await prisma.users.findFirst({ where: { uid: req.user } })
+
+    if (!user || user.access.length === 0) return res.status(404).send([])
+
+    return res.status(200).json(user.access.sort())
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
@@ -645,105 +583,98 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
     })
 })
 
-router.get('/api/v1/users', ensureAdmin, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .find({}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 })
-    .toArray(function (err, users) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (users.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).json(users)
-      }
+router.get('/api/v1/users', ensureAdmin, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const users = await prisma.users.findMany({
+      select: {
+        preferences: false,
+        member_of: false,
+        password: false,
+        last_logoff: false,
+        uid: true,
+        display_name: true,
+        mail: true,
+        role: true,
+      },
     })
+
+    if (users.length == 0) return res.status(404).send([])
+
+    return res.status(200).json(users)
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
-router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .find({}, { uid: 1 })
-    .toArray(function (err, users) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!users || users.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).send(
-          users.map(function (u) {
-            return u.uid
-          })
-        )
-      }
+router.get('/api/v1/search/users', ensureAuthenticated, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const userList = await prisma.users.findMany({
+      select: {
+        uid: true,
+      },
     })
+    if (userList.length === 0) return res.status(404).send([])
+
+    const usersUidList = userList.map(({ uid }) => uid)
+
+    return res.status(200).json(usersUidList)
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
 
 router
   .route('/api/v1/users/:uid')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOne(
-      { uid: req.params.uid },
-      {
-        configs: 0,
-        member_of: 0,
-        bad_pwd_count: 0,
-        lockout_time: 0,
-        last_logoff: 0,
-        last_logon: 0,
-        account_expires: 0,
-        force_reset_pw: 0,
-        realms: 0,
-        role: 0,
-        preferences: 0,
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({})
-        } else if (!user || Object.keys(user).length === 0) {
-          return res.status(404).send({})
-        } else {
-          return res.status(200).json(user)
-        }
-      }
-    )
-  })
-  .post(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOneAndUpdate(
-      { uid: req.params.uid },
-      {
-        $set: {
-          display_name: req.body.user.display_name,
-          title: req.body.user.title,
-          department: req.body.user.department,
-          company: req.body.user.company,
-          mail: req.body.user.mail,
-          icon: req.body.user.icon,
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.users.findFirst({
+        where: { uid: req.params.uid },
+        select: {
+          uid: true,
+          access: true,
+          company: true,
+          department: true,
+          display_name: true,
+          icon: true,
+          title: true,
+          mail: true,
         },
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.sendStatus(502)
-        } else if (!user) {
-          return res.sendStatus(404)
-        } else {
-          req.session.display_name = req.body.user.display_name
-          req.session.title = req.body.user.title
-          req.session.department = req.body.user.department
-          req.session.company = req.body.user.company
-          req.session.mail = req.body.user.mail
-          req.session.icon = req.body.user.icon
-          return res.sendStatus(201)
-        }
-      }
-    )
+      })
+
+      if (!user) return res.status(404).send({})
+
+      return res.status(200).json(user)
+    } catch (error) {
+      console.log(error)
+      return res.sendStatus(502)
+    }
+  })
+  .post(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.users.update({
+        where: { uid: req.params.uid },
+        data: req.body.user,
+      })
+
+      if (!user) return res.sendStatus(404)
+
+      req.session.display_name = user.display_name
+      req.session.title = user.title
+      req.session.department = user.department
+      req.session.company = user.company
+      req.session.mail = user.mail
+      req.session.icon = user.icon
+
+      return res.sendStatus(201)
+    } catch (error) {
+      console.log(error)
+      return res.sendStatus(502)
+    }
   })
 
 router
@@ -855,7 +786,7 @@ router
         } else {
           if ('insertedId' in doc) {
             var _id = doc['insertedId']
-            var uri = `${basePath}/u/configure?s=edit&id=${_id}`
+            var uri = `${routes.root}u/configure?s=edit&id=${_id}`
             return res.status(201).send({ uri: uri })
           } else {
             return res.status(502).send({ message: 'fail' })
@@ -869,174 +800,164 @@ router
 
 router
   .route('/api/v1/users/:uid/resetpw')
-  .post(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-
-    if (
-      Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') &&
-      Object.prototype.hasOwnProperty.call(req.body, 'reset_key')
-    ) {
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.params.uid },
-        {
-          $set: {
+  .post(ensureAdmin, async (req, res) => {
+    const forceReset = 'force_reset_pw'
+    const resetKey = 'reset_key'
+    try {
+      if (
+        req.body.hasOwnProperty(forceReset) &&
+        req.body.hasOwnProperty(resetKey)
+      ) {
+        const { prisma } = req.app.locals
+        await prisma.update({
+          where: { uid: req.params.uid },
+          data: {
             force_reset_pw: req.body.force_reset_pw,
             reset_key: req.body.reset_key,
           },
-        },
-        { returnOriginal: false },
-        function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({ message: 'fail' })
-          } else {
-            return res.status(201).send({ message: 'success' })
-          }
-        }
-      )
-    } else {
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.error(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/delete')
-  .post(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .deleteOne({ uid: req.params.uid }, function (err) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({ message: 'fail' })
-        } else {
-          return res.status(201).send({ message: 'success' })
-        }
-      })
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      await prisma.users.delete({ where: { uid: req.params.uid } })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({ message: 'fail' })
+    }
   })
 
 router
   .route('/api/v1/users/:uid/role')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, role: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send(null)
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send(null)
-          } else {
-            return res.status(200).json(data['uid'])
-          }
-        }
-      )
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.findFirst({
+        where: { uid: req.params.uid },
+        select: { role: true, uid: true },
+      })
+
+      if (!user) return res.status(404)
+
+      return res.status(200).json(user.uid)
+    } catch (error) {
+      console.error(error)
+
+      return res.status(502)
+    }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { role: req.body.role } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const updatedUserRole = await prisma.users.update({
+        where: { uid: req.params.uid },
+        data: { role: req.body.role },
+      })
+
+      if (!updatedUserRole) return res.status(502).send({ message: 'fail' })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/blocked')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, blocked: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send(null)
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send(null)
-          } else {
-            return res.status(200).json(data['blocked'])
-          }
-        }
-      )
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.findFirst({
+        where: { uid: req.params.uid },
+        select: { blocked: true },
+      })
+
+      if (!user) return res.sendStatus(404)
+
+      return res.status(200).json(user.blocked)
+    } catch (error) {
+      console.log(error)
+
+      return res.sendStatus(502)
+    }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { blocked: req.body.blocked } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const blockedProperty = 'blocked'
+
+      if (req.body.hasOwnProperty(blockedProperty)) {
+        const { prisma } = req.app.locals
+        const updatedUserBlockedStatus = await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { blocked: req.body.blocked },
+        })
+
+        if (!updatedUserBlockedStatus)
+          return res.status(502).send({ message: 'fail' })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/studies')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne({ uid: req.params.uid }, { _id: 0, access: 1 }, function (err) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({ message: 'fail' })
-        } else {
-          return res.status(201).send({ message: 'success' })
-        }
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      await prisma.users.findFirst({
+        where: { uid: req.params.uid },
+        select: { access: true },
       })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({ message: 'fail' })
+    }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { access: req.body.acl } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const aclProperty = 'acl'
+      if (req.body.hasOwnProperty(aclProperty)) {
+        const { prisma } = req.app.locals
+        await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { access: req.body.acl },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
@@ -1064,47 +985,41 @@ router
 
 router
   .route('/api/v1/users/:uid/preferences')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, preferences: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({})
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send({})
-          } else {
-            return res.status(200).json(data['preferences'])
-          }
-        }
-      )
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const userPreferences = await prisma.users.findFirst({
+        where: { uid: req.params.uid },
+        select: { preferences: true },
+      })
+
+      if (!userPreferences) return res.status(502).send({})
+
+      return res.status(200).json(userPreferences.preferences)
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({})
+    }
   })
-  .post(ensureUser, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { preferences: req.body.preferences } },
-          { returnOriginal: false },
-          function (err, doc) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else if (!doc) {
-              return res.status(404).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
-      console.log('No property known as configurations.')
+  .post(ensureUser, async (req, res) => {
+    try {
+      const preferencesProperty = 'preferences'
+
+      if (req.body.hasOwnProperty(preferencesProperty)) {
+        const { prisma } = req.app.locals
+        await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { preferences: req.body.preferences },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
