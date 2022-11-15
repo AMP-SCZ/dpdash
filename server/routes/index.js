@@ -18,6 +18,9 @@ import LDAP from '../utils/passport/ldap'
 import LocalLogin from '../utils/passport/local-login'
 import LocalSignup from '../utils/passport/local-signup'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
+import ensureAdmin from '../utils/passport/ensure-admin'
+import ensurePermission from '../utils/passport/ensure-user'
+import { routes } from '../utils/routes'
 
 import userPage from '../templates/Account.template'
 import adminPage from '../templates/Admin.template'
@@ -59,30 +62,6 @@ connect(amqpAddress, config.rabbitmq.opts, function (err, conn) {
   rabbitmq_conn = conn
 })
 
-//Admin privilege checking middleware
-function ensureAdmin(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`)
-  }
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user, role: 'admin' },
-      { _id: 0, uid: 1 },
-      function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if (!data || Object.keys(data).length === 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else {
-          return next()
-        }
-      }
-    )
-}
-
 //Check if the information requested is for the user
 function ensureUser(req, res, next) {
   if (!req.isAuthenticated()) {
@@ -94,36 +73,7 @@ function ensureUser(req, res, next) {
   }
 }
 //Check user privilege for the study
-function ensurePermission(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`)
-  }
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user },
-      { _id: 0, access: 1, blocked: 1, role: 1 },
-      function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if (!data || Object.keys(data).length === 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if ('role' in data && data['role'] === 'admin') {
-          return next()
-        } else if ('blocked' in data && data['blocked'] == true) {
-          return res.redirect(`${basePath}/logout?e=forbidden`)
-        } else if (!('access' in data) || data.access.length == 0) {
-          return res.redirect(`${basePath}/logout?e=unauthorized`)
-        } else if (data.access.indexOf(req.params.study) < 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else {
-          return next()
-        }
-      }
-    )
-}
+
 //Home
 router.get('/', ensureAuthenticated, function (req, res) {
   return res.send(
@@ -402,29 +352,25 @@ router
       return res.send(resetPage(message))
     }
   })
-  .post(function (req, res) {
-    if (req.body.password !== req.body.confirmpw) {
-      return res.redirect(`${basePath}/resetpw?e=unmatched`)
-    } else {
-      const { appDb } = req.app.locals
-      var hashedPW = hash(req.body.password)
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.body.username, reset_key: req.body.reset_key },
-        {
-          $set: { password: hashedPW, reset_key: '', force_reset_pw: false },
-        },
-        { returnOriginal: false },
-        function (err, doc) {
-          if (err) {
-            console.log(err)
-            return res.redirect(`${basePath}/resetpw?e=db`)
-          } else if (!doc || doc['value'] === null) {
-            return res.redirect(`${basePath}/resetpw?e=nouser`)
-          } else {
-            return res.redirect(`${basePath}/login?e=resetpw`)
-          }
-        }
-      )
+  .post(async (req, res) => {
+    try {
+      if (req.body.password !== req.body.confirmpw)
+        return res.redirect(routes.resetPwErrorUnmatched)
+
+      const { prisma } = req.app.locals
+      const hashedPW = hash(req.body.password)
+      const userDocument = await prisma.users.update({
+        where: { uid: req.body.username, reset_key: req.body.reset_key },
+        data: { password: hashedPW, reset_key: '', force_reset_pw: false },
+      })
+
+      if (!userDocument || userDocument.value === null)
+        return res.redirect(routes.resetPwNoUser)
+
+      return res.redirect(routes.resetPw)
+    } catch (error) {
+      console.log(error)
+      return res.redirect(routes.resetPwError)
     }
   })
 

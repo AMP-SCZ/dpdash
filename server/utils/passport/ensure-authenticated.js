@@ -1,13 +1,9 @@
-import basePathConfig from '../../configs/basePathConfig'
-
-const basePath = basePathConfig || ''
-const logoutForbiddenRoute = `${basePath}/logout?e=forbidden`
-const unauthorizedRoute = `${basePath}/logout?e=unauthorized`
+import { routes } from '../routes'
 
 export default async function ensureAuthenticated(req, res, next) {
   try {
     if (!req.isAuthenticated()) {
-      return res.redirect(`${basePath}/logout`)
+      return res.redirect(routes.logout)
     }
     const { prisma } = req.app.locals
     const user = await prisma.users.findUnique({
@@ -16,13 +12,13 @@ export default async function ensureAuthenticated(req, res, next) {
     })
     switch (true) {
       case !user || Object.keys(user).length === 0 || !!user.blocked:
-        return res.redirect(`${basePath}/logout`)
+        return res.redirect(routes.logout)
       case user.access && user.access.length === 0:
-        return res.redirect(unauthorizedRoute)
+        return res.redirect(routes.unauthorizedRoute)
       default:
         return next()
     }
   } catch (error) {
-    return res.redirect(logoutForbiddenRoute)
+    return res.redirect(routes.logoutForbiddenRoute)
   }
 }
