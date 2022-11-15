@@ -157,9 +157,10 @@ passport.use(
       passwordField: config.auth.passwordField,
     },
     function (username, password, done) {
-      mongodb
-        .collection('users')
-        .findOne({ uid: username })
+      prisma.users
+        .findUnique({
+          where: { uid: username },
+        })
         .then(function (user) {
           if (!user) {
             return done(null, false)
@@ -181,9 +182,10 @@ passport.use(
       passReqToCallback: true,
     },
     function (req, username, password, done) {
-      mongodb
-        .collection('users')
-        .findOne({ uid: username })
+      prisma.users
+        .findUnique({
+          where: { uid: username },
+        })
         .then(function (err, user) {
           if (!user) {
             return done(null, false, req.body)
