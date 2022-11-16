@@ -800,72 +800,67 @@ router
 
 router
   .route('/api/v1/users/:uid/resetpw')
-  .post(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-
-    if (
-      Object.prototype.hasOwnProperty.call(req.body, 'force_reset_pw') &&
-      Object.prototype.hasOwnProperty.call(req.body, 'reset_key')
-    ) {
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.params.uid },
-        {
-          $set: {
+  .post(ensureAdmin, async (req, res) => {
+    const forceReset = 'force_reset_pw'
+    const resetKey = 'reset_key'
+    try {
+      if (
+        req.body.hasOwnProperty(forceReset) &&
+        req.body.hasOwnProperty(resetKey)
+      ) {
+        const { prisma } = req.app.locals
+        await prisma.update({
+          where: { uid: req.params.uid },
+          data: {
             force_reset_pw: req.body.force_reset_pw,
             reset_key: req.body.reset_key,
           },
-        },
-        { returnOriginal: false },
-        function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({ message: 'fail' })
-          } else {
-            return res.status(201).send({ message: 'success' })
-          }
-        }
-      )
-    } else {
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.error(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/delete')
-  .post(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .deleteOne({ uid: req.params.uid }, function (err) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({ message: 'fail' })
-        } else {
-          return res.status(201).send({ message: 'success' })
-        }
-      })
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      await prisma.users.delete({ where: { uid: req.params.uid } })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({ message: 'fail' })
+    }
   })
 
 router
   .route('/api/v1/users/:uid/role')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, role: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send(null)
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send(null)
-          } else {
-            return res.status(200).json(data['uid'])
-          }
-        }
-      )
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.findUnique({
+        where: { uid: req.params.uid },
+        select: { role: true },
+      })
+
+      if (!user) return res.status(404)
+
+      return res.status(200).json(user.uid)
+    } catch (error) {
+      console.error(error)
+
+      return res.status(502)
+    }
   })
   .post(ensureAdmin, function (req, res) {
     if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
