@@ -534,22 +534,18 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
   })
 })
 
-router.route('/api/v1/studies').get(ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne({ uid: req.user }, { _id: 0, access: 1 }, function (err, data) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!data || Object.keys(data).length == 0) {
-        return res.status(404).send([])
-      } else if (!('access' in data) || data.access.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).json(data.access.sort())
-      }
-    })
+router.route('/api/v1/studies').get(ensureAuthenticated, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const user = await prisma.users.findUnique({ where: { uid: req.user } })
+
+    if (!user || user.access.length === 0) return res.status(404).send([])
+
+    return res.status(200).json(user.access.sort())
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
 
 router.get('/api/v1/search/studies', ensureAuthenticated, function (req, res) {
@@ -591,105 +587,94 @@ router.get('/api/v1/subjects', ensureAuthenticated, function (req, res) {
     })
 })
 
-router.get('/api/v1/users', ensureAdmin, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .find({}, { _id: 0, configs: 0, member_of: 0, password: 0, last_logoff: 0 })
-    .toArray(function (err, users) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (users.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).json(users)
-      }
+router.get('/api/v1/users', ensureAdmin, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const users = await prisma.users.findMany({
+      select: {
+        configs: false,
+        memeber_of: false,
+        password: false,
+        last_logoff: false,
+      },
     })
+
+    if (users.length == 0) return res.status(404).send([])
+
+    return res.status(200).json(users)
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
-router.get('/api/v1/search/users', ensureAuthenticated, function (req, res) {
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .find({}, { uid: 1 })
-    .toArray(function (err, users) {
-      if (err) {
-        console.log(err)
-        return res.status(502).send([])
-      } else if (!users || users.length == 0) {
-        return res.status(404).send([])
-      } else {
-        return res.status(200).send(
-          users.map(function (u) {
-            return u.uid
-          })
-        )
-      }
+router.get('/api/v1/search/users', ensureAuthenticated, async (req, res) => {
+  try {
+    const { prisma } = req.app.locals
+    const userList = await prisma.users.findMany({
+      select: {
+        uid: true,
+      },
     })
+    if (userList.length === 0) return res.status(404).send([])
+
+    const users = userList.map(({ uid }) => uid)
+
+    return res.status(200).json(users)
+  } catch (error) {
+    console.log(error)
+    return res.status(502).send([])
+  }
 })
 
 router
   .route('/api/v1/users/:uid')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOne(
-      { uid: req.params.uid },
-      {
-        configs: 0,
-        member_of: 0,
-        bad_pwd_count: 0,
-        lockout_time: 0,
-        last_logoff: 0,
-        last_logon: 0,
-        account_expires: 0,
-        force_reset_pw: 0,
-        realms: 0,
-        role: 0,
-        preferences: 0,
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({})
-        } else if (!user || Object.keys(user).length === 0) {
-          return res.status(404).send({})
-        } else {
-          return res.status(200).json(user)
-        }
-      }
-    )
-  })
-  .post(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb.collection('users').findOneAndUpdate(
-      { uid: req.params.uid },
-      {
-        $set: {
-          display_name: req.body.user.display_name,
-          title: req.body.user.title,
-          department: req.body.user.department,
-          company: req.body.user.company,
-          mail: req.body.user.mail,
-          icon: req.body.user.icon,
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.users.findUnique({
+        where: { uid: req.params.uid },
+        select: {
+          uid: true,
+          access: true,
+          company: true,
+          department: true,
+          display_name: true,
+          icon: true,
+          title: true,
+          mail: true,
         },
-      },
-      function (err, user) {
-        if (err) {
-          console.log(err)
-          return res.sendStatus(502)
-        } else if (!user) {
-          return res.sendStatus(404)
-        } else {
-          req.session.display_name = req.body.user.display_name
-          req.session.title = req.body.user.title
-          req.session.department = req.body.user.department
-          req.session.company = req.body.user.company
-          req.session.mail = req.body.user.mail
-          req.session.icon = req.body.user.icon
-          return res.sendStatus(201)
-        }
-      }
-    )
+      })
+
+      if (!user) return res.status(404).send({})
+
+      return res.status(200).json(user)
+    } catch (error) {
+      console.log(error)
+      return res.status(502).send({})
+    }
+  })
+  .post(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.users.update({
+        where: { uid: req.params.uid },
+        data: req.body.user,
+      })
+
+      if (!user) return res.sendStatus(404)
+
+      req.session.display_name = user.display_name
+      req.session.title = user.title
+      req.session.department = user.department
+      req.session.company = user.company
+      req.session.mail = user.mail
+      req.session.icon = user.icon
+
+      return res.sendStatus(201)
+    } catch (error) {
+      console.log(error)
+      return res.sendStatus(502)
+    }
   })
 
 router
