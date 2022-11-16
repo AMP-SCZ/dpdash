@@ -13,7 +13,7 @@ export default (req, res, next, user) => {
   }
   //passport local log-in serializer
   passport.serializeUser(function (user, done) {
-    done(null, user.uid)
+    return done(null, user.uid)
   })
   passport.deserializeUser(function (user, done) {
     done(null, user)
@@ -21,13 +21,13 @@ export default (req, res, next, user) => {
   //If the user exists, serialize the user to the session
   req.login(user, (err) => {
     if (err) return next(err)
+
     const { uid } = user
-    const { prisma, appDb } = req.app.locals
+    const { appDb } = req.app.locals
     appDb
       .collection(collections.configs)
       .findOne({ owner: uid })
-      .then((err, configData) => {
-        if (err) console.error(err.message)
+      .then((configData) => {
         if (!configData) {
           const defaultConfig = {
             owner: uid,
@@ -37,32 +37,22 @@ export default (req, res, next, user) => {
             readers: [uid],
             created: new Date().toUTCString(),
           }
-          appDb.collection(collections.config).insertOne(defaultConfig)
+          appDb
+            .collection(collections.configs)
+            .insertOne(defaultConfig)
+            .then((data) => {
+              if (!data) console.error(data)
+            })
         }
       })
-    prisma.users
-      .update({
-        where: { uid },
-        data: { last_logon: Date.now() },
-        select: {
-          uid: true,
-          display_name: true,
-          acl: true,
-          role: true,
-          icon: true,
-          mail: true,
-          access: true,
-        },
-      })
-      .then((user) => {
-        if (!user) console.log('Error updating user')
-        req.session.role = user.value.role
-        req.session.display_name = user.value.display_name
-        req.session.mail = user.value.mail
-        req.session.celery_tasks = []
-        req.session.icon = user.value.icon
-        req.session.userAccess = user.value.access
-      })
+
+    req.session.role = user.role
+    req.session.display_name = user.display_name
+    req.session.mail = user.mail
+    req.session.celery_tasks = []
+    req.session.icon = user.icon
+    req.session.userAccess = user.access
+
     return res.redirect(`${basePath}/`)
   })
 }

@@ -156,18 +156,15 @@ passport.use(
       usernameField: config.auth.usernameField,
       passwordField: config.auth.passwordField,
     },
-    function (username, password, done) {
-      prisma.users
-        .findUnique({
+    async function (username, password, done) {
+      try {
+        const user = await prisma.users.findUnique({
           where: { uid: username },
         })
-        .then(function (user) {
-          if (!user) {
-            return done(null, false)
-          } else {
-            return done(null, user)
-          }
-        })
+        return done(null, user)
+      } catch (error) {
+        return done(null, false)
+      }
     }
   )
 )

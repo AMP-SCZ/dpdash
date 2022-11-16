@@ -985,7 +985,7 @@ router
   .get(ensureUser, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const userPreferences = await prisma.findUnique({
+      const userPreferences = await prisma.users.findUnique({
         where: { uid: req.params.uid },
         select: { preferences: true },
       })
