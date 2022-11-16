@@ -248,8 +248,8 @@ class MainPage extends Component {
       sortBy: '',
       sortDirection: 'ASC',
       preferences: {},
-      star: {},
-      complete: {},
+      star: [],
+      complete: [],
     }
   }
   componentDidUpdate() {}
@@ -310,49 +310,57 @@ class MainPage extends Component {
   }
   favorite = (study, subject) => {
     const newState = this.state.star
-    if (study in newState) {
-      let subjectIndex = newState[study].indexOf(subject)
-      if (subjectIndex == -1) {
-        let updated = update(this.state.star, {
-          [study]: {
-            $push: [subject],
+    const starredSiteIndex = newState.findIndex(({ site }) => site === study)
+    if (starredSiteIndex < 0) {
+      const userNewStarredSubject = { site: study, starredSubjects: [subject] }
+      this.setState({ star: [userNewStarredSubject] }, async () => {
+        this.updateUserStars(this.state.star)
+      })
+    }
+    if (starredSiteIndex > -1) {
+      const starredSubjectExists =
+        newState[starredSiteIndex].starredSubjects.includes(subject)
+      if (!starredSubjectExists) {
+        this.setState(
+          {
+            star: this.state.star.map((starData, i) => {
+              if (i === starredSiteIndex) {
+                return {
+                  ...starData,
+                  starredSubjects: starData.starredSubjects.concat(subject),
+                }
+              } else return starData
+            }),
           },
-        })
-        this.setState({ star: updated })
-        this.updateUserStars(updated)
-        this.starAcl(this.state.default_acl, updated)
-      } else {
-        //already favorited
+          async () => {
+            this.updateUserStars(this.state.star)
+            this.starAcl(this.state.default_acl, this.state.star)
+          }
+        )
       }
-    } else {
-      let updated = update(this.state.star, {
-        [study]: {
-          $set: [subject],
-        },
-      })
-      this.updateUserStars(updated)
-      this.setState({
-        star: updated,
-      })
-      this.starAcl(this.state.default_acl, updated)
     }
   }
   unfavorite = (study, subject) => {
-    const newState = this.state.star
-    if (study in newState) {
-      let subjectIndex = newState[study].indexOf(subject)
-      if (subjectIndex > -1) {
-        let updated = update(this.state.star, {
-          [study]: {
-            $splice: [[subjectIndex, 1]],
-          },
-        })
-        this.updateUserStars(updated)
-        this.setState({
-          star: updated,
-        })
-        this.starAcl(this.state.default_acl, updated)
-      }
+    const studyIndex = this.state.star.findIndex(({ site }) => site === study)
+    if (studyIndex > -1) {
+      this.setState(
+        {
+          star: this.state.star.map((starData, i) => {
+            if (i === studyIndex) {
+              return {
+                ...starData,
+                starredSubjects: starData.starredSubjects.filter(
+                  (starredSubjects) => starredSubjects !== subject
+                ),
+              }
+            } else return starData
+          }),
+        },
+        async () => {
+          this.updateUserStars(this.state.star)
+          this.starAcl(this.state.default_acl, this.state.star)
+        }
+      )
     }
   }
   complete = (study, subject) => {
@@ -400,16 +408,21 @@ class MainPage extends Component {
     }
   }
   starAcl = (default_acl, stars) => {
-    var starred_acl = []
-    var unstarred_acl = []
+    const starred_acl = []
+    const unstarred_acl = []
+    const studyKey = 'study'
+    const subjectKey = 'subject'
     for (var i = 0; i < default_acl.length; i++) {
-      var study = default_acl[i]['study']
-      var subject = default_acl[i]['subject']
-      if (study in stars && stars[study].indexOf(subject) > -1) {
-        starred_acl.push(default_acl[i])
-      } else {
-        unstarred_acl.push(default_acl[i])
-      }
+      const study = default_acl[i][studyKey]
+      const subject = default_acl[i][subjectKey]
+      const studyIndex = stars.findIndex(({ site }) => site === study)
+      if (studyIndex > -1) {
+        const isSubjectStarred =
+          stars[studyIndex].starredSubjects.includes(subject)
+
+        if (isSubjectStarred) starred_acl.push(default_acl[i])
+        else unstarred_acl.push(default_acl[i])
+      } else unstarred_acl.push(default_acl[i])
     }
     this.setState({
       acl: starred_acl.concat(unstarred_acl),
@@ -431,21 +444,24 @@ class MainPage extends Component {
     }
   }
   checkStar = (star, cellData) => {
-    var study = cellData['rowData']['study'] in this.state.star
-    if (study) {
-      var subject = this.state.star[cellData['rowData']['study']].indexOf(
-        cellData['rowData']['subject']
-      )
-      if (subject > -1) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      return false
-    }
+    console.log(star, 'WTF IS THIS')
+    const rowData = 'rowData'
+    const studyKey = 'study'
+    const subjectKey = 'subject'
+    const hasSiteStarredSubjects = star.findIndex(
+      ({ site }) => site === cellData[rowData][studyKey]
+    )
+    if (hasSiteStarredSubjects > -1) {
+      const isStarSubject = star[
+        hasSiteStarredSubjects
+      ].starredSubjects.includes(cellData[rowData][subjectKey])
+
+      if (isStarSubject) return true
+      else return false
+    } else return false
   }
   updateUserStars = (star) => {
+    console.log(star, 'THIS IS THE THING')
     let uid = this.props.user.uid
     let preference = {}
     preference['star'] = star ? star : this.state.star

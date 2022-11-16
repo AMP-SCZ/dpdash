@@ -1,7 +1,7 @@
 const babyProofPreferences = (preferences) => {
   const defaultPreferences = {
-    complete: {},
-    star: {},
+    complete: [],
+    star: [],
     sort: 0,
   }
 

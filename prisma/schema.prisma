@@ -26,34 +26,34 @@ model users {
   department String?
   display_name String
   force_reset_pw Boolean @default(false)
-  icon String
+  icon String?
   last_logoff Int
   last_logon Int
-  ldap Boolean
+  ldap Boolean?
   lockout_time Int?
-  mail String
+  mail String?
   member_of String
   password String
   realms String[] @default([])
   role String @unique
   title String?
-  preferences userPreferences?
+  preferences userPreferences
 }
 
 
 type userPreferences {
   complete siteComplete[]
   star siteStarred[]
-  sort Int?
+  sort Int? @default(0)
   config String?
 }
 
 type siteComplete {
-  site String
-  subjects String[] @default([])
+  site String?
+  completedSubjects String[] @default([])
 }
 
 type siteStarred {
-  site String
+  site String?
   starredSubjects String[] @default([])
 }
