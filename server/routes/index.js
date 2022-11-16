@@ -862,107 +862,99 @@ router
       return res.status(502)
     }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'role')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { role: req.body.role } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const updateUserRole = await prisma.users.update({
+        where: { uid: req.params.uid },
+        data: { role: req.body.role },
+      })
+
+      if (!updateUserRole) return res.status(502).send({ message: 'fail' })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/blocked')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, blocked: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send(null)
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send(null)
-          } else {
-            return res.status(200).json(data['blocked'])
-          }
-        }
-      )
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const user = await prisma.findUnique({
+        where: { uid: req.params.uid },
+        select: { blocked: true },
+      })
+
+      if (!user) return res.status(404).send(null)
+
+      return res.status(200).json(user.blocked)
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send(null)
+    }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'blocked')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { blocked: req.body.blocked } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const blockedProperty = 'blocked'
+
+      if (req.body.hasOwnProperty(blockedProperty)) {
+        const { prisma } = req.app.locals
+        await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { blocked: req.body.blocked },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
 
 router
   .route('/api/v1/users/:uid/studies')
-  .get(ensureAdmin, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne({ uid: req.params.uid }, { _id: 0, access: 1 }, function (err) {
-        if (err) {
-          console.log(err)
-          return res.status(502).send({ message: 'fail' })
-        } else {
-          return res.status(201).send({ message: 'success' })
-        }
+  .get(ensureAdmin, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      await prisma.users.findUnique({
+        where: { uid: req.params.uid },
+        select: { access: true },
       })
+
+      return res.status(201).send({ message: 'success' })
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({ message: 'fail' })
+    }
   })
-  .post(ensureAdmin, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'acl')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { access: req.body.acl } },
-          { returnOriginal: false },
-          function (err) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
+  .post(ensureAdmin, async (req, res) => {
+    try {
+      const aclProperty = 'acl'
+      if (req.body.hasOwnProperty(aclProperty)) {
+        const { prisma } = req.app.locals
+        await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { access: req.body.acl },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
@@ -990,47 +982,42 @@ router
 
 router
   .route('/api/v1/users/:uid/preferences')
-  .get(ensureUser, function (req, res) {
-    const { appDb } = req.app.locals
-    appDb
-      .collection('users')
-      .findOne(
-        { uid: req.params.uid },
-        { _id: 0, preferences: 1 },
-        function (err, data) {
-          if (err) {
-            console.log(err)
-            return res.status(502).send({})
-          } else if (!data || Object.keys(data).length === 0) {
-            return res.status(404).send({})
-          } else {
-            return res.status(200).json(data['preferences'])
-          }
-        }
-      )
+  .get(ensureUser, async (req, res) => {
+    try {
+      const { prisma } = req.app.locals
+      const userPreferences = await prisma.findUnique({
+        where: { uid: req.params.uid },
+        select: { preferences: true },
+      })
+      console.log(userPreferences)
+
+      if (!userPreferences) return res.status(502).send({})
+
+      return res.status(200).json(userPreferences.preferences)
+    } catch (error) {
+      console.log(error)
+
+      return res.status(502).send({})
+    }
   })
-  .post(ensureUser, function (req, res) {
-    if (Object.prototype.hasOwnProperty.call(req.body, 'preferences')) {
-      const { appDb } = req.app.locals
-      appDb
-        .collection('users')
-        .findOneAndUpdate(
-          { uid: req.params.uid },
-          { $set: { preferences: req.body.preferences } },
-          { returnOriginal: false },
-          function (err, doc) {
-            if (err) {
-              console.log(err)
-              return res.status(502).send({ message: 'fail' })
-            } else if (!doc) {
-              return res.status(404).send({ message: 'fail' })
-            } else {
-              return res.status(201).send({ message: 'success' })
-            }
-          }
-        )
-    } else {
-      console.log('No property known as configurations.')
+  .post(ensureUser, async (req, res) => {
+    try {
+      const preferencesProperty = 'preferences'
+
+      if (req.body.hasOwnProperty(preferencesProperty)) {
+        const { prisma } = req.app.locals
+        await prisma.users.update({
+          where: { uid: req.params.uid },
+          data: { preferences: req.body.preferences },
+        })
+
+        return res.status(201).send({ message: 'success' })
+      }
+
+      return res.status(502).send({ message: 'fail' })
+    } catch (error) {
+      console.log(error)
+
       return res.status(502).send({ message: 'fail' })
     }
   })
