@@ -313,9 +313,12 @@ class MainPage extends Component {
     const starredSiteIndex = newState.findIndex(({ site }) => site === study)
     if (starredSiteIndex < 0) {
       const userNewStarredSubject = { site: study, starredSubjects: [subject] }
-      this.setState({ star: [userNewStarredSubject] }, async () => {
-        this.updateUserStars(this.state.star)
-      })
+      this.setState(
+        { star: newState.concat(userNewStarredSubject) },
+        async () => {
+          this.updateUserStars(this.state.star)
+        }
+      )
     }
     if (starredSiteIndex > -1) {
       const starredSubjectExists =
@@ -444,7 +447,6 @@ class MainPage extends Component {
     }
   }
   checkStar = (star, cellData) => {
-    console.log(star, 'WTF IS THIS')
     const rowData = 'rowData'
     const studyKey = 'study'
     const subjectKey = 'subject'
@@ -461,7 +463,6 @@ class MainPage extends Component {
     } else return false
   }
   updateUserStars = (star) => {
-    console.log(star, 'THIS IS THE THING')
     let uid = this.props.user.uid
     let preference = {}
     preference['star'] = star ? star : this.state.star
