@@ -35,6 +35,9 @@ import { fetchSubjects } from './fe-utils/fetchUtil'
 import basePathConfig from '../server/configs/basePathConfig'
 
 const basePath = basePathConfig || ''
+const rowKey = 'rowData'
+const studyKey = 'study'
+const subjectKey = 'subject'
 const drawerWidth = 200
 const styles = (theme) => ({
   root: {
@@ -291,17 +294,18 @@ class MainPage extends Component {
       })
   }
   handleComplete = (e, checked, cellData) => {
-    var study = cellData['rowData']['study']
-    var subject = cellData['rowData']['subject']
-    if (checked == true) {
+    const currentCell = cellData[rowKey]
+    const { study, subject } = currentCell
+
+    if (checked === true) {
       this.complete(study, subject)
     } else {
       this.incomplete(study, subject)
     }
   }
   handleStar = (e, checked, cellData) => {
-    var study = cellData['rowData']['study']
-    var subject = cellData['rowData']['subject']
+    const { study, subject } = cellData[rowKey]
+
     if (checked == true) {
       this.favorite(study, subject)
     } else {
@@ -367,54 +371,76 @@ class MainPage extends Component {
     }
   }
   complete = (study, subject) => {
-    const newState = this.state.complete
-    if (study in newState) {
-      let subjectIndex = newState[study].indexOf(subject)
-      if (subjectIndex == -1) {
-        let updated = update(this.state.complete, {
-          [study]: {
-            $push: [subject],
+    const completedStudyIndex = this.state.complete.findIndex(
+      ({ site }) => study === site
+    )
+
+    if (completedStudyIndex > -1) {
+      const isSubjectComplete =
+        this.state.complete[completedStudyIndex].completedSubjects.includes(
+          subject
+        )
+      if (!isSubjectComplete) {
+        this.setState(
+          {
+            complete: this.state.complete.map((siteData, i) => {
+              if (i === completedStudyIndex) {
+                return {
+                  ...siteData,
+                  completedSubjects: siteData.completedSubjects.concat(subject),
+                }
+              } else return siteData
+            }),
           },
-        })
-        this.setState({ complete: updated })
-        this.updateUserComplete(updated)
-      } else {
-        //already favorited
+          async () => {
+            this.updateUserComplete(this.state.complete)
+          }
+        )
       }
     } else {
-      let updated = update(this.state.complete, {
-        [study]: {
-          $set: [subject],
+      const newSitesCompletedList = {
+        site: study,
+        completedSubjects: [subject],
+      }
+      this.setState(
+        {
+          complete: this.state.complete.concat(newSitesCompletedList),
         },
-      })
-      this.updateUserComplete(updated)
-      this.setState({
-        complete: updated,
-      })
+        async () => {
+          this.updateUserComplete(this.state.complete)
+        }
+      )
     }
   }
+
   incomplete = (study, subject) => {
-    const newState = this.state.complete
-    if (study in newState) {
-      let subjectIndex = newState[study].indexOf(subject)
-      if (subjectIndex > -1) {
-        let updated = update(this.state.complete, {
-          [study]: {
-            $splice: [[subjectIndex, 1]],
-          },
-        })
-        this.updateUserComplete(updated)
-        this.setState({
-          complete: updated,
-        })
-      }
+    const siteCompleteIndex = this.state.complete.findIndex(
+      ({ site }) => site === study
+    )
+    if (siteCompleteIndex > -1) {
+      this.setState(
+        {
+          complete: this.state.complete.map((completeData, i) => {
+            if (i === siteCompleteIndex) {
+              return {
+                ...completeData,
+                completedSubjects: completeData.completedSubjects.filter(
+                  (completedSubject) => completedSubject !== subject
+                ),
+              }
+            } else return completeData
+          }),
+        },
+        async () => {
+          this.updateUserComplete(this.state.complete)
+        }
+      )
     }
   }
   starAcl = (default_acl, stars) => {
     const starred_acl = []
     const unstarred_acl = []
-    const studyKey = 'study'
-    const subjectKey = 'subject'
+
     for (var i = 0; i < default_acl.length; i++) {
       const study = default_acl[i][studyKey]
       const subject = default_acl[i][subjectKey]
@@ -432,31 +458,33 @@ class MainPage extends Component {
     })
   }
   checkComplete = (complete, cellData) => {
-    var study = cellData['rowData']['study'] in this.state.complete
-    if (study) {
-      var subject = this.state.complete[cellData['rowData']['study']].indexOf(
-        cellData['rowData']['subject']
-      )
-      if (subject > -1) {
+    const currentCell = cellData[rowKey]
+    const study = currentCell[studyKey]
+    const subject = currentCell[subjectKey]
+    const siteCompletedListIndex = complete.findIndex(
+      ({ site }) => site === study
+    )
+
+    if (siteCompletedListIndex > -1) {
+      if (
+        this.state.complete[siteCompletedListIndex].completedSubjects.includes(
+          subject
+        )
+      ) {
         return true
       } else {
         return false
       }
-    } else {
-      return false
-    }
+    } else return false
   }
   checkStar = (star, cellData) => {
-    const rowData = 'rowData'
-    const studyKey = 'study'
-    const subjectKey = 'subject'
     const hasSiteStarredSubjects = star.findIndex(
-      ({ site }) => site === cellData[rowData][studyKey]
+      ({ site }) => site === cellData[rowKey][studyKey]
     )
     if (hasSiteStarredSubjects > -1) {
       const isStarSubject = star[
         hasSiteStarredSubjects
-      ].starredSubjects.includes(cellData[rowData][subjectKey])
+      ].starredSubjects.includes(cellData[rowKey][subjectKey])
 
       if (isStarSubject) return true
       else return false
@@ -483,12 +511,13 @@ class MainPage extends Component {
     })
   }
   updateUserComplete = (complete) => {
-    let uid = this.props.user.uid
-    let preference = {}
-    preference['star'] = this.state.star
-    preference['complete'] = complete
-    preference['config'] =
-      'config' in this.state.preferences ? this.state.preferences['config'] : ''
+    const uid = this.props.user.uid
+    const currentPreference = {
+      star: this.state.star,
+      complete,
+      config: this.state.preferences.config || '',
+    }
+
     return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
       method: 'POST',
       headers: {
@@ -496,7 +525,7 @@ class MainPage extends Component {
       },
       credentials: 'same-origin',
       body: JSON.stringify({
-        preferences: preference,
+        preferences: currentPreference,
       }),
     }).then(() => {
       return
