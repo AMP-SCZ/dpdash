@@ -15,7 +15,7 @@ export default async function ensurePermission(req, res, next) {
       },
     })
     switch (true) {
-      case !user || Object.keys(data).length === 0:
+      case !user || Object.keys(user).length === 0:
         return res.redirect(routes.logout)
       case user.role === admin:
         return next()

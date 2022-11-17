@@ -251,11 +251,11 @@ class ConfigPage extends Component {
   }
   babyProofPreferences = (preferences) => {
     let preference = {}
-    preference['star'] = 'star' in preferences ? preferences['star'] : {}
+    preference['star'] = 'star' in preferences ? preferences['star'] : []
     preference['sort'] = 'sort' in preferences ? preferences['sort'] : 0
     preference['config'] = 'config' in preferences ? preferences['config'] : ''
     preference['complete'] =
-      'complete' in preferences ? preferences['complete'] : {}
+      'complete' in preferences ? preferences['complete'] : []
     return preference
   }
   updateUserPreferences = (index, type) => {
@@ -274,9 +274,9 @@ class ConfigPage extends Component {
     preference['complete'] =
       'complete' in this.state.preferences
         ? this.state.preferences['complete']
-        : {}
+        : []
     preference['star'] =
-      'star' in this.state.preferences ? this.state.preferences['star'] : {}
+      'star' in this.state.preferences ? this.state.preferences['star'] : []
     preference['sort'] =
       'sort' in this.state.preferences ? this.state.preferences['sort'] : 0
     preference = this.babyProofPreferences(preference)

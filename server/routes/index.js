@@ -592,10 +592,14 @@ router.get('/api/v1/users', ensureAdmin, async (req, res) => {
     const { prisma } = req.app.locals
     const users = await prisma.users.findMany({
       select: {
-        configs: false,
-        memeber_of: false,
+        preferences: false,
+        member_of: false,
         password: false,
         last_logoff: false,
+        uid: true,
+        display_name: true,
+        mail: true,
+        role: true,
       },
     })
 
@@ -989,7 +993,6 @@ router
         where: { uid: req.params.uid },
         select: { preferences: true },
       })
-      console.log(userPreferences)
 
       if (!userPreferences) return res.status(502).send({})
 

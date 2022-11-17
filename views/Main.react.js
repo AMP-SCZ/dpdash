@@ -491,12 +491,15 @@ class MainPage extends Component {
     } else return false
   }
   updateUserStars = (star) => {
-    let uid = this.props.user.uid
-    let preference = {}
-    preference['star'] = star ? star : this.state.star
-    preference['complete'] = this.state.complete
-    preference['config'] =
-      'config' in this.state.preferences ? this.state.preferences['config'] : ''
+    const uid = this.props.user.uid
+    const currentPreference = {
+      star: star ? star : this.state.star,
+      complete: this.state.complete,
+      config:
+        'config' in this.state.preferences
+          ? this.state.preferences['config']
+          : '',
+    }
     return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
       method: 'POST',
       headers: {
@@ -504,7 +507,7 @@ class MainPage extends Component {
       },
       credentials: 'same-origin',
       body: JSON.stringify({
-        preferences: preference,
+        preferences: currentPreference,
       }),
     }).then(() => {
       return
