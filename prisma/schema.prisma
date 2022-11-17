@@ -20,7 +20,7 @@ model users {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   uid String @unique
   access String[] @default([])
-  bad_pwd_count Int
+  bad_pwd_count Int?
   blocked Boolean?
   company String?
   department String?
@@ -32,7 +32,7 @@ model users {
   ldap Boolean?
   lockout_time Int?
   mail String?
-  member_of String
+  member_of String?
   password String
   realms String[] @default([])
   role String @unique

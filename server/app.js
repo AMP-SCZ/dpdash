@@ -178,17 +178,16 @@ passport.use(
       passwordField: config.auth.passwordField,
       passReqToCallback: true,
     },
-    function (req, username, password, done) {
-      prisma.users
-        .findUnique({
+    async function (req, username, password, done) {
+      try {
+        const user = await prisma.users.findUnique({
           where: { uid: username },
         })
-        .then(function (err, user) {
-          if (!user) {
-            return done(null, false, req.body)
-          }
-          return done(null, true, null)
-        })
+        if (!user) return done(null, false, req.body)
+        else done(null, true, null)
+      } catch (error) {
+        return res.redirect(`${basePath}/login?e=${error}`)
+      }
     }
   )
 )
