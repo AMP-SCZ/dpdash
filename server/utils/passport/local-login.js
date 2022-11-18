@@ -19,32 +19,30 @@ export default (req, res, next, user) => {
     done(null, user)
   })
   //If the user exists, serialize the user to the session
-  req.login(user, (err) => {
+  req.login(user, async (err) => {
     if (err) return next(err)
 
     const { uid } = user
     const { appDb } = req.app.locals
-    appDb
+    const configData = await appDb
       .collection(collections.configs)
       .findOne({ owner: uid })
-      .then((configData) => {
-        if (!configData) {
-          const defaultConfig = {
-            owner: uid,
-            config: defaultUserConfig,
-            name: 'default',
-            type: 'matrix',
-            readers: [uid],
-            created: new Date().toUTCString(),
-          }
-          appDb
-            .collection(collections.configs)
-            .insertOne(defaultConfig)
-            .then((data) => {
-              if (!data) console.error(data)
-            })
-        }
-      })
+
+    if (!configData) {
+      const defaultConfig = {
+        owner: uid,
+        config: defaultUserConfig,
+        name: 'default',
+        type: 'matrix',
+        readers: [uid],
+        created: new Date().toUTCString(),
+      }
+      const insertConfig = await appDb
+        .collection(collections.configs)
+        .insertOne(defaultConfig)
+
+      if (!insertConfig) console.error(data)
+    }
 
     req.session.role = user.role
     req.session.display_name = user.display_name
