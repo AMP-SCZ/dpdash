@@ -1,4 +1,4 @@
-import { calculatePreferences } from './usersMigration.js'
+import { calculatePreferences } from './helpers'
 
 describe(calculatePreferences, () => {
   it('converts legacy dpdash preference object into new data structure', () => {

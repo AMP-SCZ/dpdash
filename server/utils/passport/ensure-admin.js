@@ -1,6 +1,7 @@
 import { routes } from '../routes'
+import { ADMIN_ROLE } from '../constants'
+
 //Admin privilege checking middleware
-const admin = 'admin'
 export default async function ensureAdmin(req, res, next) {
   try {
     if (!req.isAuthenticated()) return res.redirect(routes.logout)
@@ -12,7 +13,7 @@ export default async function ensureAdmin(req, res, next) {
     })
 
     switch (true) {
-      case !user || user.role !== admin:
+      case !user || user.role !== ADMIN_ROLE:
         return res.redirect(routes.logoutForbiddenRoute)
       default:
         return next()

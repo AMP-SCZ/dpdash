@@ -364,7 +364,7 @@ router
         data: { password: hashedPW, reset_key: '', force_reset_pw: false },
       })
 
-      if (!userDocument || userDocument.value === null)
+      if (!userDocument || !userDocument.value)
         return res.redirect(routes.resetPwNoUser)
 
       return res.redirect(routes.resetPw)
@@ -621,9 +621,9 @@ router.get('/api/v1/search/users', ensureAuthenticated, async (req, res) => {
     })
     if (userList.length === 0) return res.status(404).send([])
 
-    const users = userList.map(({ uid }) => uid)
+    const usersUidList = userList.map(({ uid }) => uid)
 
-    return res.status(200).json(users)
+    return res.status(200).json(usersUidList)
   } catch (error) {
     console.log(error)
     return res.status(502).send([])
@@ -654,7 +654,7 @@ router
       return res.status(200).json(user)
     } catch (error) {
       console.log(error)
-      return res.status(502).send({})
+      return res.sendStatus(502)
     }
   })
   .post(ensureUser, async (req, res) => {
@@ -854,7 +854,7 @@ router
       const { prisma } = req.app.locals
       const user = await prisma.findUnique({
         where: { uid: req.params.uid },
-        select: { role: true },
+        select: { role: true, uid: true },
       })
 
       if (!user) return res.status(404)
@@ -869,12 +869,12 @@ router
   .post(ensureAdmin, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const updateUserRole = await prisma.users.update({
+      const updatedUserRole = await prisma.users.update({
         where: { uid: req.params.uid },
         data: { role: req.body.role },
       })
 
-      if (!updateUserRole) return res.status(502).send({ message: 'fail' })
+      if (!updatedUserRole) return res.status(502).send({ message: 'fail' })
 
       return res.status(201).send({ message: 'success' })
     } catch (error) {
@@ -894,13 +894,13 @@ router
         select: { blocked: true },
       })
 
-      if (!user) return res.status(404).send(null)
+      if (!user) return res.sendStatus(404)
 
       return res.status(200).json(user.blocked)
     } catch (error) {
       console.log(error)
 
-      return res.status(502).send(null)
+      return res.sendStatus(502)
     }
   })
   .post(ensureAdmin, async (req, res) => {
@@ -909,10 +909,13 @@ router
 
       if (req.body.hasOwnProperty(blockedProperty)) {
         const { prisma } = req.app.locals
-        await prisma.users.update({
+        const updatedUserBlockedStatus = await prisma.users.update({
           where: { uid: req.params.uid },
           data: { blocked: req.body.blocked },
         })
+
+        if (!updatedUserBlockedStatus)
+          return res.status(502).send({ message: 'fail' })
 
         return res.status(201).send({ message: 'success' })
       }

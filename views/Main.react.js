@@ -493,12 +493,9 @@ class MainPage extends Component {
   updateUserStars = (star) => {
     const uid = this.props.user.uid
     const currentPreference = {
-      star: star ? star : this.state.star,
+      star: star || this.state.star,
       complete: this.state.complete,
-      config:
-        'config' in this.state.preferences
-          ? this.state.preferences['config']
-          : '',
+      config: this.state.preferences.config || '',
     }
     return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
       method: 'POST',

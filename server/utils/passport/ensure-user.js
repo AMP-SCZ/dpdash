@@ -1,6 +1,6 @@
 import { routes } from '../routes'
+import { ADMIN_ROLE } from '../constants'
 
-const admin = 'admin'
 export default async function ensurePermission(req, res, next) {
   try {
     if (!req.isAuthenticated()) return res.redirect(routes.logout)
@@ -17,7 +17,7 @@ export default async function ensurePermission(req, res, next) {
     switch (true) {
       case !user || Object.keys(user).length === 0:
         return res.redirect(routes.logout)
-      case user.role === admin:
+      case user.role === ADMIN_ROLE:
         return next()
       case user.blocked === true:
         return res.redirect(routes.logoutForbiddenRoute)
