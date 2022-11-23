@@ -18,10 +18,10 @@ model sessions {
 
 model users {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  uid String @unique
+  uid String
   access String[] @default([])
   bad_pwd_count Int?
-  blocked Boolean?
+  blocked Boolean? @default(false)
   company String?
   department String?
   display_name String
@@ -35,25 +35,25 @@ model users {
   member_of String?
   password String
   realms String[] @default([])
-  role String @unique
+  role String
   title String?
   preferences userPreferences
 }
 
 
 type userPreferences {
-  complete siteComplete[]
-  star siteStarred[]
+  complete subjectsCompleted[]
+  star subjectsStarred[]
   sort Int? @default(0)
   config String?
 }
 
-type siteComplete {
+type subjectsCompleted {
   site String?
   completedSubjects String[] @default([])
 }
 
-type siteStarred {
+type subjectsStarred {
   site String?
   starredSubjects String[] @default([])
 }

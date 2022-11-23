@@ -7,7 +7,7 @@ export default async function ensureAdmin(req, res, next) {
     if (!req.isAuthenticated()) return res.redirect(routes.logout)
 
     const { prisma } = req.app.locals
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findFirst({
       where: { uid: req.user },
       select: { uid: true, role: true },
     })

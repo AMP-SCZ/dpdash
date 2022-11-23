@@ -158,7 +158,7 @@ passport.use(
     },
     async function (username, password, done) {
       try {
-        const user = await prisma.users.findUnique({
+        const user = await prisma.users.findFirst({
           where: { uid: username },
         })
         return done(null, user)
@@ -180,7 +180,7 @@ passport.use(
     },
     async function (req, username, password, done) {
       try {
-        const user = await prisma.users.findUnique({
+        const user = await prisma.users.findFirst({
           where: { uid: username },
         })
         if (!user) return done(null, false, req.body)

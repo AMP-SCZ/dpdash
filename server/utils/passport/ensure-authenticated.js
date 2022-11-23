@@ -6,9 +6,9 @@ export default async function ensureAuthenticated(req, res, next) {
       return res.redirect(routes.logout)
     }
     const { prisma } = req.app.locals
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findFirst({
       where: { uid: req.user },
-      select: { access: true, blocked: true, role: true },
+      select: { access: true, blocked: true },
     })
     switch (true) {
       case !user || Object.keys(user).length === 0 || !!user.blocked:

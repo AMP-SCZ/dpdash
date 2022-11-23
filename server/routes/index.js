@@ -537,7 +537,7 @@ router.get('/dashboard/:study', ensurePermission, function (req, res) {
 router.route('/api/v1/studies').get(ensureAuthenticated, async (req, res) => {
   try {
     const { prisma } = req.app.locals
-    const user = await prisma.users.findUnique({ where: { uid: req.user } })
+    const user = await prisma.users.findFirst({ where: { uid: req.user } })
 
     if (!user || user.access.length === 0) return res.status(404).send([])
 
@@ -635,7 +635,7 @@ router
   .get(ensureUser, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const user = await prisma.users.findUnique({
+      const user = await prisma.users.findFirst({
         where: { uid: req.params.uid },
         select: {
           uid: true,
@@ -852,7 +852,7 @@ router
   .get(ensureAdmin, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const user = await prisma.findUnique({
+      const user = await prisma.findFirst({
         where: { uid: req.params.uid },
         select: { role: true, uid: true },
       })
@@ -889,7 +889,7 @@ router
   .get(ensureAdmin, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const user = await prisma.findUnique({
+      const user = await prisma.findFirst({
         where: { uid: req.params.uid },
         select: { blocked: true },
       })
@@ -933,7 +933,7 @@ router
   .get(ensureAdmin, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      await prisma.users.findUnique({
+      await prisma.users.findFirst({
         where: { uid: req.params.uid },
         select: { access: true },
       })
@@ -992,7 +992,7 @@ router
   .get(ensureUser, async (req, res) => {
     try {
       const { prisma } = req.app.locals
-      const userPreferences = await prisma.users.findUnique({
+      const userPreferences = await prisma.users.findFirst({
         where: { uid: req.params.uid },
         select: { preferences: true },
       })
