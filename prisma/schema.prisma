@@ -18,7 +18,7 @@ model sessions {
 
 model users {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  uid String
+  uid String @unique
   access String[] @default([])
   bad_pwd_count Int?
   blocked Boolean? @default(false)
@@ -38,22 +38,17 @@ model users {
   role String
   title String?
   preferences userPreferences
+  legacyPreferences Json?
+  siteSubjects siteSubjects[]
 }
 
-
 type userPreferences {
-  complete subjectsCompleted[]
-  star subjectsStarred[]
   sort Int? @default(0)
   config String?
 }
 
-type subjectsCompleted {
-  site String?
-  completedSubjects String[] @default([])
-}
-
-type subjectsStarred {
-  site String?
+type siteSubjects {
+  site String
   starredSubjects String[] @default([])
+  completedSubjects String[] @default([])
 }

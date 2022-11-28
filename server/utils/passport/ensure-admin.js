@@ -1,4 +1,4 @@
-import { routes } from '../routes'
+import { routes, routeErrors } from '../routes'
 import { ADMIN_ROLE } from '../constants'
 
 //Admin privilege checking middleware
@@ -14,11 +14,11 @@ export default async function ensureAdmin(req, res, next) {
 
     switch (true) {
       case !user || user.role !== ADMIN_ROLE:
-        return res.redirect(routes.logoutForbiddenRoute)
+        return res.redirect(routes.logoutWithError(routeErrors.forbidden))
       default:
         return next()
     }
   } catch (error) {
-    return res.redirect(routes.logoutForbiddenRoute)
+    return res.redirect(routes.logoutWithError(routeErrors.forbidden))
   }
 }

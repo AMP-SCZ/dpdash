@@ -31,6 +31,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import Sidebar from './components/Sidebar'
 import getAvatar from './fe-utils/avatarUtil'
 import { fetchSubjects } from './fe-utils/fetchUtil'
+import { apiRoutes } from './routes/routes'
 
 import basePathConfig from '../server/configs/basePathConfig'
 
@@ -251,8 +252,7 @@ class MainPage extends Component {
       sortBy: '',
       sortDirection: 'ASC',
       preferences: {},
-      star: [],
-      complete: [],
+      siteSubjects: [],
     }
   }
   componentDidUpdate() {}
@@ -265,8 +265,6 @@ class MainPage extends Component {
     window.addEventListener('resize', this.handleResize)
   }
   fetchUserPreferences = (uid) => {
-    let star = this.state.star
-    let complete = this.state.complete
     return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
       method: 'GET',
       headers: {
@@ -281,14 +279,29 @@ class MainPage extends Component {
         return response.json()
       })
       .then((response) => {
-        if (response) {
-          star = 'star' in response ? response['star'] : star
-          complete = 'complete' in response ? response['complete'] : complete
-        }
         this.setState({
-          star: star,
-          complete: complete,
           preferences: response,
+        })
+        return
+      })
+  }
+  fetchSiteSubjects = (uid) => {
+    return fetch(`${basePath}/api/v1/users/${uid}/site-subjects`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          return
+        }
+        return response.json()
+      })
+      .then(({ data }) => {
+        this.setState({
+          siteSubjects: data,
         })
         return
       })
@@ -306,94 +319,105 @@ class MainPage extends Component {
   handleStar = (e, checked, cellData) => {
     const { study, subject } = cellData[rowKey]
 
-    if (checked == true) {
+    if (checked === true) {
       this.favorite(study, subject)
     } else {
       this.unfavorite(study, subject)
     }
   }
   favorite = (study, subject) => {
-    const newState = this.state.star
-    const starredSiteIndex = newState.findIndex(({ site }) => site === study)
-    if (starredSiteIndex < 0) {
-      const userNewStarredSubject = { site: study, starredSubjects: [subject] }
-      this.setState(
-        { star: newState.concat(userNewStarredSubject) },
-        async () => {
-          this.updateUserStars(this.state.star)
-        }
-      )
-    }
-    if (starredSiteIndex > -1) {
+    const siteSubjectIndex = this.state.siteSubjects.findIndex(
+      ({ site }) => site === study
+    )
+
+    if (siteSubjectIndex > -1) {
       const starredSubjectExists =
-        newState[starredSiteIndex].starredSubjects.includes(subject)
+        this.state.siteSubjects[siteSubjectIndex].starredSubjects.includes(
+          subject
+        )
       if (!starredSubjectExists) {
         this.setState(
           {
-            star: this.state.star.map((starData, i) => {
-              if (i === starredSiteIndex) {
+            siteSubjects: this.state.siteSubjects.map((siteSubjectData, i) => {
+              if (i === siteSubjectIndex) {
                 return {
-                  ...starData,
-                  starredSubjects: starData.starredSubjects.concat(subject),
+                  ...siteSubjectData,
+                  starredSubjects:
+                    siteSubjectData.starredSubjects.concat(subject),
                 }
-              } else return starData
+              } else return siteSubjectData
             }),
           },
           async () => {
-            this.updateUserStars(this.state.star)
-            this.starAcl(this.state.default_acl, this.state.star)
+            this.addSubjectToStarList(study, subject)
+            this.starAcl(this.state.default_acl, this.state.siteSubjects)
           }
         )
       }
+    } else {
+      const userNewStarredSubject = {
+        site: study,
+        starredSubjects: [subject],
+        completedSubjects: [],
+      }
+      this.setState(
+        { siteSubjects: this.state.siteSubjects.concat(userNewStarredSubject) },
+        async () => {
+          this.addSubjectToStarList(study, subject)
+        }
+      )
     }
   }
   unfavorite = (study, subject) => {
-    const studyIndex = this.state.star.findIndex(({ site }) => site === study)
+    const studyIndex = this.state.siteSubjects.findIndex(
+      ({ site }) => site === study
+    )
     if (studyIndex > -1) {
       this.setState(
         {
-          star: this.state.star.map((starData, i) => {
+          siteSubjects: this.state.siteSubjects.map((siteSubjectData, i) => {
             if (i === studyIndex) {
               return {
-                ...starData,
-                starredSubjects: starData.starredSubjects.filter(
+                ...siteSubjectData,
+                starredSubjects: siteSubjectData.starredSubjects.filter(
                   (starredSubjects) => starredSubjects !== subject
                 ),
               }
-            } else return starData
+            } else return siteSubjectData
           }),
         },
         async () => {
-          this.updateUserStars(this.state.star)
-          this.starAcl(this.state.default_acl, this.state.star)
+          this.removeSubjectFromStarList(study, subject)
+          this.starAcl(this.state.default_acl, this.state.siteSubjects)
         }
       )
     }
   }
   complete = (study, subject) => {
-    const completedStudyIndex = this.state.complete.findIndex(
+    const siteSubjectIndex = this.state.siteSubjects.findIndex(
       ({ site }) => study === site
     )
 
-    if (completedStudyIndex > -1) {
+    if (siteSubjectIndex > -1) {
       const isSubjectComplete =
-        this.state.complete[completedStudyIndex].completedSubjects.includes(
+        this.state.siteSubjects[siteSubjectIndex].completedSubjects.includes(
           subject
         )
+
       if (!isSubjectComplete) {
         this.setState(
           {
-            complete: this.state.complete.map((siteData, i) => {
-              if (i === completedStudyIndex) {
+            siteSubjects: this.state.siteSubjects.map((siteData, i) => {
+              if (i === siteSubjectIndex) {
                 return {
                   ...siteData,
-                  completedSubjects: siteData.completedSubjects.concat(subject),
+                  completedSubjects: [...siteData.completedSubjects, subject],
                 }
               } else return siteData
             }),
           },
           async () => {
-            this.updateUserComplete(this.state.complete)
+            this.completeSiteSubject(study, subject)
           }
         )
       }
@@ -401,53 +425,55 @@ class MainPage extends Component {
       const newSitesCompletedList = {
         site: study,
         completedSubjects: [subject],
+        starredSubjects: [],
       }
       this.setState(
         {
-          complete: this.state.complete.concat(newSitesCompletedList),
+          siteSubjects: [...this.state.siteSubjects, newSitesCompletedList],
         },
         async () => {
-          this.updateUserComplete(this.state.complete)
+          this.completeSiteSubject(study, subject)
         }
       )
     }
   }
 
   incomplete = (study, subject) => {
-    const siteCompleteIndex = this.state.complete.findIndex(
+    const siteSubjectIndex = this.state.siteSubjects.findIndex(
       ({ site }) => site === study
     )
-    if (siteCompleteIndex > -1) {
+
+    if (siteSubjectIndex > -1) {
       this.setState(
         {
-          complete: this.state.complete.map((completeData, i) => {
-            if (i === siteCompleteIndex) {
+          siteSubjects: this.state.siteSubjects.map((siteSubjectData, i) => {
+            if (i === siteSubjectIndex) {
               return {
-                ...completeData,
-                completedSubjects: completeData.completedSubjects.filter(
+                ...siteSubjectData,
+                completedSubjects: siteSubjectData.completedSubjects.filter(
                   (completedSubject) => completedSubject !== subject
                 ),
               }
-            } else return completeData
+            } else return siteSubjectData
           }),
         },
         async () => {
-          this.updateUserComplete(this.state.complete)
+          this.deleteSiteSubject(study, subject)
         }
       )
     }
   }
-  starAcl = (default_acl, stars) => {
+  starAcl = (default_acl, siteSubjects) => {
     const starred_acl = []
     const unstarred_acl = []
 
     for (var i = 0; i < default_acl.length; i++) {
       const study = default_acl[i][studyKey]
       const subject = default_acl[i][subjectKey]
-      const studyIndex = stars.findIndex(({ site }) => site === study)
+      const studyIndex = siteSubjects.findIndex(({ site }) => site === study)
       if (studyIndex > -1) {
         const isSubjectStarred =
-          stars[studyIndex].starredSubjects.includes(subject)
+          siteSubjects[studyIndex].starredSubjects.includes(subject)
 
         if (isSubjectStarred) starred_acl.push(default_acl[i])
         else unstarred_acl.push(default_acl[i])
@@ -457,32 +483,26 @@ class MainPage extends Component {
       acl: starred_acl.concat(unstarred_acl),
     })
   }
-  checkComplete = (complete, cellData) => {
-    const currentCell = cellData[rowKey]
-    const study = currentCell[studyKey]
-    const subject = currentCell[subjectKey]
-    const siteCompletedListIndex = complete.findIndex(
-      ({ site }) => site === study
+  checkComplete = (siteSubjects, cellData) => {
+    const hasSiteCompletedSubjects = siteSubjects.findIndex(
+      ({ site }) => site === cellData[rowKey][studyKey]
     )
 
-    if (siteCompletedListIndex > -1) {
-      if (
-        this.state.complete[siteCompletedListIndex].completedSubjects.includes(
-          subject
-        )
-      ) {
-        return true
-      } else {
-        return false
-      }
+    if (hasSiteCompletedSubjects > -1) {
+      const isSubjectComplete = siteSubjects[
+        hasSiteCompletedSubjects
+      ].completedSubjects?.includes(cellData[rowKey][subjectKey])
+
+      if (isSubjectComplete) return true
+      else return false
     } else return false
   }
-  checkStar = (star, cellData) => {
-    const hasSiteStarredSubjects = star.findIndex(
+  checkStar = (siteSubjects, cellData) => {
+    const hasSiteStarredSubjects = siteSubjects.findIndex(
       ({ site }) => site === cellData[rowKey][studyKey]
     )
     if (hasSiteStarredSubjects > -1) {
-      const isStarSubject = star[
+      const isStarSubject = siteSubjects[
         hasSiteStarredSubjects
       ].starredSubjects.includes(cellData[rowKey][subjectKey])
 
@@ -490,42 +510,70 @@ class MainPage extends Component {
       else return false
     } else return false
   }
-  updateUserStars = (star) => {
+  addSubjectToStarList = (site, subject) => {
     const uid = this.props.user.uid
-    const currentPreference = {
-      star: star || this.state.star,
-      complete: this.state.complete,
-      config: this.state.preferences.config || '',
-    }
-    return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
+
+    return fetch(apiRoutes.userSiteSubjectStar(uid), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
       body: JSON.stringify({
-        preferences: currentPreference,
+        site,
+        subject,
       }),
     }).then(() => {
       return
     })
   }
-  updateUserComplete = (complete) => {
+  removeSubjectFromStarList = (site, subject) => {
     const uid = this.props.user.uid
-    const currentPreference = {
-      star: this.state.star,
-      complete,
-      config: this.state.preferences.config || '',
-    }
 
-    return fetch(`${basePath}/api/v1/users/${uid}/preferences`, {
+    return fetch(apiRoutes.userSiteSubjectStar(uid), {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        site,
+        subject,
+      }),
+    }).then(() => {
+      return
+    })
+  }
+  completeSiteSubject = (site, subject) => {
+    const uid = this.props.user.uid
+
+    return fetch(apiRoutes.userSiteSubjectcomplete(uid), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
       body: JSON.stringify({
-        preferences: currentPreference,
+        site,
+        subject,
+      }),
+    }).then(() => {
+      return
+    })
+  }
+
+  deleteSiteSubject = (site, subject) => {
+    const uid = this.props.user.uid
+
+    return fetch(apiRoutes.userSiteSubjectcomplete(uid), {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        site,
+        subject,
       }),
     }).then(() => {
       return
@@ -543,6 +591,7 @@ class MainPage extends Component {
       const acl = await fetchSubjects()
       this.autocomplete(this.aggregateSubjects(acl), acl)
       this.fetchUserPreferences(this.props.user.uid)
+      this.fetchSiteSubjects(this.props.user.uid)
     } catch (err) {
       console.error(err.message)
     }
@@ -553,7 +602,7 @@ class MainPage extends Component {
       sortBy: sortBy,
       sortDirection: sortDirection,
     })
-    this.starAcl(sortedList, this.state.star)
+    this.starAcl(sortedList, this.state.siteSubjects)
   }
   sortList = ({ sortBy, sortDirection }) => {
     let list = _.map(this.state.acl, _.clone)
@@ -629,7 +678,7 @@ class MainPage extends Component {
       label: option.subject + ' in ' + option.study,
     }))
     default_acl = options
-    this.starAcl(options, this.state.star)
+    this.starAcl(options, this.state.siteSubjects)
     this.setState({
       // study determination: at least one upper case
       totalStudies: acl.filter((s) => /[A-Z]/.test(s.study)).length,
@@ -675,10 +724,8 @@ class MainPage extends Component {
     )
   }
   getSyncedCell = (data) => {
-    var complete = this.state.complete
     if (
-      data.study in complete &&
-      complete[data.study].indexOf(data.subject) > -1
+      this.state.siteSubjects.findIndex(({ site }) => site === data.study) > -1
     ) {
       return <span>{data.synced}</span>
     } else {
@@ -833,7 +880,7 @@ class MainPage extends Component {
                       }
                       disableRipple={true}
                       checked={this.checkComplete(
-                        this.state.complete,
+                        this.state.siteSubjects,
                         cellData
                       )}
                       onChange={(e, checked) =>
@@ -851,7 +898,10 @@ class MainPage extends Component {
                       disableRipple={true}
                       icon={<StarBorder />}
                       checkedIcon={<Star style={{ color: '#FFB80A' }} />}
-                      checked={this.checkStar(this.state.star, cellData)}
+                      checked={this.checkStar(
+                        this.state.siteSubjects,
+                        cellData
+                      )}
                       onChange={(e, checked) =>
                         this.handleStar(e, checked, cellData)
                       }

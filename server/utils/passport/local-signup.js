@@ -2,10 +2,8 @@ import passport from 'passport'
 import config from '../../configs/config'
 import { hash } from '../crypto/hash'
 import { collections } from '../mongoCollections'
-import basePathConfig from '../../configs/basePathConfig'
 import defaultUserConfig from '../../configs/defaultUserConfig'
-
-const basePath = basePathConfig || ''
+import { routeErrors, routes } from '../routes'
 
 export default (req, res, next) => {
   passport.authenticate(
@@ -13,10 +11,10 @@ export default (req, res, next) => {
     { session: true },
     async function (err, user, reqBody) {
       if (err) {
-        return res.redirect(`${basePath}/login?e=${err}`)
+        return res.redirect(routes.loginWithError(err))
       }
       if (user) {
-        return res.redirect(`${basePath}/signup?e=existingUser`)
+        return res.redirect(routes.signUpWithError(routeErrors.existingUser))
       }
       try {
         const password = reqBody.password
@@ -47,9 +45,8 @@ export default (req, res, next) => {
           preferences: {
             config: '',
             sort: 0,
-            star: [],
-            complete: [],
           },
+          siteSubjects: [],
         }
         const { prisma, appDb } = req.app.locals
         const newUser = await prisma.users.create({
@@ -80,9 +77,9 @@ export default (req, res, next) => {
         req.session.celery_tasks = []
         req.session.icon = newUser.icon
 
-        return res.redirect(`${basePath}/`)
+        return res.redirect(routes.root)
       } catch (error) {
-        console.log(error, 'THIS IS THE ERror')
+        console.error(error)
       }
     }
   )(req, res, next)

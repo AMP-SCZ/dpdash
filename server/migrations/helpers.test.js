@@ -3,6 +3,7 @@ import { calculatePreferences } from './helpers'
 describe(calculatePreferences, () => {
   it('converts legacy dpdash preference object into new data structure', () => {
     const user = {
+      access: ['CA', 'LA'],
       preferences: {
         complete: {
           CA: [],
@@ -15,59 +16,108 @@ describe(calculatePreferences, () => {
         config: 'foo',
       },
     }
+
     expect(calculatePreferences(user)).toEqual({
-      config: 'foo',
-      sort: 0,
-      star: [
-        { site: 'CA', starredSubjects: [] },
-        { site: 'LA', starredSubjects: [] },
+      siteSubjects: [
+        { site: 'CA', starredSubjects: [], completedSubjects: [] },
+        { site: 'LA', starredSubjects: [], completedSubjects: [] },
       ],
-      complete: [{ site: 'CA', completedSubjects: [] }],
+      preferences: { config: 'foo', sort: 0 },
     })
   })
 
-  it('retains user preferences if it is using the new data structure', () => {
+  it("appends a site's star subjects in the siteSubjects[site].starredSubjects list", () => {
     const user = {
+      access: ['CA', 'LA'],
       preferences: {
-        config: '636d1b784723201176bf0bda',
+        complete: {},
+        star: {
+          CA: ['CA4', 'CA6', 'CA7'],
+          LA: ['LA1', 'LA2', 'LA3'],
+        },
         sort: 0,
-        star: [
-          {
-            site: 'LA',
-            starredSubjects: [],
-          },
-        ],
-        complete: [
-          {
-            site: 'YA',
-            completedSubjects: ['YA01508'],
-          },
-          {
-            site: 'ProNET',
-            completedSubjects: ['P6'],
-          },
-        ],
+        config: 'foo',
       },
     }
+
     expect(calculatePreferences(user)).toEqual({
-      config: '636d1b784723201176bf0bda',
-      sort: 0,
-      star: [
+      siteSubjects: [
+        {
+          site: 'CA',
+          starredSubjects: ['CA4', 'CA6', 'CA7'],
+          completedSubjects: [],
+        },
+        {
+          site: 'LA',
+          starredSubjects: ['LA1', 'LA2', 'LA3'],
+          completedSubjects: [],
+        },
+      ],
+      preferences: { config: 'foo', sort: 0 },
+    })
+  })
+
+  it("appends a site's complete subjects in the siteSubjects[site].completedSubjects list ", () => {
+    const user = {
+      access: ['CA', 'LA'],
+      preferences: {
+        complete: { CA: ['CA4', 'CA6', 'CA7'], LA: ['LA1', 'LA2', 'LA3'] },
+        star: {},
+        sort: 0,
+        config: 'foo',
+      },
+    }
+
+    expect(calculatePreferences(user)).toEqual({
+      siteSubjects: [
+        {
+          site: 'CA',
+          starredSubjects: [],
+          completedSubjects: ['CA4', 'CA6', 'CA7'],
+        },
         {
           site: 'LA',
           starredSubjects: [],
+          completedSubjects: ['LA1', 'LA2', 'LA3'],
         },
       ],
-      complete: [
+      preferences: { config: 'foo', sort: 0 },
+    })
+  })
+
+  it("creates empty starredSubjects list and completedSubjects list for a site not found in a user's preference", () => {
+    const user = {
+      access: ['CA', 'LA', 'MA', 'YA'],
+      preferences: {
+        complete: {
+          CA: ['CA1', 'CA2', 'CA3'],
+          LA: ['LA4', 'LA5', 'LA6'],
+        },
+        star: {
+          CA: ['CA4', 'CA6', 'CA7'],
+          LA: ['LA1', 'LA2', 'LA3'],
+        },
+        sort: 0,
+        config: 'foo',
+      },
+    }
+
+    expect(calculatePreferences(user)).toEqual({
+      siteSubjects: [
         {
-          site: 'YA',
-          completedSubjects: ['YA01508'],
+          site: 'CA',
+          starredSubjects: ['CA4', 'CA6', 'CA7'],
+          completedSubjects: ['CA1', 'CA2', 'CA3'],
         },
         {
-          site: 'ProNET',
-          completedSubjects: ['P6'],
+          site: 'LA',
+          starredSubjects: ['LA1', 'LA2', 'LA3'],
+          completedSubjects: ['LA4', 'LA5', 'LA6'],
         },
+        { site: 'MA', starredSubjects: [], completedSubjects: [] },
+        { site: 'YA', starredSubjects: [], completedSubjects: [] },
       ],
+      preferences: { config: 'foo', sort: 0 },
     })
   })
 })

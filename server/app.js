@@ -21,15 +21,14 @@ import connectLiveReload from 'connect-livereload'
 import { PrismaClient } from '@prisma/client'
 import { getMongoURI } from './utils/mongoUtil'
 
+import { routes } from './utils/routes'
 import indexRouter from './routes/index'
 import chartsRouter from './routes/charts'
+import userRouter from './routes/user'
 
 import config from './configs/config'
-import basePathConfig from './configs/basePathConfig'
 
 const localStrategy = Strategy
-
-const basePath = basePathConfig || ''
 
 /* csrf protection according to http://expressjs.com/en/resources/middleware/csurf.html#simple-express-example */
 const csrfProtection = csrf({ cookie: true })
@@ -186,7 +185,7 @@ passport.use(
         if (!user) return done(null, false, req.body)
         else return done(null, true, null)
       } catch (error) {
-        return res.redirect(`${basePath}/login?e=${error}`)
+        return res.redirect(routes.loginWithError(error))
       }
     }
   )
@@ -195,15 +194,19 @@ passport.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use(`${basePath}/`, indexRouter)
-app.use(`${basePath}/`, chartsRouter)
+app.use(routes.root, indexRouter)
+app.use(routes.root, chartsRouter)
+app.use(routes.root, userRouter)
 app.use(
-  `${basePath}/css`,
+  routes.root + 'css',
   express.static(path.join(__dirname, '../public/css'))
 )
-app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')))
 app.use(
-  `${basePath}/img`,
+  routes.root + 'js',
+  express.static(path.join(__dirname, '../public/js'))
+)
+app.use(
+  routes.root + 'img',
   express.static(path.join(__dirname, '../public/img'))
 )
 //app.use('/users', usersRouter);

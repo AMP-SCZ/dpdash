@@ -1,4 +1,4 @@
-import { routes } from '../routes'
+import { routes, routeErrors } from '../routes'
 
 export default async function ensureAuthenticated(req, res, next) {
   try {
@@ -11,14 +11,14 @@ export default async function ensureAuthenticated(req, res, next) {
       select: { access: true, blocked: true },
     })
     switch (true) {
-      case !user || Object.keys(user).length === 0 || !!user.blocked:
+      case !user || !!user.blocked:
         return res.redirect(routes.logout)
-      case user.access && user.access.length === 0:
-        return res.redirect(routes.unauthorizedRoute)
+      case !user.access.length:
+        return res.redirect(routes.logoutWithError(routeErrors.unauthorized))
       default:
         return next()
     }
   } catch (error) {
-    return res.redirect(routes.logoutForbiddenRoute)
+    return res.redirect(routes.logoutWithError(routeErrors.forbidden))
   }
 }

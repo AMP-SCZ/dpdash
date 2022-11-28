@@ -12,20 +12,28 @@ async function migrateUsers() {
       .collection('users')
       .find({})
       .forEach((user) => {
-        const userPreferences = calculatePreferences(user)
+        const isUserMigrated = !!user.siteSubjects?.length
+        if (!isUserMigrated) {
+          const { siteSubjects, updatedPreferences } =
+            calculatePreferences(user)
 
-        appDatabase.collection('users').updateOne(
-          { _id: ObjectId(user._id) },
-          {
-            $set: {
-              preferences: userPreferences,
-            },
-            //removes the field and the value from the document
-            $unset: {
-              account_expires: '',
-            },
-          }
-        )
+          appDatabase.collection('users').updateOne(
+            { _id: ObjectId(user._id) },
+            {
+              $set: {
+                preferences: updatedPreferences,
+                siteSubjects,
+                legacyPreferences: JSON.stringify(user.preferences),
+              },
+              //removes the field and the value from the document
+              $unset: {
+                account_expires: '',
+                'preferences.star': '',
+                'preferences.complete': '',
+              },
+            }
+          )
+        }
       })
     process.exit(1)
   } catch (error) {
@@ -33,4 +41,4 @@ async function migrateUsers() {
   }
 }
 
-export { migrateUsers, calculatePreferences }
+export { migrateUsers }

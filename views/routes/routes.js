@@ -32,6 +32,9 @@ export const apiRoutes = {
   searchStudies: `${apiPath}/search/studies`,
   subject: `${apiPath}/subjects`,
   shareChart: (chart_id) => `${apiPath}/charts/${chart_id}/share`,
+  userSiteSubjectStar: (uid) => `${apiPath}/user/${uid}/site-subjects/star`,
+  userSiteSubjectcomplete: (uid) =>
+    `${apiPath}/user/${uid}/site-subjects/complete`,
 }
 
 export const defaultApiOptions = {

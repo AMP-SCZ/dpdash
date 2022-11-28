@@ -2,14 +2,12 @@ import passport from 'passport'
 import { collections } from '../mongoCollections'
 import { verifyHash } from '../crypto/hash'
 import defaultUserConfig from '../../configs/defaultUserConfig'
-import basePathConfig from '../../configs/basePathConfig'
-
-const basePath = basePathConfig || ''
+import { routeErrors, routes } from '../routes'
 
 export default (req, res, next, user) => {
   //validate submitted password
   if (!verifyHash(req.body.password, user.password)) {
-    return res.redirect(`${basePath}/login?e=forbidden`)
+    return res.redirect(routes.logoutWithError(routeErrors.forbidden))
   }
   //passport local log-in serializer
   passport.serializeUser(function (user, done) {
@@ -51,6 +49,6 @@ export default (req, res, next, user) => {
     req.session.icon = user.icon
     req.session.userAccess = user.access
 
-    return res.redirect(`${basePath}/`)
+    return res.redirect(routes.root)
   })
 }

@@ -20,7 +20,7 @@ import LocalSignup from '../utils/passport/local-signup'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import ensureAdmin from '../utils/passport/ensure-admin'
 import ensurePermission from '../utils/passport/ensure-permission'
-import { routes } from '../utils/routes'
+import { routeErrors, routes } from '../utils/routes'
 
 import userPage from '../templates/Account.template'
 import adminPage from '../templates/Admin.template'
@@ -39,13 +39,9 @@ import viewReportPage from '../templates/Report.template'
 import studyDetailsPage from '../templates/StudyDetails.template'
 
 import config from '../configs/config'
-import defaultStudyConfig from '../configs/defaultStudyConfig'
 import defaultUserConfig from '../configs/defaultUserConfig'
-import basePathConfig from '../configs/basePathConfig'
 
 const router = Router()
-
-const basePath = basePathConfig || ''
 
 var amqpAddress =
   'amqp://' +
@@ -65,9 +61,9 @@ connect(amqpAddress, config.rabbitmq.opts, function (err, conn) {
 //Check if the information requested is for the user
 function ensureUser(req, res, next) {
   if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout?e=forbidden`)
+    return res.redirect(routes.logoutWithError(routeErrors.forbidden))
   } else if (req.params.uid !== req.user) {
-    return res.redirect(`${basePath}/?e=forbidden`)
+    return res.redirect(rootWithError(routeErrors.forbidden))
   } else {
     return next()
   }
@@ -186,20 +182,20 @@ router
       function (err, user) {
         if (err) {
           console.error(err)
-          return res.redirect(`${basePath}/login?e=${err}`)
+          return res.redirect(routes.loginWithError(err))
         }
         if (!user) {
           if (config.auth.useLDAP) {
             return LDAP(req, res, next)
           } else {
-            return res.redirect(`${basePath}/login`)
+            return res.redirect(routes.login)
           }
         }
         if (user.ldap) {
           if (config.auth.useLDAP) {
             return LDAP(req, res, next)
           } else {
-            return res.redirect(`${basePath}/login`)
+            return res.redirect(routes.login)
           }
         } else {
           return LocalLogin(req, res, next, user)
@@ -213,7 +209,7 @@ router
   .route('/signup')
   .get(function (req, res) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
+      return res.redirect(routes.loginWithError(routeErrors.N_A))
     } else if (req.query.e === 'existingUser') {
       return res.send(
         registerPage('The username already exists. Please choose another.')
@@ -224,7 +220,7 @@ router
   })
   .post(function (req, res, next) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login`)
+      return res.redirect(routes.login)
     } else {
       return LocalSignup(req, res, next)
     }
@@ -235,9 +231,9 @@ router.get('/logout', function (req, res) {
   req.session.destroy()
   req.logout()
   if (req.query.e) {
-    return res.redirect(`${basePath}/login?e=${req.query.e}`)
+    return res.redirect(routes.loginWithError(req.query.e))
   } else {
-    return res.redirect(`${basePath}/login`)
+    return res.redirect(routes.login)
   }
 })
 
@@ -335,7 +331,7 @@ router
   .route('/resetpw')
   .get(function (req, res) {
     if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
+      return res.redirect(routes.loginWithError(routeErrors.N_A))
     } else {
       let message = ''
       if (req.query.e) {
@@ -355,7 +351,7 @@ router
   .post(async (req, res) => {
     try {
       if (req.body.password !== req.body.confirmpw)
-        return res.redirect(routes.resetPwErrorUnmatched)
+        return res.redirect(routes.resetPwWithError(routeErrors.unmatched))
 
       const { prisma } = req.app.locals
       const hashedPW = hash(req.body.password)
@@ -365,12 +361,12 @@ router
       })
 
       if (!userDocument || !userDocument.value)
-        return res.redirect(routes.resetPwNoUser)
+        return res.redirect(routes.resetPwWithError(routeErrors.noUser))
 
-      return res.redirect(routes.resetPw)
+      return res.redirect(routes.loginWithError(routeErrors.resetpw))
     } catch (error) {
       console.log(error)
-      return res.redirect(routes.resetPwError)
+      return res.redirect(routes.resetPwWithError(routeErrors.db))
     }
   })
 
@@ -790,7 +786,7 @@ router
         } else {
           if ('insertedId' in doc) {
             var _id = doc['insertedId']
-            var uri = `${basePath}/u/configure?s=edit&id=${_id}`
+            var uri = `${routes.root}u/configure?s=edit&id=${_id}`
             return res.status(201).send({ uri: uri })
           } else {
             return res.status(502).send({ message: 'fail' })
