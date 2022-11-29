@@ -16,7 +16,7 @@ export default (req, res, next, user) => {
     return done(null, user.uid)
   })
   passport.deserializeUser(function (user, done) {
-    done(null, user)
+    return done(null, user)
   })
   //If the user exists, serialize the user to the session
   req.login(user, async (err) => {

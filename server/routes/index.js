@@ -19,7 +19,7 @@ import LocalLogin from '../utils/passport/local-login'
 import LocalSignup from '../utils/passport/local-signup'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import ensureAdmin from '../utils/passport/ensure-admin'
-import ensurePermission from '../utils/passport/ensure-user'
+import ensurePermission from '../utils/passport/ensure-permission'
 import { routes } from '../utils/routes'
 
 import userPage from '../templates/Account.template'

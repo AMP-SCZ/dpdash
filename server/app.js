@@ -184,7 +184,7 @@ passport.use(
           where: { uid: username },
         })
         if (!user) return done(null, false, req.body)
-        else done(null, true, null)
+        else return done(null, true, null)
       } catch (error) {
         return res.redirect(`${basePath}/login?e=${error}`)
       }
