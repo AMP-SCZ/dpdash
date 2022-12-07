@@ -678,7 +678,7 @@ class MainPage extends Component {
               <NoSsr>
                 <Select
                   classes={classes}
-                  placeholder="Search a study or subject"
+                  placeholder="Search a study or participant"
                   value={this.state.search}
                   onChange={this.handleSearch}
                   options={autocomplete}
@@ -755,7 +755,7 @@ class MainPage extends Component {
                 sortDirection={this.state.sortDirection}
               >
                 <Column
-                  label="Subject"
+                  label="Participant"
                   dataKey="subject"
                   width={this.state.width / 5}
                   cellRenderer={({ rowData }) => this.getSubjectCell(rowData)}
