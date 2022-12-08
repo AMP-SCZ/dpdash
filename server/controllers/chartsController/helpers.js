@@ -1,3 +1,5 @@
+import { SITE_NAMES } from '../../utils/sites'
+
 export const N_A = 'N/A'
 export const TOTALS_STUDY = 'Totals'
 export const EMPTY_VALUE = ''
@@ -193,7 +195,7 @@ export const postProcessData = (data, studyTotals) => {
       })
     } else {
       processedDataBySite.set(study, {
-        name: study,
+        name: SITE_NAMES[study] || study,
         counts: {
           [valueLabel]: count,
         },
