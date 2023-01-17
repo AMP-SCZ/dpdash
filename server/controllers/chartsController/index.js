@@ -54,7 +54,7 @@ export const graphDataController = async (
       const { color, label, value, targetValues } = fieldLabelValueMap
       const targetValue = targetValues[study]
       const siteName = SITE_NAMES[study] || study
-      const dataKey = `${siteName}-${label}-${targetValue}`
+      const dataKey = `${siteName}-${label}-${targetValue}-${study}`
       const totalsDataKey = `${TOTALS_STUDY}-${label}`
       const isVariableValueEmpty = value === EMPTY_VALUE
       const shouldCountSubject = isVariableValueEmpty
