@@ -158,7 +158,7 @@ export const postProcessData = (data, studyTotals) => {
   const totalsValueTargets = {}
 
   for (const [key, count] of data) {
-    const [study, valueLabel, targetValue, shortCode] = key.split('-')
+    const [study, valueLabel, targetValue, siteCode] = key.split('-')
     const totalsForStudy = studyTotals[study]
     const totals = totalsForStudy.targetTotal || totalsForStudy.count
     const percent = studyCountsToPercentage(count, totals)
@@ -202,7 +202,7 @@ export const postProcessData = (data, studyTotals) => {
     } else {
       processedDataBySite.set(study, {
         name: study,
-        shortCode,
+        siteCode,
         counts: {
           [valueLabel]: count,
         },

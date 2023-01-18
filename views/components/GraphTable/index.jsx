@@ -38,7 +38,7 @@ const GraphTable = ({ graph }) => {
             return (
               <TableRow hover key={site.name}>
                 <TableCell align="center">{site.name}</TableCell>
-                <TableCell align="center">{site.shortCode}</TableCell>
+                <TableCell align="center">{site.siteCode}</TableCell>
                 {tableColumns.map((column) => {
                   const { name: columnLabel, color } = column
                   const {
