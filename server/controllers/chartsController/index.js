@@ -19,6 +19,7 @@ import {
   EMPTY_VALUE,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   ALL_SUBJECTS_MONGO_PROJECTION,
+  INITIAL_CHART_FILTERS,
 } from '../../constants'
 
 export const graphDataController = async (
@@ -29,7 +30,7 @@ export const graphDataController = async (
 ) => {
   const labelMap = new Map()
   const dataMap = new Map()
-  const filters = parsedQueryParams.filters || DEFAULT_CHART_FILTERS
+  const filters = parsedQueryParams.filters || INITIAL_CHART_FILTERS
   const chart = await dataDb
     .collection(collections.charts)
     .findOne({ _id: ObjectId(chart_id) })

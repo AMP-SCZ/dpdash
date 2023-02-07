@@ -20,6 +20,19 @@ export const DEFAULT_CHART_FILTERS = {
   ],
 }
 
+export const INITIAL_CHART_FILTERS = {
+  chrcrit_part: [
+    { name: 'HC', value: TRUE_STRING },
+    { name: 'CHR', value: TRUE_STRING },
+    { name: 'Missing', value: TRUE_STRING },
+  ],
+  included_excluded: [
+    { name: 'Included', value: TRUE_STRING },
+    { name: 'Excluded', value: FALSE_STRING },
+    { name: 'Missing', value: FALSE_STRING },
+  ],
+}
+
 export const FILTER_TO_MONGO_VALUE_MAP = {
   HC: 2,
   CHR: 1,
