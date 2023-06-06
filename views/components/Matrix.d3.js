@@ -14,11 +14,14 @@ const margin = {
 }
 
 const cellWidth = 65
+const DARK_GREY = '#545454'
+const GREY = '#e6e6e6'
+const NONE = 'none'
+const WHITE = '#ffffff'
 
 export default class Matrix {
   constructor(el, props) {
     this.el = el
-    this.props = props
     this.cardSize = props.cardSize
     this.halfCardSize = props.cardSize / 2
     this.startDay = props.startDay
@@ -37,10 +40,12 @@ export default class Matrix {
     if (data.length > 0) {
       return data
     }
-    let newData = []
-    for (let i = this.startDay; i <= this.lastDayForFilter; i++) {
-      newData.push({ day: i })
+
+    const newData = []
+    for (let day = this.startDay; day <= this.lastDayForFilter; day++) {
+      newData.push({ day })
     }
+
     return newData
   }
 
@@ -68,31 +73,31 @@ export default class Matrix {
     let yIndices = []
 
     for (let idx = 0; idx < data.length; idx++) {
-      if (category !== data[idx]['category']) {
-        category = data[idx]['category']
+      const dataEl = data[idx]
+
+      if (category !== dataEl.category) {
+        category = dataEl.category
         yIndices.push(idx)
       }
 
       //d3.thresholdScale takes in range as (firstIndex, lastIndex]. This is a way around to ensure we get [firstIndex, lastIndex]
-      let colors = data[idx]['color'].slice()
-      colors.unshift(data[idx].color[0])
+      const colors = dataEl.color.slice()
+      colors.unshift(dataEl.color[0])
       let range =
-        data[idx].range.length == 2
+        dataEl.range.length == 2
           ? d3.range(
-              data[idx].range[0],
-              data[idx].range[1],
-              (data[idx].range[1] - data[idx].range[0]) / 8
+              dataEl.range[0],
+              dataEl.range[1],
+              (dataEl.range[1] - dataEl.range[0]) / 8
             )
-          : data[idx].range
+          : dataEl.range
       const thresholdScale = d3.scaleThreshold().domain(range).range(colors)
 
-      if (data[idx] && data[idx].hasOwnProperty('data')) {
+      if (dataEl && dataEl.hasOwnProperty('data')) {
         //append rectangles filled with colors <3
         let card = this.cards
           .selectAll('.cell')
-          .data(this.cleanData(data[idx].data), (d) => {
-            return data[idx]['label'] + ':' + d.day
-          })
+          .data(this.cleanData(dataEl.data), (d) => `${dataEl.label}:${d.day}`)
         card
           .enter()
           .append('rect')
@@ -103,38 +108,29 @@ export default class Matrix {
           .attr('width', cellWidth)
           .attr('height', this.cardSize)
           .style('fill', (d) => {
-            if (
-              d[data[idx].variable] !== '' &&
-              d[data[idx].variable] !== undefined
-            ) {
-              return thresholdScale(d[data[idx].variable])
-            } else {
-              return '#ffffff'
-            }
+            return d[dataEl.variable] !== '' && d[dataEl.variable] !== undefined
+              ? thresholdScale(d[dataEl.variable])
+              : WHITE
           })
-          .style('stroke', (d) => {
-            if (d[data[idx].variable] !== undefined) {
-              return '#E6E6E6'
-            } else {
-              return 'none'
-            }
-          })
+          .style('stroke', (d) =>
+            d[dataEl.variable] === undefined ? NONE : GREY
+          )
           .style('stroke-width', '2px')
           .on('click', (d, i) => {
-            const val = d[data[idx].variable] || 'Not Available'
-            const msg = `The value for ${data[idx].label} on day ${d.day} is: ${val}`
+            const val = d[dataEl.variable] || 'Not Available'
+            const msg = `The value for ${dataEl.label} on day ${d.day} is: ${val}`
 
             alert(msg)
           })
           .append('svg:title')
           .filter(this.validDay)
-          .text((d) => d[data[idx].variable])
-        if (data[idx]['text'] == true) {
+          .text((d) => d[dataEl.variable])
+        if (dataEl['text'] == true) {
           card
             .enter()
             .append('text')
             .filter(this.validDay)
-            .text((d) => d[data[idx].variable])
+            .text((d) => d[dataEl.variable])
             .attr(
               'x',
               (d) => (d.day - this.startDay) * cellWidth + cellWidth / 2
@@ -142,12 +138,12 @@ export default class Matrix {
             .attr('y', () => idx * this.cardSize + (this.cardSize * 3) / 4)
             .attr('font-size', this.halfCardSize)
             .style('fill', (d) => {
-              let blockColor = '#ffffff'
+              let blockColor = WHITE
               if (
-                d[data[idx].variable] !== '' &&
-                d[data[idx].variable] !== undefined
+                d[dataEl.variable] !== '' &&
+                d[dataEl.variable] !== undefined
               ) {
-                blockColor = thresholdScale(d[data[idx].variable])
+                blockColor = thresholdScale(d[dataEl.variable])
               }
               return getColor(blockColor, true)
             })
@@ -256,7 +252,7 @@ export default class Matrix {
       .data(this.data)
       .text((d) => d['label'])
       .attr('font-size', this.halfCardSize)
-      .style('fill', '#545454')
+      .style('fill', DARK_GREY)
   }
 
   scaleAxes = (transform) => {
@@ -360,14 +356,11 @@ export default class Matrix {
   }
 
   generateXAxisForDatesData = () => {
-    const firstDayOfStudy = this.startDay
-    const lastDayOfStudy = this.lastDayForFilter
-    const consentDate = this.consentDate
     const xAxisForDatesData = []
-    const startDate = stringToDate(consentDate, 'yyyy-mm-dd', '-')
-    const firstDay = firstDayOfStudy - 1 //Consent date is 1
+    const startDate = stringToDate(this.consentDate, 'yyyy-mm-dd', '-')
+    const firstDay = this.startDay - 1 //Consent date is 1
 
-    for (let i = firstDay; i < lastDayOfStudy; i++) {
+    for (let i = firstDay; i < this.lastDayForFilter; i++) {
       const day = i + 1
 
       if (startDate.getDay() == 0 || startDate.getDay() == 6) {
@@ -395,20 +388,16 @@ export default class Matrix {
       .attr('class', 'CategoryMarker')
       .attr('transform', 'translate(-' + maxYAxisWidth + ',0)')
 
-    let yPosition = 0
     for (var i = 0; i < indices.length; i++) {
-      if (i == 0) {
-        yPosition = 1
-      } else {
-        yPosition = indices[i] * this.cardSize
-      }
+      const yPosition = i === 0 ? 1 : indices[i] * this.cardSize
+
       categoryMarker
         .append('line')
         .attr('x1', 0)
         .attr('x2', matrixWidth + maxYAxisWidth)
         .attr('y1', yPosition)
         .attr('y2', yPosition)
-        .attr('stroke', '#545454')
+        .attr('stroke', DARK_GREY)
     }
     categoryMarker
       .append('line')
@@ -417,7 +406,7 @@ export default class Matrix {
       .attr('y1', matrixHeight - this.halfCardSize)
       .attr('y2', matrixHeight - this.halfCardSize)
       .attr('stroke-width', 1.5)
-      .attr('stroke', '#545454')
+      .attr('stroke', DARK_GREY)
 
     return categoryMarker
   }
@@ -465,13 +454,10 @@ export default class Matrix {
         .call(this.xAxisLinearBottom)
       this.xAxisBottom
         .selectAll('text')
-        .attr('font-size', (d) => {
-          if (d.length <= 3) {
-            return this.halfCardSize
-          }
-          return this.cardSize / (d.length - 1.5)
-        })
-        .style('fill', '#545454')
+        .attr('font-size', (d) =>
+          d.length <= 3 ? this.halfCardSize : this.cardSize / (d.length - 1.5)
+        )
+        .style('fill', DARK_GREY)
 
       this.xAxisBottom.selectAll('path').attr('stroke-opacity', 0)
       this.xAxisBottom.selectAll('line').attr('stroke-opacity', 0)
@@ -483,10 +469,11 @@ export default class Matrix {
 
     this.filteredXAxisTop()
       .attr('font-size', this.halfCardSize)
-      .style('fill', (d) => (d.marker == 'N/A' ? '#ffffff' : '#545454'))
+      .style('fill', (d) => (d.marker === 'N/A' ? WHITE : DARK_GREY))
       .on('click', (d) => {
-        let day = d.day
-        let link = `/deepdive/${this.study}/${this.subject}/${day}`
+        const day = d.day
+        const link = `/deepdive/${this.study}/${this.subject}/${day}`
+
         window.open(`${basePath}${link}`, '_blank')
       })
     this.xAxisTop.selectAll('path').attr('stroke-opacity', 0)
@@ -514,14 +501,14 @@ export default class Matrix {
       .attr('height', this.cardSize)
       .attr('x', 0)
       .attr('y', -this.halfCardSize + 2)
-      .style('fill', () => (this.width === 0 ? 'none' : '#ffffff'))
+      .style('fill', this.widthBasedFill)
       .attr('class', 'Button')
     button
       .append('text')
       .text('PLOT DATA')
       .attr('x', maxYAxisWidth / 2 - this.cardSize)
       .attr('y', this.halfCardSize / 4)
-      .style('fill', '#545454')
+      .style('fill', DARK_GREY)
       .attr('font-size', this.halfCardSize)
       .attr('font-family', "'Helvetica Neue', Helvetica, Arial, sans-serif")
       .style('text-anchor', 'start')
@@ -538,34 +525,29 @@ export default class Matrix {
   }
 
   get widthBasedFill() {
-    return this.width === 0 ? 'none' : '#ffffff'
+    return this.width === 0 ? NONE : WHITE
   }
 
   generateMarginWhiteOutLeft = () => {
     const { matrixHeight, maxYAxisWidth } = this
-    const marginWhiteOut = this.svg.append('g')
 
-    marginWhiteOut
-      .append('rect')
-      .attr('width', maxYAxisWidth + margin.left + this.cardSize)
-      .attr('height', matrixHeight + this.cardSize)
-      .attr('x', 0)
-      .attr('y', -this.halfCardSize + 2)
-      .style('fill', () => this.widthBasedFill)
-
-    return marginWhiteOut
+    return this.generateSpace({
+      width: maxYAxisWidth + margin.left + this.cardSize,
+      height: matrixHeight + this.cardSize,
+      x: 0,
+      y: -this.halfCardSize + 2,
+    })
   }
+
   generateMarginWhiteOutTop = () => {
     const { matrixWidth, maxYAxisWidth } = this
-    let marginWhiteOut = this.svg.append('g')
-    marginWhiteOut
-      .append('rect')
-      .attr('width', matrixWidth + maxYAxisWidth)
-      .attr('height', this.cardSize + this.halfCardSize)
-      .attr('x', -maxYAxisWidth)
-      .attr('y', -(this.cardSize + this.halfCardSize))
-      .style('fill', () => this.widthBasedFill)
-    return marginWhiteOut
+
+    return this.generateSpace({
+      width: matrixWidth + maxYAxisWidth,
+      height: this.cardSize + this.halfCardSize,
+      x: -maxYAxisWidth,
+      y: -(this.cardSize + this.halfCardSize),
+    })
   }
 
   generateMarginWhiteOutBottom = () => {
@@ -574,29 +556,40 @@ export default class Matrix {
         ? this.height - this.cardSize * 2 + 1
         : this.matrixHeight - this.halfCardSize + 1
 
-    this.svg
-      .append('g')
+    this.generateSpace({
+      width: this.matrixWidth + this.maxYAxisWidth,
+      height: this.cardSize + 2,
+      x: -this.maxYAxisWidth,
+      y: 0,
+    })
       .attr('class', 'marginBottom')
-      .attr('transform', 'translate(0,' + bottomYCoordinate + ')')
-      .append('rect')
-      .attr('x', -this.maxYAxisWidth)
-      .attr('y', 0)
-      .attr('width', this.matrixWidth + this.maxYAxisWidth)
-      .attr('height', this.cardSize + 2)
-      .style('fill', () => this.widthBasedFill)
+      .attr('transform', `translate(0,${bottomYCoordinate})`)
   }
+
   generateWhiteSpaceTopLeft = () => {
     const { maxYAxisWidth } = this
 
-    this.svg
-      .append('g')
-      .append('rect')
-      .attr('width', maxYAxisWidth + margin.left)
-      .attr('height', this.cardSize)
-      .attr('x', -(maxYAxisWidth + margin.left))
-      .attr('y', -this.cardSize)
-      .style('fill', () => this.widthBasedFill)
+    this.generateSpace({
+      width: maxYAxisWidth + margin.left,
+      height: this.cardSize,
+      x: -(maxYAxisWidth + margin.left),
+      y: -this.cardSize,
+    })
   }
+
+  generateSpace = ({ width, height, x, y }) => {
+    const el = this.svg.append('g')
+
+    el.append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('x', x)
+      .attr('y', y)
+      .style('fill', this.widthBasedFill)
+
+    return el
+  }
+
   update() {
     d3.select(this.el)
       .select('svg')
