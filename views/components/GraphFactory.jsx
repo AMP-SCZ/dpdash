@@ -1,41 +1,33 @@
-import React, { Component } from 'react'
-import { findDOMNode } from 'react-dom'
+import React from 'react'
 
 import Matrix from './Matrix.d3'
 
-export default class GraphFactory extends Component {
-  constructor(props) {
-    super(props)
-    this.graphs = {
-      matrix: Matrix,
-    }
-  }
-  componentDidMount() {
-    if (!this.props.data || Object.keys(this.props.data).length == 0) {
-      return
-    }
-    const el = findDOMNode(this)
-    this.graph = new this.graphs[this.props.type](el, this.props)
-    this.graph.create(this.props.data)
-  }
+const GraphFactory = (props) => {
+  const { data } = props
+  const graph = React.createRef()
+  const domNode = React.useRef()
 
-  componentDidUpdate() {
-    const el = findDOMNode(this)
-    if (el.firstChild) {
-      el.removeChild(el.firstChild)
+  React.useEffect(() => {
+    if (domNode.current) {
+      graph.current = new Matrix(domNode.current, props)
+      graph.current.create(props.data)
     }
-    if (!this.props.data || Object.keys(this.props.data).length == 0) {
-      return
+  }, [])
+
+  React.useEffect(() => {
+    if (!!data && Object.keys(data).length > 0) {
+      const currentGraph = domNode.current?.firstChild
+
+      if (currentGraph) {
+        domNode.current.removeChild(currentGraph)
+      }
+
+      graph.current = new Matrix(domNode.current, props)
+      graph.current.create(data)
     }
-    this.graph = new this.graphs[this.props.type](el, this.props)
-    this.graph.create(this.props.data)
-    //this.graph.update(this.props.data, this.props)
-  }
+  }, [data])
 
-  componentWillUnmount() {
-  }
-
-  render() {
-    return (<div className="graph"></div>)
-  }
+  return <div className="graph" ref={domNode}></div>
 }
+
+export default GraphFactory
