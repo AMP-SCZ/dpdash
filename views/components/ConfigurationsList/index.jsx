@@ -40,6 +40,7 @@ import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import { fetchUsernames } from '../../fe-utils/fetchUtil'
 import openNewWindow from '../../fe-utils/windowUtil'
 import { apiRoutes, routes } from '../../routes/routes'
+import { UserConfigurationsModel } from '../../models'
 
 function NoOptionsMessage(props) {
   return (
@@ -159,6 +160,7 @@ const components = {
   ValueContainer,
 }
 const ConfigurationsList = ({ user, classes, theme }) => {
+  const { uid } = user
   const userMessageLength = user.message.length
   const [state, setState] = useState({
     user: {},
@@ -183,14 +185,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   useEffect(() => {
     loadUserNames()
     handleResize()
-    fetchConfigurations(user.uid).then(({ data }) => {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          configurations: data,
-        }
-      })
-    })
+    loadAllConfigurations(uid)
     fetchPreferences(user.uid)
     window.addEventListener('resize', handleResize)
 
@@ -314,63 +309,19 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         })
       })
   }
-  const removeConfiguration = async (_id) => {
-    return window
-      .fetch(apiRoutes.configurations.userConfiguration(user.uid, _id), {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      })
-      .then((response) => {
-        return response.json()
-      })
-      .then((response) => {
-        if (response.status === 200) {
-        }
-      })
+  const loadAllConfigurations = async (uid) => {
+    const { data } = await UserConfigurationsModel.all(uid)
+    setState((prevState) => {
+      return {
+        ...prevState,
+        configurations: data,
+      }
+    })
   }
-  const fetchConfigurations = async (uid) => {
-    try {
-      const response = await window.fetch(
-        apiRoutes.configurations.userConfigurations(uid),
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'same-origin',
-        }
-      )
-      if (response.status !== 200) return
-      return response.json()
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-  const updateConfiguration = (configID, configAttributes) => {
-    window
-      .fetch(apiRoutes.configurations.userConfiguration(user.uid, configID), {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(configAttributes),
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          fetchConfigurations(user.uid).then(({ data }) => {
-            setState((prevState) => {
-              return {
-                ...prevState,
-                configurations: data,
-              }
-            })
-          })
-        }
-      })
+
+  const updateConfiguration = async (configID, configAttributes) => {
+    const res = UserConfigurationsModel.update(uid, configID, configAttributes)
+    if (res.status === 200) loadAllConfigurations(user.uid)
   }
 
   const handleCrumbs = () => {
@@ -382,19 +333,21 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       }
     })
   }
-  const removeConfig = (configs, index, configID) => {
-    removeConfiguration(configID)
-    setState((prevState) => {
-      return {
-        ...prevState,
-        configurations: update(configs, {
-          $splice: [[index, 1]],
-        }),
-        snackTime: true,
+  const removeConfig = async (configs, index, configID) => {
+    const res = await UserConfigurationsModel.destroy(uid, configID)
+    if (res.status === 200) {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          configurations: update(configs, {
+            $splice: [[index, 1]],
+          }),
+          snackTime: true,
+        }
+      })
+      if (index === state.preferences['config']) {
+        updateUserPreferences(0, 'index')
       }
-    })
-    if (index == state.preferences['config']) {
-      updateUserPreferences(0, 'index')
     }
   }
   const openSearchUsers = (index, configID, shared, owner) => {
@@ -428,36 +381,17 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       }
     })
   }
-  const copyConfig = (configuration) => {
+  const copyConfig = async (configuration) => {
     const { _id, ...configAttributes } = configuration
     const newConfig = {
       ...configAttributes,
-      owner: user.uid,
-      readers: [user.uid],
+      owner: uid,
+      readers: [uid],
       created: new Date().toUTCString(),
     }
 
-    return window
-      .fetch(apiRoutes.configurations.userConfigurations(uid), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(newConfig),
-      })
-      .then((response) => {
-        if (response.status == 201) {
-          fetchConfigurations(user.uid).then(({ data }) => {
-            setState((prevState) => {
-              return {
-                ...prevState,
-                configurations: data,
-              }
-            })
-          })
-        }
-      })
+    const res = await UserConfigurationsModel.create(uid, newConfig)
+    if (res.status == 200) loadAllConfigurations(user.uid)
   }
 
   const generateCards = (configs, preference) => {
