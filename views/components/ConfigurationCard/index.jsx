@@ -26,6 +26,7 @@ const ConfigurationCard = ({
   config,
   preferences,
   state,
+  width,
 }) => {
   const { uid } = user
   const { _id, name, owner, readers, type } = config
@@ -34,7 +35,6 @@ const ConfigurationCard = ({
   const localTime = moment.utc(showTime).local().format()
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
-  const calculateWidth = window.innerWidth / state.gridCols
 
   const copyConfig = async (configuration) => {
     const { _id, ...configAttributes } = configuration
@@ -107,7 +107,7 @@ const ConfigurationCard = ({
   }
 
   return (
-    <Card style={{ margin: '3px', width: `${calculateWidth}px` }}>
+    <Card style={{ margin: '3px', width: `${width}px` }}>
       <CardHeader
         title={owner}
         subheader={updated}
@@ -131,7 +131,7 @@ const ConfigurationCard = ({
       />
       <Divider />
       <div style={{ padding: '16px 24px' }}>
-        <Typography variant="headline" component="h3">
+        <Typography variant="headline" component="h3" noWrap>
           {name}
         </Typography>
         <Typography

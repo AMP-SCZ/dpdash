@@ -151,8 +151,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     user: {},
     preferences: {},
     configurations: [],
-    gridCols: null,
-    gridWidth: 350,
     searchUsers: false,
     friends: [],
     shared: [],
@@ -160,10 +158,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     uploadSnack: false,
     selectedConfig: {},
     configOwner: '',
-    totalStudies: 0,
-    totalSubjects: 0,
-    totalDays: 0,
   })
+  const [grid, setGrid] = useState({
+    gridCols: null,
+    gridWidth: 350,
+    cellWidth: null,
+  })
+  const [preferences, setPreferences] = useState({})
   const minimumInnerWidth = 768
   const gridColumnsDivisor = 350
 
@@ -209,23 +210,31 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   const handleResize = () => {
     if (window.innerWidth >= minimumInnerWidth) {
       const gridCols = Math.floor(window.innerWidth / gridColumnsDivisor)
-      setState((prevState) => {
-        return { ...prevState, gridCols: gridCols }
+      const cellWidth = window.innerWidth / gridCols
+      console.log(cellWidth)
+      setGrid((prevState) => {
+        return {
+          ...prevState,
+          gridCols: gridCols,
+          cellWidth,
+        }
       })
     } else if (gridCols !== 1) {
-      setState((prevState) => {
-        return { ...prevState, gridCols: 1 }
+      const cellWidth = window.innerWidth / 1
+      console.log(cellWidth)
+
+      setGrid((prevState) => {
+        return {
+          ...prevState,
+          gridCols: 1,
+          cellWidth,
+        }
       })
     }
   }
   const fetchPreferences = async (uid) => {
     const { data } = await UserModel.show(uid)
-    setState((prevState) => {
-      return {
-        ...prevState,
-        preferences: data.preferences,
-      }
-    })
+    setPreferences(data.preferences)
   }
 
   const loadAllConfigurations = async (uid) => {
@@ -406,12 +415,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         {state.configurations.map((config) => {
           return (
             <ConfigurationCard
+              width={grid.cellWidth}
               config={config}
               user={user}
               setState={setState}
               loadAllConfigurations={loadAllConfigurations}
               openSearch={openSearchUsers}
-              preferences={state.preferences}
+              preferences={preferences}
               state={state}
             />
           )
