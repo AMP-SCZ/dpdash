@@ -1,4 +1,5 @@
 import { BASE_REQUEST_OPTIONS } from '../../../constants'
+import { apiRoutes } from '../../routes/routes'
 
 const UserModel = {
   show: async (userId) => {
