@@ -11,7 +11,7 @@ const UserModel = {
   },
   update: async (userId, userAttributes) => {
     try {
-      const response = await fetch(apiRoutes.users.preferences(userId), {
+      const response = await fetch(apiRoutes.users.user(userId), {
         ...BASE_REQUEST_OPTIONS,
         method: 'PATCH',
         body: JSON.stringify(userAttributes),
