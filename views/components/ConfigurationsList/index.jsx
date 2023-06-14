@@ -205,7 +205,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     if (window.innerWidth >= minimumInnerWidth) {
       const gridCols = Math.floor(window.innerWidth / gridColumnsDivisor)
       const cellWidth = window.innerWidth / gridCols
-
       setGrid((prevState) => {
         return {
           ...prevState,
