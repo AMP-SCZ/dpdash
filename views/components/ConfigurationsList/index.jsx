@@ -151,7 +151,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     user: {},
     preferences: {},
     configurations: [],
-    gridCols: 1,
+    gridCols: null,
     gridWidth: 350,
     searchUsers: false,
     friends: [],

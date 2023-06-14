@@ -28,12 +28,13 @@ const ConfigurationCard = ({
   state,
 }) => {
   const { uid } = user
-  const { _id, name, owner, readers } = config
+  const { _id, name, owner, readers, type } = config
   const ownsConfig = uid === owner
   const showTime = config.modified || config.created
   const localTime = moment.utc(showTime).local().format()
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
+  const calculateWidth = window.innerWidth / state.gridCols
 
   const copyConfig = async (configuration) => {
     const { _id, ...configAttributes } = configuration
@@ -106,7 +107,7 @@ const ConfigurationCard = ({
   }
 
   return (
-    <Card style={{ margin: '3px' }}>
+    <Card style={{ margin: '3px', width: `${calculateWidth}px` }}>
       <CardHeader
         title={owner}
         subheader={updated}
@@ -139,7 +140,7 @@ const ConfigurationCard = ({
           }}
           component="p"
         >
-          {config['type']}
+          {type}
         </Typography>
       </div>
       <CardActions>
@@ -211,11 +212,3 @@ const ConfigurationCard = ({
 }
 
 export default ConfigurationCard
-
-/**
- *
- * Remove Config
- * Update Config to one selected by user
- * Disable config when config is not from owner
- * Update preferences
- */
