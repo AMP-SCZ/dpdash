@@ -37,6 +37,7 @@ const ConfigurationCard = ({
   const localTime = moment.utc(showTime).local().format()
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
+  const calculateWidth = window.innerWidth / state.gridCols
 
   return (
     <Card style={{ margin: '3px', width: `${width}px` }}>
