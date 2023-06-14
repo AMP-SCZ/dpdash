@@ -15,7 +15,7 @@ import FullView from '@material-ui/icons/AspectRatio'
 import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import openNewWindow from '../../fe-utils/windowUtil'
-import { UserModel } from '../../models'
+import { UserModel, UserConfigurationsModel } from '../../models'
 import { routes } from '../../routes/routes'
 import { colors } from '../../../constants'
 

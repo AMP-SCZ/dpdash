@@ -18,11 +18,21 @@ const UserConfigurationsModel = {
     }
   },
   create: async (userId, configAttributes) => {
-    return await fetch(apiRoutes.configurations.userConfigurations(userId), {
-      ...BASE_REQUEST_OPTIONS,
-      method: 'POST',
-      body: JSON.stringify(configAttributes),
-    })
+    try {
+      const response = await fetch(
+        apiRoutes.configurations.userConfigurations(userId),
+        {
+          ...BASE_REQUEST_OPTIONS,
+          method: 'POST',
+          body: JSON.stringify(configAttributes),
+        }
+      )
+      const status = response.status
+
+      return { status, ...response.json() }
+    } catch (error) {
+      throw new Error(error)
+    }
   },
   destroy: async (userId, configId) => {
     try {
@@ -34,7 +44,7 @@ const UserConfigurationsModel = {
         }
       )
 
-      return response.json()
+      return response
     } catch (error) {
       throw new Error(error)
     }
@@ -49,8 +59,9 @@ const UserConfigurationsModel = {
           body: JSON.stringify(configAttributes),
         }
       )
+      const status = response.status
 
-      return response.json()
+      return { status, data: response.json() }
     } catch (error) {
       throw new Error(error)
     }
