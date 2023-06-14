@@ -171,6 +171,7 @@ const ConfigurationsList = ({ user, classes, theme, navigate }) => {
     handleResize()
     loadAllConfigurations(uid)
     fetchPreferences(uid)
+
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
