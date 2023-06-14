@@ -40,7 +40,8 @@ import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import { fetchUsernames } from '../../fe-utils/fetchUtil'
 import openNewWindow from '../../fe-utils/windowUtil'
 import { apiRoutes, routes } from '../../routes/routes'
-import { UserConfigurationsModel } from '../../models'
+import { UserConfigurationsModel, UserModel } from '../../models'
+import ConfigurationCard from '../ConfigurationCard'
 
 function NoOptionsMessage(props) {
   return (
@@ -186,7 +187,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     loadUserNames()
     handleResize()
     loadAllConfigurations(uid)
-    fetchPreferences(user.uid)
+    fetchPreferences(uid)
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -232,83 +233,16 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       })
     }
   }
-  const babyProofPreferences = (preferences) => {
-    let preference = {}
-    preference['star'] = preferences['star'] || {}
-    preference['sort'] = preferences['sort'] || 0
-    preference['config'] = preferences['config'] || ''
-    preference['complete'] = preferences['complete'] || {}
-    return preference
-  }
-  const updateUserPreferences = (index, type) => {
-    let { uid } = user
-    let preference = {}
-    if (type === 'index') {
-      if (state.configurations.length > 0 && state.configurations[index]) {
-        preference['config'] = state.configurations[index]['_id']
+  const fetchPreferences = async (uid) => {
+    const { data } = await UserModel.show(uid)
+    setState((prevState) => {
+      return {
+        ...prevState,
+        preferences: data.preferences,
       }
-    } else {
-      preference['config'] = index
-    }
-    preference['complete'] = state.preferences['complete'] || {}
-    preference['star'] = state.preferences['star'] || {}
-    preference['sort'] = state.preferences['sort'] || 0
-    preference = babyProofPreferences(preference)
+    })
+  }
 
-    return window
-      .fetch(apiRoutes.users.preferences(uid), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          preferences: preference,
-        }),
-      })
-      .then(() => {
-        if (type == 'index') {
-          setState((prevState) => {
-            return {
-              ...prevState,
-              preferences: preference,
-              snackTime: true,
-            }
-          })
-        } else {
-          setState((prevState) => {
-            return {
-              ...prevState,
-              preferences: preference,
-            }
-          })
-        }
-      })
-  }
-  const fetchPreferences = (uid) => {
-    return window
-      .fetch(apiRoutes.users.user(uid), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      })
-      .then((response) => {
-        if (response.status !== 200) {
-          return
-        }
-        return response.json()
-      })
-      .then(({ data }) => {
-        setState((prevState) => {
-          return {
-            ...prevState,
-            preferences: babyProofPreferences(data.preferences),
-          }
-        })
-      })
-  }
   const loadAllConfigurations = async (uid) => {
     const { data } = await UserConfigurationsModel.all(uid)
     setState((prevState) => {
@@ -317,11 +251,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         configurations: data,
       }
     })
-  }
-
-  const updateConfiguration = async (configID, configAttributes) => {
-    const res = UserConfigurationsModel.update(uid, configID, configAttributes)
-    if (res.status === 200) loadAllConfigurations(user.uid)
   }
 
   const handleCrumbs = () => {
@@ -333,31 +262,14 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       }
     })
   }
-  const removeConfig = async (configs, index, configID) => {
-    const res = await UserConfigurationsModel.destroy(uid, configID)
-    if (res.status === 200) {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          configurations: update(configs, {
-            $splice: [[index, 1]],
-          }),
-          snackTime: true,
-        }
-      })
-      if (index === state.preferences['config']) {
-        updateUserPreferences(0, 'index')
-      }
-    }
-  }
-  const openSearchUsers = (index, configID, shared, owner) => {
+
+  const openSearchUsers = (configID, shared, owner) => {
     setState((prevState) => {
       return {
         ...prevState,
         searchUsers: true,
         selectedConfig: {
           _id: configID,
-          index: index,
         },
         shared: shared.map((friend) => ({
           label: friend,
@@ -374,24 +286,11 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         searchUsers: false,
         selectedConfig: {
           _id: '',
-          index: -1,
         },
         shared: [],
         configOwner: '',
       }
     })
-  }
-  const copyConfig = async (configuration) => {
-    const { _id, ...configAttributes } = configuration
-    const newConfig = {
-      ...configAttributes,
-      owner: uid,
-      readers: [uid],
-      created: new Date().toUTCString(),
-    }
-
-    const res = await UserConfigurationsModel.create(uid, newConfig)
-    if (res.status == 200) loadAllConfigurations(user.uid)
   }
 
   const generateCards = (configs, preference) => {
@@ -662,7 +561,19 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         cols={state.gridCols}
         cellHeight="auto"
       >
-        {generateCards(state.configurations, state.preferences)}
+        {/* {generateCards(state.configurations, state.preferences)} */}
+        {state.configurations.map((config) => {
+          return (
+            <ConfigurationCard
+              config={config}
+              user={user}
+              setState={setState}
+              loadAllConfigurations={loadAllConfigurations}
+              openSearch={openSearchUsers}
+              preferences={state.preferences}
+            />
+          )
+        })}
       </GridList>
       <div
         style={{

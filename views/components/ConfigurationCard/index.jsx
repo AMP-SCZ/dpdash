@@ -1,3 +1,5 @@
+import React from 'react'
+import moment from 'moment'
 import {
   Card,
   CardHeader,
@@ -6,18 +8,87 @@ import {
   CardActions,
   Switch,
   IconButton,
+  FormControlLabel,
 } from '@material-ui/core'
-import { Edit, Clear, Copy, Share } from '@material-ui/icons'
+import { Edit, Clear, Share } from '@material-ui/icons'
 import FullView from '@material-ui/icons/AspectRatio'
+import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
+import openNewWindow from '../../fe-utils/windowUtil'
+import { routes } from '../../routes/routes'
 
-const ConfigurationCard = (props) => {
+const ConfigurationCard = ({
+  openSearch,
+  loadAllConfigurations,
+  user,
+  setState,
+  config,
+  preferences,
+}) => {
+  const { _id } = config
+  const ownsConfig = user.uid === config['owner']
+  const showTime = config.modified || config.created
+  const localTime = moment.utc(showTime).local().format()
+  const updated = moment(localTime).calendar()
+  const copyConfig = async (configuration) => {
+    const { _id, ...configAttributes } = configuration
+    const newConfig = {
+      ...configAttributes,
+      owner: uid,
+      readers: [uid],
+      created: new Date().toUTCString(),
+    }
+
+    const res = await UserConfigurationsModel.create(uid, newConfig)
+    if (res.status == 200) loadAllConfigurations(user.uid)
+  }
+
+  const removeConfig = async (configs, index, configID) => {
+    const res = await UserConfigurationsModel.destroy(uid, configID)
+    if (res.status === 200) {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          configurations: update(configs, {
+            $splice: [[index, 1]],
+          }),
+          snackTime: true,
+        }
+      })
+      if (index === state.preferences['config']) {
+        updateUserPreferences(0, 'index')
+      }
+    }
+  }
+
+  const updateConfiguration = async (configID, configAttributes) => {
+    const res = UserConfigurationsModel.update(uid, configID, configAttributes)
+    if (res.status === 200) loadAllConfigurations(user.uid)
+  }
+
+  const updateUserPreferences = async (index, type) => {
+    const userAttributes = {
+      ...state.preferences,
+      config:
+        state.configurations.length > 0 && state.configurations[index]
+          ? state.configurations[index]['_id']
+          : index,
+    }
+    const { data } = await UserModel.update(uid, userAttributes)
+    setState((prevState) => {
+      return {
+        ...prevState,
+        preferences: data.preferences,
+        snackTime: true,
+      }
+    })
+  }
   return (
     <Card style={{ margin: '3px' }}>
       <CardHeader
-        title={configs[item]['owner']}
+        title={config['owner']}
         subheader={updated}
-        avatar={<ConfigCardAvatar config={configs[item]} currentUser={user} />}
+        avatar={<ConfigCardAvatar config={config} currentUser={user} />}
         action={
           <IconButton
             onClick={() => {
@@ -40,7 +111,7 @@ const ConfigurationCard = (props) => {
       <Divider />
       <div style={{ padding: '16px 24px' }}>
         <Typography variant="headline" component="h3">
-          {configs[item]['name']}
+          {config['name']}
         </Typography>
         <Typography
           style={{
@@ -48,7 +119,7 @@ const ConfigurationCard = (props) => {
           }}
           component="p"
         >
-          {configs[item]['type']}
+          {config['type']}
         </Typography>
       </div>
       <CardActions>
@@ -86,12 +157,7 @@ const ConfigurationCard = (props) => {
                 tooltipPosition="top-center"
                 tooltip="Share"
                 onClick={() =>
-                  openSearchUsers(
-                    item,
-                    configs[item]['_id'],
-                    configs[item]['readers'],
-                    configs[item]['owner']
-                  )
+                  openSearch(config['_id'], config['readers'], config['owner'])
                 }
               >
                 <Share />
@@ -101,7 +167,7 @@ const ConfigurationCard = (props) => {
                 iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
                 tooltipPosition="top-center"
                 tooltip="Duplicate"
-                onClick={() => copyConfig(configs[item])}
+                onClick={() => copyConfig(config)}
               >
                 <Copy />
               </IconButton>
@@ -115,8 +181,8 @@ const ConfigurationCard = (props) => {
                 }}
                 labelStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
                 checked={
-                  'config' in preference
-                    ? configs[item]['_id'] == preference['config']
+                  'config' in preferences
+                    ? config['_id'] == preferences['config']
                     : false
                 }
                 onChange={(e, isInputChecked) =>
