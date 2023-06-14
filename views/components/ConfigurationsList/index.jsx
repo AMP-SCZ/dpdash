@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import moment from 'moment'
 import classNames from 'classnames'
 import 'whatwg-fetch'
 import Select from 'react-select'
@@ -8,37 +7,22 @@ import update from 'immutability-helper'
 import AttachFile from '@material-ui/icons/AttachFile'
 import Button from '@material-ui/core/Button'
 import CancelIcon from '@material-ui/icons/Cancel'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardHeader from '@material-ui/core/CardHeader'
 import Chip from '@material-ui/core/Chip'
-import Clear from '@material-ui/icons/Clear'
-import Copy from '@material-ui/icons/FileCopy'
 import ContentAdd from '@material-ui/icons/Add'
 import Tooltip from '@material-ui/core/Tooltip'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Divider from '@material-ui/core/Divider'
-import Edit from '@material-ui/icons/Edit'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FullView from '@material-ui/icons/AspectRatio'
 import GridList from '@material-ui/core/GridList'
-import IconButton from '@material-ui/core/IconButton'
 import MenuList from '@material-ui/core/MenuList'
 import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
-import Share from '@material-ui/icons/Share'
 import Snackbar from '@material-ui/core/Snackbar'
-import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
-import ConfigCardAvatar from '../ConfigurationCardAvatar'
-
 import { fetchUsernames } from '../../fe-utils/fetchUtil'
-import openNewWindow from '../../fe-utils/windowUtil'
 import { apiRoutes, routes } from '../../routes/routes'
 import { UserConfigurationsModel, UserModel } from '../../models'
 import ConfigurationCard from '../ConfigurationCard'
@@ -188,6 +172,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     handleResize()
     loadAllConfigurations(uid)
     fetchPreferences(uid)
+
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -292,146 +277,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       }
     })
   }
-
-  const generateCards = (configs, preference) => {
-    let cards = []
-    if (configs && configs.length > 0) {
-      for (let item in configs) {
-        const configuration = configs[item]
-        const { _id } = configuration
-        const ownsConfig = user.uid === configs[item]['owner']
-        const showTime = configs[item].modified || configs[item].created
-        const localTime = moment.utc(showTime).local().format()
-        const updated = moment(localTime).calendar()
-
-        cards.push(
-          <Card style={{ margin: '3px' }}>
-            <CardHeader
-              title={configs[item]['owner']}
-              subheader={updated}
-              avatar={
-                <ConfigCardAvatar config={configs[item]} currentUser={user} />
-              }
-              action={
-                <IconButton
-                  onClick={() => {
-                    if (ownsConfig) {
-                      removeConfig(configs, item, _id)
-                    } else {
-                      const configAttributes = {
-                        readers: config.readers.filter(
-                          (reader) => reader !== user.uid
-                        ),
-                      }
-                      updateConfiguration(_id, configAttributes)
-                    }
-                  }}
-                >
-                  <Clear color="rgba(0, 0, 0, 0.54)" />
-                </IconButton>
-              }
-            />
-            <Divider />
-            <div style={{ padding: '16px 24px' }}>
-              <Typography variant="headline" component="h3">
-                {configs[item]['name']}
-              </Typography>
-              <Typography
-                style={{
-                  color: 'rgba(0, 0, 0, 0.54)',
-                }}
-                component="p"
-              >
-                {configs[item]['type']}
-              </Typography>
-            </div>
-            <CardActions>
-              <div
-                style={{
-                  padding: '0px',
-                  display: 'inline-block',
-                  whiteSpace: 'nowrap',
-                  width: '100%',
-                }}
-              >
-                <div style={{ float: 'right' }}>
-                  {ownsConfig ? (
-                    <IconButton
-                      onClick={() =>
-                        openNewWindow(routes.editConfiguration(_id))
-                      }
-                      iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                      tooltipPosition="top-center"
-                      tooltip="Edit"
-                    >
-                      <Edit />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() =>
-                        openNewWindow(routes.viewConfiguration(_id))
-                      }
-                      iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                      tooltipPosition="top-center"
-                      tooltip="View"
-                    >
-                      <FullView />
-                    </IconButton>
-                  )}
-                  {ownsConfig ? (
-                    <IconButton
-                      iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                      tooltipPosition="top-center"
-                      tooltip="Share"
-                      onClick={() =>
-                        openSearchUsers(
-                          item,
-                          configs[item]['_id'],
-                          configs[item]['readers'],
-                          configs[item]['owner']
-                        )
-                      }
-                    >
-                      <Share />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                      tooltipPosition="top-center"
-                      tooltip="Duplicate"
-                      onClick={() => copyConfig(configs[item])}
-                    >
-                      <Copy />
-                    </IconButton>
-                  )}
-                </div>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      style={{
-                        width: 'auto',
-                      }}
-                      labelStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                      checked={
-                        'config' in preference
-                          ? configs[item]['_id'] == preference['config']
-                          : false
-                      }
-                      onChange={(e, isInputChecked) =>
-                        changeDefaultConfig(e, isInputChecked, item)
-                      }
-                    />
-                  }
-                  label="Default"
-                />
-              </div>
-            </CardActions>
-          </Card>
-        )
-      }
-    }
-    return cards
-  }
   const shareWithUsers = () => {
     const { _id } = state.selectedConfig
     const configAttributes = {
@@ -508,9 +353,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         throw new Error(err)
       })
   }
-  const changeDefaultConfig = (e, checked, index) => {
-    updateUserPreferences(index, 'index')
-  }
 
   const actions = [
     <Button
@@ -561,7 +403,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         cols={state.gridCols}
         cellHeight="auto"
       >
-        {/* {generateCards(state.configurations, state.preferences)} */}
         {state.configurations.map((config) => {
           return (
             <ConfigurationCard

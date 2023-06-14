@@ -15,7 +15,7 @@ import FullView from '@material-ui/icons/AspectRatio'
 import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import openNewWindow from '../../fe-utils/windowUtil'
-import { UserModel } from '../../models'
+import { UserModel, UserConfigurationsModel } from '../../models'
 import { routes } from '../../routes/routes'
 
 const ConfigurationCard = ({
@@ -28,11 +28,13 @@ const ConfigurationCard = ({
   state,
 }) => {
   const { uid } = user
-  const { _id } = config
-  const ownsConfig = user.uid === config['owner']
+  const { _id, name, owner, readers } = config
+  const ownsConfig = uid === owner
   const showTime = config.modified || config.created
   const localTime = moment.utc(showTime).local().format()
   const updated = moment(localTime).calendar()
+  const checked = config._id === preferences.config
+
   const copyConfig = async (configuration) => {
     const { _id, ...configAttributes } = configuration
     const newConfig = {
@@ -41,39 +43,54 @@ const ConfigurationCard = ({
       readers: [uid],
       created: new Date().toUTCString(),
     }
+    const { status } = await UserConfigurationsModel.create(uid, newConfig)
 
-    const res = await UserConfigurationsModel.create(uid, newConfig)
-    if (res.status == 200) loadAllConfigurations(user.uid)
+    if (status === 200) loadAllConfigurations(uid)
   }
 
-  const removeConfig = async (configs, index, configID) => {
-    const res = await UserConfigurationsModel.destroy(uid, configID)
+  const removeConfig = async (configId) => {
+    const res = await UserConfigurationsModel.destroy(uid, configId)
     if (res.status === 200) {
       setState((prevState) => {
         return {
           ...prevState,
-          configurations: update(configs, {
-            $splice: [[index, 1]],
-          }),
+          configurations: prevState.configurations.filter(
+            ({ _id }) => _id !== configId
+          ),
           snackTime: true,
         }
       })
-      if (index === state.preferences['config']) {
-        updateUserPreferences(0, 'index')
-      }
+
+      if (checked) updateUserPreferences(configId)
     }
   }
 
-  const updateConfiguration = async (configID, configAttributes) => {
-    const res = UserConfigurationsModel.update(uid, configID, configAttributes)
-    if (res.status === 200) loadAllConfigurations(user.uid)
+  const updateConfiguration = async (configId, configAttributes) => {
+    const { status } = await UserConfigurationsModel.update(
+      uid,
+      configId,
+      configAttributes
+    )
+
+    switch (true) {
+      case status === 200: {
+        loadAllConfigurations(uid)
+        break
+      }
+      case checked: {
+        updateUserPreferences(configId)
+        break
+      }
+      default:
+        break
+    }
   }
 
-  const updateUserPreferences = async ({ _id }) => {
+  const updateUserPreferences = async (configId) => {
     const userAttributes = {
       preferences: {
         ...state.preferences,
-        config: state.preferences.config === _id ? '' : _id,
+        config: state.preferences.config === configId ? '' : configId,
       },
     }
 
@@ -87,24 +104,21 @@ const ConfigurationCard = ({
       }
     })
   }
-  const changeDefaultConfig = (config) => updateUserPreferences(config)
 
   return (
     <Card style={{ margin: '3px' }}>
       <CardHeader
-        title={config['owner']}
+        title={owner}
         subheader={updated}
         avatar={<ConfigCardAvatar config={config} currentUser={user} />}
         action={
           <IconButton
             onClick={() => {
               if (ownsConfig) {
-                removeConfig(configs, item, _id)
+                removeConfig(_id)
               } else {
                 const configAttributes = {
-                  readers: config.readers.filter(
-                    (reader) => reader !== user.uid
-                  ),
+                  readers: config.readers.filter((reader) => reader !== uid),
                 }
                 updateConfiguration(_id, configAttributes)
               }
@@ -117,7 +131,7 @@ const ConfigurationCard = ({
       <Divider />
       <div style={{ padding: '16px 24px' }}>
         <Typography variant="headline" component="h3">
-          {config['name']}
+          {name}
         </Typography>
         <Typography
           style={{
@@ -162,9 +176,7 @@ const ConfigurationCard = ({
                 iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
                 tooltipPosition="top-center"
                 tooltip="Share"
-                onClick={() =>
-                  openSearch(config['_id'], config['readers'], config['owner'])
-                }
+                onClick={() => openSearch(_id, readers, owner)}
               >
                 <Share />
               </IconButton>
@@ -186,8 +198,8 @@ const ConfigurationCard = ({
                   width: 'auto',
                 }}
                 labelStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                checked={config._id === preferences.config}
-                onChange={() => changeDefaultConfig(config)}
+                checked={checked}
+                onChange={() => updateUserPreferences(_id)}
               />
             }
             label="Default"
@@ -199,3 +211,11 @@ const ConfigurationCard = ({
 }
 
 export default ConfigurationCard
+
+/**
+ *
+ * Remove Config
+ * Update Config to one selected by user
+ * Disable config when config is not from owner
+ * Update preferences
+ */
