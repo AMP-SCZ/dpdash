@@ -15,6 +15,7 @@ import FullView from '@material-ui/icons/AspectRatio'
 import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import openNewWindow from '../../fe-utils/windowUtil'
+import { UserModel } from '../../models'
 import { routes } from '../../routes/routes'
 
 const ConfigurationCard = ({
@@ -24,7 +25,9 @@ const ConfigurationCard = ({
   setState,
   config,
   preferences,
+  state,
 }) => {
+  const { uid } = user
   const { _id } = config
   const ownsConfig = user.uid === config['owner']
   const showTime = config.modified || config.created
@@ -66,23 +69,26 @@ const ConfigurationCard = ({
     if (res.status === 200) loadAllConfigurations(user.uid)
   }
 
-  const updateUserPreferences = async (index, type) => {
+  const updateUserPreferences = async ({ _id }) => {
     const userAttributes = {
-      ...state.preferences,
-      config:
-        state.configurations.length > 0 && state.configurations[index]
-          ? state.configurations[index]['_id']
-          : index,
+      preferences: {
+        ...state.preferences,
+        config: state.preferences.config === _id ? '' : _id,
+      },
     }
-    const { data } = await UserModel.update(uid, userAttributes)
+
+    await UserModel.update(uid, userAttributes)
+
     setState((prevState) => {
       return {
         ...prevState,
-        preferences: data.preferences,
+        preferences: userAttributes.preferences,
         snackTime: true,
       }
     })
   }
+  const changeDefaultConfig = (config) => updateUserPreferences(config)
+
   return (
     <Card style={{ margin: '3px' }}>
       <CardHeader
@@ -180,14 +186,8 @@ const ConfigurationCard = ({
                   width: 'auto',
                 }}
                 labelStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                checked={
-                  'config' in preferences
-                    ? config['_id'] == preferences['config']
-                    : false
-                }
-                onChange={(e, isInputChecked) =>
-                  changeDefaultConfig(e, isInputChecked, item)
-                }
+                checked={config._id === preferences.config}
+                onChange={() => changeDefaultConfig(config)}
               />
             }
             label="Default"

@@ -571,6 +571,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
               loadAllConfigurations={loadAllConfigurations}
               openSearch={openSearchUsers}
               preferences={state.preferences}
+              state={state}
             />
           )
         })}
