@@ -17,15 +17,17 @@ import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import openNewWindow from '../../fe-utils/windowUtil'
 import { UserModel, UserConfigurationsModel } from '../../models'
 import { routes } from '../../routes/routes'
+import { colors } from '../../../constants'
 
 const ConfigurationCard = ({
+  classes,
   openSearch,
   loadAllConfigurations,
   user,
-  setState,
   config,
   preferences,
-  state,
+  setPreferences,
+  setConfigurations,
   width,
 }) => {
   const { uid } = user
@@ -52,15 +54,9 @@ const ConfigurationCard = ({
   const removeConfig = async (configId) => {
     const res = await UserConfigurationsModel.destroy(uid, configId)
     if (res.status === 200) {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          configurations: prevState.configurations.filter(
-            ({ _id }) => _id !== configId
-          ),
-          snackTime: true,
-        }
-      })
+      setConfigurations((configurations) =>
+        configurations.filter(({ _id }) => _id !== configId)
+      )
 
       if (checked) updateUserPreferences(configId)
     }
@@ -90,20 +86,14 @@ const ConfigurationCard = ({
   const updateUserPreferences = async (configId) => {
     const userAttributes = {
       preferences: {
-        ...state.preferences,
-        config: state.preferences.config === configId ? '' : configId,
+        ...preferences,
+        config: preferences.config === configId ? '' : configId,
       },
     }
 
     await UserModel.update(uid, userAttributes)
 
-    setState((prevState) => {
-      return {
-        ...prevState,
-        preferences: userAttributes.preferences,
-        snackTime: true,
-      }
-    })
+    setPreferences(userAttributes.preferences)
   }
 
   return (
@@ -119,92 +109,75 @@ const ConfigurationCard = ({
                 removeConfig(_id)
               } else {
                 const configAttributes = {
-                  readers: config.readers.filter((reader) => reader !== uid),
+                  readers: readers.filter((reader) => reader !== uid),
                 }
                 updateConfiguration(_id, configAttributes)
               }
             }}
           >
-            <Clear color="rgba(0, 0, 0, 0.54)" />
+            <Clear color={colors.gray} />
           </IconButton>
         }
       />
       <Divider />
-      <div style={{ padding: '16px 24px' }}>
+      <div className={classes.actionsDivider}>
         <Typography variant="headline" component="h3" noWrap>
           {name}
         </Typography>
-        <Typography
-          style={{
-            color: 'rgba(0, 0, 0, 0.54)',
-          }}
-          component="p"
-        >
+        <Typography className={classes.textAndIcon} component="p">
           {type}
         </Typography>
       </div>
-      <CardActions>
-        <div
-          style={{
-            padding: '0px',
-            display: 'inline-block',
-            whiteSpace: 'nowrap',
-            width: '100%',
-          }}
-        >
-          <div style={{ float: 'right' }}>
-            {ownsConfig ? (
-              <IconButton
-                onClick={() => openNewWindow(routes.editConfiguration(_id))}
-                iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                tooltipPosition="top-center"
-                tooltip="Edit"
-              >
-                <Edit />
-              </IconButton>
-            ) : (
-              <IconButton
-                onClick={() => openNewWindow(routes.viewConfiguration(_id))}
-                iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                tooltipPosition="top-center"
-                tooltip="View"
-              >
-                <FullView />
-              </IconButton>
-            )}
-            {ownsConfig ? (
-              <IconButton
-                iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                tooltipPosition="top-center"
-                tooltip="Share"
-                onClick={() => openSearch(_id, readers, owner)}
-              >
-                <Share />
-              </IconButton>
-            ) : (
-              <IconButton
-                iconStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                tooltipPosition="top-center"
-                tooltip="Duplicate"
-                onClick={() => copyConfig(config)}
-              >
-                <Copy />
-              </IconButton>
-            )}
-          </div>
-          <FormControlLabel
-            control={
-              <Switch
-                style={{
-                  width: 'auto',
-                }}
-                labelStyle={{ color: 'rgba(0, 0, 0, 0.54)' }}
-                checked={checked}
-                onChange={() => updateUserPreferences(_id)}
-              />
-            }
-            label="Default"
-          />
+      <CardActions className={classes.actionsContainer}>
+        <FormControlLabel
+          control={
+            <Switch
+              labelStyle={classes.textAndIcon}
+              checked={checked}
+              onChange={() => updateUserPreferences(_id)}
+            />
+          }
+          label="Default"
+        />
+        <div>
+          {ownsConfig ? (
+            <IconButton
+              onClick={() => openNewWindow(routes.editConfiguration(_id))}
+              iconStyle={classes.textAndIcon}
+              tooltipPosition="top-center"
+              tooltip="Edit"
+            >
+              <Edit />
+            </IconButton>
+          ) : (
+            <IconButton
+              onClick={() => openNewWindow(routes.viewConfiguration(_id))}
+              iconStyle={classes.textAndIcon}
+              tooltipPosition="top-center"
+              tooltip="View"
+            >
+              <FullView />
+            </IconButton>
+          )}
+          {ownsConfig ? (
+            <IconButton
+              iconStyle={classes.textAndIcon}
+              tooltipPosition="top-center"
+              tooltip="Share"
+              onClick={() => openSearch(config)}
+            >
+              <Share />
+            </IconButton>
+          ) : (
+            <IconButton
+              iconStyle={classes.textAndIcon}
+              tooltipPosition="top-center"
+              tooltip="Duplicate"
+              onClick={() => copyConfig(config)}
+            >
+              <Copy />
+            </IconButton>
+          )}
         </div>
       </CardActions>
     </Card>

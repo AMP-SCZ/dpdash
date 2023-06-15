@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import classNames from 'classnames'
 import 'whatwg-fetch'
 import Select from 'react-select'
-import update from 'immutability-helper'
 
 import AttachFile from '@material-ui/icons/AttachFile'
 import Button from '@material-ui/core/Button'
@@ -23,7 +22,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
 import { fetchUsernames } from '../../fe-utils/fetchUtil'
-import { apiRoutes, routes } from '../../routes/routes'
+import { routes } from '../../routes/routes'
 import { UserConfigurationsModel, UserModel } from '../../models'
 import ConfigurationCard from '../ConfigurationCard'
 
@@ -147,17 +146,17 @@ const components = {
 const ConfigurationsList = ({ user, classes, theme }) => {
   const { uid } = user
   const userMessageLength = user.message.length
-  const [state, setState] = useState({
-    user: {},
-    preferences: {},
-    configurations: [],
-    searchUsers: false,
-    friends: [],
-    shared: [],
+  const [configurations, setConfigurations] = useState([])
+  const [snackBars, setSnackBars] = useState({
     snackTime: false,
     uploadSnack: false,
+  })
+  const [sharedWithState, setSharedWith] = useState({
     selectedConfig: {},
     configOwner: '',
+    shared: [],
+    searchUsers: false,
+    friends: [],
   })
   const [grid, setGrid] = useState({
     gridCols: null,
@@ -180,8 +179,8 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }, [])
 
   useEffect(() => {
-    if (user.message.length > 0) {
-      setState((prevState) => {
+    if (userMessageLength > 0) {
+      setSnackBars((prevState) => {
         return {
           ...prevState,
           uploadSnack: true,
@@ -191,27 +190,23 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }, [userMessageLength])
 
   const loadUserNames = async () => {
-    try {
-      const usernames = await fetchUsernames()
-      setState((prevstate) => {
-        return {
-          ...prevstate,
-          friends: usernames.map((username) => ({
-            value: username,
-            label: username,
-          })),
-        }
-      })
-    } catch (error) {
-      throw new Error(error)
-    }
+    const usernames = await fetchUsernames()
+    setSharedWith((prevstate) => {
+      return {
+        ...prevstate,
+        friends: usernames.map((username) => ({
+          value: username,
+          label: username,
+        })),
+      }
+    })
   }
 
   const handleResize = () => {
     if (window.innerWidth >= minimumInnerWidth) {
       const gridCols = Math.floor(window.innerWidth / gridColumnsDivisor)
       const cellWidth = window.innerWidth / gridCols
-      console.log(cellWidth)
+
       setGrid((prevState) => {
         return {
           ...prevState,
@@ -221,7 +216,6 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       })
     } else if (gridCols !== 1) {
       const cellWidth = window.innerWidth / 1
-      console.log(cellWidth)
 
       setGrid((prevState) => {
         return {
@@ -239,12 +233,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
 
   const loadAllConfigurations = async (uid) => {
     const { data } = await UserConfigurationsModel.all(uid)
-    setState((prevState) => {
-      return {
-        ...prevState,
-        configurations: data,
-      }
-    })
+    setConfigurations(data)
   }
 
   const handleCrumbs = () => {
@@ -257,15 +246,16 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     })
   }
 
-  const openSearchUsers = (configID, shared, owner) => {
-    setState((prevState) => {
+  const openSearchUsers = (config) => {
+    const { _id, readers, owner } = config
+    setSharedWith((prevState) => {
       return {
         ...prevState,
         searchUsers: true,
         selectedConfig: {
-          _id: configID,
+          _id,
         },
-        shared: shared.map((friend) => ({
+        shared: readers.map((friend) => ({
           label: friend,
           value: friend,
         })),
@@ -274,7 +264,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     })
   }
   const closeSearchUsers = () => {
-    setState((prevState) => {
+    setSharedWith((prevState) => {
       return {
         ...prevState,
         searchUsers: false,
@@ -286,81 +276,57 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       }
     })
   }
-  const shareWithUsers = () => {
-    const { _id } = state.selectedConfig
-    const configAttributes = {
-      readers: state.shared.map((sharedWith) => sharedWith.value),
-    }
 
-    return window
-      .fetch(apiRoutes.configurations.userConfiguration(user.uid, _id), {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(configAttributes),
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setState((prevState) => {
+  const shareWithUsers = async () => {
+    const { _id } = sharedWithState.selectedConfig
+    const configAttributes = {
+      readers: sharedWithState.shared.map((sharedWith) => sharedWith.value),
+    }
+    const response = await UserConfigurationsModel.update(
+      uid,
+      _id,
+      configAttributes
+    )
+    if (response.status === 200) {
+      setConfigurations(
+        configurations.map((config) => {
+          if (config._id === _id) {
             return {
-              ...prevState,
-              configurations: update(state.configurations, {
-                [state.selectedConfig['index']]: {
-                  ['readers']: {
-                    $set: state.shared.map((o) => {
-                      return o.value
-                    }),
-                  },
-                },
-              }),
+              ...config,
+              readers: configAttributes.readers,
             }
-          })
-        }
-        closeSearchUsers()
-      })
+          } else return config
+        })
+      )
+    }
+    closeSearchUsers()
   }
+
   const handleChange = (name) => (value) => {
-    let uid = user.uid
-    let names = value.map((o) => {
+    const names = value.map((o) => {
       return o.value
     })
     if (names.indexOf(uid) === -1) {
       throw new Error('Unable to delete owner.')
     }
-    setState((prevState) => {
+    setSharedWith((prevState) => {
       return { ...prevState, [name]: value }
     })
   }
-  const handleChangeFile = (e) => {
+  const handleChangeFile = async (e) => {
     e.preventDefault()
     const file = e.target.files ? e.target.files[0] : ''
-    new Response(file)
-      .json()
-      .then(async (json) => {
-        const res = await window.fetch(
-          apiRoutes.configurations.configurationFileUpload(user.uid),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(json),
-          }
-        )
-        if (res.status === 200) {
-          window.location = routes.configurationSuccess
-        } else if (res.status === 400) {
-          window.location = routes.invalidConfiguration
-        } else {
-          window.location = routes.configurationError
-        }
-      })
-      .catch((err) => {
-        throw new Error(err)
-      })
+    const json = await new Response(file).json()
+    const userAttributes = {
+      owner: uid,
+      readers: [uid],
+      ...json,
+    }
+    const { status } = await UserConfigurationsModel.create(uid, userAttributes)
+
+    if (status === 200) loadAllConfigurations(uid)
+    else if (status === 400) window.location = routes.invalidConfiguration
+    else window.location = routes.configurationError
   }
 
   const actions = [
@@ -399,41 +365,32 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     }),
   }
 
-  if (state?.configurations?.length <= 0) return <div>Loading...</div>
+  if (configurations?.length <= 0) return <div>Loading...</div>
 
   return (
     <div>
       <GridList
-        style={{
-          padding: '2px',
-          overflowY: 'auto',
-          marginBottom: '128px',
-        }}
-        cols={state.gridCols}
+        className={classes.gridList}
+        cols={grid.gridCols}
         cellHeight="auto"
       >
-        {state.configurations.map((config) => {
+        {configurations.map((config) => {
           return (
             <ConfigurationCard
               width={grid.cellWidth}
               config={config}
               user={user}
-              setState={setState}
+              setPreferences={setPreferences}
               loadAllConfigurations={loadAllConfigurations}
               openSearch={openSearchUsers}
               preferences={preferences}
-              state={state}
+              classes={classes}
+              setConfigurations={setConfigurations}
             />
           )
         })}
       </GridList>
-      <div
-        style={{
-          right: 4,
-          bottom: 4,
-          position: 'fixed',
-        }}
-      >
+      <div className={classes.uploadActions}>
         <form>
           <input
             accept=".json"
@@ -441,7 +398,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
             id="raised-button-file"
             multiple
             type="file"
-            style={{ display: 'none' }}
+            className={classes.hiddenInput}
             onChange={handleChangeFile}
           />
           <label htmlFor="raised-button-file">
@@ -471,7 +428,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         </Button>
       </div>
       <Dialog
-        open={state.searchUsers}
+        open={sharedWithState.searchUsers}
         onClose={closeSearchUsers}
         fullScreen={true}
       >
@@ -482,21 +439,11 @@ const ConfigurationsList = ({ user, classes, theme }) => {
             backgroundColor: 'rgba(0,0,0,0.7)',
           }}
         >
-          <Typography
-            variant="title"
-            style={{
-              color: '#ffffff',
-            }}
-          >
+          <Typography variant="title" className={classes.dialogText}>
             Share your configuration
           </Typography>
         </DialogTitle>
-        <DialogContent
-          style={{
-            padding: '24px',
-            overflowY: 'visible',
-          }}
-        >
+        <DialogContent className={classes.dialogContent}>
           <Select
             classes={classes}
             styles={selectStyles}
@@ -506,9 +453,9 @@ const ConfigurationsList = ({ user, classes, theme }) => {
                 shrink: true,
               },
             }}
-            options={state.friends}
+            options={sharedWithState.friends}
             components={components}
-            value={state.shared}
+            value={sharedWithState.shared}
             onChange={handleChange('shared')}
             placeholder="Shared with"
             isMulti
@@ -517,13 +464,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         <DialogActions>{actions}</DialogActions>
       </Dialog>
       <Snackbar
-        open={state.snackTime}
+        open={snackBars.snackTime}
         message="Your configuration has been updated."
         autoHideDuration={2000}
         onRequestClose={handleCrumbs}
       />
       <Snackbar
-        open={state.uploadSnack}
+        open={snackBars.uploadSnack}
         message={user.message}
         autoHideDuration={2000}
         onRequestClose={handleCrumbs}
