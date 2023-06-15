@@ -16,7 +16,8 @@ export const configStyles = (theme) => ({
     flexGrow: 1,
     borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
     backgroundColor: colors.configWhite,
-    padding: theme.spacing.unit * 3,
+    paddingTop: theme.spacing.unit * 10,
+    paddingLeft: theme.spacing.unit * 3,
   },
   input: {
     display: 'flex',

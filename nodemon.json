@@ -1,0 +1,4 @@
+{
+  "watch": ["server/"],
+  "exclude": ["node_modules", "views"]
+}

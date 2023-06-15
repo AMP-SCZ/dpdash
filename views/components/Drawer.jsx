@@ -219,8 +219,5 @@ class DrawerComponent extends Component {
     )
   }
 }
-const mapStateToProps = (state) => ({
-  user: state.user,
-})
 
-export default compose(connect(mapStateToProps))(DrawerComponent)
+export default DrawerComponent

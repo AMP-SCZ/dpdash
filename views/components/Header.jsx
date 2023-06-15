@@ -1,43 +1,14 @@
-import React from 'react';
-import { compose } from 'redux';
-import { withStyles } from '@material-ui/core/styles';
-import openNewWindow from '../fe-utils/windowUtil';
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import ColorLens from '@material-ui/icons/ColorLens';
-import Person from '@material-ui/icons/Person';
-import basePathConfig from '../../server/configs/basePathConfig';
+import React from 'react'
+import openNewWindow from '../fe-utils/windowUtil'
+import AppBar from '@material-ui/core/AppBar'
+import IconButton from '@material-ui/core/IconButton'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import ColorLens from '@material-ui/icons/ColorLens'
+import Person from '@material-ui/icons/Person'
+import basePathConfig from '../../server/configs/basePathConfig'
 
-const basePath = basePathConfig || '';
-
-const drawerWidth = 200;
-
-const styles = theme => ({
-  appBar: {
-    position: 'absolute',
-    marginLeft: drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-    borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
-    backgroundColor: 'white',
-    color: 'rgba(0, 0, 0, 0.54)',
-    boxShadow: 'none',
-  },
-  navIconHide: {
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-  title: {
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: '18px',
-    letterSpacing: '1.25px',
-    flexGrow: 1
-  }
-});
+const basePath = basePathConfig || ''
 
 const Header = ({ classes, handleDrawerToggle, isAccountPage, title }) => (
   <AppBar className={classes.appBar}>
@@ -67,8 +38,4 @@ const Header = ({ classes, handleDrawerToggle, isAccountPage, title }) => (
   </AppBar>
 )
 
-
-export default compose(
-  withStyles(styles, { withTheme: true })
-)(Header);
-  
+export default Header

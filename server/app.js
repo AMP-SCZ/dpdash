@@ -38,16 +38,16 @@ const csrfProtection = csrf({ cookie: true })
 const parseForm = bodyParser.urlencoded({ limit: '50mb', extended: true })
 const app = express()
 
-if (process.env.NODE_ENV === 'development') {
-  const liveReloadServer = livereload.createServer()
-  liveReloadServer.watch(path.join(__dirname, '../public'))
-  liveReloadServer.server.once('connection', () => {
-    setTimeout(() => {
-      liveReloadServer.refresh('/')
-    }, 100)
-  })
-  app.use(connectLiveReload())
-}
+// if (process.env.NODE_ENV === 'development') {
+//   const liveReloadServer = livereload.createServer()
+//   liveReloadServer.watch(path.join(__dirname, '../app_build'))
+//   liveReloadServer.server.once('connection', () => {
+//     setTimeout(() => {
+//       liveReloadServer.refresh('/')
+//     }, 100)
+//   })
+//   app.use(connectLiveReload())
+// }
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.png')))
 
@@ -90,7 +90,7 @@ logger.stream = {
 app.use(morgan('combined', { stream: logger.stream }))
 
 /** parsers setup */
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(express.static('app_build'))
 app.use(cookieParser(config.session.secret))
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
@@ -103,7 +103,6 @@ app.post('/process', parseForm, csrfProtection, function (req, res) {
   res.send('Processing data ...')
 })
 
-app.set('view engine', 'html')
 app.use(methodOverride())
 
 /* database setup */
@@ -252,6 +251,11 @@ app.use(function (err, req, res, next) {
       errMessage = 'Internal Server Error'
       break
   }
+})
+app.get('/*', async (req, res) => {
+  return res.sendFile(
+    path.join(__dirname, '..', 'my-app', 'app_build', 'index.html')
+  )
 })
 
 export default app
