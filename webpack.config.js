@@ -8,29 +8,11 @@ const outputDirectory = 'app_build'
 
 module.exports = {
   target: 'web',
-  mode: 'development',
-  // entry: {
-  //   study: './views/Study.render.react.js',
-  //   admin: './views/Admin.render.react.js',
-  //   main: './views/Main.render.react.js',
-  //   login: './views/Login.render.react.js',
-  //   register: './views/Register.render.react.js',
-  //   reset: './views/Resetpw.render.react.js',
-  //   account: './views/Account.render.react.js',
-  //   editConfig: './views/EditConfig.render.react.js',
-  //   config: './views/Config.render.react.js',
-  //   deepdive: './views/DeepDive.render.react.js',
-  //   graph: './views/Graph.render.react.js',
-  //   reportsList: './views/ReportsList.render.react.js',
-  //   editReport: './views/EditReport.render.react.js',
-  //   report: './views/Report.render.react.js',
-  //   chart: './views/Chart.render.react.js',
-  //   newChart: './views/NewChart.render.react.js',
-  //   studyDetails: './views/StudyDetails.render.react.js',
-  //   viewChart: './views/ViewChart.render.react.js',
-  //   editChart: './views/EditChart.render.react.js',
-  // },
+  mode: process.env.NODE_ENV || 'production',
   entry: ['babel-polyfill', './views/index.js'],
+  watchOptions: {
+    ignored: ['**/node_modules', '**/server'],
+  },
   module: {
     rules: [
       {
@@ -84,16 +66,13 @@ module.exports = {
     },
     extensions: ['*', '.js', '.jsx'],
   },
-  devServer: {
-    port: 3000,
-    open: true,
-    historyApiFallback: true,
-    proxy: {
-      '/api': 'http://localhost:9000',
-    },
-    hot: true,
-  },
+
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',

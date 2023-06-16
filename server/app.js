@@ -21,8 +21,9 @@ import connectLiveReload from 'connect-livereload'
 import { getMongoURI } from './utils/mongoUtil'
 
 import adminRouter from './routes/admin'
-import configurationsRouter from './routes/configurations'
+import authRouter from './routes/auth'
 import chartsRouter from './routes/charts'
+import configurationsRouter from './routes/configurations'
 import indexRouter from './routes/index'
 import usersRouter from './routes/users'
 
@@ -38,16 +39,16 @@ const csrfProtection = csrf({ cookie: true })
 const parseForm = bodyParser.urlencoded({ limit: '50mb', extended: true })
 const app = express()
 
-// if (process.env.NODE_ENV === 'development') {
-//   const liveReloadServer = livereload.createServer()
-//   liveReloadServer.watch(path.join(__dirname, '../app_build'))
-//   liveReloadServer.server.once('connection', () => {
-//     setTimeout(() => {
-//       liveReloadServer.refresh('/')
-//     }, 100)
-//   })
-//   app.use(connectLiveReload())
-// }
+if (process.env.NODE_ENV === 'development') {
+  const liveReloadServer = livereload.createServer()
+  liveReloadServer.watch(path.join(__dirname, '../app_build'))
+  liveReloadServer.server.once('connection', () => {
+    setTimeout(() => {
+      liveReloadServer.refresh('/')
+    }, 100)
+  })
+  app.use(connectLiveReload())
+}
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.png')))
 
@@ -196,10 +197,11 @@ passport.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use(`${basePath}/`, indexRouter)
-app.use(`${basePath}/`, chartsRouter)
 app.use(`${basePath}/`, adminRouter)
+app.use(`${basePath}/`, authRouter)
 app.use(`${basePath}/`, configurationsRouter)
+app.use(`${basePath}/`, chartsRouter)
+app.use(`${basePath}/`, indexRouter)
 app.use(`${basePath}/`, usersRouter)
 
 app.use(

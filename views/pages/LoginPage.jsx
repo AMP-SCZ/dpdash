@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
 import { apiRoutes, routes } from '../routes/routes'
+import { BASE_REQUEST_OPTIONS } from '../../constants'
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -56,6 +57,21 @@ class LoginPage extends React.Component {
   handleClickShowPassword = () => {
     this.setState((state) => ({ showPassword: !this.state.showPassword }))
   }
+
+  handleLogin = async () => {
+    console.log('WHAT IS THIS', this.state)
+    const res = await fetch(apiRoutes.auth.login, {
+      ...BASE_REQUEST_OPTIONS,
+      method: 'POST',
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+      }),
+    })
+
+    console.log(res.status)
+    return await res.json()
+  }
   render() {
     return (
       <div
@@ -69,7 +85,7 @@ class LoginPage extends React.Component {
           style={{
             display: 'flex',
             maxWidth: 600,
-            border: 'solid red 1px',
+            border: 'solid blue 1px',
           }}
         >
           <div
@@ -114,52 +130,52 @@ class LoginPage extends React.Component {
                   paddingRight: '12px',
                 }}
               >
-                <form
+                {/* <form
                   action={apiRoutes.auth.login}
                   method="post"
                   id="loginForm"
-                >
-                  <TextField
-                    id="username"
-                    name="username"
-                    type="text"
-                    label="Username"
-                    value={this.state.username}
-                    onChange={this.handleChange('username')}
-                    autoFocus={true}
-                    required={true}
-                    fullWidth={true}
-                    margin="normal"
-                  />
-                  <br />
-                  <TextField
-                    id="password"
-                    name="password"
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    value={this.state.password}
-                    onChange={this.handleChange('password')}
-                    label="Password"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="Toggle password visibility"
-                            onClick={this.handleClickShowPassword}
-                            onMouseDown={this.handleMouseDownPassword}
-                          >
-                            {this.state.showPassword ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    required={true}
-                    margin="normal"
-                  />
-                </form>
+                > */}
+                <TextField
+                  id="username"
+                  name="username"
+                  type="text"
+                  label="Username"
+                  value={this.state.username}
+                  onChange={this.handleChange('username')}
+                  autoFocus={true}
+                  required={true}
+                  fullWidth={true}
+                  margin="normal"
+                />
+                <br />
+                <TextField
+                  id="password"
+                  name="password"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  value={this.state.password}
+                  onChange={this.handleChange('password')}
+                  label="Password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={this.handleClickShowPassword}
+                          onMouseDown={this.handleMouseDownPassword}
+                        >
+                          {this.state.showPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  required={true}
+                  margin="normal"
+                />
+                {/* </form> */}
                 <br />
                 <Typography
                   component="a"
@@ -187,6 +203,7 @@ class LoginPage extends React.Component {
                     color: '#5790bd',
                   }}
                   fullWidth={true}
+                  onClick={() => this.handleLogin()}
                 >
                   Log In
                 </Button>

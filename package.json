@@ -6,8 +6,7 @@
     "build": "webpack",
     "build:watch": "webpack --watch",
     "transpile": "npx babel ./server --out-dir dist",
-    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "dev:new": "concurrently \"npm run server\" \"npm run client\"",
+    "dev:new": "NODE_ENV=development concurrently \"npm run server\" \"npm run build:watch\"",
     "start": "NODE_ENV=production ./node_modules/pm2/bin/pm2 start dist/bin/www.js",
     "server": "nodemon --exec babel-node server/bin/www.js",
     "dev": "NODE_ENV=development npm-run-all --parallel serve:watch build:watch",
@@ -113,7 +112,6 @@
     "npm-run-all": "^4.1.5",
     "webpack": "^5.35.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
     "webpack-node-externals": "^3.0.0"
   }
 }

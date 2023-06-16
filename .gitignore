@@ -25,3 +25,5 @@ server/configs/*
 docs/build
 public/js
 dist
+
+app_build

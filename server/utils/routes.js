@@ -23,4 +23,7 @@ export const v1Routes = {
   users: {
     show: userRoot,
   },
+  auth: {
+    login: `${v1Root}/login`,
+  },
 }
