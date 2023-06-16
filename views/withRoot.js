@@ -4,7 +4,6 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 function withRoot(Component) {
   function WithRoot(props) {
-    console.log(props, 'WHAT IS THIS')
     return (
       <MuiThemeProvider>
         <CssBaseline />

@@ -8,13 +8,13 @@ import AppLayoutTwo from './layouts/AppLayout2'
 import ConfigPage from './pages/ConfigPage'
 import { UserModel } from './models'
 import { styles } from './styles'
+import LoginPage from './pages/LoginPage'
 
 const App = (props) => {
-  console.log(props, 'THE PROPS')
   const [user, setUser] = useState(null)
+
   const fetchUser = async () => {
     const { data } = await UserModel.show('dpdash')
-    console.log(data, 'WHAT IS THIS')
     setUser(data)
   }
   useEffect(() => {
@@ -22,25 +22,14 @@ const App = (props) => {
   }, [])
   if (!user) return <div>Loading...</div>
   return (
-    <AppLayoutTwo
-      className={props.classes.content}
-      classes={props.classes}
-      user={user}
-      theme={props.theme}
-    >
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ConfigPage
-              user={user}
-              classes={props.classes}
-              theme={props.theme}
-            />
-          }
-        />
-      </Routes>
-    </AppLayoutTwo>
+    <Routes>
+      <Route path="/" element={<LoginPage classes={props.classes} />} />
+      {/* <Route path="/config">
+        <AppLayoutTwo classes={props.classes} user={user} theme={props.theme}>
+          <ConfigPage user={user} classes={props.classes} theme={props.theme} />
+        </AppLayoutTwo>
+      </Route> */}
+    </Routes>
   )
 }
 

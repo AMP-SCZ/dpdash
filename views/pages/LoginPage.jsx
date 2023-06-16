@@ -7,16 +7,9 @@ import TextField from '@material-ui/core/TextField'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import IconButton from '@material-ui/core/IconButton'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import FormControl from '@material-ui/core/FormControl'
 import Button from '@material-ui/core/Button'
-import { connect } from 'react-redux'
-import Snackbar from '@material-ui/core/Snackbar'
-import basePathConfig from '../server/configs/basePathConfig'
-
-const basePath = basePathConfig || ''
+import { apiRoutes, routes } from '../routes/routes'
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -65,11 +58,18 @@ class LoginPage extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignContent: 'center',
+        }}
+      >
         <Card
           style={{
             display: 'flex',
             maxWidth: 600,
+            border: 'solid red 1px',
           }}
         >
           <div
@@ -114,7 +114,11 @@ class LoginPage extends React.Component {
                   paddingRight: '12px',
                 }}
               >
-                <form action={`${basePath}/login`} method="post" id="loginForm">
+                <form
+                  action={apiRoutes.auth.login}
+                  method="post"
+                  id="loginForm"
+                >
                   <TextField
                     id="username"
                     name="username"
@@ -159,7 +163,7 @@ class LoginPage extends React.Component {
                 <br />
                 <Typography
                   component="a"
-                  href={`${basePath}/resetpw`}
+                  href={routes.resetPassword}
                   style={{
                     textAlign: 'right',
                     width: '100%',
@@ -189,7 +193,7 @@ class LoginPage extends React.Component {
                 <br />
                 <Typography
                   component="a"
-                  href={`${basePath}/signup`}
+                  href={routes.signUp}
                   style={{
                     textAlign: 'center',
                     width: '100%',
@@ -218,7 +222,7 @@ class LoginPage extends React.Component {
               style={{
                 width: '317px',
                 margin: '50px',
-                backgroundImage: `url("${basePath}/img/dpdash.png")`,
+                backgroundImage: `url("${routes.basePath}/img/dpdash.png")`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center center',
@@ -227,12 +231,6 @@ class LoginPage extends React.Component {
             />
           )}
         </Card>
-        <Snackbar
-          open={this.state.open}
-          message={this.props.user.message}
-          autoHideDuration={4000}
-          onClose={this.handleRequestClose}
-        />
       </div>
     )
   }

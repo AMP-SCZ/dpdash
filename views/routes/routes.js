@@ -31,6 +31,8 @@ export const routes = {
   invalidConfiguration: `${basePath}/u/configure?u=invalid`,
   configurationError: `${basePath}/u/configure?u=error`,
   createConfiguration: `${basePath}/u/configure?s=add`,
+  resetPassword: `${basePath}/resetpw`,
+  signUp: `${basePath}/signup`,
 }
 
 export const apiRoutes = {
@@ -56,6 +58,9 @@ export const apiRoutes = {
   subject: `${apiPath}/subjects`,
   shareChart: (chart_id) => `${apiPath}/charts/${chart_id}/share`,
   updateUser: (uid) => `${apiPath}/admin/users/${uid}`,
+  auth: {
+    login: `${apiPath}/login`,
+  },
 }
 
 export const defaultApiOptions = {

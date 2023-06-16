@@ -8,7 +8,7 @@ const outputDirectory = 'app_build'
 
 module.exports = {
   target: 'web',
-  mode: process.env.NODE_ENV || 'production',
+  mode: 'development',
   // entry: {
   //   study: './views/Study.render.react.js',
   //   admin: './views/Admin.render.react.js',
