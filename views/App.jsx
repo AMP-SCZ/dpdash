@@ -17,12 +17,14 @@ const App = (props) => {
     <AuthContext.Provider value={user}>
       <Routes>
         <Route path="/" element={<LoginPage setUser={setUser} />} />
-        <Route element={<AppLayoutTwo />}>
+        <Route
+          element={<AppLayoutTwo classes={props.classes} theme={props.theme} />}
+        >
           <Route
             path="config"
             element={
               // <RequireAuth>
-              <ConfigPage />
+              <ConfigPage classes={props.classes} theme={props.theme} />
               // </RequireAuth>
             }
           />

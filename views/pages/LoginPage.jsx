@@ -72,7 +72,6 @@ const LoginPage = (props) => {
       username: state.username,
       password: state.password,
     }
-    console.log(state, 'THIS SHOULD BE THE STATE')
     const { status, data } = await AuthModel.findOne(credentials)
     if (status === 200) {
       props.setUser(data)

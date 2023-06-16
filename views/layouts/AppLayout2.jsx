@@ -9,7 +9,7 @@ import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 import { AuthContext } from '../contexts/AuthContext'
 
-const AppLayoutTwo = ({ classes, title, theme }) => {
+const AppLayoutTwo = ({ classes, theme }) => {
   const user = useContext(AuthContext)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({
@@ -32,7 +32,7 @@ const AppLayoutTwo = ({ classes, title, theme }) => {
     <div className={classes.root}>
       <Header
         handleDrawerToggle={toggleDrawer}
-        title={title}
+        title={'Some Title'}
         isAccountPage={false}
         classes={classes}
       />
