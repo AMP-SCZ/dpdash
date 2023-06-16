@@ -26,7 +26,8 @@ export default (req, res, next, user) => {
     try {
       const { appDb } = req.app.locals
       const uid = user.uid
-      const config = await ConfigModel.findOne(appDb, uid)
+      const configQuery = { owner: uid }
+      const config = await ConfigModel.findOne(appDb, configQuery)
 
       if (!config) {
         const configAttributes = { owner: uid, readers: [uid] }

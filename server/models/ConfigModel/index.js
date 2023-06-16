@@ -28,8 +28,8 @@ const ConfigModel = {
 
     return await db.collection(collections.configs).insertOne(config)
   },
-  findOne: async (db, userId) =>
-    await db.collection(collections.configs).findOne({ owner: userId }),
+  findOne: async (db, configQuery) =>
+    await db.collection(collections.configs).findOne(configQuery),
   withDefaults: (overrides = {}) => ({
     config: defaultUserConfig,
     name: 'default',

@@ -7,7 +7,9 @@ const ConfigurationsController = {
       const { insertedId } = await ConfigModel.save(appDb, req.body)
 
       if (insertedId) {
-        const newConfiguration = await ConfigModel.findOne(appDb, insertedId)
+        const query = { _id: insertedId }
+        const newConfiguration = await ConfigModel.findOne(appDb, query)
+
         return res.status(200).json({ data: newConfiguration })
       }
 
@@ -22,8 +24,7 @@ const ConfigurationsController = {
       const { config_id } = req.params
       const { deletedCount } = await ConfigModel.destroy(appDb, config_id)
 
-      if (deletedCount >= 1) return res.status(200).end()
-      else return res.status(404).end()
+      return deletedCount >= 1 ? res.status(200).end() : res.status(404).end()
     } catch (error) {
       res.status(400).json({ error: error.message })
     }
@@ -34,9 +35,9 @@ const ConfigurationsController = {
       const { config_id } = req.params
       const { value } = await ConfigModel.update(appDb, config_id, req.body)
 
-      if (value) {
-        return res.status(200).json({ data: value })
-      } else return res.status(400).end()
+      return value
+        ? res.status(200).json({ data: value })
+        : res.status(400).end()
     } catch (error) {
       return res.status(500).json({ error: error.message })
     }

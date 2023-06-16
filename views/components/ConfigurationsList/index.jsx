@@ -226,13 +226,14 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       })
     }
   }
-  const fetchPreferences = async (uid) => {
-    const { data } = await UserModel.show(uid)
+  const fetchPreferences = async (userId) => {
+    const { data } = await UserModel.findOne(userId)
     setPreferences(data.preferences)
   }
 
-  const loadAllConfigurations = async (uid) => {
-    const { data } = await UserConfigurationsModel.all(uid)
+  const loadAllConfigurations = async (userId) => {
+    const { data } = await UserConfigurationsModel.all(userId)
+
     setConfigurations(data)
   }
 
@@ -287,32 +288,21 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       _id,
       configAttributes
     )
-    if (response.status === 200) {
-      setConfigurations(
-        configurations.map((config) => {
-          if (config._id === _id) {
-            return {
-              ...config,
-              readers: configAttributes.readers,
-            }
-          } else return config
-        })
-      )
-    }
+    if (response.status === 200) loadAllConfigurations(uid)
+
     closeSearchUsers()
   }
 
   const handleChange = (name) => (value) => {
-    const names = value.map((o) => {
-      return o.value
-    })
-    if (names.indexOf(uid) === -1) {
-      throw new Error('Unable to delete owner.')
-    }
+    const names = value.map((o) => o.value)
+
+    if (names.indexOf(uid) === -1) throw new Error('Unable to delete owner.')
+
     setSharedWith((prevState) => {
       return { ...prevState, [name]: value }
     })
   }
+
   const handleChangeFile = async (e) => {
     e.preventDefault()
     const file = e.target.files ? e.target.files[0] : ''
@@ -365,6 +355,51 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     }),
   }
 
+  const copyConfiguration = async (configuration) => {
+    const { _id, ...configAttributes } = configuration
+    const newConfig = {
+      ...configAttributes,
+      owner: uid,
+      readers: [uid],
+      created: new Date().toUTCString(),
+    }
+    const res = await UserConfigurationsModel.create(uid, newConfig)
+
+    if (res.data) loadAllConfigurations(uid)
+  }
+
+  const removeConfiguration = async (configId) => {
+    const res = await UserConfigurationsModel.destroy(uid, configId)
+    if (res.status === 200) {
+      loadAllConfigurations(uid)
+
+      if (preferences.config === configId) updateUserPreferences(configId)
+    }
+  }
+
+  const updateConfiguration = async (configId, configAttributes) => {
+    const res = await UserConfigurationsModel.update(
+      uid,
+      configId,
+      configAttributes
+    )
+    if (preferences.config === configId) updateUserPreferences(configId)
+    if (res.data) loadAllConfigurations(uid)
+  }
+
+  const updateUserPreferences = async (configId) => {
+    const userAttributes = {
+      preferences: {
+        ...preferences,
+        config: preferences.config === configId ? '' : configId,
+      },
+    }
+
+    await UserModel.update(uid, userAttributes)
+
+    setPreferences(userAttributes.preferences)
+  }
+
   if (configurations?.length <= 0) return <div>Loading...</div>
 
   return (
@@ -377,15 +412,16 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         {configurations.map((config) => {
           return (
             <ConfigurationCard
-              width={grid.cellWidth}
-              config={config}
-              user={user}
-              setPreferences={setPreferences}
-              loadAllConfigurations={loadAllConfigurations}
-              openSearch={openSearchUsers}
-              preferences={preferences}
               classes={classes}
-              setConfigurations={setConfigurations}
+              config={config}
+              openSearch={openSearchUsers}
+              onUpdateConfig={updateConfiguration}
+              onCopyConfig={copyConfiguration}
+              onRemoveConfig={removeConfiguration}
+              onUpdatePreferences={updateUserPreferences}
+              preferences={preferences}
+              user={user}
+              width={grid.cellWidth}
             />
           )
         })}

@@ -15,19 +15,19 @@ import FullView from '@material-ui/icons/AspectRatio'
 import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 import openNewWindow from '../../fe-utils/windowUtil'
-import { UserModel, UserConfigurationsModel } from '../../models'
 import { routes } from '../../routes/routes'
 import { colors } from '../../../constants'
 
 const ConfigurationCard = ({
   classes,
   openSearch,
-  loadAllConfigurations,
   user,
   config,
   preferences,
-  setPreferences,
-  setConfigurations,
+  onCopyConfig,
+  onUpdateConfig,
+  onRemoveConfig,
+  onUpdatePreferences,
   width,
 }) => {
   const { uid } = user
@@ -38,64 +38,16 @@ const ConfigurationCard = ({
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
 
-  const copyConfig = async (configuration) => {
-    const { _id, ...configAttributes } = configuration
-    const newConfig = {
-      ...configAttributes,
-      owner: uid,
-      readers: [uid],
-      created: new Date().toUTCString(),
-    }
-    const { status } = await UserConfigurationsModel.create(uid, newConfig)
-
-    if (status === 200) loadAllConfigurations(uid)
-  }
-
-  const removeConfig = async (configId) => {
-    const res = await UserConfigurationsModel.destroy(uid, configId)
-    if (res.status === 200) {
-      setConfigurations((configurations) =>
-        configurations.filter(({ _id }) => _id !== configId)
-      )
-
-      if (checked) updateUserPreferences(configId)
-    }
-  }
-
-  const updateConfiguration = async (configId, configAttributes) => {
-    const { status } = await UserConfigurationsModel.update(
-      uid,
-      configId,
-      configAttributes
-    )
-
-    switch (true) {
-      case status === 200: {
-        loadAllConfigurations(uid)
-        break
+  const onRemoveOrUpdate = () => {
+    if (ownsConfig) {
+      onRemoveConfig(_id)
+    } else {
+      const configAttributes = {
+        readers: readers.filter((reader) => reader !== uid),
       }
-      case checked: {
-        updateUserPreferences(configId)
-        break
-      }
-      default:
-        break
+      onUpdateConfig(_id, configAttributes)
     }
   }
-
-  const updateUserPreferences = async (configId) => {
-    const userAttributes = {
-      preferences: {
-        ...preferences,
-        config: preferences.config === configId ? '' : configId,
-      },
-    }
-
-    await UserModel.update(uid, userAttributes)
-
-    setPreferences(userAttributes.preferences)
-  }
-
   return (
     <Card style={{ margin: '3px', width: `${width}px` }}>
       <CardHeader
@@ -103,18 +55,7 @@ const ConfigurationCard = ({
         subheader={updated}
         avatar={<ConfigCardAvatar config={config} currentUser={user} />}
         action={
-          <IconButton
-            onClick={() => {
-              if (ownsConfig) {
-                removeConfig(_id)
-              } else {
-                const configAttributes = {
-                  readers: readers.filter((reader) => reader !== uid),
-                }
-                updateConfiguration(_id, configAttributes)
-              }
-            }}
-          >
+          <IconButton onClick={() => onRemoveOrUpdate()}>
             <Clear color={colors.gray} />
           </IconButton>
         }
@@ -134,7 +75,7 @@ const ConfigurationCard = ({
             <Switch
               labelStyle={classes.textAndIcon}
               checked={checked}
-              onChange={() => updateUserPreferences(_id)}
+              onChange={() => onUpdatePreferences(_id)}
             />
           }
           label="Default"
@@ -173,7 +114,7 @@ const ConfigurationCard = ({
               iconStyle={classes.textAndIcon}
               tooltipPosition="top-center"
               tooltip="Duplicate"
-              onClick={() => copyConfig(config)}
+              onClick={() => onCopyConfig(config)}
             >
               <Copy />
             </IconButton>
