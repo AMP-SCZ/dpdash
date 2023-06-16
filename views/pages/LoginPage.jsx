@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -9,248 +10,252 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
-import { apiRoutes, routes } from '../routes/routes'
-import { BASE_REQUEST_OPTIONS } from '../../constants'
+import { routes } from '../routes/routes'
+import { AuthModel } from '../models'
 
-class LoginPage extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      message: '',
-      username: '',
-      password: '',
-      showPassword: false,
-      open: false,
-    }
-  }
-  componentDidUpdate() {}
+const LoginPage = (props) => {
+  const [state, setState] = useState({
+    message: '',
+    username: '',
+    password: '',
+    showPassword: false,
+    open: false,
+  })
 
-  handleClick = () => {
-    this.setState({
-      open: true,
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        open: true,
+      }
     })
   }
 
-  handleRequestClose = () => {
-    this.setState({
-      open: false,
+  const handleRequestClose = () => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        open: false,
+      }
     })
   }
-  componentWillMount() {
-    /* Resize listener register */
-    window.addEventListener('resize', this.handleResize)
-  }
-  handleResize = (event) => {
-    this.setState({
-      windowWidth: window.innerWidth,
+  // componentWillMount() {
+  //   /* Resize listener register */
+  //   window.addEventListener('resize', handleResize)
+  // }
+  // handleResize = (event) => {
+  //   setState({
+  //     windowWidth: window.innerWidth,
+  //   })
+  // }
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', handleResize)
+  // }
+  const handleChange = (prop) => (event) => {
+    setState((prevState) => {
+      return { ...prevState, [prop]: event.target.value }
     })
   }
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-  }
-  handleChange = (prop) => (event) => {
-    this.setState({ [prop]: event.target.value })
-  }
-  handleMouseDownPassword = (event) => {
+  const handleMouseDownPassword = (event) => {
     event.preventDefault()
   }
-  handleClickShowPassword = () => {
-    this.setState((state) => ({ showPassword: !this.state.showPassword }))
-  }
-
-  handleLogin = async () => {
-    console.log('WHAT IS THIS', this.state)
-    const res = await fetch(apiRoutes.auth.login, {
-      ...BASE_REQUEST_OPTIONS,
-      method: 'POST',
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
+  const handleClickShowPassword = () => {
+    setState((prevState) => {
+      return { ...prevState, showPassword: !state.showPassword }
     })
-
-    console.log(res.status)
-    return await res.json()
   }
-  render() {
-    return (
-      <div
+
+  const handleLogin = async () => {
+    const credentials = {
+      username: state.username,
+      password: state.password,
+    }
+    console.log(state, 'THIS SHOULD BE THE STATE')
+    const { status, data } = await AuthModel.findOne(credentials)
+    if (status === 200) {
+      props.setUser(data)
+      navigate('/config')
+    }
+  }
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+      }}
+    >
+      <Card
         style={{
           display: 'flex',
-          justifyContent: 'center',
-          alignContent: 'center',
+          maxWidth: 600,
+          border: 'solid blue 1px',
         }}
       >
-        <Card
+        <div
           style={{
             display: 'flex',
-            maxWidth: 600,
-            border: 'solid blue 1px',
+            flexDirection: 'column',
           }}
         >
+          <CardContent
+            style={{
+              flex: '1 0 auto',
+            }}
+          >
+            <Typography
+              variant="title"
+              style={{
+                marginTop: '8px',
+                marginBottom: '8px',
+              }}
+            >
+              Welcome to DPdash!
+            </Typography>
+            <Typography variant="subheading" color="textSecondary">
+              Please log in to continue.
+            </Typography>
+          </CardContent>
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column',
+              alignItems: 'center',
+              paddingTop: '4px',
+              paddingLeft: '12px',
+              paddingBottom: '4px',
+              paddingRight: '12px',
             }}
           >
-            <CardContent
-              style={{
-                flex: '1 0 auto',
-              }}
-            >
-              <Typography
-                variant="title"
-                style={{
-                  marginTop: '8px',
-                  marginBottom: '8px',
-                }}
-              >
-                Welcome to DPdash!
-              </Typography>
-              <Typography variant="subheading" color="textSecondary">
-                Please log in to continue.
-              </Typography>
-            </CardContent>
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
                 paddingTop: '4px',
                 paddingLeft: '12px',
-                paddingBottom: '4px',
+                paddingBottom: '12px',
                 paddingRight: '12px',
               }}
             >
-              <div
-                style={{
-                  paddingTop: '4px',
-                  paddingLeft: '12px',
-                  paddingBottom: '12px',
-                  paddingRight: '12px',
-                }}
-              >
-                {/* <form
+              {/* <form
                   action={apiRoutes.auth.login}
                   method="post"
                   id="loginForm"
                 > */}
-                <TextField
-                  id="username"
-                  name="username"
-                  type="text"
-                  label="Username"
-                  value={this.state.username}
-                  onChange={this.handleChange('username')}
-                  autoFocus={true}
-                  required={true}
-                  fullWidth={true}
-                  margin="normal"
-                />
-                <br />
-                <TextField
-                  id="password"
-                  name="password"
-                  type={this.state.showPassword ? 'text' : 'password'}
-                  value={this.state.password}
-                  onChange={this.handleChange('password')}
-                  label="Password"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="Toggle password visibility"
-                          onClick={this.handleClickShowPassword}
-                          onMouseDown={this.handleMouseDownPassword}
-                        >
-                          {this.state.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  required={true}
-                  margin="normal"
-                />
-                {/* </form> */}
-                <br />
-                <Typography
-                  component="a"
-                  href={routes.resetPassword}
+              <TextField
+                id="username"
+                name="username"
+                type="text"
+                label="Username"
+                value={state.username}
+                onChange={handleChange('username')}
+                autoFocus={true}
+                required={true}
+                fullWidth={true}
+                margin="normal"
+              />
+              <br />
+              <TextField
+                id="password"
+                name="password"
+                type={state.showPassword ? 'text' : 'password'}
+                value={state.password}
+                onChange={handleChange('password')}
+                label="Password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {state.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                required={true}
+                margin="normal"
+              />
+              {/* </form> */}
+              <br />
+              <Typography
+                component="a"
+                href={routes.resetPassword}
+                style={{
+                  textAlign: 'right',
+                  width: '100%',
+                  marginTop: '12px',
+                  marginBottom: '12px',
+                  color: '#5790bd',
+                  textDecoration: 'none',
+                }}
+              >
+                Forgot your password?
+              </Typography>
+              <br />
+              <Button
+                variant="outlined"
+                color="primary"
+                type="submit"
+                form="loginForm"
+                style={{
+                  float: 'right',
+                  marginTop: '12px',
+                  color: '#5790bd',
+                }}
+                fullWidth={true}
+                onClick={() => handleLogin()}
+              >
+                Log In
+              </Button>
+              <br />
+              <Typography
+                component="a"
+                href={routes.signUp}
+                style={{
+                  textAlign: 'center',
+                  width: '100%',
+                  marginTop: '60px',
+                  marginBottom: '12px',
+                  textDecoration: 'none',
+                  fontWeight: 'normal',
+                }}
+              >
+                <span>Don't have an account?</span>
+                &nbsp;
+                <span
                   style={{
-                    textAlign: 'right',
-                    width: '100%',
-                    marginTop: '12px',
-                    marginBottom: '12px',
+                    fontWeight: '500',
                     color: '#5790bd',
-                    textDecoration: 'none',
                   }}
                 >
-                  Forgot your password?
-                </Typography>
-                <br />
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  type="submit"
-                  form="loginForm"
-                  style={{
-                    float: 'right',
-                    marginTop: '12px',
-                    color: '#5790bd',
-                  }}
-                  fullWidth={true}
-                  onClick={() => this.handleLogin()}
-                >
-                  Log In
-                </Button>
-                <br />
-                <Typography
-                  component="a"
-                  href={routes.signUp}
-                  style={{
-                    textAlign: 'center',
-                    width: '100%',
-                    marginTop: '60px',
-                    marginBottom: '12px',
-                    textDecoration: 'none',
-                    fontWeight: 'normal',
-                  }}
-                >
-                  <span>Don't have an account?</span>
-                  &nbsp;
-                  <span
-                    style={{
-                      fontWeight: '500',
-                      color: '#5790bd',
-                    }}
-                  >
-                    Sign up
-                  </span>
-                </Typography>
-              </div>
+                  Sign up
+                </span>
+              </Typography>
             </div>
           </div>
-          {this.state.windowWidth < 620 ? null : (
-            <CardMedia
-              style={{
-                width: '317px',
-                margin: '50px',
-                backgroundImage: `url("${routes.basePath}/img/dpdash.png")`,
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center center',
-              }}
-              title="DPdash"
-            />
-          )}
-        </Card>
-      </div>
-    )
-  }
+        </div>
+        {state.windowWidth < 620 ? null : (
+          <CardMedia
+            style={{
+              width: '317px',
+              margin: '50px',
+              backgroundImage: `url("${routes.basePath}/img/dpdash.png")`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center center',
+            }}
+            title="DPdash"
+          />
+        )}
+      </Card>
+    </div>
+  )
 }
 
 export default LoginPage

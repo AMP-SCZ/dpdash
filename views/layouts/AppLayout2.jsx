@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { Outlet } from 'react-router-dom'
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -6,8 +7,10 @@ import Sidebar from '../components/Sidebar'
 import getAvatar from '../fe-utils/avatarUtil'
 import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
+import { AuthContext } from '../contexts/AuthContext'
 
-const AppLayoutTwo = ({ user, classes, title, children, theme }) => {
+const AppLayoutTwo = ({ classes, title, theme }) => {
+  const user = useContext(AuthContext)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({
     totalDays: 0,
@@ -22,7 +25,7 @@ const AppLayoutTwo = ({ user, classes, title, children, theme }) => {
     fetchSubjects().then((acl) => {
       setSideBarState(getCounts({ acl }))
     })
-    setAvatar(getAvatar({ user }))
+    // setAvatar(getAvatar({ user }))
   }, [])
 
   return (
@@ -45,7 +48,7 @@ const AppLayoutTwo = ({ user, classes, title, children, theme }) => {
         theme={theme}
       />
       <div className={`${classes.content} ${classes.contentPadded}`}>
-        {children}
+        <Outlet />
       </div>
     </div>
   )

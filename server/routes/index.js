@@ -4,7 +4,6 @@ import { connect } from 'amqplib/callback_api'
 import co from 'co'
 import { createHash } from 'crypto'
 import uuidV4 from 'uuid/v4'
-import passport from 'passport'
 import { hash } from '../utils/crypto/hash'
 import {
   getConfigSchema,
@@ -14,8 +13,6 @@ import {
 } from '../utils/routerUtil'
 import { collections } from '../utils/mongoCollections'
 
-import LDAP from '../utils/passport/ldap'
-import LocalLogin from '../utils/passport/local-login'
 import LocalSignup from '../utils/passport/local-signup'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import ensureAdmin from '../utils/passport/ensure-admin'
@@ -27,7 +24,6 @@ import configPage from '../templates/Config.template'
 import deepdivePage from '../templates/DeepDive.template'
 import editConfig from '../templates/EditConfig.template'
 import graphPage from '../templates/Graph.template'
-import loginPage from '../templates/Login.template'
 import mainPage from '../templates/Main.template'
 import registerPage from '../templates/Register.template'
 import resetPage from '../templates/Resetpw.template'
@@ -38,7 +34,6 @@ import viewReportPage from '../templates/Report.template'
 import studyDetailsPage from '../templates/StudyDetails.template'
 
 import config from '../configs/config'
-import defaultStudyConfig from '../configs/defaultStudyConfig'
 import defaultUserConfig from '../configs/defaultUserConfig'
 import basePathConfig from '../configs/basePathConfig'
 

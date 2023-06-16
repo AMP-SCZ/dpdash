@@ -2,12 +2,12 @@ import { collections } from '../../utils/mongoCollections'
 
 const userMongoProjection = {
   _id: 0,
-  password: 0,
   bad_pwd_count: 0,
   lockout_time: 0,
   last_logoff: 0,
   last_logon: 0,
   force_reset_pw: 0,
+  ldap: 0,
 }
 
 const UserModel = {
