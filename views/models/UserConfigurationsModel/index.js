@@ -6,13 +6,11 @@ const UserConfigurationsModel = {
     try {
       const response = await fetch(
         apiRoutes.configurations.userConfigurations(userId),
-        {
-          ...BASE_REQUEST_OPTIONS,
-        }
+        BASE_REQUEST_OPTIONS
       )
       if (response.status !== 200) throw new Error(response.error)
 
-      return response.json()
+      return await response.json()
     } catch (error) {
       throw new Error(error)
     }
@@ -27,9 +25,8 @@ const UserConfigurationsModel = {
           body: JSON.stringify(configAttributes),
         }
       )
-      const status = response.status
 
-      return { status, ...response.json() }
+      return await response.json()
     } catch (error) {
       throw new Error(error)
     }
@@ -59,9 +56,8 @@ const UserConfigurationsModel = {
           body: JSON.stringify(configAttributes),
         }
       )
-      const status = response.status
 
-      return { status, data: response.json() }
+      return await response.json()
     } catch (error) {
       throw new Error(error)
     }
