@@ -71,7 +71,7 @@ const LoginPage = (props) => {
     const { status, data } = await AuthModel.findOne(credentials)
     if (status === 200) {
       props.setUser(data)
-      navigate('/config')
+      navigate('/configs')
     }
   }
 

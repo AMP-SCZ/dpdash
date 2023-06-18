@@ -33,7 +33,7 @@ const MainLayout = ({ classes, theme }) => {
     setAvatar(getAvatar({ user }))
   }, [])
 
-  if (!user) navigate('/')
+  if (!user) navigate('/login')
   return (
     <div className={classes.root}>
       <Header

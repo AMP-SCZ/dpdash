@@ -34,7 +34,6 @@ const hash = (text) => {
 }
 
 const verifyHash = (text, original) => {
-  console.log(text, original)
   const originalHash = original.split('$')[1]
   const salt = original.split('$')[0]
   const hash = pbkdf2Sync(text, salt, 2048, 32, 'sha512').toString('hex')

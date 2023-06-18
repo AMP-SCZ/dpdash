@@ -39,16 +39,6 @@ const csrfProtection = csrf({ cookie: true })
 const parseForm = bodyParser.urlencoded({ limit: '50mb', extended: true })
 const app = express()
 
-if (process.env.NODE_ENV === 'development') {
-  const liveReloadServer = livereload.createServer()
-  liveReloadServer.watch(path.join(__dirname, '../app_build'))
-  liveReloadServer.server.once('connection', () => {
-    setTimeout(() => {
-      liveReloadServer.refresh('/')
-    }, 100)
-  })
-  app.use(connectLiveReload())
-}
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.png')))
 
@@ -204,11 +194,11 @@ app.use(`${basePath}/`, chartsRouter)
 app.use(`${basePath}/`, indexRouter)
 app.use(`${basePath}/`, usersRouter)
 
-app.use(
-  `${basePath}/css`,
-  express.static(path.join(__dirname, '../public/css'))
-)
-app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')))
+// app.use(
+//   `${basePath}/css`,
+//   express.static(path.join(__dirname, '../public/css'))
+// )
+// app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')))
 app.use(
   `${basePath}/img`,
   express.static(path.join(__dirname, '../public/img'))

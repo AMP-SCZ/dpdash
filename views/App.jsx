@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 
 import withRoot from './withRoot'
@@ -10,16 +10,17 @@ import LoginPage from './pages/LoginPage'
 import { AuthContext } from './contexts/AuthContext'
 
 const App = (props) => {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState(null)
 
   return (
     <AuthContext.Provider value={user}>
       <Routes>
-        <Route path="/" element={<LoginPage setUser={setUser} />} />
+        <Route path="/" element={<Navigate to="/login" replace={true} />} />
+        <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route
           element={<MainLayout classes={props.classes} theme={props.theme} />}
         >
-          <Route path="config" element={<ConfigPage />} />
+          <Route path="configs" element={<ConfigPage />} />
         </Route>
       </Routes>
     </AuthContext.Provider>
