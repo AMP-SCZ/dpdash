@@ -1,18 +1,14 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import { useOutletContext } from 'react-router-dom'
 import 'whatwg-fetch'
 import ConfigurationsList from '../components/ConfigurationsList'
-import { AuthContext } from '../contexts/AuthContext'
 
-const ConfigPage = (props) => {
-  const user = useContext(AuthContext)
+const ConfigPage = () => {
+  const { user, classes, theme } = useOutletContext()
 
   return (
     <React.Fragment>
-      <ConfigurationsList
-        user={user}
-        classes={props.classes}
-        theme={props.theme}
-      />
+      <ConfigurationsList user={user} classes={classes} theme={theme} />
     </React.Fragment>
   )
 }

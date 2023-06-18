@@ -8,6 +8,7 @@ const userMongoProjection = {
   last_logon: 0,
   force_reset_pw: 0,
   ldap: 0,
+  password: 0,
 }
 
 const UserModel = {

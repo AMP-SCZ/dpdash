@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -8,9 +8,14 @@ import getAvatar from '../fe-utils/avatarUtil'
 import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 import { AuthContext } from '../contexts/AuthContext'
+import { headerTitle } from './helpers'
+import RequireAuth from '../components/hoc/RequiredAuth'
 
-const AppLayoutTwo = ({ classes, theme }) => {
+const MainLayout = ({ classes, theme }) => {
   const user = useContext(AuthContext)
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+
   const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({
     totalDays: 0,
@@ -25,14 +30,15 @@ const AppLayoutTwo = ({ classes, theme }) => {
     fetchSubjects().then((acl) => {
       setSideBarState(getCounts({ acl }))
     })
-    // setAvatar(getAvatar({ user }))
+    setAvatar(getAvatar({ user }))
   }, [])
 
+  if (!user) navigate('/')
   return (
     <div className={classes.root}>
       <Header
         handleDrawerToggle={toggleDrawer}
-        title={'Some Title'}
+        title={headerTitle(pathname)}
         isAccountPage={false}
         classes={classes}
       />
@@ -48,10 +54,12 @@ const AppLayoutTwo = ({ classes, theme }) => {
         theme={theme}
       />
       <div className={`${classes.content} ${classes.contentPadded}`}>
-        <Outlet />
+        <RequireAuth>
+          <Outlet context={{ user, classes, theme }} />
+        </RequireAuth>
       </div>
     </div>
   )
 }
 
-export default AppLayoutTwo
+export default MainLayout

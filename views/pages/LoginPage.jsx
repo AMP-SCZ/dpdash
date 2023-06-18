@@ -20,6 +20,7 @@ const LoginPage = (props) => {
     password: '',
     showPassword: false,
     open: false,
+    windowWidth: window.innerWidth,
   })
 
   const navigate = useNavigate()
@@ -41,18 +42,13 @@ const LoginPage = (props) => {
       }
     })
   }
-  // componentWillMount() {
-  //   /* Resize listener register */
-  //   window.addEventListener('resize', handleResize)
-  // }
-  // handleResize = (event) => {
-  //   setState({
-  //     windowWidth: window.innerWidth,
-  //   })
-  // }
-  // componentWillUnmount() {
-  //   window.removeEventListener('resize', handleResize)
-  // }
+
+  const handleResize = () => {
+    setState({
+      windowWidth: window.innerWidth,
+    })
+  }
+
   const handleChange = (prop) => (event) => {
     setState((prevState) => {
       return { ...prevState, [prop]: event.target.value }
@@ -78,19 +74,32 @@ const LoginPage = (props) => {
       navigate('/config')
     }
   }
+
+  useEffect(() => {
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
     <div
       style={{
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
+        height: '100vh',
+        width: '100vw',
+        alignItems: 'center',
+        backgroundColor: '#f9f9f9',
       }}
     >
       <Card
         style={{
           display: 'flex',
           maxWidth: 600,
-          border: 'solid blue 1px',
+          maxHeight: 500,
         }}
       >
         <div
@@ -135,11 +144,6 @@ const LoginPage = (props) => {
                 paddingRight: '12px',
               }}
             >
-              {/* <form
-                  action={apiRoutes.auth.login}
-                  method="post"
-                  id="loginForm"
-                > */}
               <TextField
                 id="username"
                 name="username"
@@ -180,7 +184,6 @@ const LoginPage = (props) => {
                 required={true}
                 margin="normal"
               />
-              {/* </form> */}
               <br />
               <Typography
                 component="a"

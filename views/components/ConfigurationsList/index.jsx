@@ -16,6 +16,7 @@ import GridList from '@material-ui/core/GridList'
 import MenuList from '@material-ui/core/MenuList'
 import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
+import Snackbar from '@material-ui/core/Snackbar'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
@@ -143,6 +144,7 @@ const components = {
 }
 const ConfigurationsList = ({ user, classes, theme }) => {
   const { uid } = user
+  const userMessage = user.message
   const [configurations, setConfigurations] = useState([])
   const [snackBar, setSnackBar] = useState({
     open: false,
@@ -174,6 +176,17 @@ const ConfigurationsList = ({ user, classes, theme }) => {
 
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  useEffect(() => {
+    if (userMessage?.length > 0) {
+      setSnackBars((prevState) => {
+        return {
+          ...prevState,
+          uploadSnack: true,
+        }
+      })
+    }
+  }, [userMessage])
 
   const loadUserNames = async () => {
     const usernames = await fetchUsernames()

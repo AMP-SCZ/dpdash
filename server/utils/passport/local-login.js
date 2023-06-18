@@ -2,18 +2,14 @@ import passport from 'passport'
 import moment from 'moment'
 
 import { verifyHash } from '../crypto/hash'
-import { routes } from '../routes'
 
 import ConfigModel from '../../models/ConfigModel'
 import UserModel from '../../models/UserModel'
 
 export default (req, res, _, user) => {
   //validate submitted password
-  console.log(user, 'IS THIS THE FALSE')
-  if (!verifyHash(req.body.password, user.password)) {
-    console.log(user.password)
-    return res.redirect(`${routes.login}?e=forbidden`)
-  }
+  if (!verifyHash(req.body.password, user.password))
+    return res.json({ status: 400, error: 'Please enter your password.' })
 
   //passport local log-in serializer
   passport.serializeUser(function (user, done) {
@@ -41,13 +37,13 @@ export default (req, res, _, user) => {
       const { value } = await UserModel.update(appDb, uid, {
         last_logon: Date.now(),
       })
-      console.dir(value, { depth: null })
       const { role, display_name, mail, icon, access, account_expires } = value
       const today = moment()
       const accountExpirationToMoment = moment(account_expires)
       const isAccountExpired = accountExpirationToMoment.isBefore(today)
 
-      if (isAccountExpired) return res.status(401).end()
+      if (isAccountExpired)
+        return res.status({ status: 401, error: 'Account is expired' })
 
       req.session.role = role
       req.session.display_name = display_name
@@ -56,12 +52,10 @@ export default (req, res, _, user) => {
       req.session.icon = icon
       req.session.userAccess = access
 
-      // delete value.password
-
       return res.json({ status: 200, data: value })
     } catch (error) {
       console.error(error)
-      return res.redirect(`${routes.login}?e=${error}`)
+      return res.json({ status: 400, error: error.message })
     }
   })
 }
