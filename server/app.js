@@ -19,6 +19,7 @@ import noCache from 'nocache'
 import livereload from 'livereload'
 import connectLiveReload from 'connect-livereload'
 import { getMongoURI } from './utils/mongoUtil'
+import fs from 'fs'
 
 import adminRouter from './routes/admin'
 import authRouter from './routes/auth'
@@ -29,6 +30,7 @@ import usersRouter from './routes/users'
 
 import config from './configs/config'
 import basePathConfig from './configs/basePathConfig'
+import { fstat } from 'fs'
 
 const localStrategy = Strategy
 
@@ -194,16 +196,10 @@ app.use(`${basePath}/`, chartsRouter)
 app.use(`${basePath}/`, indexRouter)
 app.use(`${basePath}/`, usersRouter)
 
-// app.use(
-//   `${basePath}/css`,
-//   express.static(path.join(__dirname, '../public/css'))
-// )
-// app.use(`${basePath}/js`, express.static(path.join(__dirname, '../public/js')))
 app.use(
   `${basePath}/img`,
   express.static(path.join(__dirname, '../public/img'))
 )
-//app.use('/users', usersRouter);
 
 /** error handlers setup */
 
@@ -244,9 +240,16 @@ app.use(function (err, req, res, next) {
       break
   }
 })
-app.get('/*', async (req, res) => {
+
+app.get('*', async (req, res) => {
   return res.sendFile(
-    path.join(__dirname, '..', 'my-app', 'app_build', 'index.html')
+    path.join(__dirname, '..', 'app_build', 'index.html'),
+    (err) => {
+      if (err) {
+        console.error(err, 'THIS IS THE RROR')
+        res.status(500).send(err)
+      }
+    }
   )
 })
 

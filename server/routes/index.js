@@ -92,31 +92,31 @@ function ensurePermission(req, res, next) {
     )
 }
 //Home
-router.get('/', ensureAuthenticated, function (req, res) {
-  return res.send(
-    mainPage(
-      req.user,
-      req.session.display_name,
-      req.session.role,
-      req.session.icon
-    )
-  )
-})
+// router.get('/', ensureAuthenticated, function (req, res) {
+//   return res.send(
+//     mainPage(
+//       req.user,
+//       req.session.display_name,
+//       req.session.role,
+//       req.session.icon
+//     )
+//   )
+// })
 
-//User Home
-router.route('/u').get(ensureAuthenticated, function (req, res) {
-  return res
-    .status(200)
-    .send(
-      userPage(
-        req.user,
-        req.session.display_name,
-        req.session.icon,
-        req.session.mail,
-        req.session.role
-      )
-    )
-})
+// //User Home
+// router.route('/u').get(ensureAuthenticated, function (req, res) {
+//   return res
+//     .status(200)
+//     .send(
+//       userPage(
+//         req.user,
+//         req.session.display_name,
+//         req.session.icon,
+//         req.session.mail,
+//         req.session.role
+//       )
+//     )
+// })
 
 //User Configuration
 router.route('/u/configure').get(ensureAuthenticated, function (req, res) {

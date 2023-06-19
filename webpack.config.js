@@ -52,7 +52,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: true,
+    minimize: process.env.NODE_ENV === 'production',
   },
   output: {
     path: path.join(__dirname, outputDirectory),

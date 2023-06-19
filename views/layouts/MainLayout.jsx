@@ -26,6 +26,8 @@ const MainLayout = ({ classes, theme }) => {
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
 
+  if (!user) navigate('/login')
+
   useEffect(() => {
     fetchSubjects().then((acl) => {
       setSideBarState(getCounts({ acl }))
@@ -33,7 +35,6 @@ const MainLayout = ({ classes, theme }) => {
     setAvatar(getAvatar({ user }))
   }, [])
 
-  if (!user) navigate('/login')
   return (
     <div className={classes.root}>
       <Header
