@@ -195,11 +195,21 @@ app.use(`${basePath}/`, configurationsRouter)
 app.use(`${basePath}/`, chartsRouter)
 app.use(`${basePath}/`, indexRouter)
 app.use(`${basePath}/`, usersRouter)
-
 app.use(
   `${basePath}/img`,
   express.static(path.join(__dirname, '../public/img'))
 )
+
+app.get('*', async (req, res) => {
+  return res.sendFile(
+    path.join(__dirname, '..', 'app_build', 'index.html'),
+    (err) => {
+      if (err) {
+        res.status(500).send(err)
+      }
+    }
+  )
+})
 
 /** error handlers setup */
 
@@ -239,18 +249,6 @@ app.use(function (err, req, res, next) {
       errMessage = 'Internal Server Error'
       break
   }
-})
-
-app.get('*', async (req, res) => {
-  return res.sendFile(
-    path.join(__dirname, '..', 'app_build', 'index.html'),
-    (err) => {
-      if (err) {
-        console.error(err, 'THIS IS THE RROR')
-        res.status(500).send(err)
-      }
-    }
-  )
 })
 
 export default app

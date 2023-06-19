@@ -8,6 +8,7 @@ import ConfigPage from './pages/ConfigPage'
 import { styles } from './styles'
 import LoginPage from './pages/LoginPage'
 import { AuthContext } from './contexts/AuthContext'
+import RequireAuth from './components/hoc/RequiredAuth'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
@@ -18,7 +19,11 @@ const App = (props) => {
         <Route path="/" element={<Navigate to="/login" replace={true} />} />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route
-          element={<MainLayout classes={props.classes} theme={props.theme} />}
+          element={
+            <RequireAuth>
+              <MainLayout classes={props.classes} theme={props.theme} />
+            </RequireAuth>
+          }
         >
           <Route path="configs" element={<ConfigPage />} />
         </Route>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -9,12 +9,10 @@ import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 import { AuthContext } from '../contexts/AuthContext'
 import { headerTitle } from './helpers'
-import RequireAuth from '../components/hoc/RequiredAuth'
 
-const MainLayout = ({ classes, theme }) => {
+const MainLayout = ({ classes, theme, navigate }) => {
   const user = useContext(AuthContext)
   const { pathname } = useLocation()
-  const navigate = useNavigate()
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({
@@ -25,8 +23,6 @@ const MainLayout = ({ classes, theme }) => {
   const [avatar, setAvatar] = useState('')
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
-
-  if (!user) navigate('/login')
 
   useEffect(() => {
     fetchSubjects().then((acl) => {
@@ -55,9 +51,7 @@ const MainLayout = ({ classes, theme }) => {
         theme={theme}
       />
       <div className={`${classes.content} ${classes.contentPadded}`}>
-        <RequireAuth>
-          <Outlet context={{ user, classes, theme }} />
-        </RequireAuth>
+        <Outlet context={{ user, classes, theme }} />
       </div>
     </div>
   )
