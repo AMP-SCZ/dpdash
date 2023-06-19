@@ -9,7 +9,7 @@ const UsersController = {
 
       return res.status(200).json({ data: updatedUser })
     } catch (error) {
-      return res.status(400).json({ error: error.message })
+      return res.json({ error: error.message, status: 400 })
     }
   },
   show: async (req, res) => {
@@ -18,7 +18,7 @@ const UsersController = {
       const { uid } = req.params
       const user = await UserModel.findOne(appDb, uid)
 
-      return res.status(200).json({ data: user })
+      return res.json({ data: user, status: 200 })
     } catch (error) {
       return res.status(400).json({
         error: error.message,
