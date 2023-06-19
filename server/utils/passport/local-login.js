@@ -43,7 +43,7 @@ export default (req, res, _, user) => {
       const isAccountExpired = accountExpirationToMoment.isBefore(today)
 
       if (isAccountExpired)
-        return res.status({ status: 401, error: 'Account is expired' })
+        return res.json({ status: 401, error: 'Account is expired' })
 
       req.session.role = role
       req.session.display_name = display_name
