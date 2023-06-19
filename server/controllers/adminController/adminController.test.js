@@ -16,9 +16,9 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
-        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: { uid: 'uid' },
+          status: 200,
         })
       })
     })
@@ -34,7 +34,7 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
-        expect(response.status).toHaveBeenCalledWith(404)
+        expect(response.json).toHaveBeenCalledWith({ status: 400 })
       })
     })
 
@@ -44,16 +44,16 @@ describe('AdminUsersController', () => {
       })
       const response = createResponse()
 
-      it('returns a 500 error with the error message', async () => {
+      it('returns a status of 500 with the error message', async () => {
         request.app.locals.appDb.findOneAndUpdate.mockRejectedValueOnce(
           new Error('User could not be updated')
         )
 
         await AdminUsersController.update(request, response)
 
-        expect(response.status).toHaveBeenCalledWith(500)
         expect(response.json).toHaveBeenCalledWith({
           error: 'User could not be updated',
+          status: 500,
         })
       })
     })

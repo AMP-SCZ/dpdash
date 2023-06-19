@@ -41,7 +41,7 @@ const UserConfigurationsModel = {
         }
       )
 
-      return response
+      return await response.json()
     } catch (error) {
       throw new Error(error)
     }

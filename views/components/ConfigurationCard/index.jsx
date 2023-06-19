@@ -20,14 +20,13 @@ import { colors } from '../../../constants'
 
 const ConfigurationCard = ({
   classes,
-  openSearch,
-  user,
   config,
-  preferences,
   onCopyConfig,
-  onUpdateConfig,
-  onRemoveConfig,
+  onRemoveOrUpdateConfig,
   onUpdatePreferences,
+  openSearch,
+  preferences,
+  user,
   width,
 }) => {
   const { uid } = user
@@ -38,16 +37,6 @@ const ConfigurationCard = ({
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
 
-  const onRemoveOrUpdate = () => {
-    if (ownsConfig) {
-      onRemoveConfig(_id)
-    } else {
-      const configAttributes = {
-        readers: readers.filter((reader) => reader !== uid),
-      }
-      onUpdateConfig(_id, configAttributes)
-    }
-  }
   return (
     <Card style={{ margin: '3px', width: `${width}px` }}>
       <CardHeader
@@ -55,7 +44,7 @@ const ConfigurationCard = ({
         subheader={updated}
         avatar={<ConfigCardAvatar config={config} currentUser={user} />}
         action={
-          <IconButton onClick={() => onRemoveOrUpdate()}>
+          <IconButton onClick={() => onRemoveOrUpdateConfig(ownsConfig, _id)}>
             <Clear color={colors.gray} />
           </IconButton>
         }
@@ -82,42 +71,43 @@ const ConfigurationCard = ({
         />
         <div>
           {ownsConfig ? (
-            <IconButton
-              onClick={() => openNewWindow(routes.editConfiguration(_id))}
-              iconStyle={classes.textAndIcon}
-              tooltipPosition="top-center"
-              tooltip="Edit"
-            >
-              <Edit />
-            </IconButton>
+            <>
+              <IconButton
+                onClick={() => openNewWindow(routes.editConfiguration(_id))}
+                iconStyle={classes.textAndIcon}
+                tooltipPosition="top-center"
+                tooltip="Edit"
+              >
+                <Edit />
+              </IconButton>
+              <IconButton
+                iconStyle={classes.textAndIcon}
+                tooltipPosition="top-center"
+                tooltip="Share"
+                onClick={() => openSearch(config)}
+              >
+                <Share />
+              </IconButton>
+            </>
           ) : (
-            <IconButton
-              onClick={() => openNewWindow(routes.viewConfiguration(_id))}
-              iconStyle={classes.textAndIcon}
-              tooltipPosition="top-center"
-              tooltip="View"
-            >
-              <FullView />
-            </IconButton>
-          )}
-          {ownsConfig ? (
-            <IconButton
-              iconStyle={classes.textAndIcon}
-              tooltipPosition="top-center"
-              tooltip="Share"
-              onClick={() => openSearch(config)}
-            >
-              <Share />
-            </IconButton>
-          ) : (
-            <IconButton
-              iconStyle={classes.textAndIcon}
-              tooltipPosition="top-center"
-              tooltip="Duplicate"
-              onClick={() => onCopyConfig(config)}
-            >
-              <Copy />
-            </IconButton>
+            <>
+              <IconButton
+                onClick={() => openNewWindow(routes.viewConfiguration(_id))}
+                iconStyle={classes.textAndIcon}
+                tooltipPosition="top-center"
+                tooltip="View"
+              >
+                <FullView />
+              </IconButton>
+              <IconButton
+                iconStyle={classes.textAndIcon}
+                tooltipPosition="top-center"
+                tooltip="Duplicate"
+                onClick={() => onCopyConfig(config)}
+              >
+                <Copy />
+              </IconButton>
+            </>
           )}
         </div>
       </CardActions>

@@ -7,9 +7,11 @@ const AdminUsersController = {
       const { uid } = req.params
       const { value } = await UserModel.update(appDb, uid, req.body)
 
-      return value ? res.status(200).json({ data: value }) : res.status(404)
+      return value
+        ? res.json({ data: value, status: 200 })
+        : res.json({ status: 400 })
     } catch (error) {
-      return res.status(500).json({ error: error.message })
+      return res.json({ error: error.message, status: 500 })
     }
   },
 }
