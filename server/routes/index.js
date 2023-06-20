@@ -18,12 +18,6 @@ import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import ensureAdmin from '../utils/passport/ensure-admin'
 import ensureUser from '../utils/passport/ensure-user'
 
-import userPage from '../templates/Account.template'
-import adminPage from '../templates/Admin.template'
-import deepdivePage from '../templates/DeepDive.template'
-import graphPage from '../templates/Graph.template'
-import registerPage from '../templates/Register.template'
-import resetPage from '../templates/Resetpw.template'
 import studyPage from '../templates/Study.template'
 import reportsListPage from '../templates/ReportsList.template'
 import editReportPage from '../templates/EditReport.template'
@@ -89,39 +83,6 @@ function ensurePermission(req, res, next) {
     )
 }
 
-//register
-router
-  .route('/signup')
-  .get(function (req, res) {
-    if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
-    } else if (req.query.e === 'existingUser') {
-      return res.send(
-        registerPage('The username already exists. Please choose another.')
-      )
-    } else {
-      return res.send(registerPage(''))
-    }
-  })
-  .post(function (req, res, next) {
-    if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login`)
-    } else {
-      return LocalSignup(req, res, next)
-    }
-  })
-
-//Logout page
-router.get('/logout', function (req, res) {
-  req.session.destroy()
-  req.logout()
-  if (req.query.e) {
-    return res.redirect(`${basePath}/login?e=${req.query.e}`)
-  } else {
-    return res.redirect(`${basePath}/login`)
-  }
-})
-
 //deepdive page
 router.get(
   '/api/v1/studies/:study/subjects/:subject/deepdive/:day',
@@ -162,15 +123,15 @@ router.get(
   }
 )
 
-router.get(
-  '/deepdive/:study/:subject/:day',
-  ensurePermission,
-  function (req, res) {
-    return res.send(
-      deepdivePage(req.params.study, req.params.subject, req.params.day)
-    )
-  }
-)
+// router.get(
+//   '/deepdive/:study/:subject/:day',
+//   ensurePermission,
+//   function (req, res) {
+//     return res.send(
+//       deepdivePage(req.params.study, req.params.subject, req.params.day)
+//     )
+//   }
+// )
 
 //Dashboard page
 router.get(
@@ -208,52 +169,31 @@ router.get(
   }
 )
 
-router
-  .route('/resetpw')
-  .get(function (req, res) {
-    if (config.auth.useLDAP) {
-      return res.redirect(`${basePath}/login?e=NA`)
-    } else {
-      let message = ''
-      if (req.query.e) {
-        if (req.query.e === 'unmatched') {
-          message = 'The passwords do not match. Please try again.'
-        } else if (req.query.e === 'db') {
-          message = 'There was an error. Please contact the admin.'
-        } else if (req.query.e === 'nouser') {
-          message = 'The username or reset key did not match. Please try again.'
+router.route('/resetpw').post(function (req, res) {
+  if (req.body.password !== req.body.confirmpw) {
+    return res.redirect(`${basePath}/resetpw?e=unmatched`)
+  } else {
+    const { appDb } = req.app.locals
+    var hashedPW = hash(req.body.password)
+    appDb.collection('users').findOneAndUpdate(
+      { uid: req.body.username, reset_key: req.body.reset_key },
+      {
+        $set: { password: hashedPW, reset_key: '', force_reset_pw: false },
+      },
+      { returnOriginal: false },
+      function (err, doc) {
+        if (err) {
+          console.log(err)
+          return res.redirect(`${basePath}/resetpw?e=db`)
+        } else if (!doc || doc['value'] === null) {
+          return res.redirect(`${basePath}/resetpw?e=nouser`)
         } else {
-          message = req.query.e
+          return res.redirect(`${basePath}/login?e=resetpw`)
         }
       }
-      return res.send(resetPage(message))
-    }
-  })
-  .post(function (req, res) {
-    if (req.body.password !== req.body.confirmpw) {
-      return res.redirect(`${basePath}/resetpw?e=unmatched`)
-    } else {
-      const { appDb } = req.app.locals
-      var hashedPW = hash(req.body.password)
-      appDb.collection('users').findOneAndUpdate(
-        { uid: req.body.username, reset_key: req.body.reset_key },
-        {
-          $set: { password: hashedPW, reset_key: '', force_reset_pw: false },
-        },
-        { returnOriginal: false },
-        function (err, doc) {
-          if (err) {
-            console.log(err)
-            return res.redirect(`${basePath}/resetpw?e=db`)
-          } else if (!doc || doc['value'] === null) {
-            return res.redirect(`${basePath}/resetpw?e=nouser`)
-          } else {
-            return res.redirect(`${basePath}/login?e=resetpw`)
-          }
-        }
-      )
-    }
-  })
+    )
+  }
+})
 
 router
   .route('/resync/:study/:subject')

@@ -11,7 +11,7 @@ import { AuthContext } from '../contexts/AuthContext'
 import { headerTitle } from './helpers'
 
 const MainLayout = ({ classes, theme, navigate }) => {
-  const user = useContext(AuthContext)
+  const [user] = useContext(AuthContext)
   const { pathname } = useLocation()
 
   const [openDrawer, setOpenDrawer] = useState(false)

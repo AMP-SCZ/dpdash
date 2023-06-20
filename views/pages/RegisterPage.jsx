@@ -6,7 +6,6 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Snackbar from '@material-ui/core/Snackbar'
 
 import basePathConfig from '../../server/configs/basePathConfig'
 

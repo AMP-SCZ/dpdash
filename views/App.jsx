@@ -8,7 +8,7 @@ import ConfigPage from './pages/ConfigPage'
 import { styles } from './styles'
 import LoginPage from './pages/LoginPage'
 import { AuthContext } from './contexts/AuthContext'
-import RequireAuth from './components/hoc/RequiredAuth'
+import AuthenticatedRoute from './components/hoc/AuthenticatedRoute'
 import MainPage from './pages/MainPage'
 import AccountPage from './pages/AccountPage'
 import ChartsPage from './pages/ChartsPage'
@@ -28,7 +28,7 @@ const App = (props) => {
   const navigate = useNavigate()
 
   return (
-    <AuthContext.Provider value={user}>
+    <AuthContext.Provider value={[user, setUser]}>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace={true} />} />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
@@ -51,13 +51,13 @@ const App = (props) => {
 
         <Route
           element={
-            <RequireAuth>
+            <AuthenticatedRoute>
               <MainLayout
                 classes={props.classes}
                 theme={props.theme}
                 navigate={navigate}
               />
-            </RequireAuth>
+            </AuthenticatedRoute>
           }
         >
           <Route path="configs" element={<ConfigPage />} />
