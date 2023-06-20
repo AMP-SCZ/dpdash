@@ -6,7 +6,7 @@ const apiPath = `${basePath}/api/v1`
 
 export const routes = {
   basePath,
-  home: `${basePath}/`,
+  home: `${basePath}/main`,
   configurations: `${basePath}/configs`,
   userAccount: `${basePath}/u`,
   newChart: `${basePath}/charts/new`,

@@ -49,6 +49,10 @@ module.exports = {
           filename: 'static/[hash][ext][query]',
         },
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   optimization: {

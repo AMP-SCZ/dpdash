@@ -9,9 +9,11 @@ import { styles } from './styles'
 import LoginPage from './pages/LoginPage'
 import { AuthContext } from './contexts/AuthContext'
 import RequireAuth from './components/hoc/RequiredAuth'
+import MainPage from './pages/MainPage'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
+  console.log(props)
 
   return (
     <AuthContext.Provider value={user}>
@@ -26,6 +28,16 @@ const App = (props) => {
           }
         >
           <Route path="configs" element={<ConfigPage />} />
+          <Route
+            path="main"
+            element={
+              <MainPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
         </Route>
       </Routes>
     </AuthContext.Provider>

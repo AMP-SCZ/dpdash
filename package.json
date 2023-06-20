@@ -101,6 +101,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^8.2.0",
     "connect-livereload": "^0.6.1",
+    "css-loader": "^6.8.1",
     "eslint": "^7.27.0",
     "eslint-plugin-react": "^7.24.0",
     "exports-loader": "^0.7.0",
@@ -110,6 +111,7 @@
     "livereload": "^0.9.3",
     "nodemon": "^2.0.16",
     "npm-run-all": "^4.1.5",
+    "style-loader": "^3.3.3",
     "webpack": "^5.35.1",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
