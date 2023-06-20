@@ -188,8 +188,8 @@ const LoginPage = (props) => {
               />
               <br />
               <Typography
-                component="a"
-                href={routes.resetPassword}
+                component={Link}
+                to={routes.resetPassword}
                 style={{
                   textAlign: 'right',
                   width: '100%',

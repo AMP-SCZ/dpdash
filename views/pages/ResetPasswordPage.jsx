@@ -1,22 +1,19 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
 
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import Typography from '@material-ui/core/Typography'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
 
-import basePathConfig from '../server/configs/basePathConfig';
+import basePathConfig from '../../server/configs/basePathConfig'
 
-const basePath = basePathConfig || '';
+const basePath = basePathConfig || ''
 
-class ResetPage extends Component {
+class ResetPasswordPage extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       message: '',
       username: '',
@@ -26,87 +23,80 @@ class ResetPage extends Component {
       confirmpw: '',
       unmatched: false,
       unInitialized: false,
-      rkInitialized: false
-    };
+      rkInitialized: false,
+    }
   }
-  componentDidUpdate() {
-  }
+  componentDidUpdate() {}
   handleClick = () => {
     this.setState({
       open: true,
-    });
-  };
+    })
+  }
   handleRequestClose = () => {
     this.setState({
       open: false,
-    });
-  };
-  handleChange = prop => event => {
+    })
+  }
+  handleChange = (prop) => (event) => {
     if (prop === 'resetkey' && !this.state.rkInitialized) {
       this.setState({
         [prop]: event.target.value,
-        rkInitialized: true
-      });
-      return;
+        rkInitialized: true,
+      })
+      return
     } else if (prop === 'username' && !this.state.unInitialized) {
       this.setState({
         [prop]: event.target.value,
-        unInitialized: true
-      });
-      return;
+        unInitialized: true,
+      })
+      return
     }
-    this.setState({ [prop]: event.target.value });
-  };
-  handleMouseDownPassword = event => {
-    event.preventDefault();
-  };
+    this.setState({ [prop]: event.target.value })
+  }
+  handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
   componentWillMount() {
-    if (this.props.user.message.length > 0) {
-      this.setState({
-        open: true
-      });
-    }
     /* Resize listener register */
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', this.handleResize)
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
   }
   handleResize = (event) => {
     this.setState({
-      windowWidth: window.innerWidth
-    });
-  };
+      windowWidth: window.innerWidth,
+    })
+  }
   openWindow = (uri) => {
-    window.open(uri, '_self');
-  };
-  confirmPassword = event => {
-    let unmatched = (event.target.value === this.state.password) ? false : true;
+    window.open(uri, '_self')
+  }
+  confirmPassword = (event) => {
+    let unmatched = event.target.value === this.state.password ? false : true
     this.setState({
       confirmpw: event.target.value,
-      unmatched: unmatched
-    });
-  };
+      unmatched: unmatched,
+    })
+  }
   render() {
     return (
       <div>
-        <Card
-        >
+        <Card>
           <div
             style={{
               display: 'flex',
-              maxWidth: 600
+              maxWidth: 600,
             }}
           >
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
               }}
             >
               <CardContent
                 style={{
-                  flex: '1 0 auto'
+                  flex: '1 0 auto',
                 }}
               >
                 <Typography variant="subheading" color="textSecondary">
@@ -120,7 +110,7 @@ class ResetPage extends Component {
                   paddingTop: '4px',
                   paddingLeft: '12px',
                   paddingBottom: '4px',
-                  paddingRight: '12px'
+                  paddingRight: '12px',
                 }}
               >
                 <div
@@ -129,7 +119,7 @@ class ResetPage extends Component {
                     paddingTop: '4px',
                     paddingLeft: '12px',
                     paddingBottom: '12px',
-                    paddingRight: '12px'
+                    paddingRight: '12px',
                   }}
                 >
                   <form
@@ -138,26 +128,31 @@ class ResetPage extends Component {
                     id="resetpwForm"
                   >
                     <TextField
-                      id='username'
-                      name='username'
-                      type='text'
-                      label='Username'
+                      id="username"
+                      name="username"
+                      type="text"
+                      label="Username"
                       value={this.state.username}
                       onChange={this.handleChange('username')}
                       autoFocus={true}
                       required={true}
                       fullWidth={true}
                       margin="normal"
-                      error={(this.state.unInitialized && this.state.username.length === 0) ? true : false}
+                      error={
+                        this.state.unInitialized &&
+                        this.state.username.length === 0
+                          ? true
+                          : false
+                      }
                     />
                     <br />
                     <TextField
-                      id='password'
-                      name='password'
-                      type='password'
+                      id="password"
+                      name="password"
+                      type="password"
                       value={this.state.password}
                       onChange={this.handleChange('password')}
-                      label='New Password'
+                      label="New Password"
                       required={true}
                       margin="normal"
                       fullWidth={true}
@@ -165,12 +160,12 @@ class ResetPage extends Component {
                     />
                     <br />
                     <TextField
-                      id='confirmpw'
-                      name='confirmpw'
-                      type='password'
+                      id="confirmpw"
+                      name="confirmpw"
+                      type="password"
                       value={this.state.confirmpw}
                       onChange={this.confirmPassword}
-                      label='Confirm Password'
+                      label="Confirm Password"
                       required={true}
                       margin="normal"
                       fullWidth={true}
@@ -179,22 +174,27 @@ class ResetPage extends Component {
                     />
                     <br />
                     <TextField
-                      id='reset_key'
-                      name='reset_key'
-                      type='text'
-                      label='Reset Key'
+                      id="reset_key"
+                      name="reset_key"
+                      type="text"
+                      label="Reset Key"
                       value={this.state.resetkey}
                       onChange={this.handleChange('resetkey')}
                       required={true}
                       fullWidth={true}
                       margin="normal"
-                      error={(this.state.rkInitialized && this.state.resetkey.length === 0) ? true : false}
+                      error={
+                        this.state.rkInitialized &&
+                        this.state.resetkey.length === 0
+                          ? true
+                          : false
+                      }
                     />
                   </form>
                 </div>
               </div>
             </div>
-            {this.state.windowWidth < 620 ? null :
+            {this.state.windowWidth < 620 ? null : (
               <CardMedia
                 style={{
                   width: '250px',
@@ -202,16 +202,16 @@ class ResetPage extends Component {
                   backgroundImage: `url("${basePath}/img/dpdash.png")`,
                   backgroundSize: 'contain',
                   backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center center'
+                  backgroundPosition: 'center center',
                 }}
                 title="DPdash"
               />
-            }
+            )}
           </div>
           <div
             style={{
               padding: '12px',
-              float: 'right'
+              float: 'right',
             }}
           >
             <Button
@@ -219,7 +219,7 @@ class ResetPage extends Component {
               onClick={() => this.openWindow(`${basePath}/login`)}
               style={{
                 paddingTop: '11px',
-                color: '#5790bd'
+                color: '#5790bd',
               }}
             >
               Cancel
@@ -234,25 +234,16 @@ class ResetPage extends Component {
                 paddingTop: '11px',
                 color: '#ffffff',
                 backgroundColor: '#5790bd',
-                marginLeft: '12px'
+                marginLeft: '12px',
               }}
             >
               Submit
             </Button>
           </div>
         </Card>
-        <Snackbar
-          open={this.state.open}
-          message={this.props.user.message}
-          autoHideDuration={4000}
-          onClose={this.handleRequestClose}
-        />
       </div>
-    );
+    )
   }
 }
-const mapStateToProps = (state) => ({
-  user: state.user
-});
 
-export default connect(mapStateToProps)(ResetPage);
+export default ResetPasswordPage

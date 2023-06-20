@@ -21,6 +21,7 @@ import EditConfigPage from './pages/EditConfigPage'
 
 import 'react-virtualized/styles.css'
 import RegisterPage from './pages/RegisterPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
@@ -35,6 +36,7 @@ const App = (props) => {
           path="/register"
           element={<RegisterPage navigate={navigate} />}
         />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route
           path="dashboard/:study/:subject"

@@ -31,7 +31,7 @@ export const routes = {
   invalidConfiguration: `${basePath}/u/configure?u=invalid`,
   configurationError: `${basePath}/u/configure?u=error`,
   createConfiguration: `${basePath}/u/configure?s=add`,
-  resetPassword: `${basePath}/resetpw`,
+  resetPassword: `/reset-password`,
   signUp: `/register`,
 }
 
