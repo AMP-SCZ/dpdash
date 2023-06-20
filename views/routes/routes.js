@@ -24,8 +24,7 @@ export const routes = {
   editChart: (chart_id) => `${basePath}/charts/${chart_id}/edit`,
   subjectView: (study, subject) => `${basePath}/dashboard/${study}/${subject}`,
   chartCsv: (chart_id, queryParams) => routes.chart(chart_id, queryParams),
-  editConfiguration: (configId) =>
-    `${basePath}/u/configure?s=edit&id=${configId}`,
+  editConfiguration: (configId) => `/config/${configId}/edit`,
   viewConfiguration: (configId) =>
     `${basePath}/u/configure?s=view&id=${configId}`,
   configurationSuccess: `${basePath}/u/configure?u=success`,

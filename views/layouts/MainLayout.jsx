@@ -51,7 +51,7 @@ const MainLayout = ({ classes, theme, navigate }) => {
         theme={theme}
       />
       <div className={`${classes.content} ${classes.contentPadded}`}>
-        <Outlet context={{ user, classes, theme }} />
+        <Outlet context={{ user, classes, theme, navigate }} />
       </div>
     </div>
   )

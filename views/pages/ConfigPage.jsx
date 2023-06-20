@@ -4,11 +4,16 @@ import 'whatwg-fetch'
 import ConfigurationsList from '../components/ConfigurationsList'
 
 const ConfigPage = () => {
-  const { user, classes, theme } = useOutletContext()
+  const { user, classes, theme, navigate } = useOutletContext()
 
   return (
     <React.Fragment>
-      <ConfigurationsList user={user} classes={classes} theme={theme} />
+      <ConfigurationsList
+        user={user}
+        classes={classes}
+        theme={theme}
+        navigate={navigate}
+      />
     </React.Fragment>
   )
 }

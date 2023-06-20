@@ -17,6 +17,7 @@ import EditChartPage from './pages/EditChartPage'
 import ViewChartPage from './pages/ViewChartPage'
 import AdminPage from './pages/AdminPage'
 import GraphPage from './pages/GraphPage'
+import EditConfigPage from './pages/EditConfigPage'
 
 import 'react-virtualized/styles.css'
 
@@ -43,7 +44,11 @@ const App = (props) => {
         <Route
           element={
             <RequireAuth>
-              <MainLayout classes={props.classes} theme={props.theme} />
+              <MainLayout
+                classes={props.classes}
+                theme={props.theme}
+                navigate={navigate}
+              />
             </RequireAuth>
           }
         >
@@ -115,6 +120,16 @@ const App = (props) => {
             path="admin"
             element={
               <AdminPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="config/:config_id/edit"
+            element={
+              <EditConfigPage
                 user={user}
                 classes={props.classes}
                 theme={props.theme}

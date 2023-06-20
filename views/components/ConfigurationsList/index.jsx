@@ -142,7 +142,7 @@ const components = {
   SingleValue,
   ValueContainer,
 }
-const ConfigurationsList = ({ user, classes, theme }) => {
+const ConfigurationsList = ({ user, classes, theme, navigate }) => {
   const { uid } = user
   const userMessage = user.message
   const [configurations, setConfigurations] = useState([])
@@ -439,6 +439,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
             <ConfigurationCard
               classes={classes}
               config={config}
+              navigate={navigate}
               openSearch={openSearchUsers}
               onCopyConfig={copyConfiguration}
               onRemoveOrUpdateConfig={onRemoveOrUpdateConfig}
