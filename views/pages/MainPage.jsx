@@ -26,7 +26,6 @@ import getAvatar from '../fe-utils/avatarUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 
 import basePathConfig from '../../server/configs/basePathConfig'
-import 'react-virtualized/styles.css'
 
 const basePath = basePathConfig || ''
 const drawerWidth = 200
@@ -595,7 +594,7 @@ class MainPage extends Component {
             />
           </NoSsr>
         </div>
-        <main className={classes.home_content} style={{ padding: 0 }}>
+        <main style={{ padding: 0 }}>
           <div className={classes.home_toolbar} />
           <div
             className={classes.home_content}

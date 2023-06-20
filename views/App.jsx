@@ -15,6 +15,9 @@ import ChartsPage from './pages/ChartsPage'
 import NewChartPage from './pages/NewChartPage'
 import EditChartPage from './pages/EditChartPage'
 import ViewChartPage from './pages/ViewChartPage'
+import AdminPage from './pages/AdminPage'
+
+import 'react-virtualized/styles.css'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
@@ -93,6 +96,16 @@ const App = (props) => {
                 classes={props.classes}
                 theme={props.theme}
                 navigate={navigate}
+              />
+            }
+          />
+          <Route
+            path="admin"
+            element={
+              <AdminPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
               />
             }
           />

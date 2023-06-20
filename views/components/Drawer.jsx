@@ -192,7 +192,7 @@ const DrawerComponent = (props) => {
           <ListItemText primary="Account" />
         </ListItem>
         {props.user.role == 'admin' ? (
-          <ListItem button={true} component="a" href={routes.admin}>
+          <ListItem button={true} component={RouterLink} to={routes.admin}>
             <ListItemIcon>
               <Settings style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
