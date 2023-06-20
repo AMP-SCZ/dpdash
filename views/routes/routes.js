@@ -32,7 +32,7 @@ export const routes = {
   configurationError: `${basePath}/u/configure?u=error`,
   createConfiguration: `${basePath}/u/configure?s=add`,
   resetPassword: `${basePath}/resetpw`,
-  signUp: `${basePath}/signup`,
+  signUp: `/register`,
 }
 
 export const apiRoutes = {

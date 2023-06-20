@@ -10,6 +10,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
+import { Link } from 'react-router-dom'
 import { routes } from '../routes/routes'
 import { AuthModel } from '../models'
 
@@ -218,8 +219,8 @@ const LoginPage = (props) => {
               </Button>
               <br />
               <Typography
-                component="a"
-                href={routes.signUp}
+                component={Link}
+                to={routes.signUp}
                 style={{
                   textAlign: 'center',
                   width: '100%',

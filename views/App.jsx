@@ -20,6 +20,7 @@ import GraphPage from './pages/GraphPage'
 import EditConfigPage from './pages/EditConfigPage'
 
 import 'react-virtualized/styles.css'
+import RegisterPage from './pages/RegisterPage'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
@@ -30,6 +31,11 @@ const App = (props) => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace={true} />} />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route
+          path="/register"
+          element={<RegisterPage navigate={navigate} />}
+        />
+
         <Route
           path="dashboard/:study/:subject"
           element={
