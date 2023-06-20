@@ -14,6 +14,7 @@ import AccountPage from './pages/AccountPage'
 import ChartsPage from './pages/ChartsPage'
 import NewChartPage from './pages/NewChartPage'
 import EditChartPage from './pages/EditChartPage'
+import ViewChartPage from './pages/ViewChartPage'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
@@ -77,6 +78,17 @@ const App = (props) => {
             path="charts/:chart_id/edit"
             element={
               <EditChartPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+                navigate={navigate}
+              />
+            }
+          />
+          <Route
+            path="charts/:chart_id"
+            element={
+              <ViewChartPage
                 user={user}
                 classes={props.classes}
                 theme={props.theme}

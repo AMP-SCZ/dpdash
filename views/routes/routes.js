@@ -62,6 +62,12 @@ export const apiRoutes = {
   auth: {
     login: `${apiPath}/login`,
   },
+  chartData: {
+    show: (chartId, queryParams) =>
+      queryParams
+        ? `${apiPath}/data/charts/${chartId}?${qs.stringify(queryParams)}`
+        : `${apiPath}/data/charts/${chartId}`,
+  },
 }
 
 export const defaultApiOptions = {

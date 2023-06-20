@@ -89,35 +89,6 @@ function ensurePermission(req, res, next) {
     )
 }
 
-//User Home
-router.route('/u').get(ensureAuthenticated, function (req, res) {
-  return res
-    .status(200)
-    .send(
-      userPage(
-        req.user,
-        req.session.display_name,
-        req.session.icon,
-        req.session.mail,
-        req.session.role
-      )
-    )
-})
-
-//Admin Home
-router.route('/admin').get(ensureAdmin, function (req, res) {
-  return res
-    .status(200)
-    .send(
-      adminPage(
-        req.user,
-        req.session.display_name,
-        req.session.role,
-        req.session.icon
-      )
-    )
-})
-
 //register
 router
   .route('/signup')
