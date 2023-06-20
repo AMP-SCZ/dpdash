@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper'
 import MenuItem from '@material-ui/core/MenuItem'
 import Chip from '@material-ui/core/Chip'
 import Checkbox from '@material-ui/core/Checkbox'
+import { Link } from 'react-router-dom'
 
 import StarBorder from '@material-ui/icons/StarBorder'
 import Star from '@material-ui/icons/Star'
@@ -544,12 +545,12 @@ class MainPage extends Component {
   }
   getSubjectCell = (data) => {
     return (
-      <a
+      <Link
         style={{ textDecoration: 'none' }}
-        href={`${basePath}/dashboard/${data.study}/${data.subject}`}
+        to={`${basePath}/dashboard/${data.study}/${data.subject}`}
       >
         {data.subject}
-      </a>
+      </Link>
     )
   }
   getSyncedCell = (data) => {

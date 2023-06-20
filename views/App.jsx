@@ -16,6 +16,7 @@ import NewChartPage from './pages/NewChartPage'
 import EditChartPage from './pages/EditChartPage'
 import ViewChartPage from './pages/ViewChartPage'
 import AdminPage from './pages/AdminPage'
+import GraphPage from './pages/GraphPage'
 
 import 'react-virtualized/styles.css'
 
@@ -28,6 +29,17 @@ const App = (props) => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace={true} />} />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route
+          path="dashboard/:study/:subject"
+          element={
+            <GraphPage
+              user={user}
+              classes={props.classes}
+              theme={props.theme}
+            />
+          }
+        />
+
         <Route
           element={
             <RequireAuth>

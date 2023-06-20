@@ -190,21 +190,17 @@ router.get(
         subject: req.params.subject,
         defaultConfig,
       })
-      return res.send(
-        graphPage(
-          req.params.subject,
-          req.params.study,
-          req.user,
-          req.session.display_name,
-          req.session.icon,
-          req.session.mail,
-          req.session.toc,
-          dashboardState,
-          defaultConfig,
-          req.session.celery_tasks,
-          req.session.role
-        )
-      )
+      return res.status(200).json({
+        status: 200,
+        data: {
+          subject: { sid: req.params.subject, project: req.params.study },
+          graph: {
+            matrixData: dashboardState.matrixData,
+            configurations: dashboardState.matrixConfig,
+            consentDate: dashboardState.consentDate,
+          },
+        },
+      })
     } catch (err) {
       console.error(err.message)
       return res.status(500).send({ message: err.message })

@@ -32,10 +32,9 @@ export default class GraphFactory extends Component {
     //this.graph.update(this.props.data, this.props)
   }
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   render() {
-    return (<div className="graph"></div>)
+    return <div className="graph"></div>
   }
 }
