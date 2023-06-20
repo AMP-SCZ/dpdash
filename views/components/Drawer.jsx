@@ -167,13 +167,13 @@ const DrawerComponent = (props) => {
       </div>
       <Divider />
       <List dense={true}>
-        <ListItem button={true} component="a" href={routes.home}>
+        <ListItem button={true} component={RouterLink} to={routes.home}>
           <ListItemIcon>
             <Home style={{ color: colors.dark_sky_blue }} />
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button={true} component="a" href={routes.charts}>
+        <ListItem button={true} component={RouterLink} to={routes.charts}>
           <ListItemIcon>
             <ShowChart style={{ color: colors.dark_sky_blue }} />
           </ListItemIcon>
@@ -185,7 +185,7 @@ const DrawerComponent = (props) => {
           </ListItemIcon>
           <ListItemText primary="Configure" />
         </ListItem>
-        <ListItem button={true} component="a" href={routes.userAccount}>
+        <ListItem button={true} component={RouterLink} to={routes.userAccount}>
           <ListItemIcon>
             <Person style={{ color: colors.dark_sky_blue }} />
           </ListItemIcon>

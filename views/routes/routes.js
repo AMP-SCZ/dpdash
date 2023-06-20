@@ -8,7 +8,7 @@ export const routes = {
   basePath,
   home: `${basePath}/main`,
   configurations: `${basePath}/configs`,
-  userAccount: `${basePath}/u`,
+  userAccount: `${basePath}/user-account`,
   newChart: `${basePath}/charts/new`,
   configure: `${basePath}/u/configure`,
   dashboard: `${basePath}/dashboard`,

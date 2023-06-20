@@ -9,10 +9,10 @@ import { defaultTargetValueMap } from '../utils/defaultTargetValueMap'
 
 const router = Router()
 
-router.route(routes.charts).get(ensureAuthenticated, chartsController.index)
-router.route(routes.newChart).get(ensureAuthenticated, chartsController.new)
-router.route(routes.chart).get(ensureAuthenticated, chartsController.show)
-router.route(routes.editChart).get(ensureAuthenticated, chartsController.edit)
+// router.route(routes.charts).get(ensureAuthenticated, chartsController.index)
+// router.route(routes.newChart).get(ensureAuthenticated, chartsController.new)
+// router.route(routes.chart).get(ensureAuthenticated, chartsController.show)
+// router.route(routes.editChart).get(ensureAuthenticated, chartsController.edit)
 
 router
   .route('/api/v1/charts')

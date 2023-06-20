@@ -20,11 +20,8 @@ import ensureUser from '../utils/passport/ensure-user'
 
 import userPage from '../templates/Account.template'
 import adminPage from '../templates/Admin.template'
-import configPage from '../templates/Config.template'
 import deepdivePage from '../templates/DeepDive.template'
-import editConfig from '../templates/EditConfig.template'
 import graphPage from '../templates/Graph.template'
-import mainPage from '../templates/Main.template'
 import registerPage from '../templates/Register.template'
 import resetPage from '../templates/Resetpw.template'
 import studyPage from '../templates/Study.template'
@@ -105,49 +102,6 @@ router.route('/u').get(ensureAuthenticated, function (req, res) {
         req.session.role
       )
     )
-})
-
-//User Configuration
-router.route('/u/configure').get(ensureAuthenticated, function (req, res) {
-  if (req.query.s && req.query.id) {
-    return res.status(200).send(editConfig(req.user, req.query.s, req.query.id))
-  } else if (req.query.s) {
-    return res.status(200).send(editConfig(req.user, req.query.s, null))
-  } else if (req.query.u) {
-    let message = req.query.u
-    if (req.query.u == 'invalid') {
-      message = 'Invalid configuration format.'
-    } else if (req.query.u == 'error') {
-      message = 'Error occurred while uploading the configuration.'
-    } else if (req.query.u == 'success') {
-      message = 'Configuration upload successful!'
-    }
-    return res
-      .status(200)
-      .send(
-        configPage(
-          req.user,
-          req.session.display_name,
-          req.session.icon,
-          req.session.mail,
-          req.session.role,
-          message
-        )
-      )
-  } else {
-    return res
-      .status(200)
-      .send(
-        configPage(
-          req.user,
-          req.session.display_name,
-          req.session.icon,
-          req.session.mail,
-          req.session.role,
-          ''
-        )
-      )
-  }
 })
 
 //Admin Home

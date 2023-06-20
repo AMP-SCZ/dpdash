@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 
-import ChartList from './components/ChartList'
-import AddNewChart from './components/Graphs/AddNewChart'
-import ShareChart from './components/ShareCharts'
+import ChartList from '../components/ChartList'
+import AddNewChart from '../components/Graphs/AddNewChart'
+import ShareChart from '../components/ShareCharts'
 import {
   getCharts,
   deleteChart,
   duplicateChart,
   fetchUsernames,
   shareChart,
-} from './fe-utils/fetchUtil'
+} from '../fe-utils/fetchUtil'
 
 const NULL_CHART = {}
 
-const Charts = ({ user, classes }) => {
+const ChartsPage = ({ user, classes, navigate }) => {
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
   const [usernames, setUsernames] = useState([])
@@ -53,6 +53,7 @@ const Charts = ({ user, classes }) => {
     const { data: charts } = await getCharts()
     setChartList(charts)
   }
+  const newChart = (newChartPage) => navigate(newChartPage)
 
   useEffect(() => {
     loadCharts()
@@ -87,9 +88,9 @@ const Charts = ({ user, classes }) => {
           classes={classes}
         />
       )}
-      <AddNewChart />
+      <AddNewChart onNewChart={newChart} />
     </>
   )
 }
 
-export default Charts
+export default ChartsPage

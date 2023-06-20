@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 
 import withRoot from './withRoot'
@@ -10,10 +10,14 @@ import LoginPage from './pages/LoginPage'
 import { AuthContext } from './contexts/AuthContext'
 import RequireAuth from './components/hoc/RequiredAuth'
 import MainPage from './pages/MainPage'
+import AccountPage from './pages/AccountPage'
+import ChartsPage from './pages/ChartsPage'
+import NewChartPage from './pages/NewChartPage'
+import EditChartPage from './pages/EditChartPage'
 
 const App = (props) => {
   const [user, setUser] = useState(null)
-  console.log(props)
+  const navigate = useNavigate()
 
   return (
     <AuthContext.Provider value={user}>
@@ -35,6 +39,48 @@ const App = (props) => {
                 user={user}
                 classes={props.classes}
                 theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="user-account"
+            element={
+              <AccountPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="charts"
+            element={
+              <ChartsPage
+                classes={props.classes}
+                navigate={navigate}
+                theme={props.theme}
+                user={user}
+              />
+            }
+          />
+          <Route
+            path="charts/new"
+            element={
+              <NewChartPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="charts/:chart_id/edit"
+            element={
+              <EditChartPage
+                user={user}
+                classes={props.classes}
+                theme={props.theme}
+                navigate={navigate}
               />
             }
           />
