@@ -314,10 +314,9 @@ class Graph extends Component {
       tableItem.push(
         <TableRow key={i + dataItem['label']}>
           <CustomTableCell theme={this.props.theme}>
-            >{dataItem['label']}
+            {dataItem['label']}
           </CustomTableCell>
           <CustomTableCell theme={this.props.theme}>
-            >
             {dataItem['stat'].length > 0 &&
             !isNaN(parseFloat(dataItem['stat'][0].min)) &&
             isFinite(dataItem['stat'][0].min)
@@ -325,7 +324,6 @@ class Graph extends Component {
               : 'N/A'}
           </CustomTableCell>
           <CustomTableCell theme={this.props.theme}>
-            >
             {dataItem['stat'].length > 0 &&
             !isNaN(parseFloat(dataItem['stat'][0].max)) &&
             isFinite(dataItem['stat'][0].max)
@@ -333,7 +331,6 @@ class Graph extends Component {
               : 'N/A'}
           </CustomTableCell>
           <CustomTableCell theme={this.props.theme}>
-            >
             {dataItem['stat'].length > 0 &&
             !isNaN(parseFloat(dataItem['stat'][0].mean)) &&
             isFinite(dataItem['stat'][0].mean)
@@ -480,7 +477,7 @@ class Graph extends Component {
     const buttonClassname = classNames({
       [classes.buttonSuccess]: success,
     })
-    console.log(this.state.graph, 'WHAT IS THIS')
+
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
@@ -634,11 +631,11 @@ class Graph extends Component {
             <Table>
               <TableHead>
                 <TableRow>
-                  <CustomTableCell theme={theme}>> Label </CustomTableCell>
-                  <CustomTableCell theme={theme}>> Min </CustomTableCell>
-                  <CustomTableCell theme={theme}>> Max </CustomTableCell>
-                  <CustomTableCell theme={theme}>> Mean </CustomTableCell>
-                  <CustomTableCell theme={theme}>> Missing % </CustomTableCell>
+                  <CustomTableCell theme={theme}> Label </CustomTableCell>
+                  <CustomTableCell theme={theme}> Min </CustomTableCell>
+                  <CustomTableCell theme={theme}> Max </CustomTableCell>
+                  <CustomTableCell theme={theme}> Mean </CustomTableCell>
+                  <CustomTableCell theme={theme}> Missing % </CustomTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
