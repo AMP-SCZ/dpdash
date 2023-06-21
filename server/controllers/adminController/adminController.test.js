@@ -16,9 +16,9 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: { uid: 'uid' },
-          status: 200,
         })
       })
     })

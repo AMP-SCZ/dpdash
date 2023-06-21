@@ -3,11 +3,15 @@ import { apiRoutes } from '../../routes/routes'
 
 const UserModel = {
   findOne: async (userId) => {
-    const response = await fetch(apiRoutes.users.user(userId), {
-      ...BASE_REQUEST_OPTIONS,
-    })
+    try {
+      const response = await fetch(apiRoutes.users.user(userId), {
+        ...BASE_REQUEST_OPTIONS,
+      })
 
-    return await response.json()
+      return await response.json()
+    } catch (error) {
+      throw new Error(error)
+    }
   },
   update: async (userId, userAttributes) => {
     try {

@@ -23,6 +23,7 @@ describe('UsersController', () => {
 
         await UsersController.show(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: {
             uid: 'owl',
@@ -30,7 +31,6 @@ describe('UsersController', () => {
             display_name: 'Display Name',
             icon: 'icon',
           },
-          status: 200,
         })
       })
     })
@@ -71,6 +71,7 @@ describe('UsersController', () => {
 
         await UsersController.edit(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: {
             display_name: 'Display Name',
@@ -79,7 +80,6 @@ describe('UsersController', () => {
             owner: 'owl',
             uid: 'user-uid',
           },
-          status: 200,
         })
       })
     })
@@ -95,9 +95,9 @@ describe('UsersController', () => {
 
         await UsersController.edit(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
           error: 'User could not be updated',
-          status: 400,
         })
       })
     })
