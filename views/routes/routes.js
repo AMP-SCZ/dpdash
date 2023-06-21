@@ -33,6 +33,7 @@ export const routes = {
   createConfiguration: `${basePath}/u/configure?s=add`,
   resetPassword: `/reset-password`,
   signUp: `/register`,
+  login: '/login',
 }
 
 export const apiRoutes = {

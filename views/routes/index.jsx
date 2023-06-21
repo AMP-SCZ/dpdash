@@ -15,68 +15,112 @@ import EditConfigPage from '../pages/EditConfigPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
 import RegisterPage from '../pages/RegisterPage'
 
-const Router = ({ setUser, user, classes, theme }) => {
+const Router = (props) => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace={true} />} />
-        <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route path="/login" element={<LoginPage setUser={props.setUser} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route
           path="dashboard/:study/:subject"
-          element={<GraphPage user={user} classes={classes} theme={theme} />}
+          element={
+            <GraphPage
+              user={props.user}
+              classes={props.classes}
+              theme={props.theme}
+            />
+          }
         />
 
         <Route
           element={
             <AuthenticatedRoute>
-              <MainLayout classes={classes} theme={theme} />
+              <MainLayout classes={props.classes} theme={props.theme} />
             </AuthenticatedRoute>
           }
         >
           <Route path="configs" element={<ConfigPage />} />
           <Route
             path="main"
-            element={<MainPage user={user} classes={classes} theme={theme} />}
+            element={
+              <MainPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
           />
           <Route
             path="user-account"
             element={
-              <AccountPage user={user} classes={classes} theme={theme} />
+              <AccountPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
             }
           />
           <Route
             path="charts"
-            element={<ChartsPage classes={classes} theme={theme} user={user} />}
+            element={
+              <ChartsPage
+                classes={props.classes}
+                theme={props.theme}
+                user={props.user}
+              />
+            }
           />
           <Route
             path="charts/new"
             element={
-              <NewChartPage user={user} classes={classes} theme={theme} />
+              <NewChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
             }
           />
           <Route
             path="charts/:chart_id/edit"
             element={
-              <EditChartPage user={user} classes={classes} theme={theme} />
+              <EditChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
             }
           />
           <Route
             path="charts/:chart_id"
             element={
-              <ViewChartPage user={user} classes={classes} theme={theme} />
+              <ViewChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
             }
           />
           <Route
             path="admin"
-            element={<AdminPage user={user} classes={classes} theme={theme} />}
+            element={
+              <AdminPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
           />
           <Route
             path="config/:config_id/edit"
             element={
-              <EditConfigPage user={user} classes={classes} theme={theme} />
+              <EditConfigPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
             }
           />
         </Route>

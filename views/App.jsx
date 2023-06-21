@@ -13,7 +13,7 @@ const App = (props) => {
 
   return (
     <AuthContext.Provider value={[user, setUser]}>
-      <Router {...props} user={user} />
+      <Router {...props} user={user} setUser={setUser} />
     </AuthContext.Provider>
   )
 }

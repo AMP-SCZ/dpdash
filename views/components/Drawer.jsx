@@ -199,7 +199,7 @@ const DrawerComponent = (props) => {
             <ListItemText primary="Admin" />
           </ListItem>
         ) : null}
-        <ListItem button={true} component="a" href={routes.logout}>
+        <ListItem button={true} component={RouterLink} to={routes.login}>
           <ListItemIcon>
             <ExitToApp style={{ color: colors.dark_sky_blue }} />
           </ListItemIcon>
