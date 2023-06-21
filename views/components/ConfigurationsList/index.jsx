@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import classNames from 'classnames'
-import 'whatwg-fetch'
 import Select from 'react-select'
 
 import AttachFile from '@material-ui/icons/AttachFile'
@@ -23,7 +22,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { fetchUsernames } from '../../fe-utils/fetchUtil'
 import { routes } from '../../routes/routes'
-import { UserConfigurationsModel, UserModel } from '../../models'
+import api from '../../api'
 import ConfigurationCard from '../ConfigurationCard'
 
 function NoOptionsMessage(props) {
@@ -147,9 +146,9 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   const { uid } = user
   const userMessageLength = user.message.length
   const [configurations, setConfigurations] = useState([])
-  const [snackBars, setSnackBars] = useState({
-    snackTime: false,
-    uploadSnack: false,
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    message: '',
   })
   const [sharedWithState, setSharedWith] = useState({
     selectedConfig: {},
@@ -227,24 +226,25 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     }
   }
   const fetchPreferences = async (userId) => {
-    const { data } = await UserModel.findOne(userId)
-    if (data) setPreferences(data.preferences)
+    try {
+      const user = await api.users.findOne(userId)
+      setPreferences(user.preferences)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const loadAllConfigurations = async (userId) => {
-    const { data } = await UserConfigurationsModel.all(userId)
-    if (data) setConfigurations(data)
+    try {
+      const configurations = await api.userConfigurations.all(userId)
+
+      setConfigurations(configurations)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
-  const handleCrumbs = () => {
-    setState((prevState) => {
-      return {
-        ...prevState,
-        snackTime: false,
-        uploadSnack: false,
-      }
-    })
-  }
+  const handleCrumbs = () => setSnackBar({ open: false, message: '' })
 
   const openSearchUsers = (config) => {
     const { _id, readers, owner } = config
@@ -278,18 +278,19 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }
 
   const shareWithUsers = async () => {
-    const { _id } = sharedWithState.selectedConfig
-    const configAttributes = {
-      readers: sharedWithState.shared.map((sharedWith) => sharedWith.value),
-    }
-    const { data } = await UserConfigurationsModel.update(
-      uid,
-      _id,
-      configAttributes
-    )
-    if (data) loadAllConfigurations(uid)
+    try {
+      const { _id } = sharedWithState.selectedConfig
+      const configAttributes = {
+        readers: sharedWithState.shared.map((sharedWith) => sharedWith.value),
+      }
 
-    closeSearchUsers()
+      await api.userConfigurations.update(uid, _id, configAttributes)
+
+      loadAllConfigurations(uid)
+      closeSearchUsers()
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const handleChange = (name) => (value) => {
@@ -303,22 +304,21 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }
 
   const handleChangeFile = async (e) => {
-    e.preventDefault()
-    const file = e.target.files ? e.target.files[0] : ''
-    const json = await new Response(file).json()
-    const userAttributes = {
-      owner: uid,
-      readers: [uid],
-      ...json,
-    }
-    const { data, error } = await UserConfigurationsModel.create(
-      uid,
-      userAttributes
-    )
+    try {
+      e.preventDefault()
+      const file = e.target.files ? e.target.files[0] : ''
+      const json = await new Response(file).json()
+      const userAttributes = {
+        owner: uid,
+        readers: [uid],
+        ...json,
+      }
+      await api.userConfigurations.create(uid, userAttributes)
 
-    if (data) loadAllConfigurations(uid)
-    else if (!data) window.location = routes.invalidConfiguration
-    else window.location = routes.configurationError
+      loadAllConfigurations(uid)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const actions = [
@@ -358,48 +358,62 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }
 
   const copyConfiguration = async (configuration) => {
-    const { _id, ...configAttributes } = configuration
-    const newConfig = {
-      ...configAttributes,
-      owner: uid,
-      readers: [uid],
-      created: new Date().toUTCString(),
-    }
-    const { data } = await UserConfigurationsModel.create(uid, newConfig)
+    try {
+      const { _id, ...configAttributes } = configuration
+      const newConfig = {
+        ...configAttributes,
+        owner: uid,
+        readers: [uid],
+        created: new Date().toUTCString(),
+      }
 
-    if (data) loadAllConfigurations(uid)
+      await api.userConfigurations.create(uid, newConfig)
+
+      loadAllConfigurations(uid)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const removeConfiguration = async (configId) => {
-    const res = await UserConfigurationsModel.destroy(uid, configId)
-    console.log(res, 'What is this')
-    if (res) {
+    try {
+      await api.userConfigurations.destroy(uid, configId)
+
       loadAllConfigurations(uid)
 
       if (preferences.config === configId) updateUserPreferences(configId)
+    } catch (error) {
+      setSnackBar(() => ({
+        open: true,
+        message: error.message,
+      }))
     }
   }
 
   const updateConfiguration = async (configId, configAttributes) => {
-    const { data } = await UserConfigurationsModel.update(
-      uid,
-      configId,
-      configAttributes
-    )
-    if (preferences.config === configId) updateUserPreferences(configId)
-    if (data) loadAllConfigurations(uid)
+    try {
+      await api.userConfigurations.update(uid, configId, configAttributes)
+      updateUserPreferences(configId)
+      loadAllConfigurations(uid)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const updateUserPreferences = async (configId) => {
-    const userAttributes = {
-      preferences: {
-        ...preferences,
-        config: preferences.config === configId ? '' : configId,
-      },
-    }
-    const { data } = await UserModel.update(uid, userAttributes)
+    try {
+      const userAttributes = {
+        preferences: {
+          ...preferences,
+          config: preferences.config === configId ? '' : configId,
+        },
+      }
 
-    if (data) setPreferences(userAttributes.preferences)
+      await api.users.update(uid, userAttributes)
+      setPreferences(userAttributes.preferences)
+    } catch (error) {
+      setSnackBar({ open: true, message: error.message })
+    }
   }
 
   const onRemoveOrUpdateConfig = (ownsConfig, configId) => {
@@ -510,14 +524,8 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         <DialogActions>{actions}</DialogActions>
       </Dialog>
       <Snackbar
-        open={snackBars.snackTime}
-        message="Your configuration has been updated."
-        autoHideDuration={2000}
-        onRequestClose={handleCrumbs}
-      />
-      <Snackbar
-        open={snackBars.uploadSnack}
-        message={user.message}
+        open={snackBar.open}
+        message={snackBar.message}
         autoHideDuration={2000}
         onRequestClose={handleCrumbs}
       />
