@@ -227,13 +227,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     }
   }
   const fetchPreferences = async (userId) => {
-    const { data, status } = await UserModel.findOne(userId)
-    if (status === 200) setPreferences(data.preferences)
+    const { data } = await UserModel.findOne(userId)
+    if (data) setPreferences(data.preferences)
   }
 
   const loadAllConfigurations = async (userId) => {
-    const { data, status } = await UserConfigurationsModel.all(userId)
-    if (status === 200) setConfigurations(data)
+    const { data } = await UserConfigurationsModel.all(userId)
+    if (data) setConfigurations(data)
   }
 
   const handleCrumbs = () => {
@@ -282,12 +282,12 @@ const ConfigurationsList = ({ user, classes, theme }) => {
     const configAttributes = {
       readers: sharedWithState.shared.map((sharedWith) => sharedWith.value),
     }
-    const { status } = await UserConfigurationsModel.update(
+    const { data } = await UserConfigurationsModel.update(
       uid,
       _id,
       configAttributes
     )
-    if (status === 200) loadAllConfigurations(uid)
+    if (data) loadAllConfigurations(uid)
 
     closeSearchUsers()
   }
@@ -311,10 +311,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       readers: [uid],
       ...json,
     }
-    const { status } = await UserConfigurationsModel.create(uid, userAttributes)
+    const { data, error } = await UserConfigurationsModel.create(
+      uid,
+      userAttributes
+    )
 
-    if (status === 200) loadAllConfigurations(uid)
-    else if (status === 400) window.location = routes.invalidConfiguration
+    if (data) loadAllConfigurations(uid)
+    else if (!data) window.location = routes.invalidConfiguration
     else window.location = routes.configurationError
   }
 
@@ -362,14 +365,15 @@ const ConfigurationsList = ({ user, classes, theme }) => {
       readers: [uid],
       created: new Date().toUTCString(),
     }
-    const { status } = await UserConfigurationsModel.create(uid, newConfig)
+    const { data } = await UserConfigurationsModel.create(uid, newConfig)
 
-    if (status) loadAllConfigurations(uid)
+    if (data) loadAllConfigurations(uid)
   }
 
   const removeConfiguration = async (configId) => {
-    const { status } = await UserConfigurationsModel.destroy(uid, configId)
-    if (status === 200) {
+    const res = await UserConfigurationsModel.destroy(uid, configId)
+    console.log(res, 'What is this')
+    if (res) {
       loadAllConfigurations(uid)
 
       if (preferences.config === configId) updateUserPreferences(configId)
@@ -377,13 +381,13 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }
 
   const updateConfiguration = async (configId, configAttributes) => {
-    const { status } = await UserConfigurationsModel.update(
+    const { data } = await UserConfigurationsModel.update(
       uid,
       configId,
       configAttributes
     )
     if (preferences.config === configId) updateUserPreferences(configId)
-    if (status) loadAllConfigurations(uid)
+    if (data) loadAllConfigurations(uid)
   }
 
   const updateUserPreferences = async (configId) => {
@@ -393,9 +397,9 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         config: preferences.config === configId ? '' : configId,
       },
     }
-    const { status } = await UserModel.update(uid, userAttributes)
+    const { data } = await UserModel.update(uid, userAttributes)
 
-    if (status === 200) setPreferences(userAttributes.preferences)
+    if (data) setPreferences(userAttributes.preferences)
   }
 
   const onRemoveOrUpdateConfig = (ownsConfig, configId) => {

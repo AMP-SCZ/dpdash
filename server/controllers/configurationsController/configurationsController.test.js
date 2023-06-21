@@ -26,9 +26,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.create(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: insertedConfiguration,
-          status: 200,
         })
       })
     })
@@ -44,7 +44,7 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.create(request, response)
 
-        expect(response.json).toHaveBeenCalledWith({ status: 500 })
+        expect(response.status).toHaveBeenCalledWith(500)
       })
     })
 
@@ -59,9 +59,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.create(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
           error: 'Rejected error message',
-          status: 400,
         })
       })
     })
@@ -85,9 +85,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.update(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: updatedConfiguration,
-          status: 200,
         })
       })
     })
@@ -101,7 +101,7 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.update(request, response)
 
-        expect(response.json).toHaveBeenCalledWith({ status: 400 })
+        expect(response.status).toHaveBeenCalledWith(400)
       })
     })
 
@@ -116,9 +116,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.update(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(500)
         expect(response.json).toHaveBeenCalledWith({
           error: 'mocked error',
-          status: 500,
         })
       })
     })
@@ -142,9 +142,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.index(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: configurationList,
-          status: 200,
         })
       })
     })
@@ -160,9 +160,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.index(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
           error: 'aggregation result error',
-          status: 400,
         })
       })
     })
@@ -181,7 +181,7 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.destroy(request, response)
 
-        expect(response.json).toHaveBeenCalledWith({ status: 200 })
+        expect(response.status).toHaveBeenCalledWith(200)
       })
     })
 
@@ -193,7 +193,7 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.destroy(request, response)
 
-        expect(response.json).toHaveBeenCalledWith({ status: 404 })
+        expect(response.status).toHaveBeenCalledWith(404)
       })
     })
 
@@ -205,9 +205,9 @@ describe('ConfigurationsController', () => {
 
         await ConfigurationsController.destroy(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
           error: 'destroy error',
-          status: 400,
         })
       })
     })

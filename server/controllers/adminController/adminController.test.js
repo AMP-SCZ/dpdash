@@ -16,9 +16,9 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
           data: { uid: 'uid' },
-          status: 200,
         })
       })
     })
@@ -34,7 +34,7 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
-        expect(response.json).toHaveBeenCalledWith({ status: 400 })
+        expect(response.status).toHaveBeenCalledWith(400)
       })
     })
 
@@ -51,9 +51,9 @@ describe('AdminUsersController', () => {
 
         await AdminUsersController.update(request, response)
 
+        expect(response.status).toHaveBeenCalledWith(500)
         expect(response.json).toHaveBeenCalledWith({
           error: 'User could not be updated',
-          status: 500,
         })
       })
     })
