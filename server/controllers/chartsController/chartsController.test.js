@@ -84,7 +84,7 @@ describe('chartsController', () => {
       await chartsController.show(request, response)
 
       expect(response.status).toHaveBeenCalledWith(200)
-      expect(response.send).toHaveBeenCalledWith({
+      expect(response.json).toHaveBeenCalledWith({
         status: 200,
         data: {
           chart_id: chart.id,
