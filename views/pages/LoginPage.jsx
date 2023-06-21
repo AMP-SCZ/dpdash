@@ -15,7 +15,6 @@ import { routes } from '../routes/routes'
 import { AuthModel } from '../models'
 
 const LoginPage = (props) => {
-  console.log(props)
   const [state, setState] = useState({
     message: '',
     username: '',
