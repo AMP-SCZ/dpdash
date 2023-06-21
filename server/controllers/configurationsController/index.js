@@ -8,7 +8,7 @@ const ConfigurationsController = {
 
       return res.status(200).json({ data: newConfiguration })
     } catch (error) {
-      return res.json({ error: error.message, status: 400 })
+      return res.status(400).json({ error: error.message })
     }
   },
   destroy: async (req, res) => {
@@ -43,9 +43,9 @@ const ConfigurationsController = {
       const { uid } = req.params
       const data = await ConfigModel.index(appDb, uid)
 
-      return res.json({ data, status: 200 })
+      return res.status(200).json({ data })
     } catch (error) {
-      return res.json({ error: error.message, status: 400 })
+      return res.status(400).json({ error: error.message })
     }
   },
 }
