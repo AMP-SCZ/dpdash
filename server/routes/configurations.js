@@ -8,12 +8,12 @@ const router = Router()
 
 router
   .route(v1Routes.config.index)
-  .get(ConfigurationsController.index)
-  .post(ConfigurationsController.create)
+  .get(ensureUser, ConfigurationsController.index)
+  .post(ensureUser, ConfigurationsController.create)
 
 router
   .route(v1Routes.config.show)
-  .delete(ConfigurationsController.destroy)
-  .patch(ConfigurationsController.update)
+  .delete(ensureUser, ConfigurationsController.destroy)
+  .patch(ensureUser, ConfigurationsController.update)
 
 export default router
