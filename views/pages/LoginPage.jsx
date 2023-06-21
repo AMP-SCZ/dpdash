@@ -10,9 +10,10 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
+import Snackbar from '@material-ui/core/Snackbar'
 import { Link } from 'react-router-dom'
 import { routes } from '../routes/routes'
-import { AuthModel } from '../models'
+import api from '../api'
 
 const LoginPage = (props) => {
   const [state, setState] = useState({
@@ -35,11 +36,12 @@ const LoginPage = (props) => {
     })
   }
 
-  const handleRequestClose = () => {
+  const handleCrumbs = () => {
     setState((prevState) => {
       return {
         ...prevState,
         open: false,
+        message: '',
       }
     })
   }
@@ -65,15 +67,24 @@ const LoginPage = (props) => {
   }
 
   const handleLogin = async () => {
-    const credentials = {
-      username: state.username,
-      password: state.password,
-    }
-    const { status, data } = await AuthModel.findOne(credentials)
-    if (status === 200) {
-      props.setUser(data)
-      window.sessionStorage.setItem('userId', data.uid)
+    try {
+      const credentials = {
+        username: state.username,
+        password: state.password,
+      }
+
+      const user = await api.auth.findOne(credentials)
+      props.setUser(user)
+      window.sessionStorage.setItem('userId', user.uid)
       navigate('/main')
+    } catch (error) {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          open: true,
+          message: error.message,
+        }
+      })
     }
   }
 
@@ -206,7 +217,6 @@ const LoginPage = (props) => {
                 variant="outlined"
                 color="primary"
                 type="submit"
-                form="loginForm"
                 style={{
                   float: 'right',
                   marginTop: '12px',
@@ -258,6 +268,12 @@ const LoginPage = (props) => {
           />
         )}
       </Card>
+      <Snackbar
+        open={state.open}
+        message={state.message}
+        autoHideDuration={2000}
+        onRequestClose={handleCrumbs}
+      />
     </div>
   )
 }

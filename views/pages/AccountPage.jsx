@@ -47,7 +47,6 @@ class AccountPage extends Component {
     }
   }
   componentWillMount() {
-    console.log(this.props)
     this.fetchUserInfo(this.props.user.uid)
   }
   handleDrawerToggle = () => {

@@ -189,7 +189,6 @@ class AdminPage extends Component {
   }
   componentDidUpdate() {}
   componentDidMount() {
-    console.log(this.props)
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
       height: window.innerHeight - this.state.marginHeight,

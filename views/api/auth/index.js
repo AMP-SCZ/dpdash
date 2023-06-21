@@ -1,7 +1,8 @@
 import { BASE_REQUEST_OPTIONS } from '../../../constants'
 import { apiRoutes } from '../../routes/routes'
+import { handleApiResponse } from '../helpers'
 
-const AuthModel = {
+const auth = {
   findOne: async (credentials) => {
     const response = await fetch(apiRoutes.auth.login, {
       ...BASE_REQUEST_OPTIONS,
@@ -9,8 +10,8 @@ const AuthModel = {
       body: JSON.stringify(credentials),
     })
 
-    return await response.json()
+    return handleApiResponse(response)
   },
 }
 
-export default AuthModel
+export default auth

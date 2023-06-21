@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
-import { UserModel } from '../models'
+import api from '../api'
 
 const AuthenticatedRoute = ({ children }) => {
   const navigate = useNavigate()
@@ -9,7 +9,7 @@ const AuthenticatedRoute = ({ children }) => {
   const userId = window.sessionStorage.getItem('userId')
 
   const fetchUser = async () => {
-    const res = await UserModel.findOne(userId)
+    const res = await api.users.findOne(userId)
     if (res.status === 200) setUser(res.data)
     else navigate('/login')
   }

@@ -57,9 +57,7 @@ class RegisterPage extends Component {
   handleMouseDownPassword = (event) => {
     event.preventDefault()
   }
-  componentDidMount() {
-    console.log('update')
-  }
+  componentDidMount() {}
   componentWillMount() {
     /* Resize listener register */
     window.addEventListener('resize', this.handleResize)

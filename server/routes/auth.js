@@ -8,7 +8,7 @@ const router = Router()
 
 router.route(v1Routes.auth.login).post(function (req, res, next) {
   passport.authenticate('local-login', { session: true }, function (err, user) {
-    if (err) return res.json({ status: 400, error: err.message })
+    if (err) return res.status(400).json({ error: err.message })
 
     return LocalLogin(req, res, next, user)
   })(req, res, next)

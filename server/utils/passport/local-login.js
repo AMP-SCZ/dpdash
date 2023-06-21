@@ -9,7 +9,7 @@ import UserModel from '../../models/UserModel'
 export default (req, res, _, user) => {
   //validate submitted password
   if (!verifyHash(req.body.password, user.password))
-    return res.json({ status: 400, error: 'Please enter your password.' })
+    return res.status(401).json({ error: 'Incorrect password' })
 
   //passport local log-in serializer
   passport.serializeUser(function (user, done) {
@@ -43,9 +43,7 @@ export default (req, res, _, user) => {
       const isAccountExpired = accountExpirationToMoment.isBefore(today)
 
       if (isAccountExpired)
-        return res
-          .status(401)
-          .json({ status: 401, error: 'Account is expired' })
+        return res.status(401).json({ error: 'Account is expired' })
 
       req.session.role = role
       req.session.display_name = display_name
@@ -54,10 +52,10 @@ export default (req, res, _, user) => {
       req.session.icon = icon
       req.session.userAccess = access
 
-      return res.json({ status: 200, data: value })
+      return res.status(200).json({ data: value })
     } catch (error) {
       console.error(error)
-      return res.json({ status: 400, error: error.message })
+      return res.status(400).json({ error: error.message })
     }
   })
 }

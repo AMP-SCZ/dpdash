@@ -25,7 +25,6 @@ const initialValues = (user) => ({
 })
 
 const NewChartPage = ({ classes, user, navigate }) => {
-  console.log(classes, user)
   const handleSubmit = async (e, formValues) => {
     e.preventDefault()
     const { data } = await createChart(formValues)
