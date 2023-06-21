@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { AuthContext } from '../../contexts/AuthContext'
-import { UserModel } from '../../models'
+import React, { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext'
+import { UserModel } from '../models'
 
 const AuthenticatedRoute = ({ children }) => {
-  const [user, setUser] = useContext(AuthContext)
   const navigate = useNavigate()
+  const [user, setUser] = useContext(AuthContext)
   const userId = window.sessionStorage.getItem('userId')
 
   const fetchUser = async () => {

@@ -46,6 +46,10 @@ class AccountPage extends Component {
       console.error(err.message)
     }
   }
+  componentWillMount() {
+    console.log(this.props)
+    this.fetchUserInfo(this.props.user.uid)
+  }
   handleDrawerToggle = () => {
     this.setState((state) => ({ mobileOpen: !state.mobileOpen }))
   }

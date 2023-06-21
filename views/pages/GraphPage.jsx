@@ -49,7 +49,7 @@ import { preparePreferences } from '../fe-utils/preferencesUtil'
 import basePathConfig from '../../server/configs/basePathConfig'
 import { routes, apiRoutes } from '../routes/routes'
 import { graphPageStyles } from '../styles/graph_page_styles'
-import { withRouter } from '../hooks/withRouter'
+import { withRouter } from '../hoc/withRouter'
 
 const drawerWidth = 200
 

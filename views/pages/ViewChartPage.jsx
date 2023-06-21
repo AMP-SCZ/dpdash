@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 import BarGraph from '../components/BarGraph'
 import GraphTable from '../components/GraphTable'
+import UserAvatar from '../components/UserAvatar'
 import ChartFilterForm from '../forms/CharFilterForm'
 import { apiRoutes } from '../routes/routes'
-import UserAvatar from '../components/UserAvatar'
-import { useParams } from 'react-router-dom'
 
 const ViewChartPage = ({ classes }) => {
   const { chart_id } = useParams()

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -10,9 +10,10 @@ import { fetchSubjects } from '../fe-utils/fetchUtil'
 import { AuthContext } from '../contexts/AuthContext'
 import { headerTitle } from './helpers'
 
-const MainLayout = ({ classes, theme, navigate }) => {
+const MainLayout = ({ classes, theme }) => {
   const [user] = useContext(AuthContext)
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({

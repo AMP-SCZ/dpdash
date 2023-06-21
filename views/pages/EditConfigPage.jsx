@@ -39,7 +39,7 @@ import classNames from 'classnames'
 import { fetchUsernames } from '../fe-utils/fetchUtil'
 
 import basePathConfig from '../../server/configs/basePathConfig'
-import { withRouter } from '../hooks/withRouter'
+import { withRouter } from '../hoc/withRouter'
 
 const basePath = basePathConfig || ''
 

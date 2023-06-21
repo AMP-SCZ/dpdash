@@ -1,0 +1,88 @@
+import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom'
+import MainLayout from '../layouts/MainLayout'
+import ConfigPage from '../pages/ConfigPage'
+import LoginPage from '../pages/LoginPage'
+import AuthenticatedRoute from '../hoc/AuthenticatedRoute'
+import MainPage from '../pages/MainPage'
+import AccountPage from '../pages/AccountPage'
+import ChartsPage from '../pages/ChartsPage'
+import NewChartPage from '../pages/NewChartPage'
+import EditChartPage from '../pages/EditChartPage'
+import ViewChartPage from '../pages/ViewChartPage'
+import AdminPage from '../pages/AdminPage'
+import GraphPage from '../pages/GraphPage'
+import EditConfigPage from '../pages/EditConfigPage'
+import ResetPasswordPage from '../pages/ResetPasswordPage'
+import RegisterPage from '../pages/RegisterPage'
+
+const Router = ({ setUser, user, classes, theme }) => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace={true} />} />
+        <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        <Route
+          path="dashboard/:study/:subject"
+          element={<GraphPage user={user} classes={classes} theme={theme} />}
+        />
+
+        <Route
+          element={
+            <AuthenticatedRoute>
+              <MainLayout classes={classes} theme={theme} />
+            </AuthenticatedRoute>
+          }
+        >
+          <Route path="configs" element={<ConfigPage />} />
+          <Route
+            path="main"
+            element={<MainPage user={user} classes={classes} theme={theme} />}
+          />
+          <Route
+            path="user-account"
+            element={
+              <AccountPage user={user} classes={classes} theme={theme} />
+            }
+          />
+          <Route
+            path="charts"
+            element={<ChartsPage classes={classes} theme={theme} user={user} />}
+          />
+          <Route
+            path="charts/new"
+            element={
+              <NewChartPage user={user} classes={classes} theme={theme} />
+            }
+          />
+          <Route
+            path="charts/:chart_id/edit"
+            element={
+              <EditChartPage user={user} classes={classes} theme={theme} />
+            }
+          />
+          <Route
+            path="charts/:chart_id"
+            element={
+              <ViewChartPage user={user} classes={classes} theme={theme} />
+            }
+          />
+          <Route
+            path="admin"
+            element={<AdminPage user={user} classes={classes} theme={theme} />}
+          />
+          <Route
+            path="config/:config_id/edit"
+            element={
+              <EditConfigPage user={user} classes={classes} theme={theme} />
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+export default Router

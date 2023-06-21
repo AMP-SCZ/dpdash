@@ -6,6 +6,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import { withRouter } from '../hoc/withRouter'
 
 import basePathConfig from '../../server/configs/basePathConfig'
 
@@ -278,4 +279,4 @@ class RegisterPage extends Component {
   }
 }
 
-export default RegisterPage
+export default withRouter(RegisterPage)

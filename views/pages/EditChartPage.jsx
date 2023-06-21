@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import ChartForm from '../forms/ChartForm'
 import { editChart, getChart } from '../fe-utils/fetchUtil'
 import { routes } from '../routes/routes'
 
-const EditChartPage = ({ classes, user, navigate }) => {
-  let { chart_id } = useParams()
+const EditChartPage = ({ classes, user }) => {
+  const { chart_id } = useParams()
+  const navigate = useNavigate()
   const [chart, setChart] = useState()
   const handleSubmit = async (e, formValues) => {
     e.preventDefault()

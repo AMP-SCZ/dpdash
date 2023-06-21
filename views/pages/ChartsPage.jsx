@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import ChartList from '../components/ChartList'
 import AddNewChart from '../components/Graphs/AddNewChart'
@@ -13,7 +14,8 @@ import {
 
 const NULL_CHART = {}
 
-const ChartsPage = ({ user, classes, navigate }) => {
+const ChartsPage = ({ user, classes }) => {
+  const navigate = useNavigate()
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
   const [usernames, setUsernames] = useState([])

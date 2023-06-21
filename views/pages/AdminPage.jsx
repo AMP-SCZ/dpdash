@@ -189,10 +189,10 @@ class AdminPage extends Component {
   }
   componentDidUpdate() {}
   componentDidMount() {
+    console.log(this.props)
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
       height: window.innerHeight - this.state.marginHeight,
-      avatar: getAvatar({ user: this.props.user }),
     })
     /* Resize listener register */
     window.addEventListener('resize', this.handleResize)
