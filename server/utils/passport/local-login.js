@@ -34,11 +34,11 @@ export default (req, res, _, user) => {
         await ConfigModel.save(appDb, configAttributes)
       }
 
-      const userInfo = await UserModel.update(appDb, uid, {
+      const updatedUser = await UserModel.update(appDb, uid, {
         last_logon: Date.now(),
       })
       const { role, display_name, mail, icon, access, account_expires } =
-        userInfo
+        updatedUser
 
       if (isAccountExpired(account_expires))
         return res.status(401).json({ error: 'Account is expired' })
@@ -50,7 +50,7 @@ export default (req, res, _, user) => {
       req.session.icon = icon
       req.session.userAccess = access
 
-      return res.status(200).json({ data: userInfo })
+      return res.status(200).json({ data: updatedUser })
     } catch (error) {
       console.error(error)
       return res.status(400).json({ error: error.message })

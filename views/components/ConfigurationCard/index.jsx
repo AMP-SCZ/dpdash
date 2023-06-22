@@ -20,6 +20,7 @@ import { colors } from '../../../constants'
 const ConfigurationCard = ({
   classes,
   config,
+  navigate,
   onCopyConfig,
   onEditConfig,
   onRemoveOrUpdateConfig,
