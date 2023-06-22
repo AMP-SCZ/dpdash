@@ -47,9 +47,6 @@ const MainLayout = ({ classes, theme }) => {
         totalDays={sideBarState.totalDays}
         totalStudies={sideBarState.totalStudies}
         totalSubjects={sideBarState.totalSubjects}
-        user={user}
-        classes={classes}
-        theme={theme}
       />
       <div className={`${classes.content} ${classes.contentPadded}`}>
         <Outlet context={{ user, classes, theme, navigate }} />
