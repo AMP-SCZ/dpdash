@@ -4,7 +4,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
 
-import getAvatar from '../fe-utils/avatarUtil'
 import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
 import { AuthContext } from '../contexts/AuthContext'
@@ -21,7 +20,6 @@ const MainLayout = ({ classes, theme }) => {
     totalStudies: 0,
     totalSubjects: 0,
   })
-  const [avatar, setAvatar] = useState('')
 
   const toggleDrawer = () => setOpenDrawer(!openDrawer)
 
@@ -29,7 +27,6 @@ const MainLayout = ({ classes, theme }) => {
     fetchSubjects().then((acl) => {
       setSideBarState(getCounts({ acl }))
     })
-    setAvatar(getAvatar({ user }))
   }, [])
 
   return (
@@ -40,7 +37,6 @@ const MainLayout = ({ classes, theme }) => {
         isAccountPage={false}
       />
       <Sidebar
-        avatar={avatar}
         handleDrawerToggle={toggleDrawer}
         mobileOpen={openDrawer}
         totalDays={sideBarState.totalDays}

@@ -4,9 +4,9 @@ import Drawer from '@material-ui/core/Drawer'
 import Hidden from '@material-ui/core/Hidden'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { AuthContext } from '../contexts/AuthContext'
+import getAvatar from '../fe-utils/avatarUtil'
 
 const Sidebar = ({
-  avatar,
   handleDrawerToggle,
   mobileOpen,
   totalDays,
@@ -15,6 +15,7 @@ const Sidebar = ({
 }) => {
   const { classes, theme } = useContext(ThemeContext)
   const [user] = useContext(AuthContext)
+  const avatar = getAvatar({ user })
 
   return (
     <>
