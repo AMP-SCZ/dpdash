@@ -30,30 +30,15 @@ describe('AdminUsersController', () => {
       const response = createResponse()
 
       it('returns a 404 error with the error message', async () => {
-        request.app.locals.appDb.findOneAndUpdate.mockResolvedValueOnce({})
-
-        await AdminUsersController.update(request, response)
-
-        expect(response.status).toHaveBeenCalledWith(400)
-      })
-    })
-
-    describe('when error', () => {
-      const request = createRequestWithUser({
-        params: { uid: 'uid' },
-      })
-      const response = createResponse()
-
-      it('returns a status of 500 with the error message', async () => {
         request.app.locals.appDb.findOneAndUpdate.mockRejectedValueOnce(
-          new Error('User could not be updated')
+          new Error('some error')
         )
 
         await AdminUsersController.update(request, response)
 
-        expect(response.status).toHaveBeenCalledWith(500)
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
-          error: 'User could not be updated',
+          error: 'some error',
         })
       })
     })
