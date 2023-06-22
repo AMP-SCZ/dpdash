@@ -14,17 +14,17 @@ import { Edit, Clear, Share } from '@material-ui/icons'
 import FullView from '@material-ui/icons/AspectRatio'
 import Copy from '@material-ui/icons/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
-import openNewWindow from '../../fe-utils/windowUtil'
 import { routes } from '../../routes/routes'
 import { colors } from '../../../constants'
 
 const ConfigurationCard = ({
   classes,
   config,
-  onEditOrViewConfig,
   onCopyConfig,
+  onEditConfig,
   onRemoveOrUpdateConfig,
   onUpdatePreferences,
+  onViewConfig,
   openSearch,
   preferences,
   user,
@@ -74,9 +74,7 @@ const ConfigurationCard = ({
           {ownsConfig ? (
             <>
               <IconButton
-                onClick={() =>
-                  onEditOrViewConfig(routes.editConfiguration(_id))
-                }
+                onClick={() => onEditConfig(_id)}
                 iconStyle={classes.textAndIcon}
                 tooltipPosition="top-center"
                 tooltip="Edit"
@@ -95,9 +93,7 @@ const ConfigurationCard = ({
           ) : (
             <>
               <IconButton
-                onClick={() =>
-                  onEditOrViewConfig(routes.viewConfiguration(_id))
-                }
+                onClick={() => onViewConfig(_id)}
                 iconStyle={classes.textAndIcon}
                 tooltipPosition="top-center"
                 tooltip="View"

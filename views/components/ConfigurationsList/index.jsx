@@ -426,7 +426,11 @@ const ConfigurationsList = ({ user, classes, theme, navigate }) => {
     }
   }
 
-  const onEditOrViewConfig = (route) => navigate(route)
+  const onEditConfig = (configId) =>
+    navigate(routes.editConfiguration(configId))
+
+  const onViewConfig = (configId) =>
+    navigate(routes.viewConfiguration(configId))
 
   return (
     <div>
@@ -440,11 +444,12 @@ const ConfigurationsList = ({ user, classes, theme, navigate }) => {
             <ConfigurationCard
               classes={classes}
               config={config}
-              onEditOrViewConfig={onEditOrViewConfig}
+              onEditConfig={onEditConfig}
               openSearch={openSearchUsers}
               onCopyConfig={copyConfiguration}
               onRemoveOrUpdateConfig={onRemoveOrUpdateConfig}
               onUpdatePreferences={updateUserPreferences}
+              onViewConfig={onViewConfig}
               preferences={preferences}
               user={user}
               width={grid.cellWidth}
