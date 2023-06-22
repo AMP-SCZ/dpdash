@@ -21,7 +21,7 @@ import { colors } from '../../../constants'
 const ConfigurationCard = ({
   classes,
   config,
-  navigate,
+  onEditOrViewConfig,
   onCopyConfig,
   onRemoveOrUpdateConfig,
   onUpdatePreferences,
@@ -74,7 +74,9 @@ const ConfigurationCard = ({
           {ownsConfig ? (
             <>
               <IconButton
-                onClick={() => navigate(routes.editConfiguration(_id))}
+                onClick={() =>
+                  onEditOrViewConfig(routes.editConfiguration(_id))
+                }
                 iconStyle={classes.textAndIcon}
                 tooltipPosition="top-center"
                 tooltip="Edit"
@@ -93,7 +95,9 @@ const ConfigurationCard = ({
           ) : (
             <>
               <IconButton
-                onClick={() => openNewWindow(routes.viewConfiguration(_id))}
+                onClick={() =>
+                  onEditOrViewConfig(routes.viewConfiguration(_id))
+                }
                 iconStyle={classes.textAndIcon}
                 tooltipPosition="top-center"
                 tooltip="View"

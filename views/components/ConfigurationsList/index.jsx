@@ -426,6 +426,8 @@ const ConfigurationsList = ({ user, classes, theme, navigate }) => {
     }
   }
 
+  const onEditOrViewConfig = (route) => navigate(route)
+
   return (
     <div>
       <GridList
@@ -438,7 +440,7 @@ const ConfigurationsList = ({ user, classes, theme, navigate }) => {
             <ConfigurationCard
               classes={classes}
               config={config}
-              navigate={navigate}
+              onEditOrViewConfig={onEditOrViewConfig}
               openSearch={openSearchUsers}
               onCopyConfig={copyConfiguration}
               onRemoveOrUpdateConfig={onRemoveOrUpdateConfig}
