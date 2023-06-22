@@ -1,10 +1,9 @@
 export const handleApiResponse = async (response) => {
-  if (response.status !== 200 && response.status !== 204)
-    throw new Error(jsonResponse.error)
+  const responseBody = response.headers.get('Content-Length')
+    ? await response.json()
+    : Promise.resolve({ error: 'An unknown error occurred' })
 
-  if (response.status === 204) return
+  if (!response.ok) throw new Error(responseBody.error)
 
-  const jsonResponse = await response.json()
-
-  return jsonResponse.data
+  return responseBody.data
 }
