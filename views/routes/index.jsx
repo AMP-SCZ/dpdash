@@ -10,7 +10,7 @@ const Router = (props) => {
     <BrowserRouter>
       <Routes>
         <Route
-          path="/"
+          path={routes.home}
           element={<Navigate to={routes.login} replace={true} />}
         />
         <Route
