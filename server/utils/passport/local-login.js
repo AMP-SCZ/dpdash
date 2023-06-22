@@ -20,7 +20,7 @@ export default (req, res, _, user) => {
   })
   //If the user exists, serialize the user to the session
   req.login(user, async function (err) {
-    if (err) return res.json({ status: 400, error: err.message })
+    if (err) return res.json({ error: err.message })
 
     try {
       const { appDb } = req.app.locals
