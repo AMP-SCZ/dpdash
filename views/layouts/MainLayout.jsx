@@ -38,7 +38,6 @@ const MainLayout = ({ classes, theme }) => {
         handleDrawerToggle={toggleDrawer}
         title={headerTitle(pathname)}
         isAccountPage={false}
-        classes={classes}
       />
       <Sidebar
         avatar={avatar}
