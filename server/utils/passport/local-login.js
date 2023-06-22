@@ -2,15 +2,14 @@ import passport from 'passport'
 import moment from 'moment'
 
 import { verifyHash } from '../crypto/hash'
-import { routes } from '../routes'
 
 import ConfigModel from '../../models/ConfigModel'
 import UserModel from '../../models/UserModel'
 
-export default (req, res, next, user) => {
+export default (req, res, _, user) => {
   //validate submitted password
   if (!verifyHash(req.body.password, user.password))
-    return res.redirect(`${routes.login}?e=forbidden`)
+    return res.status(401).json({ error: 'Incorrect password' })
 
   //passport local log-in serializer
   passport.serializeUser(function (user, done) {
@@ -21,7 +20,7 @@ export default (req, res, next, user) => {
   })
   //If the user exists, serialize the user to the session
   req.login(user, async function (err) {
-    if (err) return res.redirect(`${routes.login}?e=${err}`)
+    if (err) return res.json({ status: 400, error: err.message })
 
     try {
       const { appDb } = req.app.locals
@@ -35,7 +34,7 @@ export default (req, res, next, user) => {
         await ConfigModel.save(appDb, configAttributes)
       }
 
-      const userInfo = await UserModel.update(appDb, uid, {
+      const updatedUser = await UserModel.update(appDb, uid, {
         last_logon: Date.now(),
       })
       const { role, display_name, mail, icon, access, account_expires } =
@@ -44,7 +43,8 @@ export default (req, res, next, user) => {
       const accountExpirationToMoment = moment(account_expires)
       const isAccountExpired = accountExpirationToMoment.isBefore(today)
 
-      if (isAccountExpired) return res.redirect(`${routes.login}?e=forbidden`)
+      if (isAccountExpired)
+        return res.status(401).json({ error: 'Account is expired' })
 
       req.session.role = role
       req.session.display_name = display_name
@@ -53,9 +53,10 @@ export default (req, res, next, user) => {
       req.session.icon = icon
       req.session.userAccess = access
 
-      return res.redirect(routes.root)
+      return res.status(200).json({ data: updatedUser })
     } catch (error) {
-      return res.redirect(`${routes.login}?e=${error}`)
+      console.error(error)
+      return res.status(400).json({ error: error.message })
     }
   })
 }

@@ -142,9 +142,9 @@ const components = {
   SingleValue,
   ValueContainer,
 }
-const ConfigurationsList = ({ user, classes, theme }) => {
+const ConfigurationsList = ({ user, classes, theme, navigate }) => {
   const { uid } = user
-  const userMessageLength = user.message.length
+  const userMessage = user.message
   const [configurations, setConfigurations] = useState([])
   const [snackBar, setSnackBar] = useState({
     open: false,
@@ -178,7 +178,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
   }, [])
 
   useEffect(() => {
-    if (userMessageLength > 0) {
+    if (userMessage?.length > 0) {
       setSnackBars((prevState) => {
         return {
           ...prevState,
@@ -186,7 +186,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
         }
       })
     }
-  }, [userMessageLength])
+  }, [userMessage])
 
   const loadUserNames = async () => {
     const usernames = await fetchUsernames()
@@ -438,6 +438,7 @@ const ConfigurationsList = ({ user, classes, theme }) => {
             <ConfigurationCard
               classes={classes}
               config={config}
+              navigate={navigate}
               openSearch={openSearchUsers}
               onCopyConfig={copyConfiguration}
               onRemoveOrUpdateConfig={onRemoveOrUpdateConfig}

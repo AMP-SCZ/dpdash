@@ -34,6 +34,9 @@ export const routes = {
 }
 
 export const apiRoutes = {
+  auth: {
+    login: `${apiPath}/login`,
+  },
   configurations: {
     userConfigurations: (uid) => `${apiPath}/users/${uid}/configs`,
     userConfiguration: (uid, config_id) =>
