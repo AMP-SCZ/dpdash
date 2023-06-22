@@ -6,14 +6,12 @@ const ConfigPage = () => {
   const { user, classes, theme, navigate } = useOutletContext()
 
   return (
-    <React.Fragment>
-      <ConfigurationsList
-        user={user}
-        classes={classes}
-        theme={theme}
-        navigate={navigate}
-      />
-    </React.Fragment>
+    <ConfigurationsList
+      user={user}
+      classes={classes}
+      theme={theme}
+      navigate={navigate}
+    />
   )
 }
 
