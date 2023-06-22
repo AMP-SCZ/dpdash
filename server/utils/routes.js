@@ -3,7 +3,7 @@ const userRoot = `${v1Root}/users/:uid`
 
 export const routes = {
   root: `/`,
-  chart: '/charts/:chart_id',
+  chart: '/charts/data/:chart_id',
   charts: '/charts',
   editChart: '/charts/:chart_id/edit',
   newChart: '/charts/new',
@@ -21,10 +21,13 @@ export const v1Routes = {
     index: `${userRoot}/configs`,
     show: `${userRoot}/configs/:config_id`,
   },
-  adminRoutes: {
-    show: `${v1Root}/admin/users/:uid`,
-  },
   users: {
     show: userRoot,
+  },
+  auth: {
+    login: `${v1Root}/login`,
+  },
+  charts: {
+    show: `${v1Root}/data/charts/:chart_id`,
   },
 }

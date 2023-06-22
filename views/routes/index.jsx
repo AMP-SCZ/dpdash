@@ -17,7 +17,18 @@ const Router = (props) => {
           path={routes.login}
           element={<LoginPage setUser={props.setUser} />}
         />
-
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          path="dashboard/:study/:subject"
+          element={
+            <GraphPage
+              user={props.user}
+              classes={props.classes}
+              theme={props.theme}
+            />
+          }
+        />
         <Route
           element={
             <AuthenticatedRoute>
@@ -26,6 +37,86 @@ const Router = (props) => {
           }
         >
           <Route path={routes.configs} element={<ConfigPage />} />
+          <Route
+            path="main"
+            element={
+              <MainPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="user-account"
+            element={
+              <AccountPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="charts"
+            element={
+              <ChartsPage
+                classes={props.classes}
+                theme={props.theme}
+                user={props.user}
+              />
+            }
+          />
+          <Route
+            path="charts/new"
+            element={
+              <NewChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="charts/:chart_id/edit"
+            element={
+              <EditChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="charts/:chart_id"
+            element={
+              <ViewChartPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="admin"
+            element={
+              <AdminPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
+          <Route
+            path="config/:config_id/edit"
+            element={
+              <EditConfigPage
+                user={props.user}
+                classes={props.classes}
+                theme={props.theme}
+              />
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -6,8 +6,9 @@ const apiPath = `${basePath}/api/v1`
 
 export const routes = {
   basePath,
-  home: `${basePath}/`,
-  userAccount: `${basePath}/u`,
+  home: `${basePath}/main`,
+  configurations: `${basePath}/configs`,
+  userAccount: `${basePath}/user-account`,
   newChart: `${basePath}/charts/new`,
   configure: `${basePath}/u/configure`,
   configs: `${basePath}/configs`,
@@ -25,14 +26,16 @@ export const routes = {
   editChart: (chart_id) => `${basePath}/charts/${chart_id}/edit`,
   subjectView: (study, subject) => `${basePath}/dashboard/${study}/${subject}`,
   chartCsv: (chart_id, queryParams) => routes.chart(chart_id, queryParams),
-  editConfiguration: (configId) =>
-    `${basePath}/u/configure?s=edit&id=${configId}`,
+  editConfiguration: (configId) => `/config/${configId}/edit`,
   viewConfiguration: (configId) =>
     `${basePath}/u/configure?s=view&id=${configId}`,
   configurationSuccess: `${basePath}/u/configure?u=success`,
   invalidConfiguration: `${basePath}/u/configure?u=invalid`,
   configurationError: `${basePath}/u/configure?u=error`,
   createConfiguration: `${basePath}/u/configure?s=add`,
+  resetPassword: `/reset-password`,
+  signUp: `/register`,
+  login: '/login',
 }
 
 export const apiRoutes = {
@@ -62,6 +65,15 @@ export const apiRoutes = {
   subject: `${apiPath}/subjects`,
   shareChart: (chart_id) => `${apiPath}/charts/${chart_id}/share`,
   updateUser: (uid) => `${apiPath}/admin/users/${uid}`,
+  auth: {
+    login: `${apiPath}/login`,
+  },
+  chartData: {
+    show: (chartId, queryParams) =>
+      queryParams
+        ? `${apiPath}/data/charts/${chartId}?${qs.stringify(queryParams)}`
+        : `${apiPath}/data/charts/${chartId}`,
+  },
 }
 
 export const defaultApiOptions = {
