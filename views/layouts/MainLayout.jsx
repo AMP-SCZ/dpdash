@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import classNames from 'classnames'
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -43,7 +44,7 @@ const MainLayout = ({ classes, theme }) => {
         totalStudies={sideBarState.totalStudies}
         totalSubjects={sideBarState.totalSubjects}
       />
-      <div className={`${classes.content} ${classes.contentPadded}`}>
+      <div className={classNames(classes.content, classes.contentPadded)}>
         <Outlet context={{ user, classes, theme, navigate }} />
       </div>
     </div>
