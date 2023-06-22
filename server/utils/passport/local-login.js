@@ -1,7 +1,7 @@
 import passport from 'passport'
-import moment from 'moment'
 
 import { verifyHash } from '../crypto/hash'
+import { isAccountExpired } from './helpers'
 
 import ConfigModel from '../../models/ConfigModel'
 import UserModel from '../../models/UserModel'
@@ -34,16 +34,13 @@ export default (req, res, _, user) => {
         await ConfigModel.save(appDb, configAttributes)
       }
 
-      const updatedUser = await UserModel.update(appDb, uid, {
+      const userInfo = await UserModel.update(appDb, uid, {
         last_logon: Date.now(),
       })
       const { role, display_name, mail, icon, access, account_expires } =
         userInfo
-      const today = moment()
-      const accountExpirationToMoment = moment(account_expires)
-      const isAccountExpired = accountExpirationToMoment.isBefore(today)
 
-      if (isAccountExpired)
+      if (isAccountExpired(account_expires))
         return res.status(401).json({ error: 'Account is expired' })
 
       req.session.role = role
@@ -53,7 +50,7 @@ export default (req, res, _, user) => {
       req.session.icon = icon
       req.session.userAccess = access
 
-      return res.status(200).json({ data: updatedUser })
+      return res.status(200).json({ data: userInfo })
     } catch (error) {
       console.error(error)
       return res.status(400).json({ error: error.message })

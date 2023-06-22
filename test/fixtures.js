@@ -86,6 +86,7 @@ export const createRequest = (overrides = {}) => ({
     locals: {
       appDb: createDb(),
       dataDb: createDb(),
+      currentUser: createUser(),
     },
   },
   ...overrides,

@@ -73,10 +73,10 @@ const LoginPage = (props) => {
         password: state.password,
       }
 
-      const user = await api.auth.findOne(credentials)
+      const user = await api.auth.login(credentials)
+
       props.setUser(user)
-      window.sessionStorage.setItem('userId', user.uid)
-      navigate('/configs')
+      navigate(routes.configs)
     } catch (error) {
       setState((prevState) => {
         return {

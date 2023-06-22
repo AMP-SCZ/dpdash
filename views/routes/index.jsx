@@ -3,13 +3,20 @@ import MainLayout from '../layouts/MainLayout'
 import ConfigPage from '../pages/ConfigPage'
 import LoginPage from '../pages/LoginPage'
 import AuthenticatedRoute from '../hoc/AuthenticatedRoute'
+import { routes } from './routes'
 
 const Router = (props) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace={true} />} />
-        <Route path="/login" element={<LoginPage setUser={props.setUser} />} />
+        <Route
+          path="/"
+          element={<Navigate to={routes.login} replace={true} />}
+        />
+        <Route
+          path={routes.login}
+          element={<LoginPage setUser={props.setUser} />}
+        />
 
         <Route
           element={
@@ -18,7 +25,7 @@ const Router = (props) => {
             </AuthenticatedRoute>
           }
         >
-          <Route path="configs" element={<ConfigPage />} />
+          <Route path={routes.configs} element={<ConfigPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
