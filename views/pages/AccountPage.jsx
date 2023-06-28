@@ -76,11 +76,6 @@ const AccountPage = () => {
     canvas.width = 200
 
     ctx.drawImage(image, sx, sy, swidth, sheight, x, y, 200, 200)
-
-    const dataURL = canvas.toDataURL('image/png')
-
-    setFormValues({ ...formValues, icon: dataURL })
-
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
 
