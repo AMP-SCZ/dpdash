@@ -33,6 +33,7 @@ const UserModel = {
         projection: userMongoProjection,
         returnOriginal: false,
         upsert: true,
+        returnDocument: 'after',
       }
     )
 
