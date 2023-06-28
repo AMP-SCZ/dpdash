@@ -15,8 +15,8 @@ const AccountPage = () => {
   const canvasRef = useRef()
   const profileImageRef = useRef()
   const [snackBar, setSnackBar] = useState({ open: false, message: '' })
-  const [formValues, setFormValues] = useState(user)
   const { user, classes, setUser } = useOutletContext()
+  const [formValues, setFormValues] = useState(user)
 
   const handleChange = (e) =>
     setFormValues({ ...formValues, [e.target.name]: e.target.value })

@@ -1,4 +1,5 @@
 import { apiRoutes } from '../../routes/routes'
+import http from '../http'
 
 const auth = {
   login: async (credentials) => http.post(apiRoutes.auth.login, credentials),
