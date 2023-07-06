@@ -575,7 +575,7 @@ export default class Matrix extends AbstractGraph {
       .ticks(xAxisForDatesData.length - 1)
       .tickValues(xAxisValuesTop)
 
-    if (xAxisForDatesData.length > 1) {
+    if (xAxisForDatesData.length > 0) {
       this.xAxisLinearBottom = d3
         .axisBottom(this.xScaleLinearBottom)
         .ticks(xAxisForDatesData.length - 1)

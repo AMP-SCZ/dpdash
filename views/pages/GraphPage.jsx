@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import GraphFactory from '../components/GraphFactory'
 import io from 'socket.io-client'
 import FileSaver from 'file-saver'
 
@@ -37,15 +36,12 @@ import SelectConfigurationForm from '../components/SelectConfigurationForm'
 
 import getAvatar from '../fe-utils/avatarUtil'
 import getCounts from '../fe-utils/countUtil'
-import {
-  fetchSubjects,
-  fetchConfigurations,
-  fetchPreferences,
-} from '../fe-utils/fetchUtil'
+import { fetchSubjects, fetchConfigurations } from '../fe-utils/fetchUtil'
 import { preparePreferences } from '../fe-utils/preferencesUtil'
 import basePathConfig from '../../server/configs/basePathConfig'
-import { routes, apiRoutes } from '../routes/routes'
+import { apiRoutes } from '../routes/routes'
 import { withRouter } from '../hoc/withRouter'
+import Matrix from '../components/Matrix.d3'
 
 const basePath = basePathConfig || ''
 
@@ -79,13 +75,17 @@ class Graph extends Component {
         project: study,
         sid: subject,
       },
-      graph: {},
+      graph: {
+        configurations: [],
+        consentDate: '2022-03-05',
+        matrixData: [],
+      },
       user: {},
       searchList: {},
       svgLink: {},
       startFromTheLastDay: false,
-      graphWidth: 0,
-      graphHeight: 0,
+      graphWidth: window.innerWidth,
+      graphHeight: window.innerHeight,
       startDay: 1,
       lastDay: null,
       maxDay: 1,
@@ -228,7 +228,10 @@ class Graph extends Component {
         this.setState({ graph: data.graph })
       })
   }
-  componentDidUpdate() {}
+
+  componentDidUpdate() {
+    this.renderMatrix()
+  }
   // eslint-disable-next-line react/no-deprecated
   async componentDidMount() {
     try {
@@ -241,6 +244,7 @@ class Graph extends Component {
         ...getCounts({ acl }),
         configurationsList: configurations.data,
       })
+      this.renderMatrix()
 
       let maxDay = 1
       for (
@@ -291,11 +295,11 @@ class Graph extends Component {
       this.setState({
         avatar: getAvatar({ user: this.props.user }),
       })
-      if (this.matrix.graph === undefined) {
+      if (this.el === undefined) {
         console.log('error')
         return
       }
-      let svgElement = this.matrix.graph.el.lastChild
+      let svgElement = this.el.lastChild
       this.setState(
         {
           graphWidth: svgElement.getBBox().width + 20,
@@ -305,7 +309,7 @@ class Graph extends Component {
           // Download set-up
 
           //svg conversion
-          let updatedSvgElement = this.matrix.graph.el.lastChild
+          let updatedSvgElement = this.el.lastChild
           let svgString = new XMLSerializer().serializeToString(
             updatedSvgElement
           )
@@ -346,6 +350,36 @@ class Graph extends Component {
     } catch (err) {
       console.error(err.message)
     }
+  }
+  renderMatrix = () => {
+    if (this.el.firstChild) {
+      this.el.removeChild(this.el.firstChild)
+    }
+    if (
+      !this.state.graph.matrixData ||
+      Object.keys(this.state.graph.matrixData).length == 0
+    ) {
+      return
+    }
+    const matrixProps = {
+      id: 'matrix',
+      type: 'matrix',
+      width: this.state.graphWidth,
+      height: this.state.graphHeight,
+      data: this.state.graph.matrixData,
+      cardSize: this.state.cardSize,
+      study: this.state.subject.project,
+      subject: this.state.subject.sid,
+      consentDate: this.state.graph.consentDate,
+      configuration: this.state.graph.configurations,
+      startFromTheLastDay: this.state.startFromTheLastDay,
+      startDay: this.state.startDay,
+      lastDay: this.state.lastDay,
+      maxDay: this.state.maxDay,
+      user: this.state.user.uid,
+    }
+    this.graph = new Matrix(this.el, matrixProps)
+    this.graph.create(this.state.graph.matrixData)
   }
   handleDrawerToggle = () => {
     this.setState((state) => ({ mobileOpen: !state.mobileOpen }))
@@ -512,6 +546,7 @@ class Graph extends Component {
           }}
         >
           <DrawerComponent
+            classes={this.props.classes}
             totalStudies={this.state.totalStudies}
             totalSubjects={this.state.totalSubjects}
             totalDays={this.state.totalDays}
@@ -527,24 +562,7 @@ class Graph extends Component {
           }}
         >
           <div className="Matrix">
-            <GraphFactory
-              id="matrix"
-              type="matrix"
-              width={this.state.graphWidth}
-              height={this.state.graphHeight}
-              data={this.state.graph.matrixData}
-              cardSize={this.state.cardSize}
-              study={this.state.subject.project}
-              subject={this.state.subject.sid}
-              consentDate={this.state.graph.consentDate}
-              ref={(elem) => (this.matrix = elem)}
-              configuration={this.state.graph.configurations}
-              startFromTheLastDay={this.state.startFromTheLastDay}
-              startDay={this.state.startDay}
-              lastDay={this.state.lastDay}
-              maxDay={this.state.maxDay}
-              user={this.state.user.uid}
-            />
+            <div className="graph" ref={(el) => (this.el = el)} />
           </div>
           <div
             style={{
