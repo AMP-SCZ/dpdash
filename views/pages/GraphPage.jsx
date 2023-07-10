@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { useOutletContext, useParams } from 'react-router-dom'
 import io from 'socket.io-client'
 import FileSaver from 'file-saver'
 
@@ -32,14 +33,12 @@ import { fetchSubjects, fetchConfigurations } from '../fe-utils/fetchUtil'
 import { preparePreferences } from '../fe-utils/preferencesUtil'
 import basePathConfig from '../../server/configs/basePathConfig'
 import { apiRoutes } from '../routes/routes'
-import { withRouter } from '../hoc/withRouter'
 import Matrix from '../components/Matrix.d3'
-import deepEqual from 'deep-equal'
 import GraphPageTable from '../components/GraphPageTable'
 import api from '../api'
 
 const basePath = basePathConfig || ''
-const cardSize = 50
+const cardSize = 20
 
 const socketAddress = `https://${window.location.hostname}${basePath}/dashboard`
 const socket = io(socketAddress, {
@@ -49,56 +48,58 @@ const socket = io(socketAddress, {
   autoConnect: false,
 })
 
-class Graph extends Component {
-  constructor(props) {
-    const { preferences } = props.user
-
-    super(props)
-    this.state = {
-      graphRendered: 0,
-      graph: {
-        configurations: [],
-        consentDate: '2022-03-05',
-        matrixData: [],
-      },
-      startFromTheLastDay: false,
-      graphWidth: window.innerWidth,
-      graphHeight: window.innerHeight,
-      startDay: 1,
-      lastDay: null,
-      maxDay: 1,
-      socketIOSubjectRoom: null,
-      socketIOUserRoom: null,
-      taskId: '',
-      mobileOpen: false,
-      totalSubjects: 0,
-      totalStudies: 0,
-      totalDays: 0,
-      loading: false,
-      success: false,
-      openStat: false,
-      configurationsList: [],
-      preferences,
-    }
-  }
-
-  downloadPng = () => {
-    let SID = this.props.params.subject
-    this.canvas.toBlob((blob) => {
-      FileSaver.saveAs(blob, SID + '.png')
+const GraphPage = () => {
+  const { user, classes, theme } = useOutletContext()
+  const el = React.useRef()
+  const canvasRef = React.useRef()
+  const graphRef = React.createRef()
+  const { study, subject } = useParams()
+  const [graphRendered, setGraphRendered] = React.useState(0)
+  const [graph, setGraph] = React.useState({
+    configurations: [],
+    consentDate: '2022-03-05',
+    matrixData: [],
+  })
+  const [graphDimensions, setGraphDimensions] = React.useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  })
+  const [socketData, setSocketData] = React.useState({
+    socketIOSubjectRoom: `${basePath}/resync/${study}/${subject}`,
+    socketIOUserRoom: user.uid,
+    taskId: '',
+  })
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [counts, setCounts] = React.useState({
+    totalSubjects: 0,
+    totalStudies: 0,
+    totalDays: 0,
+  })
+  const [dayData, setDayData] = React.useState({
+    startFromTheLastDay: false,
+    startDay: 1,
+    lastDay: null,
+    maxDay: 1,
+  })
+  const [loading, setLoading] = React.useState(false)
+  const [success, setSuccess] = React.useState(false)
+  const [openStat, setOpenStat] = React.useState(false)
+  const [preferences, setPreferences] = React.useState(user.preferences)
+  const [configurationsList, setConfigurationsList] = React.useState([])
+  const downloadPng = () => {
+    canvasRef.current.toBlob((blob) => {
+      FileSaver.saveAs(blob, `${subject}.png`)
     })
   }
-
-  handleResize = () => {
-    this.setState({
-      graphWidth: window.innerWidth,
-      graphHeight: window.innerHeight - 30,
+  const handleResize = () => {
+    setGraphDimensions({
+      height: window.innerHeight - 30,
+      width: window.innerWidth,
     })
   }
-
-  resync = () => {
+  const resync = () => {
     window
-      .fetch(this.state.socketIOSubjectRoom, {
+      .fetch(socketData.socketIOSubjectRoom, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,90 +113,61 @@ class Graph extends Component {
         return response.json()
       })
       .then((response) => {
-        this.setState({
+        setLoading(true)
+        setSuccess(false)
+        setSocketData({
+          ...socketData,
           taskId: response.correlationId,
-          loading: true,
-          success: false,
         })
       })
   }
-  closeStat = () => {
-    this.setState({
-      openStat: false,
-    })
+  const closeStat = () => setOpenStat(false)
+  const fetchGraph = () => api.dashboard.load(study, subject)
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
+  const buttonClassname = classNames({
+    [classes.buttonSuccess]: success,
+  })
+  const updateUserPreferences = async (configurationId) => {
+    const { uid } = user
+    const selectedUserPreference = preparePreferences(
+      configurationId,
+      preferences
+    )
+
+    return window
+      .fetch(apiRoutes.preferences(uid), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          preferences: selectedUserPreference,
+        }),
+      })
+      .then(() => fetchGraph())
+      .then((graphData) => {
+        setGraph(graphData.graph)
+        setPreferences({ ...preferences, config: configurationId })
+      })
   }
-  openStat = () => {
-    this.setState({
-      openStat: true,
-    })
-  }
-
-  fetchGraph = () =>
-    api.dashboard.load(this.props.params.study, this.props.params.subject)
-
-  componentDidUpdate(_prevProps, prevState) {
-    if (!deepEqual(prevState.graph.matrixData, this.state.graph.matrixData)) {
-      this.renderMatrix()
-    }
-
-    if (prevState.graphRendered < this.state.graphRendered) {
-      if (!this.el) {
-        console.log('error')
-        return
-      }
-
-      let updatedSvgElement = this.el.lastChild
-      let svgString = new XMLSerializer().serializeToString(updatedSvgElement)
-      let svgUrl =
-        'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgString)
-
-      let canvas = this.canvas
-      canvas.width = updatedSvgElement.getBBox().width
-      canvas.height = updatedSvgElement.getBBox().height
-
-      // png conversion
-      let img = new Image()
-      let ctx = canvas.getContext('2d')
-
-      img.onload = () => {
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          canvas.width,
-          canvas.height,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        )
-      }
-      img.src = svgUrl
-    }
-  }
-
-  // eslint-disable-next-line react/no-deprecated
-  async componentDidMount() {
+  const onMount = async () => {
     try {
       const [graphData, acl, configurations] = await Promise.all([
-        this.fetchGraph(),
+        fetchGraph(),
         fetchSubjects(),
-        fetchConfigurations(this.props.user.uid),
+        fetchConfigurations(user.uid),
       ])
 
       const maxObj = graphData.graph.matrixData.map((matrixData) =>
         _.maxBy(matrixData.data, ({ day }) => day)
       )
 
-      this.setState({
-        ...getCounts({ acl }),
-        configurationsList: configurations.data,
-        graph: graphData.graph,
-        maxDay: maxObj.day || 1,
-        socketIOSubjectRoom: `${basePath}/resync/${this.props.params.study}/${this.props.params.subject}`,
-        socketIOUserRoom: this.props.user.uid,
-      })
-      this.renderMatrix()
+      setCounts(getCounts({ acl }))
+      setConfigurationsList(configurations.data)
+      setGraph(graphData.graph)
+      setDayData({ ...dayData, maxDay: maxObj.day || 1 })
+      renderMatrix()
       if (!HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
           value: function (callback, type, quality) {
@@ -211,236 +183,233 @@ class Graph extends Component {
         })
       }
       socket.open()
-    } catch (err) {
-      console.error(err.message)
+    } catch (e) {
+      console.error(e.message)
     }
   }
-  renderMatrix = () => {
-    if (this.el.firstChild) {
-      this.el.removeChild(this.el.firstChild)
+  const renderMatrix = () => {
+    if (el.current.firstChild) {
+      el.current.removeChild(el.current.firstChild)
     }
-    if (
-      !this.state.graph.matrixData ||
-      Object.keys(this.state.graph.matrixData).length == 0
-    ) {
+    if (!graph.matrixData || Object.keys(graph.matrixData).length == 0) {
       return
     }
     const matrixProps = {
       id: 'matrix',
       type: 'matrix',
-      width: this.state.graphWidth,
-      height: this.state.graphHeight,
-      data: this.state.graph.matrixData,
+      width: graphDimensions.width,
+      height: graphDimensions.height,
+      data: graph.matrixData,
       cardSize,
-      study: this.props.params.study,
-      subject: this.props.params.subject,
-      consentDate: this.state.graph.consentDate,
-      configuration: this.state.graph.configurations,
-      startFromTheLastDay: this.state.startFromTheLastDay,
-      startDay: this.state.startDay,
-      lastDay: this.state.lastDay,
-      maxDay: this.state.maxDay,
-      user: this.props.user.uid,
+      study,
+      subject,
+      consentDate: graph.consentDate,
+      configuration: graph.configurations,
+      startFromTheLastDay: dayData.startFromTheLastDay,
+      startDay: dayData.startDay,
+      lastDay: dayData.lastDay,
+      maxDay: dayData.maxDay,
+      user: user.uid,
     }
-    this.graph = new Matrix(this.el, matrixProps)
-    this.graph.create(this.state.graph.matrixData)
-    this.setState({ graphRendered: this.state.graphRendered + 1 })
+
+    graphRef.current = new Matrix(el.current, matrixProps)
+    graphRef.current.create(graph.matrixData)
+    setGraphRendered(graphRendered + 1)
   }
 
-  componentWillUnmount() {
-    socket.disconnect()
-    socket.close()
-    window.removeEventListener('resize', this.handleResize)
-  }
+  React.useEffect(() => {
+    onMount()
 
-  handleDrawerToggle = () => {
-    this.setState((state) => ({ mobileOpen: !state.mobileOpen }))
-  }
+    return () => {
+      socket.disconnect()
+      socket.close()
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
-  updateUserPreferences = async (configurationId) => {
-    const { uid } = this.props.user
-    const selectedUserPreference = preparePreferences(
-      configurationId,
-      this.state.preferences
-    )
+  React.useEffect(() => {
+    if (!el.current) {
+      console.log('error')
+      return
+    }
 
-    return window
-      .fetch(apiRoutes.preferences(uid), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          preferences: selectedUserPreference,
-        }),
-      })
-      .then(() => this.fetchGraph())
-      .then((graphData) => {
-        this.setState({
-          graph: graphData.graph,
-          preferences: { ...this.state.preferences, config: configurationId },
-        })
-      })
-  }
-  render() {
-    const { loading, success } = this.state
-    const { classes, theme } = this.props
-    const buttonClassname = classNames({
-      [classes.buttonSuccess]: success,
-    })
+    let updatedSvgElement = el.current.lastChild
+    if (updatedSvgElement) {
+      let svgString = new XMLSerializer().serializeToString(updatedSvgElement)
+      let svgUrl =
+        'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgString)
 
-    return (
-      <div className={classes.root}>
-        <AppBar className={classes.appBar}>
-          <Toolbar
-            variant="dense"
-            style={{
-              paddingLeft: '16px',
-            }}
-          >
-            <IconButton
-              color="default"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-            >
-              <img
-                width="24px"
-                height="24px"
-                src={`${basePath}/img/favicon.png`}
-              />
-            </IconButton>
-            <Typography
-              variant="title"
-              color="inherit"
-              style={{
-                color: 'default',
-                fontSize: '18px',
-                letterSpacing: '1.25px',
-                flexGrow: 1,
-              }}
-            >
-              {this.props.params.subject + ' - ' + this.props.params.study}
-            </Typography>
-            <div className={classes.configDropDownContainer}>
-              <Typography className={classes.dropDownText}>
-                Configuration
-              </Typography>
-              <SelectConfigurationForm
-                configurations={this.state.configurationsList}
-                onChange={this.updateUserPreferences}
-                currentPreference={this.state.preferences}
-                classes={classes}
-              />
-            </div>
-            <IconButton
-              color="default"
-              aria-label="Open Stat"
-              onClick={this.openStat}
-            >
-              <Functions />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+      const kanvas = canvasRef.current
+      kanvas.width = updatedSvgElement.getBBox().width
+      kanvas.height = updatedSvgElement.getBBox().height
 
-        <Drawer
-          variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-          open={this.state.mobileOpen}
-          onClose={this.handleDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          <DrawerComponent
-            classes={this.props.classes}
-            totalStudies={this.state.totalStudies}
-            totalSubjects={this.state.totalSubjects}
-            totalDays={this.state.totalDays}
-            user={this.props.user}
-          />
-        </Drawer>
-        <div
-          className={classes.content}
+      // png conversion
+      let img = new Image()
+      let ctx = kanvas.getContext('2d')
+
+      img.onload = () => {
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          kanvas.width,
+          kanvas.height,
+          0,
+          0,
+          kanvas.width,
+          kanvas.height
+        )
+      }
+      img.src = svgUrl
+    }
+  }, [graphRendered])
+
+  React.useEffect(() => {
+    renderMatrix()
+  }, [graph.matrixData])
+
+  return (
+    <div className={classes.root}>
+      <AppBar className={classes.appBar}>
+        <Toolbar
+          variant="dense"
           style={{
-            padding: '12px',
-            marginTop: '48px',
-            overflowY: 'scroll',
+            paddingLeft: '16px',
           }}
         >
-          <div className="Matrix">
-            <div className="graph" ref={(el) => (this.el = el)} />
-          </div>
-          <div
+          <IconButton
+            color="default"
+            aria-label="Open drawer"
+            onClick={handleDrawerToggle}
+          >
+            <img
+              width="24px"
+              height="24px"
+              src={`${basePath}/img/favicon.png`}
+            />
+          </IconButton>
+          <Typography
+            variant="title"
+            color="inherit"
             style={{
-              right: 10,
-              bottom: 10,
-              position: 'fixed',
+              color: 'default',
+              fontSize: '18px',
+              letterSpacing: '1.25px',
+              flexGrow: 1,
             }}
           >
+            {subject + ' - ' + study}
+          </Typography>
+          <div className={classes.configDropDownContainer}>
+            <Typography className={classes.dropDownText}>
+              Configuration
+            </Typography>
+            <SelectConfigurationForm
+              configurations={configurationsList}
+              onChange={updateUserPreferences}
+              currentPreference={preferences}
+              classes={classes}
+            />
+          </div>
+          <IconButton
+            color="default"
+            aria-label="Open Stat"
+            onClick={() => setOpenStat(true)}
+          >
+            <Functions />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer
+        variant="temporary"
+        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+      >
+        <DrawerComponent
+          classes={classes}
+          totalStudies={counts.totalStudies}
+          totalSubjects={counts.totalSubjects}
+          totalDays={counts.totalDays}
+          user={user}
+        />
+      </Drawer>
+      <div
+        className={classes.content}
+        style={{
+          padding: '12px',
+          marginTop: '48px',
+          overflowY: 'scroll',
+        }}
+      >
+        <div className="Matrix">
+          <div className="graph" ref={el} />
+        </div>
+        <div
+          style={{
+            right: 10,
+            bottom: 10,
+            position: 'fixed',
+          }}
+        >
+          <Button
+            variant="fab"
+            onClick={downloadPng}
+            id="downloadPng"
+            focusRipple={true}
+            style={{
+              marginBottom: '6px',
+            }}
+          >
+            <Tooltip title="Download as PNG">
+              <SaveIcon />
+            </Tooltip>
+          </Button>
+          <div>
             <Button
               variant="fab"
-              onClick={this.downloadPng}
-              id="downloadPng"
-              ref="downloadPng"
-              focusRipple={true}
-              style={{
-                marginBottom: '6px',
-              }}
+              color="secondary"
+              className={buttonClassname}
+              onClick={resync}
             >
-              <Tooltip title="Download as PNG">
-                <SaveIcon />
+              <Tooltip title="Resync with the File System">
+                {success ? <CheckIcon /> : <RefreshIcon />}
               </Tooltip>
             </Button>
-            <div>
-              <Button
-                variant="fab"
-                color="secondary"
-                className={buttonClassname}
-                onClick={this.resync}
-              >
-                <Tooltip title="Resync with the File System">
-                  {success ? <CheckIcon /> : <RefreshIcon />}
-                </Tooltip>
-              </Button>
-              {loading && (
-                <CircularProgress size={68} className={classes.fabProgress} />
-              )}
-            </div>
+            {loading && (
+              <CircularProgress size={68} className={classes.fabProgress} />
+            )}
           </div>
         </div>
-        <Dialog
-          modal={false}
-          open={this.state.openStat}
-          onClose={this.closeStat}
-        >
-          <DialogContent
-            style={{
-              padding: '0',
-            }}
-          >
-            <GraphPageTable
-              matrixData={this.state.graph.matrixData}
-              maxDay={this.state.maxDay}
-              theme={this.props.theme}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button color="secondary" onClick={this.closeStat}>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <canvas
-          ref={(elem) => (this.canvas = elem)}
-          style={{ display: 'none' }}
-        ></canvas>
       </div>
-    )
-  }
+      <Dialog modal={false} open={openStat} onClose={closeStat}>
+        <DialogContent
+          style={{
+            padding: '0',
+          }}
+        >
+          <GraphPageTable
+            matrixData={graph.matrixData}
+            maxDay={dayData.maxDay}
+            theme={theme}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="secondary" onClick={closeStat}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+    </div>
+  )
 }
 
-export default withRouter(Graph)
+export default GraphPage
