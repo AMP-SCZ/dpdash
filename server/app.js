@@ -208,7 +208,7 @@ app.use(
   express.static(path.join(__dirname, '../public/img'))
 )
 
-app.get('*', async (req, res) => {
+app.get('/*', async (req, res) => {
   return res.sendFile(
     path.join(__dirname, '..', 'app_build', 'index.html'),
     (err) => {

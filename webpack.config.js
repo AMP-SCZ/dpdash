@@ -61,6 +61,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, outputDirectory),
     filename: 'js/bundle.js',
+    publicPath: '/',
   },
   resolve: {
     fallback: {
