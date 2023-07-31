@@ -16,14 +16,14 @@ import useGrid from '../hooks/useGrid'
 
 const ConfigPage = () => {
   const {
-    user,
     classes,
     configurations,
     navigate,
     setNotification,
-    users,
     setConfigurations,
     setUser,
+    user,
+    users,
   } = useOutletContext()
   const { uid, preferences } = user
   const [open, setOpen] = useState(false)
