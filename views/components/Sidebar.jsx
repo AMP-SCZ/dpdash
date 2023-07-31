@@ -9,13 +9,14 @@ import api from '../api'
 import { routes } from '../routes/routes'
 
 const Sidebar = ({
-  handleDrawerToggle,
-  mobileOpen,
+  onClose,
+  onPersist,
+  sidebarOpen,
   totalDays,
   totalStudies,
   totalSubjects,
 }) => {
-  const { classes, theme } = useContext(ThemeContext)
+  const { classes } = useContext(ThemeContext)
   const [user, setUser] = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -29,36 +30,14 @@ const Sidebar = ({
       alert(error.message)
     }
   }
-
   return (
     <div className={classes.sideBar}>
-      <Hidden mdUp>
+      <Hidden>
         <Drawer
-          variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          <DrawerComponent
-            classes={classes}
-            onLogout={handleLogout}
-            totalStudies={totalStudies}
-            totalSubjects={totalSubjects}
-            totalDays={totalDays}
-            user={user}
-          />
-        </Drawer>
-      </Hidden>
-      <Hidden smDown implementation="css">
-        <Drawer
-          variant="permanent"
-          open
+          variant={onPersist}
+          anchor="left"
+          open={sidebarOpen}
+          onClose={onClose}
           classes={{
             paper: classes.drawerPaper,
           }}

@@ -8,31 +8,57 @@ import Sidebar from '../components/Sidebar'
 import api from '../api'
 import getCounts from '../fe-utils/countUtil'
 import { fetchSubjects } from '../fe-utils/fetchUtil'
-import { AuthContext, NotificationContext } from '../contexts'
+import {
+  AuthContext,
+  ConfigurationsContext,
+  NotificationContext,
+  SidebarContext,
+} from '../contexts'
 import { headerTitle } from './helpers'
 
 const MainLayout = ({ classes, theme }) => {
+  const temporary = 'temporary'
+  const persistent = 'persistent'
+  const dashboard = 'dashboard'
+  const [configurations, setConfigurations] = useContext(ConfigurationsContext)
   const [, setNotification] = useContext(NotificationContext)
+  const [openSidebar, setOpenSidebar] = useContext(SidebarContext)
+  const [showHeader, setShowHeader] = useState(false)
   const [user, setUser] = useContext(AuthContext)
   const [users, setUsers] = useState([])
   const [subjects, setSubjects] = useState([])
   const { pathname } = useLocation()
   const navigate = useNavigate()
-
-  const [openDrawer, setOpenDrawer] = useState(false)
   const [sideBarState, setSideBarState] = useState({
     totalDays: 0,
     totalStudies: 0,
     totalSubjects: 0,
   })
-
-  const toggleDrawer = () => setOpenDrawer(!openDrawer)
+  const handleSidebarOpen = () => setOpenSidebar(!openSidebar)
   const fetchUsers = async () => {
     try {
       const usersList = await api.users.loadAll()
       setUsers(usersList)
     } catch (error) {
       setNotification({ open: true, message: error.message })
+    }
+  }
+  const loadAllConfigurations = async (userId) => {
+    try {
+      const configurations = await api.userConfigurations.all(userId)
+
+      setConfigurations(configurations)
+    } catch (error) {
+      setNotification({ open: true, message: error.message })
+    }
+  }
+  const handleDashboardContent = () => {
+    if (pathname.includes(dashboard)) {
+      setPersistSidebar(temporary)
+      setShowHeader(false)
+    } else {
+      setPersistSidebar(persistent)
+      setShowHeader(true)
     }
   }
 
@@ -69,18 +95,26 @@ const MainLayout = ({ classes, theme }) => {
       setSideBarState(getCounts({ acl }))
     })
     fetchUsers()
+    loadAllConfigurations(user.uid)
   }, [])
+  useEffect(() => {
+    handleDashboardContent()
+  }, [pathname])
 
   return (
     <div className={classes.root}>
       <Header
-        handleDrawerToggle={toggleDrawer}
+        configurations={configurations}
+        onClose={handleSidebarOpen}
         title={headerTitle(pathname)}
         isAccountPage={false}
+        onShow={showHeader}
+        user={user}
       />
       <Sidebar
-        handleDrawerToggle={toggleDrawer}
-        mobileOpen={openDrawer}
+        onPersist={persistSidebar}
+        onClose={handleSidebarOpen}
+        sidebarOpen={openSidebar}
         totalDays={sideBarState.totalDays}
         totalStudies={sideBarState.totalStudies}
         totalSubjects={sideBarState.totalSubjects}
@@ -89,7 +123,11 @@ const MainLayout = ({ classes, theme }) => {
         <Outlet
           context={{
             classes,
+            configurations,
             navigate,
+            openSidebar,
+            setConfigurations,
+            setOpenSidebar,
             setNotification,
             setUser,
             setUsers,

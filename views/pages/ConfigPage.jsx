@@ -15,12 +15,19 @@ import { UsersModel } from '../models'
 import useGrid from '../hooks/useGrid'
 
 const ConfigPage = () => {
-  const { user, classes, navigate, setNotification, users, setUser } =
-    useOutletContext()
+  const {
+    user,
+    classes,
+    configurations,
+    navigate,
+    setNotification,
+    users,
+    setConfigurations,
+    setUser,
+  } = useOutletContext()
   const { uid, preferences } = user
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
-  const [configurations, setConfigurations] = useState([])
   const [configId, setConfigId] = useState('')
   const gridState = useGrid()
 
@@ -150,9 +157,6 @@ const ConfigPage = () => {
       updateConfiguration(configId, configAttributes)
     }
   }
-  useEffect(() => {
-    loadAllConfigurations(uid)
-  }, [])
 
   return (
     <>
