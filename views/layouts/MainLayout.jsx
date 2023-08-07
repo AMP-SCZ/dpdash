@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import moment from 'moment'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
@@ -16,25 +16,27 @@ import {
 } from '../contexts'
 import { headerTitle } from './helpers'
 
+const TEMPORARY_SIDEBAR = 'temporary'
+const PERSISTENT_SIDEBAR = 'persistent'
+const dashboard = 'dashboard'
+
 const MainLayout = ({ classes, theme }) => {
-  const temporary = 'temporary'
-  const persistent = 'persistent'
-  const dashboard = 'dashboard'
   const [configurations, setConfigurations] = useContext(ConfigurationsContext)
   const [, setNotification] = useContext(NotificationContext)
   const [openSidebar, setOpenSidebar] = useContext(SidebarContext)
-  const [showHeader, setShowHeader] = useState(false)
   const [user, setUser] = useContext(AuthContext)
   const [users, setUsers] = useState([])
   const [subjects, setSubjects] = useState([])
+  const [persistSidebar, setPersistSidebar] = useState(PERSISTENT_SIDEBAR)
   const { pathname } = useLocation()
+  const params = useParams()
   const navigate = useNavigate()
   const [sideBarState, setSideBarState] = useState({
     totalDays: 0,
     totalStudies: 0,
     totalSubjects: 0,
   })
-  const handleSidebarOpen = () => setOpenSidebar(!openSidebar)
+  const toggleSidebar = () => setOpenSidebar(!openSidebar)
   const fetchUsers = async () => {
     try {
       const usersList = await api.users.loadAll()
@@ -54,11 +56,9 @@ const MainLayout = ({ classes, theme }) => {
   }
   const handleDashboardContent = () => {
     if (pathname.includes(dashboard)) {
-      setPersistSidebar(temporary)
-      setShowHeader(false)
+      setPersistSidebar(TEMPORARY_SIDEBAR)
     } else {
-      setPersistSidebar(persistent)
-      setShowHeader(true)
+      setPersistSidebar(PERSISTENT_SIDEBAR)
     }
   }
 
@@ -105,15 +105,14 @@ const MainLayout = ({ classes, theme }) => {
     <div className={classes.root}>
       <Header
         configurations={configurations}
-        onClose={handleSidebarOpen}
-        title={headerTitle(pathname)}
+        onToggleSidebar={toggleSidebar}
+        title={headerTitle(pathname, params)}
         isAccountPage={false}
-        onShow={showHeader}
         user={user}
       />
       <Sidebar
-        onPersist={persistSidebar}
-        onClose={handleSidebarOpen}
+        drawerVariant={persistSidebar}
+        onToggleSidebar={toggleSidebar}
         sidebarOpen={openSidebar}
         totalDays={sideBarState.totalDays}
         totalStudies={sideBarState.totalStudies}

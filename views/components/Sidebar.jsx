@@ -9,8 +9,8 @@ import api from '../api'
 import { routes } from '../routes/routes'
 
 const Sidebar = ({
-  onClose,
-  onPersist,
+  onToggleSidebar,
+  drawerVariant,
   sidebarOpen,
   totalDays,
   totalStudies,
@@ -34,10 +34,10 @@ const Sidebar = ({
     <div className={classes.sideBar}>
       <Hidden>
         <Drawer
-          variant={onPersist}
+          variant={drawerVariant}
           anchor="left"
           open={sidebarOpen}
-          onClose={onClose}
+          onClose={onToggleSidebar}
           classes={{
             paper: classes.drawerPaper,
           }}
