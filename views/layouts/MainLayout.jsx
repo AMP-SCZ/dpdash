@@ -45,9 +45,9 @@ const MainLayout = ({ classes, theme }) => {
       setNotification({ open: true, message: error.message })
     }
   }
-  const loadAllConfigurations = async (userId) => {
+  const loadAllConfigurations = async () => {
     try {
-      const configurations = await api.userConfigurations.all(userId)
+      const configurations = await api.userConfigurations.all(user.uid)
 
       setConfigurations(configurations)
     } catch (error) {
@@ -95,7 +95,7 @@ const MainLayout = ({ classes, theme }) => {
       setSideBarState(getCounts({ acl }))
     })
     fetchUsers()
-    loadAllConfigurations(user.uid)
+    loadAllConfigurations()
   }, [])
   useEffect(() => {
     handleDashboardContent()
