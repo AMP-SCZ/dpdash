@@ -27,7 +27,7 @@ const MainLayout = ({ classes, theme }) => {
   const [user, setUser] = useContext(AuthContext)
   const [users, setUsers] = useState([])
   const [subjects, setSubjects] = useState([])
-  const [persistSidebar, setPersistSidebar] = useState(PERSISTENT_SIDEBAR)
+  const [drawerVariant, setDrawerVariant] = useState(PERSISTENT_SIDEBAR)
   const { pathname } = useLocation()
   const params = useParams()
   const navigate = useNavigate()
@@ -56,9 +56,9 @@ const MainLayout = ({ classes, theme }) => {
   }
   const handleDashboardContent = () => {
     if (pathname.includes(dashboard)) {
-      setPersistSidebar(TEMPORARY_SIDEBAR)
+      setDrawerVariant(TEMPORARY_SIDEBAR)
     } else {
-      setPersistSidebar(PERSISTENT_SIDEBAR)
+      setDrawerVariant(PERSISTENT_SIDEBAR)
     }
   }
 
@@ -111,7 +111,7 @@ const MainLayout = ({ classes, theme }) => {
         user={user}
       />
       <Sidebar
-        drawerVariant={persistSidebar}
+        drawerVariant={drawerVariant}
         onToggleSidebar={toggleSidebar}
         sidebarOpen={openSidebar}
         totalDays={sideBarState.totalDays}
