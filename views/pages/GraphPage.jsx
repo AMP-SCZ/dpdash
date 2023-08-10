@@ -27,7 +27,6 @@ const GraphPage = () => {
     user,
     classes,
     theme,
-    openSidebar,
     setOpenSidebar,
     setUser,
     setNotification,
@@ -151,7 +150,7 @@ const GraphPage = () => {
   }
 
   React.useEffect(() => {
-    setOpenSidebar(!openSidebar)
+    setOpenSidebar(false)
     onMount()
 
     return () => {
