@@ -12,6 +12,9 @@ export const routes = {
 }
 
 export const v1Routes = {
+  assessmentData: {
+    index: `${v1Root}/import/data/day`,
+  },
   auth: {
     me: `${v1Root}/me`,
     login: `${v1Root}/login`,
@@ -36,6 +39,9 @@ export const v1Routes = {
   },
   dashboards: {
     show: `${v1Root}/dashboards/:study/:subject`,
+  },
+  siteMetadata: {
+    index: `${v1Root}/import/data/metadata`,
   },
   users: {
     index: `${v1Root}/users`,
