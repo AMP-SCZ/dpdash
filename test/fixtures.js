@@ -260,6 +260,25 @@ export const createFilters = (overrides = {}) => ({
   ...overrides,
 })
 
+export const createEmptyFilters = (overrides = {}) => ({
+  chrcrit_part: [
+    { name: 'HC', value: 'false' },
+    { name: 'CHR', value: 'false' },
+    { name: 'Missing', value: 'false' }
+  ],
+  included_excluded: [
+    { name: 'Included', value: 'false' },
+    { name: 'Excluded', value: 'false' },
+    { name: 'Missing', value: 'false' }
+  ],
+  sex_at_birth: [
+    { name: 'Male', value: 'false' },
+    { name: 'Female', value: 'false' },
+    { name: 'Missing', value: 'false' }
+  ],
+  ...overrides,
+})
+
 export const createSubjectAssessment = (overrides = {}) => ({
     "_id": new ObjectId(),
     "day": 1,
