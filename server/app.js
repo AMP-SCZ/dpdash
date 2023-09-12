@@ -118,7 +118,7 @@ const mongodbPromise = co(function* () {
 }).then(function (res) {
   mongodb = res.db()
   app.locals.appDb = res.db()
-  app.locals.dataDb = res.db('dpdata')
+  app.locals.dataDb = res.db()
   res.db().collection('sessions').drop()
 
   return res
