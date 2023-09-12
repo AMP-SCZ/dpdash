@@ -6,6 +6,7 @@ import {
   createAssessmentsFromConfig,
   createMatrixData,
 } from '../../../test/fixtures'
+import { collections } from '../../utils/mongoCollections'
 
 describe('Data Processors - Dashboard', () => {
   describe(DashboardDataProcessor.calculateDashboardData, () => {
@@ -49,43 +50,41 @@ describe('Data Processors - Dashboard', () => {
         category: 'reading',
       }),
     ]
-    const db = createDb()
     const jumpVariableData = [
       createSubjectDayData({
+        collection: 'jump-of-collection',
         day: 10,
         jumpVariable: 1,
       }),
       createSubjectDayData({
+        collection: 'jump-of-collection',
         day: 20,
         jumpVariable: 30,
       }),
     ]
     const sizeVariableData = [
       createSubjectDayData({
+        collection: 'size-of-collection',
         day: 1,
         sizeVariable: 30,
       }),
       createSubjectDayData({
+        collection: 'size-of-collection',
         day: 45,
         sizeVariable: 2,
       }),
     ]
 
     it('calculates the min, max and mean of the data and appends it to the matrix result array', async () => {
-      db.find.mockImplementationOnce(() => ({
-        toArray: () => sizeVariableData,
-      }))
-      db.find.mockImplementationOnce(() => ({
-        toArray: () => jumpVariableData,
-      }))
-      db.find.mockImplementationOnce(() => ({
-        toArray: () => [],
-      }))
+      await appDb.collection(collections.assessmentSubjectDayData).insertMany([
+        ...jumpVariableData,
+        ...sizeVariableData,
+      ])
 
       const dashboardProcessor = new DashboardDataProcessor(
         assessmentsFromConfig,
         config,
-        db
+        appDb,
       )
       const { matrixData } = await dashboardProcessor.calculateDashboardData()
 
