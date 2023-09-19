@@ -8,9 +8,9 @@ import { getConfigSchema } from '../utils/routerUtil'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import ensureAdmin from '../utils/passport/ensure-admin'
 import ensureUser from '../utils/passport/ensure-user'
+import ensureStudyPermission from '../utils/passport/ensureStudyPermission'
 
 import config from '../configs/config'
-import basePathConfig from '../configs/basePathConfig'
 import ApiUsersController from '../controllers/apiUsersController'
 import { v1Routes } from '../utils/routes'
 
@@ -28,42 +28,10 @@ connect(process.env.RABBIT_ADDRESS, config.rabbitmq.opts, function (err, conn) {
 
 //Check if the information requested is for the user
 
-//Check user privilege for the study
-function ensurePermission(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect(`${basePath}/logout`)
-  }
-  const { appDb } = req.app.locals
-  appDb
-    .collection('users')
-    .findOne(
-      { uid: req.user },
-      { _id: 0, access: 1, blocked: 1, role: 1 },
-      function (err, data) {
-        if (err) {
-          console.log(err)
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if (!data || Object.keys(data).length === 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else if ('role' in data && data['role'] === 'admin') {
-          return next()
-        } else if ('blocked' in data && data['blocked'] == true) {
-          return res.redirect(`${basePath}/logout?e=forbidden`)
-        } else if (!('access' in data) || data.access.length == 0) {
-          return res.redirect(`${basePath}/logout?e=unauthorized`)
-        } else if (data.access.indexOf(req.params.study) < 0) {
-          return res.redirect(`${basePath}/?e=forbidden`)
-        } else {
-          return next()
-        }
-      }
-    )
-}
-
 //deepdive page
 router.get(
   '/api/v1/studies/:study/subjects/:subject/deepdive/:day',
-  ensurePermission,
+  ensureStudyPermission,
   function (req, res) {
     const { dataDb } = req.app.locals
     dataDb
