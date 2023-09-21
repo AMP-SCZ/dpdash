@@ -64,6 +64,7 @@ class DashboardService {
     const dashboardDataProcessor = new DashboardDataProcessor(
       assessmentsFromConfig,
       this.configuration,
+      this.subject,
       this.db
     )
     const { matrixData } = await dashboardDataProcessor.calculateDashboardData()

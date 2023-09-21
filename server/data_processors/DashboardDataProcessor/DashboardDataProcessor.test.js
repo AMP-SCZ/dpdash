@@ -10,6 +10,7 @@ import { collections } from '../../utils/mongoCollections'
 
 describe('Data Processors - Dashboard', () => {
   describe(DashboardDataProcessor.calculateDashboardData, () => {
+    const subject = 'subject'
     const assessmentsFromConfig = [
       createAssessmentsFromConfig({
         assessment: 'size_of',
@@ -52,24 +53,28 @@ describe('Data Processors - Dashboard', () => {
     ]
     const jumpVariableData = [
       createSubjectDayData({
-        collection: 'jump-of-collection',
+        assessment: 'jump_of',
+        subject,
         day: 10,
         jumpVariable: 1,
       }),
       createSubjectDayData({
-        collection: 'jump-of-collection',
+        assessment: 'jump_of',
+        subject,
         day: 20,
         jumpVariable: 30,
       }),
     ]
     const sizeVariableData = [
       createSubjectDayData({
-        collection: 'size-of-collection',
+        assessment: 'size_of',
+        subject,
         day: 1,
         sizeVariable: 30,
       }),
       createSubjectDayData({
-        collection: 'size-of-collection',
+        assessment: 'size_of',
+        subject,
         day: 45,
         sizeVariable: 2,
       }),
@@ -84,6 +89,7 @@ describe('Data Processors - Dashboard', () => {
       const dashboardProcessor = new DashboardDataProcessor(
         assessmentsFromConfig,
         config,
+        subject,
         appDb,
       )
       const { matrixData } = await dashboardProcessor.calculateDashboardData()

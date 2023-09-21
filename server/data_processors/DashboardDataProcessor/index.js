@@ -5,18 +5,19 @@ class DashboardDataProcessor {
   #configDataMap = new Map()
   #assessmentsFromConfig
 
-  constructor(assessmentsFromConfig, configuration, db) {
+  constructor(assessmentsFromConfig, configuration, subject, db) {
     this.#assessmentsFromConfig = assessmentsFromConfig
     this.configuration = configuration
+    this.subject = subject
     this.db = db
     this.matrixData = []
   }
 
   #dataFromAssessments = async () =>
     await Promise.all(
-      this.#assessmentsFromConfig.map(async ({ collection, assessment }) => {
+      this.#assessmentsFromConfig.map(async ({ assessment }) => {
         const data = await this.db.collection(collections.assessmentSubjectDayData)
-          .find({ collection })
+          .find({ assessment, subject: this.subject })
           .toArray()
 
         this.#configDataMap.set(assessment, data)
