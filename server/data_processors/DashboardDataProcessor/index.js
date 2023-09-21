@@ -1,21 +1,24 @@
 import _ from 'lodash'
-import CollectionsModel from '../../models/CollectionsModel'
+import { collections } from '../../utils/mongoCollections'
 
 class DashboardDataProcessor {
   #configDataMap = new Map()
   #assessmentsFromConfig
 
-  constructor(assessmentsFromConfig, configuration, db) {
+  constructor(assessmentsFromConfig, configuration, subject, db) {
     this.#assessmentsFromConfig = assessmentsFromConfig
     this.configuration = configuration
+    this.subject = subject
     this.db = db
     this.matrixData = []
   }
 
   #dataFromAssessments = async () =>
     await Promise.all(
-      this.#assessmentsFromConfig.map(async ({ collection, assessment }) => {
-        const data = await CollectionsModel.all(this.db, collection)
+      this.#assessmentsFromConfig.map(async ({ assessment }) => {
+        const data = await this.db.collection(collections.assessmentSubjectDayData)
+          .find({ assessment, subject: this.subject })
+          .toArray()
 
         this.#configDataMap.set(assessment, data)
       })

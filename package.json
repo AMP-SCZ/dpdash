@@ -16,7 +16,9 @@
     "serve:watch": "nodemon -r dotenv/config --exec babel-node server/bin/www.js --watch \"./server\" dotenv_config_path=./.env.development",
     "node": "DEBUG=* node ./dist/bin/www.js",
     "test": "jest",
-    "migrate:assessment_subject_data": "MONGODB_URI=$MONGODB_URI node ./scripts/data_migration/migrate_assessment_subject_day_data.js"
+    "migrate:assessment_subject_data": "MONGODB_URI=$MONGODB_URI node ./scripts/data_migration/migrate_assessment_subject_day_data.js",
+    "migrate:charts": "MONGODB_URI=$MONGODB_URI node ./scripts/data_migration/migrate_charts.js",
+    "migrate:metadata": "MONGODB_URI=$MONGODB_URI node ./scripts/data_migration/migrate_metadata.js"
   },
   "babel": {
     "presets": [
