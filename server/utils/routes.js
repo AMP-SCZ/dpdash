@@ -55,6 +55,7 @@ export const v1Routes = {
   },
   participants: {
     index: `${v1Root}/participants`,
+  },
   siteMetadata: {
     index: `${v1Root}/import/data/metadata`,
   },
