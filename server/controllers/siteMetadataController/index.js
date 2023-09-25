@@ -1,5 +1,4 @@
 import SiteMetadataModel from '../../models/SiteMetadataModel'
-import _ from 'lodash'
 
 const SiteMetadataController = {
   create: async (req, res) => {
