@@ -1,6 +1,6 @@
 import deepEqual from 'deep-equal'
 import {
-  ALL_FILTERS_ACTIVE,
+  ALL_FILTERS_INACTIVE,
   FILTER_TO_MONGO_VALUE_MAP,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
@@ -24,7 +24,7 @@ class FiltersService {
   allFiltersInactive = () => {
     const { sites, ...filters } = this.filters
 
-    return deepEqual(filters, ALL_FILTERS_ACTIVE)
+    return deepEqual(filters, ALL_FILTERS_INACTIVE)
   }
 
   barChartMongoQueries = () => {

@@ -13,7 +13,6 @@ export const EMAIL_REGEX = '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$'
 export const NOTIFICATION_DEFAULT = {
   open: false,
   message: '',
-  variant: 'info',
 }
 export const ROLE_OPTIONS = [
   { value: 'admin', label: 'System Admins' },

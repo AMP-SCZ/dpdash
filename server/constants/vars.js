@@ -11,7 +11,7 @@ export const SOCIODEMOGRAPHICS_FORM = 'form_sociodemographics'
 export const TOTAL_LABEL = 'Total'
 export const SITE = 'Site'
 
-export const ALL_FILTERS_ACTIVE = {
+export const ALL_FILTERS_INACTIVE = {
   chrcrit_part: [
     { name: 'HC', value: FALSE_STRING },
     { name: 'CHR', value: FALSE_STRING },
