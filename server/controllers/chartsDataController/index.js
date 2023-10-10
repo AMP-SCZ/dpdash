@@ -15,8 +15,7 @@ const show = async (req, res, next) => {
     const { userAccess } = req.session
     const parsedQueryParams = qs.parse(req.query)
     const filters = parsedQueryParams.filters || DEFAULT_CHART_FILTERS
-    const accessList = filters?.sites?.length ? filters.sites : userAccess
-    console.log(accessList)
+    const siteList = filters?.sites?.length ? filters.sites : userAccess
     const chart = await dataDb
       .collection(collections.charts)
       .findOne({ _id: ObjectId(chart_id) })
@@ -24,13 +23,13 @@ const show = async (req, res, next) => {
     const subjects = await SubjectModel.allForAssessment(
       dataDb,
       chart.assessment,
-      accessList,
+      siteList,
       filters
     )
     const chartService = new BarChartService(dataDb, chart)
     const { dataBySite, labels, studyTotals } = await chartService.createChart(
       subjects,
-      accessList
+      siteList
     )
     const chartTableService = new BarChartTableService(dataBySite, labels)
     const websiteTable = chartTableService.websiteTableData()
