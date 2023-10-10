@@ -45,6 +45,7 @@ export const DEFAULT_CHART_FILTERS = {
     { name: 'Female', value: TRUE_STRING },
     { name: 'Missing', value: TRUE_STRING },
   ],
+  sites: [],
 }
 
 export const FILTER_TO_MONGO_VALUE_MAP = {

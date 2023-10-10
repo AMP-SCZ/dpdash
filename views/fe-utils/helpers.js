@@ -1,3 +1,5 @@
+import { DISALLOWED_STUDIES } from '../../constants'
+
 export const formatAsPercentage = (value = 0) => value.toFixed(0) + '%'
 
 export const studyCountsToPercentage = (studyCount, targetTotal) => {
@@ -7,3 +9,6 @@ export const studyCountsToPercentage = (studyCount, targetTotal) => {
 
   return (+studyCount / +targetTotal) * 100
 }
+
+export const omitSites = (siteList) =>
+  siteList.filter((site) => !DISALLOWED_STUDIES.includes(site))

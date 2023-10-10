@@ -4,7 +4,7 @@ import { components } from './components'
 import { Controller } from 'react-hook-form'
 import { NotificationContext } from '../../contexts'
 
-const ControlledReactSelect = ({ name, control, options, ...rest }) => {
+const ControlledReactSelect = ({ name, control, options, rules, ...rest }) => {
   const [, setNotification] = useContext(NotificationContext)
 
   const onChange = (options, actionMeta, field) => {

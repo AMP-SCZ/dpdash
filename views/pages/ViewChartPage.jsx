@@ -9,16 +9,34 @@ import UserAvatar from '../components/UserAvatar'
 import ChartFilterForm from '../forms/CharFilterForm'
 import { apiRoutes } from '../routes/routes'
 import api from '../api'
+import UsersModel from '../models/UsersModel'
+import { omitSites } from '../fe-utils/helpers'
 
 const ViewChartPage = () => {
-  const { classes } = useOutletContext()
+  const { classes, user, setNotification } = useOutletContext()
   const { chart_id } = useParams()
   const [graph, setGraph] = useState(null)
+  const allowedSites = omitSites(user.access)
+  const siteOptions = UsersModel.userAccessDropdownOptions(allowedSites)
   const { handleSubmit, control, reset } = useForm()
   const handleFormSubmit = async (updatedFilters) => {
-    const graph = await fetchGraph(chart_id, updatedFilters)
+    if (!updatedFilters.sites.length) {
+      setNotification({
+        open: true,
+        message: 'Please select a site to view data',
+      })
+    } else {
+      updatedFilters.sites = updatedFilters.sites.map((filter) => filter.value)
 
-    setGraph(graph)
+      const graph = await fetchGraph(chart_id, updatedFilters)
+
+      graph.filters.sites = Object.values(graph.filters.sites).map((site) => ({
+        label: site,
+        name: site,
+      }))
+
+      setGraph(graph)
+    }
   }
   const fetchGraph = async (chart_id, filters) =>
     await api.charts.chartsData.show(chart_id, { filters })
@@ -41,6 +59,8 @@ const ViewChartPage = () => {
 
   useEffect(() => {
     fetchGraph(chart_id).then((graph) => {
+      graph.filters.sites = siteOptions
+
       setGraph(graph)
       reset(graph.filters)
     })
@@ -66,6 +86,7 @@ const ViewChartPage = () => {
           onSubmit={handleSubmit(handleFormSubmit)}
           classes={classes}
           control={control}
+          siteOptions={siteOptions}
         />
       </div>
       <BarGraph graph={graph} classes={classes} />

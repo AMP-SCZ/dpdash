@@ -22,7 +22,9 @@ class FiltersService {
   }
 
   allFiltersInactive = () => {
-    return deepEqual(this.filters, ALL_FILTERS_ACTIVE)
+    const { sites, ...filters } = this.filters
+
+    return deepEqual(filters, ALL_FILTERS_ACTIVE)
   }
 
   barChartMongoQueries = () => {
