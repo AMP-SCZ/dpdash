@@ -47,8 +47,8 @@ export const intersectSubjectsFromFilters = (filters) => {
 }
 
 const SubjectModel = {
-  allForAssessment: async (db, assessment, userAccess, filters) => {
-    const filtersService = new FiltersService(filters, userAccess)
+  allForAssessment: async (db, assessment, filters) => {
+    const filtersService = new FiltersService(filters)
     const allFiltersDeselected = filtersService.allFiltersInactive()
     let allSubjects
 
@@ -58,7 +58,7 @@ const SubjectModel = {
         .find(
           {
             assessment,
-            study: { $in: userAccess, $nin: STUDIES_TO_OMIT },
+            study: { $in: filters.sites, $nin: STUDIES_TO_OMIT },
           },
           { projection: ALL_SUBJECTS_MONGO_PROJECTION }
         )

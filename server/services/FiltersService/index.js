@@ -16,9 +16,8 @@ const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
 }
 
 class FiltersService {
-  constructor(filters, userAccess) {
+  constructor(filters) {
     this.filters = filters
-    this.userAccess = userAccess
   }
 
   allFiltersInactive = () => {
@@ -96,7 +95,7 @@ class FiltersService {
         {
           $match: {
             assessment: SOCIODEMOGRAPHICS_FORM,
-            study: { $in: this.userAccess, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.filters.sites, $nin: STUDIES_TO_OMIT },
           },
         },
         {
@@ -116,7 +115,7 @@ class FiltersService {
         {
           $match: {
             assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
-            study: { $in: this.userAccess, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.filters.sites, $nin: STUDIES_TO_OMIT },
           },
         },
         {

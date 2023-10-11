@@ -2,11 +2,11 @@ import { ObjectId } from 'mongodb'
 import qs from 'qs'
 
 import { collections } from '../../utils/mongoCollections'
-import { DEFAULT_CHART_FILTERS } from '../../constants'
 import SubjectModel from '../../models/SubjectModel'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import CsvService from '../../services/CSVService'
+import FiltersModel from '../../models/FiltersModel'
 
 const show = async (req, res, next) => {
   try {
@@ -14,22 +14,23 @@ const show = async (req, res, next) => {
     const { chart_id } = req.params
     const { userAccess } = req.session
     const parsedQueryParams = qs.parse(req.query)
-    const filters = parsedQueryParams.filters || DEFAULT_CHART_FILTERS
-    const siteList = filters?.sites?.length ? filters.sites : userAccess
+    const filters = FiltersModel.calculateFilters(
+      parsedQueryParams.filters,
+      userAccess
+    )
     const chart = await dataDb
       .collection(collections.charts)
       .findOne({ _id: ObjectId(chart_id) })
+    const chartService = new BarChartService(dataDb, chart)
 
     const subjects = await SubjectModel.allForAssessment(
       dataDb,
       chart.assessment,
-      siteList,
       filters
     )
-    const chartService = new BarChartService(dataDb, chart)
     const { dataBySite, labels, studyTotals } = await chartService.createChart(
       subjects,
-      siteList
+      filters.sites
     )
     const chartTableService = new BarChartTableService(dataBySite, labels)
     const websiteTable = chartTableService.websiteTableData()
@@ -65,7 +66,7 @@ const show = async (req, res, next) => {
       description: chart.description,
       legend: chartService.legend(),
       studyTotals,
-      filters,
+      filters: FiltersModel.normalizeFilters(filters),
       chartOwner,
       graphTable: websiteTable,
     }

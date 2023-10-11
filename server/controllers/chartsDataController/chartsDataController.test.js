@@ -11,7 +11,7 @@ import chartsDataController from '.'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import SubjectModel from '../../models/SubjectModel'
-import { DEFAULT_CHART_FILTERS } from '../../constants'
+import FiltersModel from '../../models/FiltersModel'
 
 jest.mock('../../services/BarChartService')
 jest.mock('../../services/BarChartTableService')
@@ -93,7 +93,7 @@ describe('chartsDataController', () => {
           description: chart.description,
           legend: mockLegend,
           studyTotals,
-          filters: DEFAULT_CHART_FILTERS,
+          filters: FiltersModel.defaultFilters,
           chartOwner,
           graphTable,
         },
