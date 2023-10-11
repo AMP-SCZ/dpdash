@@ -93,7 +93,7 @@ describe('chartsDataController', () => {
           description: chart.description,
           legend: mockLegend,
           studyTotals,
-          filters: FiltersModel.defaultFilters,
+          filters: FiltersModel.calculateFilters(undefined, []),
           chartOwner,
           graphTable,
         },
