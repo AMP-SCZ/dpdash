@@ -3,13 +3,15 @@ import { STUDIES_TO_OMIT, TRUE_STRING, FALSE_STRING } from '../../constants'
 const FiltersModel = {
   calculateFilters: function (filters, userAccess) {
     if (!filters) {
-      this.defaultFilters.sites = userAccess.filter(
-        (site) => !STUDIES_TO_OMIT.includes(site)
-      )
+      this.defaultFilters.sites = userAccess
+        .filter((site) => !STUDIES_TO_OMIT.includes(site))
+        .sort((prevSite, nextSite) => (prevSite < nextSite ? -1 : 1))
 
       return this.defaultFilters
     } else {
-      filters.sites = Object.values(filters.sites).map(({ value }) => value)
+      filters.sites = Object.values(filters.sites)
+        .map(({ value }) => value)
+        .sort((prevSite, nextSite) => (prevSite < nextSite ? -1 : 1))
 
       return filters
     }
