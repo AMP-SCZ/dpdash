@@ -10,14 +10,14 @@ import {
 } from '../../constants'
 import StudiesModel from '../../models/StudiesModel'
 
-const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
+export const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
   study: 1,
   collection: 1,
   _id: 0,
   subject: 1,
 }
 
-const DEFAULT_FILTERS = {
+export const DEFAULT_FILTERS = {
   chrcrit_part: [
     { name: 'HC', value: TRUE_STRING },
     { name: 'CHR', value: TRUE_STRING },
