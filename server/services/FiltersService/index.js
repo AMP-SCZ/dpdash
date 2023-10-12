@@ -37,8 +37,9 @@ const DEFAULT_FILTERS = {
 }
 
 class FiltersService {
-  constructor(filters) {
-    this.filters = filters || DEFAULT_FILTERS
+  constructor(filters, allSites) {
+    this._filters = filters || DEFAULT_FILTERS
+    this.allSites = allSites || []
   }
 
   allFiltersInactive = () => {
@@ -47,28 +48,31 @@ class FiltersService {
     return deepEqual(filters, ALL_CATEGORY_FILTERS_INACTIVE)
   }
 
-  sanitize = (allSites) => {
-    const sites = this.filters.sites.length > 0 ? this.filters.sites : allSites
+  get sites() {
+    return this.filters.sites
+  }
+
+  get filters() {
+    const unsanitizedSites =
+      this._filters.sites.length > 0 ? this._filters.sites : this.allSites
 
     return {
-      ...this.filters,
-      sites: StudiesModel.sanitizeAndSort(sites),
+      ...this._filters,
+      sites: StudiesModel.sanitizeAndSort(unsanitizedSites),
     }
   }
 
   barChartMongoQueries = () => {
-    if (!this.filters) {
-      return
-    }
+    const filters = this.filters
     const activeFilters = []
     const includedCriteriaFacet = {}
-    const chrCritFilters = this.filters.chrcrit_part
+    const chrCritFilters = filters.chrcrit_part
       .filter((f) => f.value === TRUE_STRING)
       .map((filter) => FILTER_TO_MONGO_VALUE_MAP[filter.name])
-    const includedExcludedFilters = this.filters.included_excluded
+    const includedExcludedFilters = filters.included_excluded
       .filter((f) => f.value === TRUE_STRING)
       .map((filter) => FILTER_TO_MONGO_VALUE_MAP[filter.name])
-    const sexAtBirthFilters = this.filters.sex_at_birth
+    const sexAtBirthFilters = filters.sex_at_birth
       .filter((f) => f.value === TRUE_STRING)
       .map((filter) => FILTER_TO_MONGO_VALUE_MAP[filter.name])
 
@@ -125,7 +129,7 @@ class FiltersService {
         {
           $match: {
             assessment: SOCIODEMOGRAPHICS_FORM,
-            study: { $in: this.filters.sites, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.sites, $nin: STUDIES_TO_OMIT },
           },
         },
         {
@@ -145,7 +149,7 @@ class FiltersService {
         {
           $match: {
             assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
-            study: { $in: this.filters.sites, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.sites, $nin: STUDIES_TO_OMIT },
           },
         },
         {

@@ -15,17 +15,19 @@ const show = async (req, res, next) => {
     const userSites = StudiesModel.sanitizeAndSort(req.session.userAccess)
     const { chart_id } = req.params
     const parsedQueryParams = qs.parse(req.query)
-    const filtersService = new FiltersService(parsedQueryParams.filters)
-    const filters = filtersService.sanitize(userSites)
+    const filtersService = new FiltersService(
+      parsedQueryParams.filters,
+      userSites
+    )
     const chart = await dataDb
       .collection(collections.charts)
       .findOne({ _id: ObjectId(chart_id) })
     const chartService = new BarChartService(dataDb, chart)
-
+    const filters = filtersService.filters
     const subjects = await SubjectModel.allForAssessment(
       dataDb,
       chart.assessment,
-      filters
+      filtersService
     )
     const { dataBySite, labels, studyTotals } = await chartService.createChart(
       subjects,
