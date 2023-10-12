@@ -6,27 +6,28 @@ import SubjectModel from '../../models/SubjectModel'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import CsvService from '../../services/CSVService'
-import FiltersModel from '../../models/FiltersModel'
+import StudiesModel from '../../models/StudiesModel'
+import FiltersService from '../../services/FiltersService'
 
 const show = async (req, res, next) => {
   try {
     const { dataDb, appDb } = req.app.locals
+    const userSites = StudiesModel.sanitizeAndSort(req.session.userAccess)
     const { chart_id } = req.params
-    const { userAccess } = req.session
     const parsedQueryParams = qs.parse(req.query)
-    const filters = FiltersModel.calculateFilters(
+    const filtersService = new FiltersService(
       parsedQueryParams.filters,
-      userAccess
+      userSites
     )
     const chart = await dataDb
       .collection(collections.charts)
       .findOne({ _id: ObjectId(chart_id) })
     const chartService = new BarChartService(dataDb, chart)
-
+    const filters = filtersService.filters
     const subjects = await SubjectModel.allForAssessment(
       dataDb,
       chart.assessment,
-      filters
+      filtersService
     )
     const { dataBySite, labels, studyTotals } = await chartService.createChart(
       subjects,
@@ -66,9 +67,10 @@ const show = async (req, res, next) => {
       description: chart.description,
       legend: chartService.legend(),
       studyTotals,
-      filters: FiltersModel.normalizeFilters(filters),
+      filters,
       chartOwner,
       graphTable: websiteTable,
+      userSites,
     }
     return res.status(200).json({ data: graph })
   } catch (err) {
