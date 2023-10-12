@@ -1,14 +1,20 @@
-import deepEqual from 'deep-equal'
 import {
-  ALL_CATEGORY_FILTERS_INACTIVE,
-  FILTER_TO_MONGO_VALUE_MAP,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
-  STUDIES_TO_OMIT,
   TRUE_STRING,
   FALSE_STRING,
 } from '../../constants'
 import StudiesModel from '../../models/StudiesModel'
+
+const FILTER_TO_MONGO_VALUE_MAP = {
+  HC: 2,
+  CHR: 1,
+  Missing: '',
+  Included: 1,
+  Excluded: 0,
+  Male: 1,
+  Female: 2,
+}
 
 export const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
   study: 1,
@@ -45,7 +51,9 @@ class FiltersService {
   allFiltersInactive = () => {
     const { sites, ...filters } = this.filters
 
-    return deepEqual(filters, ALL_CATEGORY_FILTERS_INACTIVE)
+    return Object.keys(filters).every((filterKey) =>
+      filters[filterKey].every((filter) => filter.value === FALSE_STRING)
+    )
   }
 
   get sites() {
@@ -129,7 +137,7 @@ class FiltersService {
         {
           $match: {
             assessment: SOCIODEMOGRAPHICS_FORM,
-            study: { $in: this.sites, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.sites },
           },
         },
         {
@@ -149,7 +157,7 @@ class FiltersService {
         {
           $match: {
             assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
-            study: { $in: this.sites, $nin: STUDIES_TO_OMIT },
+            study: { $in: this.sites },
           },
         },
         {

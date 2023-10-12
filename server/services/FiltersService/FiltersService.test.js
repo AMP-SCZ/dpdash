@@ -3,11 +3,9 @@ import FiltersService, {
   INDIVIDUAL_FILTERS_MONGO_PROJECTION,
 } from '.'
 import {
-  ALL_CATEGORY_FILTERS_INACTIVE,
   FALSE_STRING,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
-  STUDIES_TO_OMIT,
   TRUE_STRING,
 } from '../../constants'
 
@@ -74,10 +72,10 @@ describe(FiltersService, () => {
   })
 
   describe('#allFiltersInactive', () => {
-    it('return true when the filters are the same as the ALL_CATEGORY_FILTERS_INACTIVE object', () => {
+    it('return true when the filters have falsey values', () => {
       const service = new FiltersService(
         {
-          ...ALL_CATEGORY_FILTERS_INACTIVE,
+          chrcrit_part: [{ name: 'HC', value: FALSE_STRING }],
           sites: [],
         },
         []
@@ -89,9 +87,7 @@ describe(FiltersService, () => {
     it('return false if any category filter is true', () => {
       const service = new FiltersService(
         {
-          ...ALL_CATEGORY_FILTERS_INACTIVE,
           chrcrit_part: [
-            { name: 'HC', value: FALSE_STRING },
             { name: 'CHR', value: TRUE_STRING },
             { name: 'Missing', value: FALSE_STRING },
           ],
@@ -158,7 +154,6 @@ describe(FiltersService, () => {
                     assessment: SOCIODEMOGRAPHICS_FORM,
                     study: {
                       $in: ['one', 'three', 'two'],
-                      $nin: STUDIES_TO_OMIT,
                     },
                   },
                 },
@@ -179,7 +174,6 @@ describe(FiltersService, () => {
                     assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
                     study: {
                       $in: ['one', 'three', 'two'],
-                      $nin: STUDIES_TO_OMIT,
                     },
                   },
                 },
@@ -202,7 +196,21 @@ describe(FiltersService, () => {
 
     it('returns an empty query with no active filters', () => {
       const initialFilters = {
-        ...ALL_CATEGORY_FILTERS_INACTIVE,
+        chrcrit_part: [
+          { name: 'HC', value: FALSE_STRING },
+          { name: 'CHR', value: FALSE_STRING },
+          { name: 'Missing', value: FALSE_STRING },
+        ],
+        included_excluded: [
+          { name: 'Included', value: FALSE_STRING },
+          { name: 'Excluded', value: FALSE_STRING },
+          { name: 'Missing', value: FALSE_STRING },
+        ],
+        sex_at_birth: [
+          { name: 'Male', value: FALSE_STRING },
+          { name: 'Female', value: FALSE_STRING },
+          { name: 'Missing', value: FALSE_STRING },
+        ],
         sites: [],
       }
       const service = new FiltersService(initialFilters, [
