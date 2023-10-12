@@ -6,7 +6,9 @@ import {
   SOCIODEMOGRAPHICS_FORM,
   STUDIES_TO_OMIT,
   TRUE_STRING,
+  FALSE_STRING,
 } from '../../constants'
+import StudiesModel from '../../models/StudiesModel'
 
 const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
   study: 1,
@@ -15,15 +17,43 @@ const INDIVIDUAL_FILTERS_MONGO_PROJECTION = {
   subject: 1,
 }
 
+const DEFAULT_FILTERS = {
+  chrcrit_part: [
+    { name: 'HC', value: TRUE_STRING },
+    { name: 'CHR', value: TRUE_STRING },
+    { name: 'Missing', value: TRUE_STRING },
+  ],
+  included_excluded: [
+    { name: 'Included', value: TRUE_STRING },
+    { name: 'Excluded', value: FALSE_STRING },
+    { name: 'Missing', value: FALSE_STRING },
+  ],
+  sex_at_birth: [
+    { name: 'Male', value: TRUE_STRING },
+    { name: 'Female', value: TRUE_STRING },
+    { name: 'Missing', value: TRUE_STRING },
+  ],
+  sites: [],
+}
+
 class FiltersService {
   constructor(filters) {
-    this.filters = filters
+    this.filters = filters || DEFAULT_FILTERS
   }
 
   allFiltersInactive = () => {
     const { sites, ...filters } = this.filters
 
     return deepEqual(filters, ALL_CATEGORY_FILTERS_INACTIVE)
+  }
+
+  sanitize = (allSites) => {
+    const sites = this.filters.sites.length > 0 ? this.filters.sites : allSites
+
+    return {
+      ...this.filters,
+      sites: StudiesModel.sanitizeAndSort(sites),
+    }
   }
 
   barChartMongoQueries = () => {
