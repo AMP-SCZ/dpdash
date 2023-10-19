@@ -43,7 +43,7 @@ For Trusted Entity select "Web Identity". For Identity Provider select "token.ac
 
 Copy the ARN of the new role and save it locally. We will use it when configuring the deployment for your environment.
 
-### 3. Bootstrap the CDK
+### 3. Bootstrap the CDK and Generate Secrets
 
 This step will only need to be completed if the CDK has not been bootstrapped for your account/AWS environment. Ensure you are logged in via the AWS CLI. From the root of the project directory run:
 
@@ -51,6 +51,16 @@ This step will only need to be completed if the CDK has not been bootstrapped fo
 npm i
 npm run bootstrap
 ```
+
+Create secret values in AWS encrypted SSM Parameter store:
+
+```bash
+export DPDASH_MONGODB_ADMIN_USER=dpdash
+export DPDASH_IMPORT_API_USERS=user1,user2
+./bin/generate-secrets.sh
+```
+
+Secret values can be retrieved and decryted via the `./bin/echo-secrets.sh` script. THIS WILL LOG SECRET VALUES TO THE CONSOLE.
 
 ### 4. Set Github Action Variables and Deploy
 
