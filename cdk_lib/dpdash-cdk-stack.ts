@@ -14,28 +14,28 @@ const APP_NAME = "DpDash";
 export class DpdashCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    if (process.env.CERT_ARN) {
-      const certificateArn = process.env.CERT_ARN;
+    if (process.env.DEV_CERT_ARN) {
+      const devCertificatArn = process.env.DEV_CERT_ARN;
 
       const secrets = {
-        mongoDbUser: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}MongoDbUser`, {
-          parameterName: 'DPDASH_MONGODB_ADMIN_USER',
+        mongoDbUserDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}MongoDbUser`, {
+          parameterName: 'DPDASH_MONGODB_ADMIN_USER_DEV',
           version: 1,
         })),
-        mongoDbPassword: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}MongoDbPassword`, {
-          parameterName: 'DPDASH_MONGODB_ADMIN_PASSWORD',
+        mongoDbPasswordDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}MongoDbPassword`, {
+          parameterName: 'DPDASH_MONGODB_ADMIN_PASSWORD_DEV',
           version: 1,
         })),
-        sessionSecret: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}SessionSecret`, {
-          parameterName: 'DPDASH_SESSION_SECRET',
+        sessionSecretDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}SessionDevSecret`, {
+          parameterName: 'DPDASH_SESSION_SECRET_DEV',
           version: 1,
         })),
-        importApiUsers: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiUsers`, {
-          parameterName: 'DPDASH_IMPORT_API_USERS',
+        importApiUsersDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiUsers`, {
+          parameterName: 'DPDASH_IMPORT_API_USERS_DEV',
           version: 1,
         })),
-        importApiKeys: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiKeys`, {
-          parameterName: 'DPDASH_IMPORT_API_KEYS',
+        importApiKeysDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiKeysDev`, {
+          parameterName: 'DPDASH_IMPORT_API_KEYS_DEV',
           version: 1,
         })),
       }
@@ -43,19 +43,19 @@ export class DpdashCdkStack extends cdk.Stack {
         availabilityZones: [`${cdk.Aws.REGION}a`, `${cdk.Aws.REGION}b`],
       });
   
-      const efsSecurityGroup = new ec2.SecurityGroup(this,`${APP_NAME}EfsSg`, {
+      const efsSecurityGroup = new ec2.SecurityGroup(this,`${APP_NAME}DevEfsSg`, {
         vpc,
       });
   
-      const mongoRepository = ecr.Repository.fromRepositoryName(this, `${APP_NAME}MongoRepository`, "mongo");
-      const dpdashRepository = ecr.Repository.fromRepositoryName(this, `${APP_NAME}DpdashRepository`, "dpdash");
+      const mongoRepository = ecr.Repository.fromRepositoryName(this, `${APP_NAME}DevMongoRepository`, "mongo");
+      const dpdashRepository = ecr.Repository.fromRepositoryName(this, `${APP_NAME}DevDpdashRepository`, "dpdash");
   
-      const mongoTaskDefinition = new ecs.FargateTaskDefinition(this, `${APP_NAME}MongoTaskDefinition`, {
+      const mongoTaskDefinition = new ecs.FargateTaskDefinition(this, `${APP_NAME}DevMongoTaskDefinition`, {
         memoryLimitMiB: 512,
         cpu: 256,
       });
   
-      const fileSystem = new efs.FileSystem(this, `${APP_NAME}EfsFileSystem`, { 
+      const fileSystem = new efs.FileSystem(this, `${APP_NAME}DevEfsFileSystem`, { 
         vpc,
         securityGroup: efsSecurityGroup,
         encrypted: true,
@@ -65,7 +65,7 @@ export class DpdashCdkStack extends cdk.Stack {
         removalPolicy: cdk.RemovalPolicy.DESTROY,
        });
   
-      const accessPoint = new efs.AccessPoint(this, `${APP_NAME}VolumeAccessPoint`,  {
+      const accessPoint = new efs.AccessPoint(this, `${APP_NAME}DevVolumeAccessPoint`,  {
         fileSystem: fileSystem,
      })
   
@@ -102,13 +102,13 @@ export class DpdashCdkStack extends cdk.Stack {
         })
       );
       
-      const mongoContainer = mongoTaskDefinition.addContainer(`${APP_NAME}MongoContainer`, {
+      const mongoContainer = mongoTaskDefinition.addContainer(`${APP_NAME}DevMongoContainer`, {
         image: ecs.ContainerImage.fromEcrRepository(mongoRepository, "5.0.21"),
         portMappings: [{ containerPort: 27017 }],        
-        logging: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}MongoContainer` }),
+        logging: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}DevMongoContainer` }),
         secrets: {
-          MONGO_INITDB_ROOT_USERNAME: secrets.mongoDbUser,
-          MONGO_INITDB_ROOT_PASSWORD: secrets.mongoDbPassword,
+          MONGO_INITDB_ROOT_USERNAME: secrets.mongoDbUserDev,
+          MONGO_INITDB_ROOT_PASSWORD: secrets.mongoDbPasswordDev,
         },
       });
   
@@ -144,27 +144,34 @@ export class DpdashCdkStack extends cdk.Stack {
           ec2.Port.tcp(2049) // Enable NFS service within security group
       )
       
-      new ecs_patterns.ApplicationLoadBalancedFargateService(this, `${APP_NAME}AppService`, {
+      new ecs_patterns.ApplicationLoadBalancedFargateService(this, `${APP_NAME}DevAppService`, {
         vpc: vpc,
-        taskImageOptions: { 
+        serviceName: 'dpDashDevService',
+        cluster: new ecs.Cluster(this, `${APP_NAME}DevCluster`, {
+          clusterName: 'dpDashDevCluster',
+        }),
+        taskImageOptions: {
           image: ecs.ContainerImage.fromEcrRepository(dpdashRepository, "latest"),
           containerPort: 8000,
           environment: {
             MONGODB_HOST: mongoService.loadBalancer.loadBalancerDnsName,
           },
           secrets: {
-            MONGODB_USER: secrets.mongoDbUser,
-            MONGODB_PASSWORD: secrets.mongoDbPassword,
-            SESSION_SECRET: secrets.sessionSecret,
-            IMPORT_API_USERS: secrets.importApiUsers,
-            IMPORT_API_KEYS: secrets.importApiKeys,
+            MONGODB_USER: secrets.mongoDbUserDev,
+            MONGODB_PASSWORD: secrets.mongoDbPasswordDev,
+            SESSION_SECRET: secrets.sessionSecretDev,
+            IMPORT_API_USERS: secrets.importApiUsersDev,
+            IMPORT_API_KEYS: secrets.importApiKeysDev,
           },
-          logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}AppContainer` }),
+          logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}DevAppContainer` }),
         },
+        taskDefinition: new ecs.FargateTaskDefinition(this, `${APP_NAME}DevAppTaskDefinition`, {
+          family: 'dpDashDevTaskDefinition',
+        }),
         assignPublicIp: true,
         publicLoadBalancer: true,
         redirectHTTP: true,
-        certificate: certificate_manager.Certificate.fromCertificateArn(this, `${APP_NAME}Certificate`, certificateArn),
+        certificate: certificate_manager.Certificate.fromCertificateArn(this, `${APP_NAME}DevCertificate`, devCertificatArn),
         taskSubnets: {
           subnets: vpc.publicSubnets.concat(vpc.privateSubnets),
         },
