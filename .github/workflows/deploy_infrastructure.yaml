@@ -9,6 +9,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    if: ${{ startsWith(var.ROLE_ARN, 'arn:aws:iam') }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
