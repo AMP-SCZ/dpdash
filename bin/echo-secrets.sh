@@ -7,7 +7,6 @@ read -p "This script will log secret values to the console. Are you sure you wis
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   aws ssm get-parameter \
-<<<<<<< HEAD
       --name "DPDASH_MONGODB_ADMIN_USER_DEV" \
       --with-decryption
 
@@ -25,24 +24,5 @@ then
 
   aws ssm get-parameter \
       --name "DPDASH_SESSION_SECRET_DEV" \
-=======
-      --name "DPDASH_MONGODB_ADMIN_USER" \
-      --with-decryption
-
-  aws ssm get-parameter \
-      --name "DPDASH_MONGODB_ADMIN_PASSWORD" \
-      --with-decryption
-
-  aws ssm get-parameter \
-      --name "DPDASH_IMPORT_API_USERS" \
-      --with-decryption
-
-  aws ssm get-parameter \
-      --name "DPDASH_IMPORT_API_KEYS" \
-      --with-decryption
-
-  aws ssm get-parameter \
-      --name "DPDASH_SESSION_SECRET" \
->>>>>>> 474a383 (add cdk infra with ci/cd)
       --with-decryption
 fi
