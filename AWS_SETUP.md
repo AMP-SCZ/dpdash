@@ -62,7 +62,23 @@ export DPDASH_IMPORT_API_USERS=user1,user2
 
 Secret values can be retrieved and decryted via the `./bin/echo-secrets.sh` script. THIS WILL LOG SECRET VALUES TO THE CONSOLE.
 
-### 4. Set Github Action Variables and Deploy
+### 4. Build and Deploy Docker Images
+
+Run the following commands from the root of this repository:
+
+```bash
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account")
+docker pull mongo:5.0.21
+docker build -t dpdash:latest .
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+docker tag mongo:5.0.21 $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/mongo:5.0.21
+docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/mongo:5.0.21
+
+docker tag dpdash:latest $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
+docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
+```
+
+### 5. Set Github Action Variables and Deploy
 
 Navigate to your Github repository and select the Settings tab. Open the "Secrets and Variables" menu on the left-hand side and select "Actions", then "New Variable".
 
@@ -78,3 +94,15 @@ Create 2 variables.
 Navigate to the Actions tab and the Deploy Infrastructure workflow. Select "Run Workflow". The application will deploy.
 
 ![Screenshot of Actions tab with Run Workflow button](/doc/assets/aws_setup/04_set_github_variables/set_github_variables_03.png)
+
+### 6. Check the Deployment and Set CNAME Record
+
+To verify that the application is deployed, view the DNS name with the following command:
+
+```bash
+aws elbv2 describe-load-balancers --names dpDashDevLoadBalancer --query "LoadBalancers[0].DNSName"
+```
+
+Visit this domain in your browser via `https://`. You will get a warning from your browser that the certificate is incorrect. This is the expected behavior and means that the server is responding appropriately. It is not necessary to override the browser warning
+
+You may then set a CNAME record in your DNS system for the intended domain of this application, and direct requests to the URL retrieved from the above command.
