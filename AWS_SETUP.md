@@ -56,7 +56,11 @@ Create secret values in AWS encrypted SSM Parameter store:
 
 ```bash
 export DPDASH_MONGODB_ADMIN_USER=dpdash
+<<<<<<< HEAD
 export DPDASH_IMPORT_API_USERS=dev-api-user
+=======
+export DPDASH_IMPORT_API_USERS=user1,user2
+>>>>>>> 3592257 (add secret generation instructions)
 ./bin/generate-secrets.sh
 ```
 
