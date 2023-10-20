@@ -43,7 +43,11 @@ For Trusted Entity select "Web Identity". For Identity Provider select "token.ac
 
 Copy the ARN of the new role and save it locally. We will use it when configuring the deployment for your environment.
 
+<<<<<<< HEAD
 ### 3. Bootstrap the CDK and Generate Secrets
+=======
+### 3. Bootstrap the CDK
+>>>>>>> 474a383 (add cdk infra with ci/cd)
 
 This step will only need to be completed if the CDK has not been bootstrapped for your account/AWS environment. Ensure you are logged in via the AWS CLI. From the root of the project directory run:
 
@@ -52,6 +56,7 @@ npm i
 npm run bootstrap
 ```
 
+<<<<<<< HEAD
 Create secret values in AWS encrypted SSM Parameter store:
 
 ```bash
@@ -79,6 +84,9 @@ docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
 ```
 
 ### 5. Set Github Action Variables and Deploy
+=======
+### 4. Set Github Action Variables and Deploy
+>>>>>>> 474a383 (add cdk infra with ci/cd)
 
 Navigate to your Github repository and select the Settings tab. Open the "Secrets and Variables" menu on the left-hand side and select "Actions", then "New Variable".
 
@@ -94,6 +102,7 @@ Create 2 variables.
 Navigate to the Actions tab and the Deploy Infrastructure workflow. Select "Run Workflow". The application will deploy.
 
 ![Screenshot of Actions tab with Run Workflow button](/doc/assets/aws_setup/04_set_github_variables/set_github_variables_03.png)
+<<<<<<< HEAD
 
 ### 6. Check the Deployment and Set CNAME Record
 
@@ -106,3 +115,5 @@ aws elbv2 describe-load-balancers --names dpDashDevLoadBalancer --query "LoadBal
 Visit this domain in your browser via `https://`. You will get a warning from your browser that the certificate is incorrect. This is the expected behavior and means that the server is responding appropriately. It is not necessary to override the browser warning
 
 You may then set a CNAME record in your DNS system for the intended domain of this application, and direct requests to the URL retrieved from the above command.
+=======
+>>>>>>> 474a383 (add cdk infra with ci/cd)
