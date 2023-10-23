@@ -143,32 +143,35 @@ export class DpdashCdkStack extends cdk.Stack {
           mongoService.service.connections.securityGroups[0],
           ec2.Port.tcp(2049) // Enable NFS service within security group
       )
+
+      const appTaskDefinition = new ecs.FargateTaskDefinition(this, `${APP_NAME}DevAppTaskDefinition`, {
+        family: 'dpDashDevTaskDefinition',
+      })
+
+      appTaskDefinition.addContainer(`${APP_NAME}DevAppContainer`, {
+        image: ecs.ContainerImage.fromEcrRepository(dpdashRepository, "latest"),
+        portMappings: [{ containerPort: 8000}],
+        environment: {
+          MONGODB_HOST: mongoService.loadBalancer.loadBalancerDnsName,
+        },
+        secrets: {
+          MONGODB_USER: secrets.mongoDbUserDev,
+          MONGODB_PASSWORD: secrets.mongoDbPasswordDev,
+          SESSION_SECRET: secrets.sessionSecretDev,
+          IMPORT_API_USERS: secrets.importApiUsersDev,
+          IMPORT_API_KEYS: secrets.importApiKeysDev,
+        },
+        logging: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}DevAppContainer` }),
+      });
       
       new ecs_patterns.ApplicationLoadBalancedFargateService(this, `${APP_NAME}DevAppService`, {
-        vpc: vpc,
         serviceName: 'dpDashDevService',
         loadBalancerName: 'dpDashDevLoadBalancer',
         cluster: new ecs.Cluster(this, `${APP_NAME}DevCluster`, {
+          vpc,
           clusterName: 'dpDashDevCluster',
         }),
-        taskImageOptions: {
-          image: ecs.ContainerImage.fromEcrRepository(dpdashRepository, "latest"),
-          containerPort: 8000,
-          environment: {
-            MONGODB_HOST: mongoService.loadBalancer.loadBalancerDnsName,
-          },
-          secrets: {
-            MONGODB_USER: secrets.mongoDbUserDev,
-            MONGODB_PASSWORD: secrets.mongoDbPasswordDev,
-            SESSION_SECRET: secrets.sessionSecretDev,
-            IMPORT_API_USERS: secrets.importApiUsersDev,
-            IMPORT_API_KEYS: secrets.importApiKeysDev,
-          },
-          logDriver: ecs.LogDrivers.awsLogs({ streamPrefix: `${APP_NAME}DevAppContainer` }),
-        },
-        taskDefinition: new ecs.FargateTaskDefinition(this, `${APP_NAME}DevAppTaskDefinition`, {
-          family: 'dpDashDevTaskDefinition',
-        }),
+        taskDefinition: appTaskDefinition,
         assignPublicIp: true,
         publicLoadBalancer: true,
         redirectHTTP: true,
