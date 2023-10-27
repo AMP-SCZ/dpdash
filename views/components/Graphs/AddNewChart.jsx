@@ -1,6 +1,6 @@
-import Fab from '@material-ui/core/Fab'
-import Tooltip from '@material-ui/core/Tooltip'
-import Add from '@material-ui/icons/Add'
+import Fab from '@mui/material/Fab'
+import Tooltip from '@mui/material/Tooltip'
+import Add from '@mui/icons-material/Add'
 
 const AddNewChart = ({ onNewChart }) => {
   return (

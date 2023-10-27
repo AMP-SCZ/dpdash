@@ -10,10 +10,10 @@ import {
   IconButton,
   FormControlLabel,
   Tooltip,
-} from '@material-ui/core'
-import { Edit, Clear, Share } from '@material-ui/icons'
-import FullView from '@material-ui/icons/AspectRatio'
-import Copy from '@material-ui/icons/FileCopy'
+} from '@mui/material'
+import { Edit, Clear, Share } from '@mui/icons-material'
+import FullView from '@mui/icons-material/AspectRatio'
+import Copy from '@mui/icons-material/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 
 const ConfigurationCard = ({

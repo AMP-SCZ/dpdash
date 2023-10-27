@@ -1,5 +1,5 @@
 import Form from '../Form'
-import { Button, Tooltip } from '@material-ui/core'
+import { Button, Tooltip } from '@mui/material'
 import TextInput from '../TextInput'
 import getAvatar from '../../fe-utils/avatarUtil'
 import { EMAIL_REGEX } from '../../../constants'

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Card, CardMedia, CardContent, Typography } from '@material-ui/core'
+import { Card, CardMedia, CardContent, Typography } from '@mui/material'
 import { routes } from '../routes/routes'
 import api from '../api'
 import {

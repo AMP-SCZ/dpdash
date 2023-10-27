@@ -6,9 +6,9 @@ import {
   CardContent,
   Divider,
   IconButton,
-} from '@material-ui/core'
-import Delete from '@material-ui/icons/Delete'
-import Copy from '@material-ui/icons/FileCopy'
+} from '@mui/material'
+import Delete from '@mui/icons-material/Delete'
+import Copy from '@mui/icons-material/FileCopy'
 
 const ConfigurationCategoryCard = ({
   children,

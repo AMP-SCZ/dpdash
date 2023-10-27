@@ -1,11 +1,11 @@
-import React from 'react';
-import classNames from 'classnames';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import CancelIcon from '@material-ui/icons/Cancel';
+import React from 'react'
+import classNames from 'classnames'
+import Chip from '@mui/material/Chip'
+import MenuItem from '@mui/material/MenuItem'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import CancelIcon from '@mui/icons-material/Cancel'
 
 function NoOptionsMessage(props) {
   return (
@@ -16,11 +16,11 @@ function NoOptionsMessage(props) {
     >
       {props.children}
     </Typography>
-  );
+  )
 }
 
 function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
+  return <div ref={inputRef} {...props} />
 }
 
 function Control(props) {
@@ -42,7 +42,7 @@ function Control(props) {
       }}
       {...props.selectProps.textFieldProps}
     />
-  );
+  )
 }
 
 function Option(props) {
@@ -58,7 +58,7 @@ function Option(props) {
     >
       {props.children}
     </MenuItem>
-  );
+  )
 }
 
 function Placeholder(props) {
@@ -74,7 +74,7 @@ function Placeholder(props) {
     >
       {props.children}
     </Typography>
-  );
+  )
 }
 
 function SingleValue(props) {
@@ -82,12 +82,12 @@ function SingleValue(props) {
     <Typography style={{ fontSize: 16 }} {...props.innerProps}>
       {props.children}
     </Typography>
-  );
+  )
 }
 
 function ValueContainer(props) {
   return (
-    <div 
+    <div
       style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -98,7 +98,7 @@ function ValueContainer(props) {
     >
       {props.children}
     </div>
-  );
+  )
 }
 function MultiValue(props) {
   return (
@@ -111,15 +111,19 @@ function MultiValue(props) {
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
     />
-  );
+  )
 }
 
 function Menu(props) {
   return (
-    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+    <Paper
+      square
+      className={props.selectProps.classes.paper}
+      {...props.innerProps}
+    >
       {props.children}
     </Paper>
-  );
+  )
 }
 
 export {
@@ -131,4 +135,4 @@ export {
   Placeholder,
   SingleValue,
   ValueContainer,
-};
+}

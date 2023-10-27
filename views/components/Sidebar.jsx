@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DrawerComponent from './Drawer'
-import Drawer from '@material-ui/core/Drawer'
+import Drawer from '@mui/material/Drawer'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { AuthContext } from '../contexts/AuthContext'
 import api from '../api'

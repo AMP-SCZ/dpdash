@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import BarGraph from '../components/BarGraph'
 import GraphTable from '../components/GraphTable'
 import UserAvatar from '../components/UserAvatar'

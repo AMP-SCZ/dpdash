@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography } from '@mui/material'
 import React, { useCallback, useRef, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { Controller } from 'react-hook-form'

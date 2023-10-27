@@ -8,8 +8,8 @@ import {
   Paper,
   Toolbar,
   Button,
-} from '@material-ui/core'
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+} from '@mui/material'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 const GraphTable = ({ graph, classes, onGetCsv }) => {
   if (!graph) return null

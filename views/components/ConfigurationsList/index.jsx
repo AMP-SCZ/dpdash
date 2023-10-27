@@ -1,5 +1,5 @@
 import React from 'react'
-import GridList from '@material-ui/core/GridList'
+import { ImageList } from '@mui/material'
 import ConfigurationCard from '../ConfigurationCard'
 
 const ConfigurationsList = ({
@@ -10,7 +10,7 @@ const ConfigurationsList = ({
 }) => {
   return (
     <>
-      <GridList
+      <ImageList
         className={classes.gridList}
         cols={gridState.columns}
         cellHeight="auto"
@@ -26,7 +26,7 @@ const ConfigurationsList = ({
             />
           )
         })}
-      </GridList>
+      </ImageList>
     </>
   )
 }

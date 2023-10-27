@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core/'
-import ColorLens from '@material-ui/icons/ColorLens'
-import Person from '@material-ui/icons/Person'
+import { AppBar, IconButton, Toolbar, Typography } from '@mui/material/'
+import ColorLens from '@mui/icons-material/ColorLens'
+import Person from '@mui/icons-material/Person'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { routes } from '../routes/routes'
 

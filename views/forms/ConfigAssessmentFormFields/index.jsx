@@ -1,5 +1,5 @@
 import React from 'react'
-import { MenuItem } from '@material-ui/core'
+import { MenuItem } from '@mui/material'
 import ConfigurationCategoryCard from '../../components/ConfigurationCategoryCard'
 import TextInput from '../TextInput'
 import ControlledSelectInput from '../ControlledSelect'

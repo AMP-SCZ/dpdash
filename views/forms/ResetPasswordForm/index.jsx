@@ -1,6 +1,6 @@
 import Form from '../Form'
 import TextInput from '../TextInput'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const ResetPasswordForm = ({
   classes,

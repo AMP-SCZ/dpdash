@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardMedia, Typography } from '@material-ui/core'
+import { Card, CardContent, CardMedia, Typography } from '@mui/material'
 import RegistrationForm from '../forms/RegisterForm'
 import { NotificationContext, DimensionsContext } from '../contexts'
 import { MIN_WIDTH, VALIDATION_EMAIL_REGEX } from '../../constants'

@@ -1,5 +1,5 @@
-import { Chip, MenuItem, Typography, TextField } from '@material-ui/core'
-import CancelIcon from '@material-ui/icons/Cancel'
+import { Chip, MenuItem, Typography, TextField } from '@mui/material'
+import CancelIcon from '@mui/icons-material/Cancel'
 import classNames from 'classnames'
 
 function inputComponent({ inputRef, ...props }) {

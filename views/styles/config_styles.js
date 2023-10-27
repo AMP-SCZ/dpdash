@@ -1,4 +1,3 @@
-import { emphasize } from '@material-ui/core/styles/colorManipulator'
 import { colors } from '../../constants'
 
 export const configStyles = (theme) => ({
@@ -29,14 +28,7 @@ export const configStyles = (theme) => ({
   chip: {
     margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`,
   },
-  chipFocused: {
-    backgroundColor: emphasize(
-      theme.palette.type === 'light'
-        ? theme.palette.grey[300]
-        : theme.palette.grey[700],
-      0.08
-    ),
-  },
+  chipFocused: {},
   noOptionsMessage: {
     padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
   },

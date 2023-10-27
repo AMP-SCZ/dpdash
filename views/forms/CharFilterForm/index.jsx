@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  Button,
-  List,
-  ListItem,
-  Typography,
-  InputLabel,
-} from '@material-ui/core'
+import { Button, List, ListItem, Typography, InputLabel } from '@mui/material'
 import Form from '../Form'
 import { FILTER_CATEGORIES, TRUE_STRING } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'

@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import ControlledReactSelect from '../ControlledReactSelect'
 import Form from '../Form'
 

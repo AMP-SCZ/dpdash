@@ -1,5 +1,5 @@
 import React from 'react'
-import { InputLabel, Typography } from '@material-ui/core'
+import { InputLabel, Typography } from '@mui/material'
 import TextInput from '../TextInput'
 import ControlledReactSelect from '../ControlledReactSelect'
 import ControlledCheckbox from '../ControlledCheckbox'
