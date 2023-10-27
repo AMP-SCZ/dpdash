@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardMedia, Typography } from '@material-ui/core'
+import { Card, CardContent, CardMedia, Typography } from '@mui/material'
 import RegistrationForm from '../forms/RegisterForm'
-import { NotificationContext, DimensionsContext } from '../contexts'
+import { NotificationContext } from '../contexts'
 import { MIN_WIDTH, VALIDATION_EMAIL_REGEX } from '../../constants'
 import api from '../api'
 
-const RegisterPage = ({ classes }) => {
-  const [width] = useContext(DimensionsContext)
+const RegisterPage = () => {
   const [, setNotification] = useContext(NotificationContext)
   const [errors, setErrors] = useState({
     password: { error: false, message: '' },
@@ -101,19 +100,16 @@ const RegisterPage = ({ classes }) => {
   return (
     <div>
       <Card>
-        <div className={classes.register_card}>
+        <div>
           <CardContent>
-            <Typography variant="title" className={classes.register_title}>
-              Welcome to DPdash!
-            </Typography>
+            <Typography variant="title">Welcome to DPdash!</Typography>
             <Typography variant="subheading" color="textSecondary">
               Please create your DPdash account to continue.
             </Typography>
           </CardContent>
-          <div className={classes.register_formContainer}>
+          <div>
             <div>
               <RegistrationForm
-                classes={classes}
                 control={control}
                 onSubmit={handleSubmit(handleFormSubmit)}
                 errors={errors}
@@ -121,13 +117,6 @@ const RegisterPage = ({ classes }) => {
                 onInputChange={handleChange}
               />
             </div>
-
-            {width < MIN_WIDTH ? null : (
-              <CardMedia
-                image="/img/dpdash.png"
-                className={classes.register_logo}
-              />
-            )}
           </div>
         </div>
       </Card>

@@ -10,14 +10,11 @@ import {
   IconButton,
   FormControlLabel,
   Tooltip,
-} from '@material-ui/core'
-import { Edit, Clear, Share } from '@material-ui/icons'
-import FullView from '@material-ui/icons/AspectRatio'
-import Copy from '@material-ui/icons/FileCopy'
+} from '@mui/material'
+import { Clear, ContentCopy, Edit, Share, ViewArray } from '@mui/icons-material'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 
 const ConfigurationCard = ({
-  classes,
   config,
   onCopyConfig,
   onOpen,
@@ -35,6 +32,7 @@ const ConfigurationCard = ({
   const localTime = moment.utc(showTime).local().format()
   const updated = moment(localTime).calendar()
   const checked = config._id === preferences.config
+
   return (
     <Card style={{ margin: '3px', width: `${width}px` }}>
       <CardHeader
@@ -48,19 +46,16 @@ const ConfigurationCard = ({
         }
       />
       <Divider />
-      <div className={classes.actionsDivider}>
+      <div>
         <Typography variant="headline" component="h3" noWrap>
           {name}
         </Typography>
-        <Typography className={classes.textAndIcon} component="p">
-          {type}
-        </Typography>
+        <Typography component="p">{type}</Typography>
       </div>
-      <CardActions className={classes.actionsContainer}>
+      <CardActions>
         <FormControlLabel
           control={
             <Switch
-              className={classes.textAndIcon}
               checked={checked}
               onChange={() => onUpdatePreferences(_id)}
             />
@@ -71,18 +66,12 @@ const ConfigurationCard = ({
           {ownsConfig ? (
             <>
               <Tooltip title="Edit" placement="top">
-                <IconButton
-                  onClick={() => onEditConfig(_id)}
-                  className={classes.textAndIcon}
-                >
+                <IconButton onClick={() => onEditConfig(_id)}>
                   <Edit />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Share" placement="top">
-                <IconButton
-                  className={classes.textAndIcon}
-                  onClick={() => onOpen(config)}
-                >
+                <IconButton onClick={() => onOpen(config)}>
                   <Share />
                 </IconButton>
               </Tooltip>
@@ -91,19 +80,13 @@ const ConfigurationCard = ({
             <>
               {' '}
               <Tooltip title="View" placement="top">
-                <IconButton
-                  onClick={() => onViewConfig(_id)}
-                  className={classes.textAndIcon}
-                >
-                  <FullView />
+                <IconButton onClick={() => onViewConfig(_id)}>
+                  <ViewArray />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Duplicate" placement="top">
-                <IconButton
-                  className={classes.textAndIcon}
-                  onClick={() => onCopyConfig(config)}
-                >
-                  <Copy />
+                <IconButton onClick={() => onCopyConfig(config)}>
+                  <ContentCopy />
                 </IconButton>
               </Tooltip>
             </>

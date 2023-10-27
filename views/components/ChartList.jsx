@@ -1,16 +1,15 @@
 import React from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Link from '@material-ui/core/Link'
-import Delete from '@material-ui/icons/Delete'
-import Edit from '@material-ui/icons/Edit'
-import Share from '@material-ui/icons/Share'
-import PlaylistAdd from '@material-ui/icons/PlaylistAdd'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  Button,
+  Link,
+} from '@mui/material'
+import { Delete, Edit, Share, PlaylistAdd } from '@mui/icons-material'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { routes } from '../routes/routes'
@@ -22,7 +21,6 @@ const ChartList = ({
   removeChart,
   onDuplicateChart,
   user,
-  classes,
 }) => {
   return (
     <>
@@ -53,12 +51,9 @@ const ChartList = ({
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <span className={classes.chartListOwnerContainer}>
+                  <span>
                     <UserAvatar user={chart.chartOwner} small={true} />
-                    <Typography
-                      variant="subtitle2"
-                      className={classes.chartListOwnerName}
-                    >
+                    <Typography variant="subtitle2">
                       {chart.chartOwner.display_name}
                     </Typography>
                   </span>
@@ -77,7 +72,6 @@ const ChartList = ({
                     component={RouterLink}
                     to={userIsOwner ? routes.editChart(chart._id) : '#'}
                     color="textPrimary"
-                    className={userIsOwner ? '' : classes.disable}
                   >
                     <Edit />
                   </Link>
@@ -93,7 +87,6 @@ const ChartList = ({
                 </TableCell>
                 <TableCell align="center">
                   <Button
-                    className={userIsOwner ? '' : classes.disable}
                     disabled={!userIsOwner}
                     type="button"
                     variant="text"

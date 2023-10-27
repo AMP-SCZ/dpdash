@@ -1,22 +1,19 @@
 import React from 'react'
-import { Fab } from '@material-ui/core'
-import ContentAdd from '@material-ui/icons/Add'
-import Save from '@material-ui/icons/Save'
+import { Fab } from '@mui/material'
+import ContentAdd from '@mui/icons-material/Add'
+import Save from '@mui/icons-material/Save'
 import ConfigFormFields from '../ConfigFields'
 import Form from '../Form'
 
-const ConfigForm = ({ onSubmit, classes, onAddNewField, ...rest }) => {
+const ConfigForm = ({ onSubmit, onAddNewField, ...rest }) => {
   return (
     <Form onSubmit={onSubmit}>
-      <ConfigFormFields classes={classes} {...rest} />
-      <div className={classes.configFormButtonContainer}>
-        <Fab
-          className={classes.addNewFieldButton}
-          onClick={() => onAddNewField()}
-        >
+      <ConfigFormFields {...rest} />
+      <div>
+        <Fab onClick={() => onAddNewField()}>
           <ContentAdd />
         </Fab>
-        <Fab className={classes.saveConfigurationButton} type="submit">
+        <Fab type="submit">
           <Save />
         </Fab>
       </div>

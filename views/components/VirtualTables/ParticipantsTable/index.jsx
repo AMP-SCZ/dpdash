@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Column, Table } from 'react-virtualized'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import { Checkbox } from '@material-ui/core'
-import StarBorder from '@material-ui/icons/StarBorder'
-import Star from '@material-ui/icons/Star'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { Checkbox } from '@mui/material'
+import StarBorder from '@mui/icons-material/StarBorder'
+import Star from '@mui/icons-material/Star'
 import { routes } from '../../../routes/routes'
 import '../Table.css'
 import {
@@ -68,7 +68,6 @@ const ParticipantsTable = (props) => {
         cellRenderer={({ rowData: { study, subject, complete } }) => (
           <Checkbox
             name={`complete-${study}`}
-            className={props.classes.home_td}
             icon={<CheckBoxOutlineBlankIcon />}
             checkedIcon={
               <CheckBoxIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
@@ -86,7 +85,6 @@ const ParticipantsTable = (props) => {
         cellRenderer={({ rowData: { study, subject, star } }) => (
           <Checkbox
             name={`star-${study}`}
-            className={props.classes.home_td}
             disableRipple={true}
             icon={<StarBorder />}
             checked={star}

@@ -5,7 +5,6 @@ import AdminUsersTable from '../../components/VirtualTables/AdminUsersTable'
 import UserPriviligeFields from '../UserPriviligeFormFields'
 
 const AdminForm = ({
-  classes,
   control,
   currentRowIndex,
   height,
@@ -28,7 +27,6 @@ const AdminForm = ({
   return (
     <Form>
       <AdminUsersTable
-        classes={classes}
         users={users}
         control={control}
         height={height}
@@ -42,7 +40,6 @@ const AdminForm = ({
         user={user}
       />
       <UserPriviligeFields
-        classes={classes}
         open={openAccessFields}
         currentRowIndex={currentRowIndex}
         onClose={onClose}

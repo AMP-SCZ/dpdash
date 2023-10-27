@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form'
-import { Checkbox } from '@material-ui/core'
+import { Checkbox } from '@mui/material'
 
 const ControlledCheckbox = ({ name, control, onChange, checked }) => {
   return (

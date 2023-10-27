@@ -10,7 +10,7 @@ import api from '../api'
 const NULL_CHART = {}
 
 const ChartsPage = () => {
-  const { user, classes, navigate, setNotification, users } = useOutletContext()
+  const { user, navigate, setNotification, users } = useOutletContext()
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
   const [usernames, setUsernames] = useState([])
@@ -79,14 +79,13 @@ const ChartsPage = () => {
   }, [users])
 
   return (
-    <div className={classes.chartListContainer}>
+    <div>
       <ChartList
         handleShareChart={handleShareChart}
         chartList={chartList}
         removeChart={removeChart}
         onDuplicateChart={onDuplicateChart}
         user={user}
-        classes={classes}
       />
       {!!chartToShare._id && (
         <ShareChart
@@ -94,7 +93,6 @@ const ChartsPage = () => {
           usernames={usernames}
           handleChange={shareWithUsers}
           handleClose={closeDialog}
-          classes={classes}
         />
       )}
       <AddNewChart onNewChart={newChart} />

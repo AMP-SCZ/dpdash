@@ -1,19 +1,13 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Card, CardMedia, CardContent, Typography } from '@material-ui/core'
+import { Card, CardMedia, CardContent, Typography } from '@mui/material'
 import { routes } from '../routes/routes'
 import api from '../api'
-import {
-  AuthContext,
-  DimensionsContext,
-  NotificationContext,
-} from '../contexts'
-import { MIN_WIDTH } from '../../constants'
+import { AuthContext, NotificationContext } from '../contexts'
 import LoginForm from '../forms/LoginForm'
 
-const SignInPage = ({ classes }) => {
-  const [width] = useContext(DimensionsContext)
+const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const { handleSubmit, control } = useForm({
     defaultValues: {
@@ -36,28 +30,22 @@ const SignInPage = ({ classes }) => {
   }
 
   return (
-    <div className={classes.login_container}>
-      <Card className={classes.login_card}>
-        <div className={classes.login_card_column}>
-          <CardContent className={classes.login_content}>
-            <Typography variant="title" className={classes.login_title}>
-              Welcome to DPdash!
-            </Typography>
+    <div>
+      <Card>
+        <div>
+          <CardContent>
+            <Typography variant="title">Welcome to DPdash!</Typography>
             <Typography variant="subheading" color="textSecondary">
               Please log in to continue.
             </Typography>
           </CardContent>
           <LoginForm
-            classes={classes}
             control={control}
             onSubmit={handleSubmit(handleFormSubmit)}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
           />
         </div>
-        {width < MIN_WIDTH ? null : (
-          <CardMedia image="/img/dpdash.png" className={classes.form_image} />
-        )}
       </Card>
     </div>
   )

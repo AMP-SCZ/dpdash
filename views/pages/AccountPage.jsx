@@ -9,7 +9,7 @@ import UserProfileForm from '../forms/UserProfileForm'
 const AccountPage = () => {
   const canvasRef = useRef()
   const profileImageRef = useRef()
-  const { user, classes, setUser, setNotification } = useOutletContext()
+  const { user, setUser, setNotification } = useOutletContext()
   const { icon, display_name, mail, title, department, company } = user
   const { handleSubmit, control, watch } = useForm({
     defaultValues: { icon, display_name, mail, title, department, company },
@@ -61,21 +61,15 @@ const AccountPage = () => {
   }
 
   return (
-    <div className={classnames(classes.account_page_container, classes.form)}>
+    <div>
       <UserProfileForm
         control={control}
-        classes={classes}
         onSubmit={handleSubmit(handleFormSubmit)}
         user={user}
         setUser={setUser}
       />
-      <img
-        className={classes.userAvatarInput}
-        ref={profileImageRef}
-        onLoad={scaleDownImage}
-        src={watch('icon')}
-      />
-      <canvas ref={canvasRef} className={classes.userAvatarInput} />
+      <img ref={profileImageRef} onLoad={scaleDownImage} src={watch('icon')} />
+      <canvas ref={canvasRef} />
     </div>
   )
 }

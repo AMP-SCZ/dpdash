@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  Button,
-  List,
-  ListItem,
-  Typography,
-  InputLabel,
-} from '@material-ui/core'
+import { Button, List, ListItem, Typography, InputLabel } from '@mui/material'
 import Form from '../Form'
 import { FILTER_CATEGORIES, TRUE_STRING } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'
@@ -14,32 +8,29 @@ import ControlledReactSelect from '../ControlledReactSelect'
 const ChartFilterForm = ({
   initialValues,
   onSubmit,
-  classes,
+
   control,
   siteOptions,
 }) => {
   return (
     <Form onSubmit={onSubmit}>
-      <div className={classes.filterForm}>
+      <div>
         {Object.keys(initialValues)
           .filter((key) => key !== 'sites')
           .map((filterKey) => {
             return (
               <div key={filterKey}>
-                <Typography variant="subtitle2" className={classes.filterText}>
+                <Typography variant="subtitle2">
                   {FILTER_CATEGORIES[filterKey]}
                 </Typography>
-                <div className={classes.filtersContainer}>
+                <div>
                   {initialValues[filterKey].map((filter, index) => {
                     const filterID = `${filterKey}-${filter.name}`
 
                     return (
                       <List key={filterID} component="div" disablePadding>
-                        <ListItem className={classes.filterNested}>
-                          <InputLabel
-                            htmlFor={filterID}
-                            className={classes.filterLabel}
-                          >
+                        <ListItem>
+                          <InputLabel htmlFor={filterID}>
                             {filter.name}
                           </InputLabel>
                           <ControlledCheckbox
@@ -47,7 +38,6 @@ const ChartFilterForm = ({
                             control={control}
                             name={`${filterKey}.${index}.value`}
                             id={filterID}
-                            className={classes.filterCheckbox}
                           />
                         </ListItem>
                       </List>
@@ -59,25 +49,17 @@ const ChartFilterForm = ({
           })}
       </div>
       <div>
-        <Typography variant="subtitle2" className={classes.filterText}>
-          Sites
-        </Typography>
+        <Typography variant="subtitle2">Sites</Typography>
         <ControlledReactSelect
           name="sites"
-          classes={classes}
           control={control}
           options={siteOptions}
           placeholder="Select a site to view data"
           isMulti
         />
       </div>
-      <div className={classes.filterButtonContainer}>
-        <Button
-          type="submit"
-          color="primary"
-          variant="contained"
-          className={classes.submitFiltersButton}
-        >
+      <div>
+        <Button type="submit" color="primary" variant="contained">
           Apply Filters
         </Button>
       </div>

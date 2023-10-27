@@ -2,19 +2,17 @@ import React, { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
-import { MIN_WIDTH } from '../../constants'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import Typography from '@mui/material/Typography'
 
 import { routes } from '../routes/routes'
 import api from '../api'
 import ResetPasswordForm from '../forms/ResetPasswordForm'
-import { NotificationContext, DimensionsContext } from '../contexts'
+import { NotificationContext } from '../contexts'
 
-const ResetPasswordPage = ({ classes }) => {
-  const [width] = useContext(DimensionsContext)
+const ResetPasswordPage = () => {
   const [, setNotification] = useContext(NotificationContext)
   const [errors, setErrors] = useState({
     password: { error: false, message: '' },
@@ -93,19 +91,16 @@ const ResetPasswordPage = ({ classes }) => {
   return (
     <div>
       <Card>
-        <div className={classes.register_card}>
+        <div>
           <CardContent>
-            <Typography variant="title" className={classes.register_title}>
-              Welcome to DPdash!
-            </Typography>
+            <Typography variant="title">Welcome to DPdash!</Typography>
             <Typography variant="subheading" color="textSecondary">
               Reset your DPdash account.
             </Typography>
           </CardContent>
-          <div className={classes.register_formContainer}>
+          <div>
             <div>
               <ResetPasswordForm
-                classes={classes}
                 control={control}
                 onSubmit={handleSubmit(handleFormSubmit)}
                 errors={errors}
@@ -113,13 +108,6 @@ const ResetPasswordPage = ({ classes }) => {
                 onInputChange={handleChange}
               />
             </div>
-
-            {width < MIN_WIDTH ? null : (
-              <CardMedia
-                image="/img/dpdash.png"
-                className={classes.register_logo}
-              />
-            )}
           </div>
         </div>
       </Card>

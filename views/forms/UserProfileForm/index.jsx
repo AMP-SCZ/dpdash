@@ -1,11 +1,10 @@
 import Form from '../Form'
-import { Button, Tooltip } from '@material-ui/core'
+import { Button, Tooltip } from '@mui/material'
 import TextInput from '../TextInput'
-import getAvatar from '../../fe-utils/avatarUtil'
 import { EMAIL_REGEX } from '../../../constants'
 import { Controller } from 'react-hook-form'
 
-const UserProfileForm = ({ classes, control, onSubmit, setUser, user }) => {
+const UserProfileForm = ({ control, onSubmit, setUser, user }) => {
   return (
     <Form onSubmit={onSubmit}>
       <Controller
@@ -13,13 +12,12 @@ const UserProfileForm = ({ classes, control, onSubmit, setUser, user }) => {
         name="icon"
         render={({ field: { value, onChange, ...field } }) => {
           return (
-            <div className={classes.userAvatar}>
+            <div>
               <input
                 accept="image/*"
                 id="icon"
                 multiple
                 type="file"
-                className={classes.userAvatarInput}
                 {...field}
                 value={value?.fileName}
                 onChange={(event) => {
@@ -37,10 +35,8 @@ const UserProfileForm = ({ classes, control, onSubmit, setUser, user }) => {
                 }}
               />
               <label htmlFor="icon">
-                <span className={classes.userAvatarContainer}>
-                  <Tooltip title="Edit Profile Photo">
-                    {getAvatar({ user })}
-                  </Tooltip>
+                <span>
+                  <Tooltip title="Edit Profile Photo"></Tooltip>
                 </span>
               </label>
             </div>
@@ -49,14 +45,12 @@ const UserProfileForm = ({ classes, control, onSubmit, setUser, user }) => {
       />
       <TextInput
         control={control}
-        className={classes.formInputSpacing}
         label="Full Name"
         name="display_name"
         fullWidth={true}
       />
       <TextInput
         control={control}
-        className={classes.formInputSpacing}
         label="Email"
         type="email"
         pattern={EMAIL_REGEX}
@@ -65,31 +59,24 @@ const UserProfileForm = ({ classes, control, onSubmit, setUser, user }) => {
       />
       <TextInput
         control={control}
-        className={classes.formInputSpacing}
         label="Title"
         name="title"
         fullWidth={true}
       />
       <TextInput
         control={control}
-        className={classes.formInputSpacing}
         label="Department"
         name="department"
         fullWidth={true}
       />
       <TextInput
         control={control}
-        className={classes.formInputSpacing}
         label="Company"
         name="company"
         fullWidth={true}
       />
-      <div className={classes.formSubmitButtonContainer}>
-        <Button
-          className={classes.formSubmitButton}
-          variant="outlined"
-          type="submit"
-        >
+      <div>
+        <Button variant="outlined" type="submit">
           Save
         </Button>
       </div>

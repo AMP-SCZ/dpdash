@@ -6,34 +6,19 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import ControlledReactSelect from '../ControlledReactSelect'
 import Form from '../Form'
 
-const ShareForm = ({
-  classes,
-  control,
-  onClose,
-  onSubmit,
-  open,
-  options,
-  title,
-}) => {
+const ShareForm = ({ control, onClose, onSubmit, open, options, title }) => {
   return (
     <Dialog open={open} onClose={onClose} fullScreen={true}>
-      <DialogTitle
-        id="alert-dialog-title"
-        disableTypography={true}
-        className={classes.dialogTitle}
-      >
-        <Typography variant="title" className={classes.dialogText}>
-          {title}
-        </Typography>
+      <DialogTitle id="alert-dialog-title" disableTypography={true}>
+        <Typography variant="title">{title}</Typography>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent>
         <Form onSubmit={onSubmit}>
           <ControlledReactSelect
-            classes={classes}
             isMulti={true}
             control={control}
             name="readers"
@@ -41,15 +26,8 @@ const ShareForm = ({
             placeholder="Shared with"
           />
           <DialogActions>
-            <Button onClick={onClose} className={classes.closeButton}>
-              Cancel
-            </Button>
-            ,
-            <Button
-              variant="outlined"
-              className={classes.submitButton}
-              type="submit"
-            >
+            <Button onClick={onClose}>Cancel</Button>,
+            <Button variant="outlined" type="submit">
               Submit
             </Button>
           </DialogActions>
