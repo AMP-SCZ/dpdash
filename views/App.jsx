@@ -8,12 +8,11 @@ import {
   DimensionsContext,
 } from './contexts'
 import Router from './routes'
-import { styles } from './styles'
 import { NOTIFICATION_DEFAULT } from '../constants'
 
 import 'react-virtualized/styles.css'
 
-const App = (props) => {
+const App = () => {
   const [configurations, setConfigurations] = useState([])
   const [openSidebar, setOpenSidebar] = useState(true)
   const [notification, setNotification] = useState(NOTIFICATION_DEFAULT)
@@ -39,7 +38,7 @@ const App = (props) => {
             value={[configurations, setConfigurations]}
           >
             <AuthContext.Provider value={[user, setUser]}>
-              <Router {...props} user={user} setUser={setUser} />
+              <Router user={user} setUser={setUser} />
               <Snackbar
                 open={notification.open}
                 message={notification.message}

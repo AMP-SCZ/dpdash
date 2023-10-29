@@ -17,7 +17,6 @@ import Copy from '@mui/icons-material/FileCopy'
 import ConfigCardAvatar from '../ConfigurationCardAvatar'
 
 const ConfigurationCard = ({
-  classes,
   config,
   onCopyConfig,
   onOpen,
@@ -48,19 +47,16 @@ const ConfigurationCard = ({
         }
       />
       <Divider />
-      <div className={classes.actionsDivider}>
+      <div>
         <Typography variant="headline" component="h3" noWrap>
           {name}
         </Typography>
-        <Typography className={classes.textAndIcon} component="p">
-          {type}
-        </Typography>
+        <Typography component="p">{type}</Typography>
       </div>
-      <CardActions className={classes.actionsContainer}>
+      <CardActions>
         <FormControlLabel
           control={
             <Switch
-              className={classes.textAndIcon}
               checked={checked}
               onChange={() => onUpdatePreferences(_id)}
             />
@@ -71,18 +67,12 @@ const ConfigurationCard = ({
           {ownsConfig ? (
             <>
               <Tooltip title="Edit" placement="top">
-                <IconButton
-                  onClick={() => onEditConfig(_id)}
-                  className={classes.textAndIcon}
-                >
+                <IconButton onClick={() => onEditConfig(_id)}>
                   <Edit />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Share" placement="top">
-                <IconButton
-                  className={classes.textAndIcon}
-                  onClick={() => onOpen(config)}
-                >
+                <IconButton onClick={() => onOpen(config)}>
                   <Share />
                 </IconButton>
               </Tooltip>
@@ -91,18 +81,12 @@ const ConfigurationCard = ({
             <>
               {' '}
               <Tooltip title="View" placement="top">
-                <IconButton
-                  onClick={() => onViewConfig(_id)}
-                  className={classes.textAndIcon}
-                >
+                <IconButton onClick={() => onViewConfig(_id)}>
                   <FullView />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Duplicate" placement="top">
-                <IconButton
-                  className={classes.textAndIcon}
-                  onClick={() => onCopyConfig(config)}
-                >
+                <IconButton onClick={() => onCopyConfig(config)}>
                   <Copy />
                 </IconButton>
               </Tooltip>

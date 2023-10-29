@@ -13,7 +13,7 @@ import api from '../api'
 import ResetPasswordForm from '../forms/ResetPasswordForm'
 import { NotificationContext, DimensionsContext } from '../contexts'
 
-const ResetPasswordPage = ({ classes }) => {
+const ResetPasswordPage = () => {
   const [width] = useContext(DimensionsContext)
   const [, setNotification] = useContext(NotificationContext)
   const [errors, setErrors] = useState({
@@ -93,19 +93,16 @@ const ResetPasswordPage = ({ classes }) => {
   return (
     <div>
       <Card>
-        <div className={classes.register_card}>
+        <div>
           <CardContent>
-            <Typography variant="title" className={classes.register_title}>
-              Welcome to DPdash!
-            </Typography>
+            <Typography variant="title">Welcome to DPdash!</Typography>
             <Typography variant="subheading" color="textSecondary">
               Reset your DPdash account.
             </Typography>
           </CardContent>
-          <div className={classes.register_formContainer}>
+          <div>
             <div>
               <ResetPasswordForm
-                classes={classes}
                 control={control}
                 onSubmit={handleSubmit(handleFormSubmit)}
                 errors={errors}
@@ -114,12 +111,7 @@ const ResetPasswordPage = ({ classes }) => {
               />
             </div>
 
-            {width < MIN_WIDTH ? null : (
-              <CardMedia
-                image="/img/dpdash.png"
-                className={classes.register_logo}
-              />
-            )}
+            {width < MIN_WIDTH ? null : <CardMedia image="/img/dpdash.png" />}
           </div>
         </div>
       </Card>

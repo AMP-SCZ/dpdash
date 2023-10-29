@@ -17,7 +17,7 @@ const TEMPORARY_SIDEBAR = 'temporary'
 const PERSISTENT_SIDEBAR = 'persistent'
 const dashboard = 'dashboard'
 
-const MainLayout = ({ classes, theme }) => {
+const MainLayout = () => {
   const [configurations, setConfigurations] = useContext(ConfigurationsContext)
   const [, setNotification] = useContext(NotificationContext)
   const [openSidebar, setOpenSidebar] = useContext(SidebarContext)
@@ -78,7 +78,7 @@ const MainLayout = ({ classes, theme }) => {
   }, [pathname])
 
   return (
-    <div className={classes.root}>
+    <div>
       <Header
         onToggleSidebar={toggleSidebar}
         title={headerTitle(pathname, params)}
@@ -93,10 +93,9 @@ const MainLayout = ({ classes, theme }) => {
         totalStudies={sideBarState.totalStudies}
         totalSubjects={sideBarState.totalSubjects}
       />
-      <div className={classNames(classes.content, classes.contentPadded)}>
+      <div>
         <Outlet
           context={{
-            classes,
             configurations,
             navigate,
             openSidebar,
@@ -105,7 +104,6 @@ const MainLayout = ({ classes, theme }) => {
             setNotification,
             setUser,
             setUsers,
-            theme,
             user,
             users,
           }}

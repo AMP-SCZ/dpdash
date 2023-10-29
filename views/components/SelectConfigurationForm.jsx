@@ -7,11 +7,10 @@ const SelectConfigurationForm = ({
   configurations,
   onChange,
   currentPreference,
-  classes,
 }) => {
   return (
-    <form autoComplete="off" className={classes.configForm}>
-      <FormControl className={classes.configFormControl}>
+    <form autoComplete="off">
+      <FormControl>
         <TextField
           select
           label="Configurations"

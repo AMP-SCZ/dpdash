@@ -22,7 +22,6 @@ const ChartList = ({
   removeChart,
   onDuplicateChart,
   user,
-  classes,
 }) => {
   return (
     <>
@@ -53,12 +52,9 @@ const ChartList = ({
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <span className={classes.chartListOwnerContainer}>
+                  <span>
                     <UserAvatar user={chart.chartOwner} small={true} />
-                    <Typography
-                      variant="subtitle2"
-                      className={classes.chartListOwnerName}
-                    >
+                    <Typography variant="subtitle2">
                       {chart.chartOwner.display_name}
                     </Typography>
                   </span>
@@ -77,7 +73,6 @@ const ChartList = ({
                     component={RouterLink}
                     to={userIsOwner ? routes.editChart(chart._id) : '#'}
                     color="textPrimary"
-                    className={userIsOwner ? '' : classes.disable}
                   >
                     <Edit />
                   </Link>
@@ -93,7 +88,6 @@ const ChartList = ({
                 </TableCell>
                 <TableCell align="center">
                   <Button
-                    className={userIsOwner ? '' : classes.disable}
                     disabled={!userIsOwner}
                     type="button"
                     variant="text"

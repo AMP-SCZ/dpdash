@@ -5,18 +5,15 @@ import Save from '@mui/icons-material/Save'
 import ConfigFormFields from '../ConfigFields'
 import Form from '../Form'
 
-const ConfigForm = ({ onSubmit, classes, onAddNewField, ...rest }) => {
+const ConfigForm = ({ onSubmit, onAddNewField, ...rest }) => {
   return (
     <Form onSubmit={onSubmit}>
-      <ConfigFormFields classes={classes} {...rest} />
-      <div className={classes.configFormButtonContainer}>
-        <Fab
-          className={classes.addNewFieldButton}
-          onClick={() => onAddNewField()}
-        >
+      <ConfigFormFields {...rest} />
+      <div>
+        <Fab onClick={() => onAddNewField()}>
           <ContentAdd />
         </Fab>
-        <Fab className={classes.saveConfigurationButton} type="submit">
+        <Fab type="submit">
           <Save />
         </Fab>
       </div>

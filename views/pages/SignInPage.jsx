@@ -12,7 +12,7 @@ import {
 import { MIN_WIDTH } from '../../constants'
 import LoginForm from '../forms/LoginForm'
 
-const SignInPage = ({ classes }) => {
+const SignInPage = () => {
   const [width] = useContext(DimensionsContext)
   const [showPassword, setShowPassword] = useState(false)
   const { handleSubmit, control } = useForm({
@@ -36,28 +36,23 @@ const SignInPage = ({ classes }) => {
   }
 
   return (
-    <div className={classes.login_container}>
-      <Card className={classes.login_card}>
-        <div className={classes.login_card_column}>
-          <CardContent className={classes.login_content}>
-            <Typography variant="title" className={classes.login_title}>
-              Welcome to DPdash!
-            </Typography>
+    <div>
+      <Card>
+        <div>
+          <CardContent>
+            <Typography variant="title">Welcome to DPdash!</Typography>
             <Typography variant="subheading" color="textSecondary">
               Please log in to continue.
             </Typography>
           </CardContent>
           <LoginForm
-            classes={classes}
             control={control}
             onSubmit={handleSubmit(handleFormSubmit)}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
           />
         </div>
-        {width < MIN_WIDTH ? null : (
-          <CardMedia image="/img/dpdash.png" className={classes.form_image} />
-        )}
+        {width < MIN_WIDTH ? null : <CardMedia image="/img/dpdash.png" />}
       </Card>
     </div>
   )

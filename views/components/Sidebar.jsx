@@ -15,7 +15,6 @@ const Sidebar = ({
   totalStudies,
   totalSubjects,
 }) => {
-  const { classes } = useContext(ThemeContext)
   const [user, setUser] = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -30,18 +29,14 @@ const Sidebar = ({
     }
   }
   return (
-    <div className={classes.sideBar}>
+    <div>
       <Drawer
         variant={drawerVariant}
         anchor="left"
         open={sidebarOpen}
         onClose={onToggleSidebar}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
       >
         <DrawerComponent
-          classes={classes}
           onLogout={handleLogout}
           totalStudies={totalStudies}
           totalSubjects={totalSubjects}

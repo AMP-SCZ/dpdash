@@ -11,7 +11,7 @@ import * as TableHelpers from '../components/VirtualTables/helpers'
 
 const AdminPage = () => {
   const usersKey = 'users'
-  const { user, classes, setNotification, users, setUsers } = useOutletContext()
+  const { user, setNotification, users, setUsers } = useOutletContext()
 
   const [searchOptions, setSearchOptions] = useState([])
   const [rowCount, setRowCount] = useState(0)
@@ -139,7 +139,6 @@ const AdminPage = () => {
       <NoSsr>
         <Select
           autoFocus={true}
-          classes={classes}
           components={components}
           isMulti
           onChange={(e) => setSearchOptionsValue(e)}
@@ -149,7 +148,6 @@ const AdminPage = () => {
         />
       </NoSsr>
       <AdminForm
-        classes={classes}
         control={control}
         currentRowIndex={currentRowIndex}
         height={dimensions.height}

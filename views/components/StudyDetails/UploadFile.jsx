@@ -2,9 +2,9 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import Add from '@mui/icons-material/Add'
 
-const UploadFile = ({ classes, handleChangeFile }) => {
+const UploadFile = ({ handleChangeFile }) => {
   return (
-    <div className={classes.uploadButtonContainer}>
+    <div>
       <input
         accept=".json"
         name="file"

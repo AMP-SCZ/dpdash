@@ -4,7 +4,6 @@ import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
 
 const ConfigFormFields = ({
-  classes,
   control,
   colors,
   fields,
@@ -15,22 +14,13 @@ const ConfigFormFields = ({
 }) => {
   return (
     <>
-      <ConfigTypeFormFields
-        control={control}
-        friendsList={friendsList}
-        classes={classes}
-      />
-      <ImageList
-        cellHeight="auto"
-        className={classes.configurationListGrid}
-        cols={gridState.columns}
-      >
+      <ConfigTypeFormFields control={control} friendsList={friendsList} />
+      <ImageList cellHeight="auto" cols={gridState.columns}>
         {fields.map((field, index) => {
           const { id, ...rest } = field
 
           return (
             <ConfigAssessmentFormFields
-              classes={classes}
               colors={colors}
               control={control}
               index={index}

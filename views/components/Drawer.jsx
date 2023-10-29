@@ -22,54 +22,36 @@ import getAvatar from '../fe-utils/avatarUtil'
 const DrawerComponent = (props) => {
   return (
     <>
-      <div className={props.classes.logoContainer}>
+      <div>
         <img style={{ height: '100%' }} src={'/img/dpdash.png'} />
       </div>
-      <div className={props.classes.avatarContainer}>
-        {getAvatar({ user: props.user })}
-      </div>
+      <div>{getAvatar({ user: props.user })}</div>
 
-      <Typography
-        noWrap={true}
-        className={props.classes.userName}
-        variant="subheading"
-      >
+      <Typography noWrap={true} variant="subheading">
         {props.user.name ? props.user.name : props.user.uid}
       </Typography>
-      <table className={props.classes.statsContainer}>
+      <table>
         <tbody>
           <tr>
             <td>
-              <Typography noWrap={true} className={props.classes.statTitle}>
-                {props.totalStudies}
-              </Typography>
+              <Typography noWrap={true}>{props.totalStudies}</Typography>
             </td>
             <td>
-              <Typography noWrap={true} className={props.classes.statTitle}>
-                {props.totalSubjects}
-              </Typography>
+              <Typography noWrap={true}>{props.totalSubjects}</Typography>
             </td>
             <td>
-              <Typography noWrap={true} className={props.classes.statTitle}>
-                {props.totalDays}
-              </Typography>
+              <Typography noWrap={true}>{props.totalDays}</Typography>
             </td>
           </tr>
           <tr>
             <td>
-              <Typography noWrap={true} className={props.classes.statData}>
-                {'studies'}
-              </Typography>
+              <Typography noWrap={true}>{'studies'}</Typography>
             </td>
             <td>
-              <Typography noWrap={true} className={props.classes.statData}>
-                {'participants'}
-              </Typography>
+              <Typography noWrap={true}>{'participants'}</Typography>
             </td>
             <td>
-              <Typography noWrap={true} className={props.classes.statData}>
-                {'days'}
-              </Typography>
+              <Typography noWrap={true}>{'days'}</Typography>
             </td>
           </tr>
         </tbody>
@@ -77,7 +59,7 @@ const DrawerComponent = (props) => {
       <Divider />
       <List dense={true}>
         <ListItem>
-          <RouterLink to={routes.main} className={props.classes.routerLink}>
+          <RouterLink to={routes.main}>
             <ListItemIcon>
               <Home style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
@@ -85,7 +67,7 @@ const DrawerComponent = (props) => {
           </RouterLink>
         </ListItem>
         <ListItem>
-          <RouterLink to={routes.charts} className={props.classes.routerLink}>
+          <RouterLink to={routes.charts}>
             <ListItemIcon>
               <ShowChart style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
@@ -93,7 +75,7 @@ const DrawerComponent = (props) => {
           </RouterLink>
         </ListItem>
         <ListItem>
-          <RouterLink to={routes.configs} className={props.classes.routerLink}>
+          <RouterLink to={routes.configs}>
             <ListItemIcon>
               <ColorLens style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
@@ -101,10 +83,7 @@ const DrawerComponent = (props) => {
           </RouterLink>
         </ListItem>
         <ListItem>
-          <RouterLink
-            to={routes.userAccount}
-            className={props.classes.routerLink}
-          >
+          <RouterLink to={routes.userAccount}>
             <ListItemIcon>
               <Person style={{ color: colors.dark_sky_blue }} />
             </ListItemIcon>
@@ -113,7 +92,7 @@ const DrawerComponent = (props) => {
         </ListItem>
         {props.user.role === 'admin' ? (
           <ListItem>
-            <RouterLink to={routes.admin} className={props.classes.routerLink}>
+            <RouterLink to={routes.admin}>
               <ListItemIcon>
                 <Settings style={{ color: colors.dark_sky_blue }} />
               </ListItemIcon>

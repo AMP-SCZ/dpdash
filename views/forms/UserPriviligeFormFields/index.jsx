@@ -10,7 +10,7 @@ import './UserPriviligeFields.css'
 const UserPriviligeFields = ({
   currentRowIndex,
   control,
-  classes,
+
   options,
   open,
   onClose,
@@ -42,7 +42,6 @@ const UserPriviligeFields = ({
         <NoSsr>
           <ControlledReactSelect
             control={control}
-            classes={classes}
             name={`users.${currentRowIndex}.access`}
             options={options}
             components={components}

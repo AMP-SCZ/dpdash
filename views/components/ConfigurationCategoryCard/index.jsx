@@ -12,7 +12,7 @@ import Copy from '@mui/icons-material/FileCopy'
 
 const ConfigurationCategoryCard = ({
   children,
-  classes,
+
   formIndex,
   onCopy,
   onRemove,
@@ -20,29 +20,15 @@ const ConfigurationCategoryCard = ({
   width,
 }) => {
   return (
-    <Card
-      className={classes.configurationCategoryCard}
-      style={{ width: width }}
-    >
-      <CardHeader
-        className={classes.configurationCategoryCardHeader}
-        subheader={'Row ' + rowNum}
-      ></CardHeader>
+    <Card style={{ width: width }}>
+      <CardHeader subheader={'Row ' + rowNum}></CardHeader>
       <Divider />
       <CardContent>{children}</CardContent>
-      <CardActions className={classes.configurationCategoryCardActions}>
-        <IconButton
-          aria-label="delete"
-          className={classes.categoryButtons}
-          onClick={() => onRemove(formIndex)}
-        >
+      <CardActions>
+        <IconButton aria-label="delete" onClick={() => onRemove(formIndex)}>
           <Delete />
         </IconButton>
-        <IconButton
-          aria-label="copy"
-          className={classes.categoryButtons}
-          onClick={() => onCopy(formIndex)}
-        >
+        <IconButton aria-label="copy" onClick={() => onCopy(formIndex)}>
           <Copy />
         </IconButton>
       </CardActions>

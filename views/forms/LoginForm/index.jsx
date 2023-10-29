@@ -8,15 +8,9 @@ import { Link } from 'react-router-dom'
 import Form from '../Form'
 import { routes } from '../../routes/routes'
 
-const LoginForm = ({
-  classes,
-  control,
-  showPassword,
-  onSubmit,
-  setShowPassword,
-}) => {
+const LoginForm = ({ control, showPassword, onSubmit, setShowPassword }) => {
   return (
-    <div className={classes.login_form}>
+    <div>
       <Form onSubmit={onSubmit}>
         <TextInput
           name="username"
@@ -49,11 +43,7 @@ const LoginForm = ({
           margin="normal"
         />
         <br />
-        <Typography
-          component={Link}
-          to={routes.resetpw}
-          className={classes.reset_link}
-        >
+        <Typography component={Link} to={routes.resetpw}>
           Forgot your password?
         </Typography>
         <br />
@@ -61,20 +51,15 @@ const LoginForm = ({
           variant="outlined"
           color="primary"
           type="submit"
-          className={classes.login_button}
           fullWidth={true}
         >
           Log In
         </Button>
         <br />
-        <Typography
-          component={Link}
-          to={routes.register}
-          className={classes.register_link}
-        >
+        <Typography component={Link} to={routes.register}>
           <span>Don't have an account?</span>
           &nbsp;
-          <span className={classes.login_sign_up}>Sign up</span>
+          <span>Sign up</span>
         </Typography>
       </Form>
     </div>

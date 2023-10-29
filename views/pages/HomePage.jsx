@@ -11,7 +11,7 @@ const asc = 'ASC'
 const category = 'subject'
 
 const HomePage = () => {
-  const { user, classes, setNotification, setUser } = useOutletContext()
+  const { user, setNotification, setUser } = useOutletContext()
   const { uid, preferences } = user
 
   const [participants, setParticipants] = useState([])
@@ -114,7 +114,6 @@ const HomePage = () => {
   return (
     <>
       <ReactSelect
-        classes={classes}
         placeholder="Search a study or participant"
         value={searchSubjects}
         onChange={handleSearch}
@@ -129,7 +128,6 @@ const HomePage = () => {
         rowCount={rowCount}
         participants={participants}
         user={user}
-        classes={classes}
         onUpdate={handleUserUpdate}
         sort={sort}
         sortBy={sortBy}

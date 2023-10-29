@@ -25,16 +25,13 @@ const Router = (props) => {
           path={routes.home}
           element={<Navigate to={routes.login} replace={true} />}
         />
-        <Route path={routes.login} element={<SignInPage classes={{}} />} />
-        <Route path={routes.register} element={<RegisterPage classes={{}} />} />
-        <Route
-          path={routes.resetpw}
-          element={<ResetPasswordPage classes={{}} />}
-        />
+        <Route path={routes.login} element={<SignInPage />} />
+        <Route path={routes.register} element={<RegisterPage />} />
+        <Route path={routes.resetpw} element={<ResetPasswordPage />} />
         <Route
           element={
             <AuthenticatedRoute>
-              <MainLayout classes={{}} theme={props.theme} />
+              <MainLayout />
             </AuthenticatedRoute>
           }
         >
@@ -43,9 +40,7 @@ const Router = (props) => {
           <Route path={routes.main} element={<HomePage />} />
           <Route
             path={routes.userAccount}
-            element={
-              <AccountPage user={props.user} classes={{}} theme={props.theme} />
-            }
+            element={<AccountPage user={props.user} />}
           />
           <Route path={routes.admin} element={<AdminPage />} />
           <Route path={routes.charts} element={<ChartsPage />} />

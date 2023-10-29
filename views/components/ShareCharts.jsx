@@ -18,27 +18,15 @@ const menuProps = {
   },
 }
 
-const ShareChart = ({
-  chart,
-  usernames,
-  handleChange,
-  handleClose,
-  classes,
-}) => {
+const ShareChart = ({ chart, usernames, handleChange, handleClose }) => {
   const [sharedWith, setSharedWith] = React.useState(chart.sharedWith || [])
 
   return (
     <Dialog open onClose={handleClose} fullScreen={true}>
-      <DialogTitle
-        id="alert-dialog-title"
-        disableTypography={true}
-        className={classes.dialogTitle}
-      >
-        <Typography variant="title" className={classes.dialogTypography}>
-          Share your chart
-        </Typography>
+      <DialogTitle id="alert-dialog-title" disableTypography={true}>
+        <Typography variant="title">Share your chart</Typography>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent>
         <Select
           multiple
           value={sharedWith}
@@ -82,12 +70,9 @@ const ShareChart = ({
         </Select>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} className={classes.dialogCancelButton}>
-          Cancel
-        </Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button
           variant="outlined"
-          className={classes.dialogShareButton}
           onClick={() =>
             handleChange(chart._id, sharedWith, { closeDialog: true })
           }

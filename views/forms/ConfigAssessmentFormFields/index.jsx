@@ -5,7 +5,6 @@ import TextInput from '../TextInput'
 import ControlledSelectInput from '../ControlledSelect'
 
 const ConfigAssessmentFormFields = ({
-  classes,
   control,
   colors,
   index,
@@ -17,7 +16,6 @@ const ConfigAssessmentFormFields = ({
   return (
     <ConfigurationCategoryCard
       key={id + 'card'}
-      classes={classes}
       formIndex={index}
       onCopy={onCopy}
       onRemove={onRemove}
@@ -56,10 +54,9 @@ const ConfigAssessmentFormFields = ({
       >
         {colors.map(({ value, label }, colorsIndex) => (
           <MenuItem value={value} key={`${id}-${colorsIndex}-${index}`}>
-            <div className={classes.configPaletteContainer}>
+            <div>
               {label.map((palette) => (
                 <span
-                  className={classes.configColorBlock}
                   style={{
                     backgroundColor: palette,
                   }}

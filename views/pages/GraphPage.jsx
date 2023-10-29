@@ -25,7 +25,7 @@ const GraphPage = () => {
   const {
     configurations,
     user,
-    classes,
+
     theme,
     setOpenSidebar,
     setUser,
@@ -203,13 +203,12 @@ const GraphPage = () => {
 
   return (
     <>
-      <div className={classes.graphToolbar}>
-        <div className={classes.configDropDownContainer}>
+      <div>
+        <div>
           <SelectConfigurationForm
             configurations={configurations}
             onChange={updateUserPreferences}
             currentPreference={user.preferences}
-            classes={classes}
           />
         </div>
         <IconButton
@@ -220,11 +219,11 @@ const GraphPage = () => {
           <Functions />
         </IconButton>
       </div>
-      <div className={classes.graph_content}>
+      <div>
         <div className="Matrix">
           <div className="graph" ref={el} />
         </div>
-        <div className={classes.graphImageButton}>
+        <div>
           <Button
             variant="fab"
             onClick={downloadPng}
@@ -238,7 +237,7 @@ const GraphPage = () => {
         </div>
       </div>
       <Dialog modal={false} open={openStat} onClose={closeStat}>
-        <DialogContent className={classes.graphTable}>
+        <DialogContent>
           <GraphPageTable
             matrixData={graph.matrixData}
             maxDay={dayData.maxDay}

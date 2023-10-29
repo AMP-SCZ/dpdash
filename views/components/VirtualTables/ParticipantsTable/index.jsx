@@ -68,7 +68,6 @@ const ParticipantsTable = (props) => {
         cellRenderer={({ rowData: { study, subject, complete } }) => (
           <Checkbox
             name={`complete-${study}`}
-            className={props.classes.home_td}
             icon={<CheckBoxOutlineBlankIcon />}
             checkedIcon={
               <CheckBoxIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
@@ -86,7 +85,6 @@ const ParticipantsTable = (props) => {
         cellRenderer={({ rowData: { study, subject, star } }) => (
           <Checkbox
             name={`star-${study}`}
-            className={props.classes.home_td}
             disableRipple={true}
             icon={<StarBorder />}
             checked={star}

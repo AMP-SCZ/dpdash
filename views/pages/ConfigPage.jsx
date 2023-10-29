@@ -16,7 +16,6 @@ import useGrid from '../hooks/useGrid'
 
 const ConfigPage = () => {
   const {
-    classes,
     configurations,
     navigate,
     setNotification,
@@ -163,7 +162,6 @@ const ConfigPage = () => {
   return (
     <>
       <ConfigurationsList
-        classes={classes}
         configurations={configurations}
         gridState={gridState}
         onCopyConfig={copyConfiguration}
@@ -175,7 +173,6 @@ const ConfigPage = () => {
         user={user}
       />
       <ShareForm
-        classes={classes}
         control={control}
         onClose={closeForm}
         onSubmit={handleSubmit(handleFormData)}
@@ -183,7 +180,7 @@ const ConfigPage = () => {
         options={options}
         title="Share your configuration"
       />
-      <div className={classes.uploadActions}>
+      <div>
         <form>
           <input
             accept=".json"
@@ -191,11 +188,10 @@ const ConfigPage = () => {
             id="raised-button-file"
             multiple
             type="file"
-            className={classes.hiddenInput}
             onChange={handleChangeFile}
           />
           <label htmlFor="raised-button-file">
-            <Fab focusRipple className={classes.fabButtonStyles}>
+            <Fab focusRipple>
               <Tooltip title="Upload configuration file">
                 <AttachFile />
               </Tooltip>
