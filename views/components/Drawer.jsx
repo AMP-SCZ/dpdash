@@ -22,41 +22,23 @@ import getAvatar from '../fe-utils/avatarUtil'
 const DrawerComponent = (props) => {
   return (
     <>
-      <div>
-        <img style={{ height: '100%' }} src={'/img/dpdash.png'} />
+      <div
+        style={{
+          height: '98px',
+          width: '240px',
+          display: 'flex',
+          justifyContent: 'center',
+          /* align-content: center; */
+          alignItems: 'center',
+          // padding: '32px 16px 32px 16px',
+        }}
+      >
+        <img
+          style={{ width: '197px', height: '45px' }}
+          src={'/img/dpdash.png'}
+        />
       </div>
-      <div>{getAvatar({ user: props.user })}</div>
 
-      <Typography noWrap={true} variant="subheading">
-        {props.user.name ? props.user.name : props.user.uid}
-      </Typography>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <Typography noWrap={true}>{props.totalStudies}</Typography>
-            </td>
-            <td>
-              <Typography noWrap={true}>{props.totalSubjects}</Typography>
-            </td>
-            <td>
-              <Typography noWrap={true}>{props.totalDays}</Typography>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <Typography noWrap={true}>{'studies'}</Typography>
-            </td>
-            <td>
-              <Typography noWrap={true}>{'participants'}</Typography>
-            </td>
-            <td>
-              <Typography noWrap={true}>{'days'}</Typography>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <Divider />
       <List dense={true}>
         <ListItem>
           <RouterLink to={routes.main}>
@@ -106,9 +88,46 @@ const DrawerComponent = (props) => {
           </ListItemIcon>
           <ListItemText primary="Logout" />
         </ListItem>
+        <ListItem>
+          <Divider />
+        </ListItem>
       </List>
     </>
   )
 }
 
 export default DrawerComponent
+
+/**
+ *
+       <Typography noWrap={true} variant="subheading">
+        {props.user.name ? props.user.name : props.user.uid}
+      </Typography>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <Typography noWrap={true}>{props.totalStudies}</Typography>
+            </td>
+            <td>
+              <Typography noWrap={true}>{props.totalSubjects}</Typography>
+            </td>
+            <td>
+              <Typography noWrap={true}>{props.totalDays}</Typography>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Typography noWrap={true}>{'studies'}</Typography>
+            </td>
+            <td>
+              <Typography noWrap={true}>{'participants'}</Typography>
+            </td>
+            <td>
+              <Typography noWrap={true}>{'days'}</Typography>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <Divider />
+ */

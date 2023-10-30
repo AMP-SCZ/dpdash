@@ -79,12 +79,6 @@ const MainLayout = () => {
 
   return (
     <div>
-      <Header
-        onToggleSidebar={toggleSidebar}
-        title={headerTitle(pathname, params)}
-        isAccountPage={false}
-        user={user}
-      />
       <Sidebar
         drawerVariant={drawerVariant}
         onToggleSidebar={toggleSidebar}
