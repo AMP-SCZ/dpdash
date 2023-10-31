@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { CssBaseline, StyledEngineProvider } from '@mui/material'
 import Snackbar from '@mui/material/Snackbar'
 import {
   AuthContext,
@@ -38,13 +39,16 @@ const App = () => {
             value={[configurations, setConfigurations]}
           >
             <AuthContext.Provider value={[user, setUser]}>
-              <Router user={user} setUser={setUser} />
-              <Snackbar
-                open={notification.open}
-                message={notification.message}
-                autoHideDuration={2000}
-                onClose={handleNotificationClose}
-              />
+              <CssBaseline />
+              <StyledEngineProvider injectFirst>
+                <Router user={user} setUser={setUser} />
+                <Snackbar
+                  open={notification.open}
+                  message={notification.message}
+                  autoHideDuration={2000}
+                  onClose={handleNotificationClose}
+                />
+              </StyledEngineProvider>
             </AuthContext.Provider>
           </ConfigurationsContext.Provider>
         </NotificationContext.Provider>
