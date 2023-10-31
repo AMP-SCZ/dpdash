@@ -259,6 +259,18 @@ class AdminPage extends Component {
   componentDidUpdate() {
   }
   componentDidMount() {
+      fetchSubjects().then((acl) => this.setState(getCounts({ acl })));
+      fetchUsers().then((users) => this.setState({
+        users,
+        autocomplete: this.autocomplete({ users }),
+      }));
+      fetchStudiesAdmin().then((studies) => this.setState({
+        studies: studies.map(suggestion => ({
+          value: suggestion,
+          label: suggestion
+        }))
+      }));
+
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
       height: window.innerHeight - this.state.marginHeight,
@@ -268,26 +280,26 @@ class AdminPage extends Component {
     window.addEventListener('resize', this.handleResize)
   }
   // eslint-disable-next-line react/no-deprecated
-  async componentWillMount() {
-    try {
-      const acl = await fetchSubjects();
-      this.setState(getCounts({ acl }));
-      const users = await fetchUsers();
-      this.setState({
-        users,
-        autocomplete: this.autocomplete({ users }),
-      });
-      const studies = await fetchStudiesAdmin();
-      this.setState({
-        studies: studies.map(suggestion => ({
-          value: suggestion,
-          label: suggestion
-        }))
-      });
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+  // async componentWillMount() {
+  //   try {
+  //     const acl = await fetchSubjects();
+  //     this.setState(getCounts({ acl }));
+  //     const users = await fetchUsers();
+  //     this.setState({
+  //       users,
+  //       autocomplete: this.autocomplete({ users }),
+  //     });
+  //     const studies = await fetchStudiesAdmin();
+  //     this.setState({
+  //       studies: studies.map(suggestion => ({
+  //         value: suggestion,
+  //         label: suggestion
+  //       }))
+  //     });
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // }
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
   }
