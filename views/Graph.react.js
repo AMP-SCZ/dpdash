@@ -278,67 +278,6 @@ class Graph extends Component {
   }
   componentDidUpdate() {}
   // eslint-disable-next-line react/no-deprecated
-  async componentWillMount() {
-    try {
-      const [acl, preferences, configurations] = await Promise.all([
-        fetchSubjects(),
-        fetchPreferences(this.props.user.uid),
-        fetchConfigurations(this.props.user.uid),
-      ])
-      this.setState({
-        ...getCounts({ acl }),
-        preferences,
-        configurationsList: configurations,
-      })
-    } catch (err) {
-      console.error(err.message)
-    }
-    let maxDay = 1
-    for (
-      let dataIndex = 0;
-      dataIndex < this.props.graph.matrixData.length;
-      dataIndex++
-    ) {
-      let maxObj = _.maxBy(
-        this.props.graph.matrixData[dataIndex]['data'],
-        function (o) {
-          return o.day
-        }
-      )
-      if (maxObj == undefined) {
-        continue
-      }
-      let day = maxObj['day']
-      if (day > maxDay) {
-        maxDay = day
-      }
-    }
-
-    this.setState({
-      maxDay: maxDay,
-      subject: this.props.subject,
-      user: this.props.user,
-      iconBase64: this.props.user.icon,
-      searchList: this.props.user.acl,
-      socketIOSubjectRoom: `${basePath}/resync/${this.props.subject.project}/${this.props.subject.sid}`,
-      socketIOUserRoom: this.props.user.uid,
-    })
-    this.setState({ configurations: this.props.user.configs })
-    if (!HTMLCanvasElement.prototype.toBlob) {
-      Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
-        value: function (callback, type, quality) {
-          var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
-            len = binStr.length,
-            arr = new Uint8Array(len)
-
-          for (var i = 0; i < len; i++) {
-            arr[i] = binStr.charCodeAt(i)
-          }
-          callback(new Blob([arr], { type: type || 'image/png' }))
-        },
-      })
-    }
-  }
   handleDrawerToggle = () => {
     this.setState((state) => ({ mobileOpen: !state.mobileOpen }))
   }
@@ -397,6 +336,63 @@ class Graph extends Component {
     return tableItem
   }
   componentDidMount() {
+    Promise.all([
+      fetchSubjects(),
+      fetchPreferences(this.props.user.uid),
+      fetchConfigurations(this.props.user.uid),
+    ]).then(([acl, preferences, configurations]) =>
+    this.setState({
+      ...getCounts({ acl }),
+      preferences,
+      configurationsList: configurations,
+    }))
+
+    let maxDay = 1
+    for (
+      let dataIndex = 0;
+      dataIndex < this.props.graph.matrixData.length;
+      dataIndex++
+    ) {
+      let maxObj = _.maxBy(
+        this.props.graph.matrixData[dataIndex]['data'],
+        function (o) {
+          return o.day
+        }
+      )
+      if (maxObj == undefined) {
+        continue
+      }
+      let day = maxObj['day']
+      if (day > maxDay) {
+        maxDay = day
+      }
+    }
+
+    this.setState({
+      maxDay: maxDay,
+      subject: this.props.subject,
+      user: this.props.user,
+      iconBase64: this.props.user.icon,
+      searchList: this.props.user.acl,
+      socketIOSubjectRoom: `${basePath}/resync/${this.props.subject.project}/${this.props.subject.sid}`,
+      socketIOUserRoom: this.props.user.uid,
+    })
+    this.setState({ configurations: this.props.user.configs })
+    if (!HTMLCanvasElement.prototype.toBlob) {
+      Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+        value: function (callback, type, quality) {
+          var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
+            len = binStr.length,
+            arr = new Uint8Array(len)
+
+          for (var i = 0; i < len; i++) {
+            arr[i] = binStr.charCodeAt(i)
+          }
+          callback(new Blob([arr], { type: type || 'image/png' }))
+        },
+      })
+    }
+
     socket.open()
     this.setState({
       avatar: getAvatar({ user: this.props.user }),
