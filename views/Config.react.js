@@ -201,24 +201,36 @@ class ConfigPage extends Component {
   }
   componentDidUpdate() {}
   // eslint-disable-next-line react/no-deprecated
-  async componentWillMount() {
-    try {
-      const acl = await fetchSubjects()
-      this.setState(getCounts({ acl }))
-      const usernames = await fetchUsernames()
+  // async componentWillMount() {
+  //   try {
+  //     const acl = await fetchSubjects()
+  //     this.setState(getCounts({ acl }))
+  //     const usernames = await fetchUsernames()
+  //     this.setState({
+  //       friends: usernames.map((username) => ({
+  //         value: username,
+  //         label: username,
+  //       })),
+  //     })
+  //     this.fetchConfigurations(this.props.user.uid)
+  //     this.fetchPreferences(this.props.user.uid)
+  //   } catch (err) {
+  //     console.error(err.message)
+  //   }
+  // }
+  componentDidMount() {
+    fetchSubjects().then((acl) => this.setState(getCounts({ acl })))
+    fetchUsernames().then((usernames) => {
       this.setState({
         friends: usernames.map((username) => ({
           value: username,
           label: username,
         })),
       })
-      this.fetchConfigurations(this.props.user.uid)
-      this.fetchPreferences(this.props.user.uid)
-    } catch (err) {
-      console.error(err.message)
-    }
-  }
-  componentDidMount() {
+    })
+
+    this.fetchConfigurations(this.props.user.uid)
+    this.fetchPreferences(this.props.user.uid)
     if (this.props.user.message.length > 0) {
       this.setState({
         uploadSnack: true,
