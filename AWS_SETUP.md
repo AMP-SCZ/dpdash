@@ -1,5 +1,7 @@
 ### 1. Request DNS Certificate
 
+### This step is only necessary if your domain is not hosted in AWS Route53. If it is, proceed directly to step 3
+
 For this step you will require two things:
 
 1. A domain name for the DP Dash application
@@ -27,23 +29,39 @@ Copy the ARN of the issued certificate and save it locally. We will use it when 
 
 ![Screenshot of ARN for certificate](/doc/assets/aws_setup/01_request_certificate//create_certificate_06.png)
 
-### 2. Create AWS Role for Github Actions
+### 2. Verify an email identity with Simple Email Service
+
+### This step is only necessary if your domain is not hosted in AWS Route53. If it is, proceed directly to step 3
+
+On the AWS Simple Email Service dashboard, navigate to "Verified Identities" and select "Create Identity". 
+
+![Screenshot of the SES Verified Identities page](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_01.png)
+
+On the Create Identity form, select Identity Type of Domain and a domain of your root domain (e.g. `dpdash.com` even if hosting at `app.dpdash.com`).
+
+![Screenshot of the SES Create Domain page](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_02.png)
+
+Select Create Identity. On the page for the new identity, scroll down to the "Publish DNS Records" section and select Download CSV Record Set at the bottom of the section. Set all of these records in the DNS records for your domain and wait for AWS to automatically verify domain ownership.
+
+![Screenshot of the Download CSV Record Set link](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_03.png)
+
+### 3. Create AWS Role for Github Actions
 
 Navigate to the IAM service in the AWS Console.
 
-![Screenshot of the IAM link](/doc/assets/aws_setup/02_create_github_role/create_github_role_01.png)
+![Screenshot of the IAM link](/doc/assets/aws_setup/03_create_github_role/create_github_role_01.png)
 
 Select "Roles" from the IAM Dashboard and click the Create button.
 
-![Screenshot of IAM dashboard](/doc/assets/aws_setup/02_create_github_role/create_github_role_02.png)
+![Screenshot of IAM dashboard](/doc/assets/aws_setup/03_create_github_role/create_github_role_02.png)
 
 For Trusted Entity select "Web Identity". For Identity Provider select "token.actions.githubusercontent.com". For Audience select "sts.amazonaws.com". Enter your Github Organization Name and the repo you wish to grant access to. Click "Create".
 
-![Screenshot of role creation form with values filled out](/doc/assets/aws_setup/02_create_github_role/create_github_role_03.png)
+![Screenshot of role creation form with values filled out](/doc/assets/aws_setup/03_create_github_role/create_github_role_03.png)
 
 Copy the ARN of the new role and save it locally. We will use it when configuring the deployment for your environment.
 
-### 3. Bootstrap the CDK and Generate Secrets
+### 4. Bootstrap the CDK and Generate Secrets
 
 This step will only need to be completed if the CDK has not been bootstrapped for your account/AWS environment. Ensure you are logged in via the AWS CLI. From the root of the project directory run:
 
@@ -62,7 +80,7 @@ export DPDASH_IMPORT_API_USERS_DEV=dev-api-user
 
 Secret values can be retrieved and decryted via the `./bin/echo-secrets.sh` script. THIS WILL LOG SECRET VALUES TO THE CONSOLE.
 
-### 4. Build and Deploy Docker Images
+### 5. Build and Deploy Docker Images
 
 Run the following commands from the root of this repository:
 
@@ -78,13 +96,13 @@ docker tag dpdash:latest $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:
 docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
 ```
 
-### 5. Set Github Action Variables and Deploy
+### 6. Set Github Action Variables and Deploy
 
 Navigate to your Github repository and select the Settings tab. Open the "Secrets and Variables" menu on the left-hand side and select "Actions", then "New Variable".
 
-![Screenshot of the Github Settings Menu](/doc/assets/aws_setup/04_set_github_variables/set_github_variables_01.png)
+![Screenshot of the Github Settings Menu](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_01.png)
 
-![Screenshot of Github Actions Variables](/doc/assets/aws_setup/04_set_github_variables/set_github_variables_02.png)
+![Screenshot of Github Actions Variables](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_02.png)
 
 Create 2 variables.
 
@@ -93,9 +111,9 @@ Create 2 variables.
 
 Navigate to the Actions tab and the Deploy Infrastructure workflow. Select "Run Workflow". The application will deploy.
 
-![Screenshot of Actions tab with Run Workflow button](/doc/assets/aws_setup/04_set_github_variables/set_github_variables_03.png)
+![Screenshot of Actions tab with Run Workflow button](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_03.png)
 
-### 6. Check the Deployment and Set CNAME Record
+### 7. Check the Deployment and Set CNAME Record
 
 To verify that the application is deployed, view the DNS name with the following command:
 
