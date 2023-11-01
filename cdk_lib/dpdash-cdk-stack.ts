@@ -4,6 +4,7 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as efs from "aws-cdk-lib/aws-efs";
 import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as ses from "aws-cdk-lib/aws-ses";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as route53 from "aws-cdk-lib/aws-route53";
@@ -17,20 +18,31 @@ export class DpdashCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     let devCertArn
+    let sesIdentityArn
     if (process.env.DEV_CERT_ARN) {
       devCertArn = process.env.DEV_CERT_ARN;
+      sesIdentityArn = `aws:arn:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/dpdash.com`
     } else {
+      const hostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
+        zoneName: 'dpdash.com',
+      });
+
       const devHostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
         zoneName: 'staging.dpdash.com',
       });
 
-      const devCert = new certificate_manager.DnsValidatedCertificate(this, `${APP_NAME}DevCertificate`, {
+      const devCert = new certificate_manager.Certificate(this, `${APP_NAME}DevCertificate`, {
         domainName: 'staging.dpdash.com',
-        hostedZone: devHostedZone,
-        region: 'us-east-1',
+        validation: certificate_manager.CertificateValidation.fromDns(devHostedZone),
+      });
+
+      const identity = new ses.EmailIdentity(this, 'Identity', {
+        identity: ses.Identity.publicHostedZone(hostedZone),
+        mailFromDomain: 'dpdash.com',
       });
 
       devCertArn = devCert.certificateArn;
+      sesIdentityArn = `aws:arn:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${identity.emailIdentityName}`
     }
     const secrets = {
       mongoDbUserDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}MongoDbUser`, {
@@ -187,6 +199,19 @@ export class DpdashCdkStack extends cdk.Stack {
 
     const appTaskDefinition = new ecs.FargateTaskDefinition(this, `${APP_NAME}DevAppTaskDefinition`, {
       family: 'dpDashDevTaskDefinition',
+      taskRole: new iam.Role(this, `${APP_NAME}DevAppTaskRole`, {
+        assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+        inlinePolicies: {
+          sendEmail: new iam.PolicyDocument({
+            statements: [
+              new iam.PolicyStatement({
+                actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+                resources: [sesIdentityArn],
+              }),
+            ],
+          })
+        }
+      })
     })
 
     appTaskDefinition.addContainer(`${APP_NAME}DevAppContainer`, {
