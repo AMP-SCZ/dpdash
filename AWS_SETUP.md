@@ -106,12 +106,13 @@ Navigate to your Github repository and select the Settings tab. Open the "Secret
 
 ![Screenshot of Github Actions Variables](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_02.png)
 
-Create the variable ROLE_ARN with a value of the ARN of your Role from Step 3.
+Create 2 variables:
+1. Create the variable ROLE_ARN with a value of the ARN of your Role from Step 3.
+2. Create the variable EMAIL_DOMAIN with the root domain you will use to host the app (e.g. `dpdash.com`). If you use an outside DNS rather than Route53, this will be the domain used in Step 2.
 
-If you keep your domain outside of Route53, create 2 more variables:
+If you keep your domain outside of Route53, create one more variable:
 
-1. Variable Name: CERT_ARN, Variable Value: ARN of your AWS Certificate from Step 1.
-2. Variable Name: EMAIL_DOMAIN, Variable Value: Root domain of your email identity from Step 2.
+1. Create the variable CERT_ARN with a value of the ARN of your AWS Certificate from Step 1.
 
 Navigate to the Actions tab and the Deploy Infrastructure workflow. Select "Run Workflow". The application will deploy.
 

@@ -19,26 +19,31 @@ export class DpdashCdkStack extends cdk.Stack {
     super(scope, id, props);
     let devCertArn
     let sesIdentityArn
-    if (process.env.DEV_CERT_ARN && process.env.EMAIL_DOMAIN) {
+
+    if (!process.env.EMAIL_DOMAIN) {
+      throw new Error('EMAIL_DOMAIN environment variable is required');
+    }
+
+    if (process.env.DEV_CERT_ARN) {
       devCertArn = process.env.DEV_CERT_ARN;
       sesIdentityArn = `aws:arn:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${process.env.EMAIL_DOMAIN}}`
     } else {
       const hostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
-        zoneName: 'dpdash.com',
+        zoneName: process.env.EMAIL_DOMAIN,
       });
 
       const devHostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
-        zoneName: 'staging.dpdash.com',
+        zoneName: `staging.${process.env.EMAIL_DOMAIN}`,
       });
 
       const devCert = new certificate_manager.Certificate(this, `${APP_NAME}DevCertificate`, {
-        domainName: 'staging.dpdash.com',
+        domainName: `staging.${process.env.EMAIL_DOMAIN}`,
         validation: certificate_manager.CertificateValidation.fromDns(devHostedZone),
       });
 
       const identity = new ses.EmailIdentity(this, 'Identity', {
         identity: ses.Identity.publicHostedZone(hostedZone),
-        mailFromDomain: 'dpdash.com',
+        mailFromDomain: process.env.EMAIL_DOMAIN,
       });
 
       devCertArn = devCert.certificateArn;
