@@ -2,6 +2,8 @@
 
 ### This step is only necessary if your domain is not hosted in AWS Route53. If it is, proceed directly to step 3
 
+AWS Documentation: https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html
+
 For this step you will require two things:
 
 1. A domain name for the DP Dash application
@@ -33,6 +35,8 @@ Copy the ARN of the issued certificate and save it locally. We will use it when 
 
 ### This step is only necessary if your domain is not hosted in AWS Route53. If it is, proceed directly to step 3
 
+AWS Documentation: https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html#just-verify-domain-proc
+
 On the AWS Simple Email Service dashboard, navigate to "Verified Identities" and select "Create Identity". 
 
 ![Screenshot of the SES Verified Identities page](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_01.png)
@@ -48,6 +52,8 @@ Select Create Identity. On the page for the new identity, scroll down to the "Pu
 Save the domain you used locally. We will use it when configuring the deployment for your environment.
 
 ### 3. Create AWS Role for Github Actions
+
+AWS Documentation: https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
 
 Navigate to the IAM service in the AWS Console.
 
@@ -99,6 +105,8 @@ docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
 ```
 
 ### 6. Set Github Action Variables and Deploy
+
+Github Documentation: https://docs.github.com/en/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository
 
 Navigate to your Github repository and select the Settings tab. Open the "Secrets and Variables" menu on the left-hand side and select "Actions", then "New Variable".
 
