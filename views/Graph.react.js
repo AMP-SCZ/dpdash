@@ -336,16 +336,12 @@ class Graph extends Component {
     return tableItem
   }
   componentDidMount() {
-    Promise.all([
-      fetchSubjects(),
-      fetchPreferences(this.props.user.uid),
-      fetchConfigurations(this.props.user.uid),
-    ]).then(([acl, preferences, configurations]) =>
-    this.setState({
-      ...getCounts({ acl }),
-      preferences,
-      configurationsList: configurations,
-    }))
+    fetchSubjects().then((acl) =>
+        this.setState(getCounts({ acl })));
+    fetchPreferences(this.props.user.uid).then((preferences) =>
+        this.setState(preferences));
+    fetchConfigurations(this.props.user.uid).then((configurations) =>
+        this.setState({configurationsList: configurations}));
 
     let maxDay = 1
     for (
