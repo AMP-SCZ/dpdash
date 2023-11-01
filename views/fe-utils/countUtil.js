@@ -1,7 +1,7 @@
 const getCounts = ({ acl }) => {
   const options = [];
   for (let study = 0; study < acl.length; study++) {
-    options.push(...acl[study].subjects);
+    acl[study].numOfSubjects && options.push(...acl[study].subjects);
   }
   return {
     // study determination: at least one upper case
