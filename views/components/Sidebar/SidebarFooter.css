@@ -1,0 +1,8 @@
+.sidebar_footer_actions {
+  display: flex;
+  justify-content: space-around;
+}
+.sidebar_footer_version {
+  height: 50px;
+  padding: 16px;
+}

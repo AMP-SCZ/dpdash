@@ -1,0 +1,21 @@
+.sidenav_link {
+  text-decoration: none;
+  padding: 6px 12px 6px 12px;
+  display: flex;
+  flex-direction: row;
+  &:visited&:focus {
+    text-decoration: none;
+  }
+}
+
+.sidenav_link-active {
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
+  background-color: #addbff;
+  border-radius: 8px;
+  padding: 6px 12px 6px 12px;
+  &:visited&:focus {
+    text-decoration: none;
+  }
+}

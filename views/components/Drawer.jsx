@@ -22,23 +22,6 @@ import getAvatar from '../fe-utils/avatarUtil'
 const DrawerComponent = (props) => {
   return (
     <>
-      <div
-        style={{
-          height: '98px',
-          width: '240px',
-          display: 'flex',
-          justifyContent: 'center',
-          /* align-content: center; */
-          alignItems: 'center',
-          // padding: '32px 16px 32px 16px',
-        }}
-      >
-        <img
-          style={{ width: '197px', height: '45px' }}
-          src={'/img/dpdash.png'}
-        />
-      </div>
-
       <List dense={true}>
         <ListItem>
           <RouterLink to={routes.main}>

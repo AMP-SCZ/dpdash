@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { CssBaseline, StyledEngineProvider } from '@mui/material'
+import {
+  CssBaseline,
+  StyledEngineProvider,
+  createTheme,
+  ThemeProvider,
+} from '@mui/material'
 import Snackbar from '@mui/material/Snackbar'
 import {
   AuthContext,
   ConfigurationsContext,
   NotificationContext,
-  SidebarContext,
   DimensionsContext,
 } from './contexts'
 import Router from './routes'
-import { NOTIFICATION_DEFAULT } from '../constants'
+import { NOTIFICATION_DEFAULT, THEME } from '../constants'
 
 import 'react-virtualized/styles.css'
 
+const theme = createTheme(THEME)
+
 const App = () => {
   const [configurations, setConfigurations] = useState([])
-  const [openSidebar, setOpenSidebar] = useState(true)
   const [notification, setNotification] = useState(NOTIFICATION_DEFAULT)
   const [user, setUser] = useState(null)
   const [width, setWidth] = useState(0)
@@ -33,12 +38,12 @@ const App = () => {
 
   return (
     <DimensionsContext.Provider value={[width, setWidth]}>
-      <SidebarContext.Provider value={[openSidebar, setOpenSidebar]}>
-        <NotificationContext.Provider value={[notification, setNotification]}>
-          <ConfigurationsContext.Provider
-            value={[configurations, setConfigurations]}
-          >
-            <AuthContext.Provider value={[user, setUser]}>
+      <NotificationContext.Provider value={[notification, setNotification]}>
+        <ConfigurationsContext.Provider
+          value={[configurations, setConfigurations]}
+        >
+          <AuthContext.Provider value={[user, setUser]}>
+            <ThemeProvider theme={theme}>
               <CssBaseline />
               <StyledEngineProvider injectFirst>
                 <Router user={user} setUser={setUser} />
@@ -49,10 +54,10 @@ const App = () => {
                   onClose={handleNotificationClose}
                 />
               </StyledEngineProvider>
-            </AuthContext.Provider>
-          </ConfigurationsContext.Provider>
-        </NotificationContext.Provider>
-      </SidebarContext.Provider>
+            </ThemeProvider>
+          </AuthContext.Provider>
+        </ConfigurationsContext.Provider>
+      </NotificationContext.Provider>
     </DimensionsContext.Provider>
   )
 }

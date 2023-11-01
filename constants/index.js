@@ -23,6 +23,7 @@ import {
   TOTALS,
   TRUE_STRING,
 } from './vars'
+import { THEME, FontSize14InRem } from './theme'
 
 export {
   ADMIN_ROLE,
@@ -38,12 +39,14 @@ export {
   FALSE_STRING,
   EMAIL_REGEX,
   FILTER_CATEGORIES,
+  FontSize14InRem,
   MIN_WIDTH,
   N_A,
   NOTIFICATION_DEFAULT,
   ROLE_OPTIONS,
   TOTAL_LABEL,
   TOTALS,
+  THEME,
   TRUE_STRING,
   VALIDATION_EMAIL_REGEX,
 }
