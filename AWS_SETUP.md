@@ -45,6 +45,8 @@ Select Create Identity. On the page for the new identity, scroll down to the "Pu
 
 ![Screenshot of the Download CSV Record Set link](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_03.png)
 
+Save the domain you used locally. We will use it when configuring the deployment for your environment.
+
 ### 3. Create AWS Role for Github Actions
 
 Navigate to the IAM service in the AWS Console.
@@ -104,10 +106,12 @@ Navigate to your Github repository and select the Settings tab. Open the "Secret
 
 ![Screenshot of Github Actions Variables](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_02.png)
 
-Create 2 variables.
+Create the variable ROLE_ARN with a value of the ARN of your Role from Step 3.
+
+If you keep your domain outside of Route53, create 2 more variables:
 
 1. Variable Name: CERT_ARN, Variable Value: ARN of your AWS Certificate from Step 1.
-2. Variable Name: ROLE_ARN, Variable Value: ARN of your Role from Step 2.
+2. Variable Name: EMAIL_DOMAIN, Variable Value: Root domain of your email identity from Step 2.
 
 Navigate to the Actions tab and the Deploy Infrastructure workflow. Select "Run Workflow". The application will deploy.
 

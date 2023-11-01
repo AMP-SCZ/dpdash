@@ -19,9 +19,9 @@ export class DpdashCdkStack extends cdk.Stack {
     super(scope, id, props);
     let devCertArn
     let sesIdentityArn
-    if (process.env.DEV_CERT_ARN) {
+    if (process.env.DEV_CERT_ARN && process.env.EMAIL_DOMAIN) {
       devCertArn = process.env.DEV_CERT_ARN;
-      sesIdentityArn = `aws:arn:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/dpdash.com`
+      sesIdentityArn = `aws:arn:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${process.env.EMAIL_DOMAIN}}`
     } else {
       const hostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
         zoneName: 'dpdash.com',
