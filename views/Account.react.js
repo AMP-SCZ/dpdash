@@ -64,8 +64,8 @@ class AccountPage extends Component {
   }
   async componentDidMount() {
     try {
-      const acl = await fetchSubjects()
-      this.setState(getCounts({ acl }))
+      fetchSubjects().then((acl) =>
+          this.setState(getCounts({ acl })))
       this.fetchUserInfo(this.props.user.uid)
       this.setState({
         user: this.props.user,
