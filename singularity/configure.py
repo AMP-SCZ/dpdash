@@ -250,57 +250,6 @@ stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, defau
 stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
 stderr_events_enabled=false   ; emit events on stderr writes (default false)
 serverurl=AUTO                ; override serverurl computation (childutils)
-
-[program:rabbitMQ]
-command=/usr/lib/rabbitmq/bin/rabbitmq-server ; the program (relative uses PATH, can take args)
-priority=2                    ; the relative start priority (default 999)
-autostart=true                ; start at supervisord start (default: true)
-startsecs=10                  ; # of secs prog must stay up to be running (def. 1)
-startretries=3                ; max # of serial start failures when starting (default 3)
-autorestart=unexpected        ; when to restart if exited after running (def: unexpected)
-exitcodes=0,2                 ; 'expected' exit codes used with autorestart (default 0,2)
-stopsignal=QUIT               ; signal used to kill process (default TERM)
-stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)
-stopasgroup=false             ; send stop signal to the UNIX process group (default false)
-killasgroup=true              ; SIGKILL the UNIX process group (def false)
-redirect_stderr=true          ; redirect proc stderr to stdout (default false)
-stdout_logfile=/data/dpdash/supervisord/logs/rabbitmq.out ; stdout log path, NONE for none; default AUTO
-stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stdout_logfile_backups=10     ; # of stdout logfile backups (0 means none, default 10)
-stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stdout_events_enabled=false   ; emit events on stdout writes (default false)
-stderr_logfile=/data/dpdash/supervisord/logs/rabbitmq.err        ; stderr log path, NONE for none; default AUTO
-stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)
-stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stderr_events_enabled=false   ; emit events on stderr writes (default false)
-serverurl=AUTO                ; override serverurl computation (childutils)
-
-[program:celery]
-command=celery worker -A dppy -l info -E -f /data/dpdash/celery/celery.log -Q dpdash -Ofair --pidfile /data/dpdash/celery/celeryd.pid ; the program (relative uses PATH, can take args)
-priority=3                 ; the relative start priority (default 999)
-directory=/sw/apps/dppy
-autostart=true                ; start at supervisord start (default: true)
-startsecs=10                   ; # of secs prog must stay up to be running (def. 1)
-startretries=3                ; max # of serial start failures when starting (default 3)
-autorestart=unexpected        ; when to restart if exited after running (def: unexpected)
-exitcodes=0,2                 ; 'expected' exit codes used with autorestart (default 0,2)
-stopsignal=QUIT               ; signal used to kill process (default TERM)
-stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)
-stopasgroup=false             ; send stop signal to the UNIX process group (default false)
-killasgroup=true              ; SIGKILL the UNIX process group (def false)
-redirect_stderr=true          ; redirect proc stderr to stdout (default false)
-stdout_logfile=/data/dpdash/supervisord/logs/celery_worker.out ; stdout log path, NONE for none; default AUTO
-stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stdout_logfile_backups=10     ; # of stdout logfile backups (0 means none, default 10)
-stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stdout_events_enabled=false   ; emit events on stdout writes (default false)
-stderr_logfile=/data/dpdash/supervisord/logs/celery_worker.err        ; stderr log path, NONE for none; default AUTO
-stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)
-stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stderr_events_enabled=false   ; emit events on stderr writes (default false)
-serverurl=AUTO                ; override serverurl computation (childutils)
 ''' % {
     'supervisor_id': supervisor_id
     }
