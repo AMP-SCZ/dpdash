@@ -23,11 +23,11 @@ mongod --shutdown --dbpath /data/dpdash/mongodb/dbs
 echo '***************Setting up RABBITMQ***************'
 export RABBITMQ_CONFIG_FILE=/data/dpdash/configs/rabbitmq.conf
 export RABBITMQ_CONF_ENV_FILE=/data/dpdash/configs/rabbitmq-env.conf
-/usr/lib/rabbitmq/bin/rabbitmq-server start -detached
-sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl add_user dpdash $rabbitpw
-sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl set_permissions -p / dpdash ".*" ".*" ".*"
-sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl delete_user guest
-sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl stop
+# /usr/lib/rabbitmq/bin/rabbitmq-server start -detached
+# sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl add_user dpdash $rabbitpw
+# sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl set_permissions -p / dpdash ".*" ".*" ".*"
+# sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl delete_user guest
+# sleep 10 && /usr/lib/rabbitmq/bin/rabbitmqctl stop
 
 ## Set up Celery Server
 echo '***************Setting up CELERY***************'
