@@ -26,11 +26,11 @@ From:centos:7.4.1708
 
     
     ## install the RabbitMQ message queue
-    wget https://github.com/rabbitmq/erlang-rpm/releases/download/v19.3.6.13/erlang-19.3.6.13-1.el7.centos.x86_64.rpm
-    yum -y install erlang-19.3.6.13-1.el7.centos.x86_64.rpm
-    wget https://github.com/rabbitmq/rabbitmq-server/releases/download/rabbitmq_v3_6_9/rabbitmq-server-3.6.9-1.el6.noarch.rpm
-    rpm --import https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
-    yum -y install rabbitmq-server-3.6.9-1.el6.noarch.rpm
+    # wget https://github.com/rabbitmq/erlang-rpm/releases/download/v19.3.6.13/erlang-19.3.6.13-1.el7.centos.x86_64.rpm
+    # yum -y install erlang-19.3.6.13-1.el7.centos.x86_64.rpm
+    # wget https://github.com/rabbitmq/rabbitmq-server/releases/download/rabbitmq_v3_6_9/rabbitmq-server-3.6.9-1.el6.noarch.rpm
+    # rpm --import https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+    # yum -y install rabbitmq-server-3.6.9-1.el6.noarch.rpm
 
 
     ## install miniconda3
@@ -58,7 +58,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc" >> /etc/yum.repos.d/mo
 
 
     ## clone the DPdash digital phenotyping dashboard
-    git clone https://github.com/PREDICT-DPACC/dpdash.git 
+    git clone --depth 1 --branch v1.2.2 https://github.com/PREDICT-DPACC/dpdash.git
     cd dpdash
 
     ## use version of node found in .nvmrc
