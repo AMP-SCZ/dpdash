@@ -44,7 +44,8 @@ describe('SidebarFooter', () => {
   })
 
   test('renders DpDash version correctly', async () => {
-    const originalEnv = process.env
+    const envVars = process.env
+
     process.env.DPDASH_VERSION = '1.0.0'
 
     const { getByText } = render(
@@ -57,7 +58,7 @@ describe('SidebarFooter', () => {
 
       expect(versionElement).toBeInTheDocument()
 
-      process.env = originalEnv
+      process.env = envVars
     })
   })
 })
