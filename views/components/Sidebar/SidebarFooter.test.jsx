@@ -33,7 +33,7 @@ describe('SidebarFooter', () => {
       </MemoryRouter>
     )
 
-    waitFor(() => {
+    await waitFor(() => {
       const editProfileButton = getByText('Edit Profile')
       const logOutButton = getByText('Log Out')
 
@@ -52,7 +52,7 @@ describe('SidebarFooter', () => {
         <SidebarFooter user={user} />
       </MemoryRouter>
     )
-    waitFor(() => {
+    await waitFor(() => {
       const versionElement = getByText('DpDash v1.0.0')
 
       expect(versionElement).toBeInTheDocument()
