@@ -1,0 +1,9 @@
+.HeroFooter_container {
+  width: 100%;
+  padding: 31.5px;
+  align-self: baseline;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  line-height: 2rem;
+}

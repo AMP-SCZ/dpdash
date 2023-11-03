@@ -1,8 +1,10 @@
+import React from 'react'
 import TextField from '@mui/material/TextField'
-import { Controller } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
 const TextInput = (props) => {
-  const { name, control, onChange, ...rest } = props
+  const { name, onChange, ...rest } = props
+  const { control } = useFormContext()
 
   return (
     <Controller
@@ -10,10 +12,12 @@ const TextInput = (props) => {
       control={control}
       render={({ field }) => (
         <TextField
+          aria-label={name}
           fullWidth={true}
           margin="dense"
           {...field}
           {...rest}
+          inputRef={field.ref}
           onChange={(e) => {
             field.onChange(e)
 
