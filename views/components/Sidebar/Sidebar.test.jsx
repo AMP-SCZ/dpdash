@@ -2,14 +2,13 @@
  * @jest-environment jsdom
  */
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom' // Use MemoryRouter for testing routes
 import Sidebar from '.'
 import { createUser } from '../../../test/fixtures'
 import SidebarLogo from './SidebarLogo'
 import SideNavigation from './SideNavigation'
 import SidebarFooter from './SidebarFooter'
-import '@testing-library/jest-dom'
 
 jest.mock('./SidebarLogo')
 jest.mock('./SideNavigation')

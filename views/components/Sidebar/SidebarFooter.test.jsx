@@ -1,7 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, waitFor } from '@testing-library/react'
@@ -38,7 +37,7 @@ describe('SidebarFooter', () => {
       const logOutButton = getByText('Log Out')
 
       expect(editProfileButton).toBeDefined()
-      expect(editProfileButton).toHaveAttribute('href', '/user/account')
+      expect(editProfileButton).toHaveAttribute('href', '/user-account')
       expect(logOutButton).toBeDefined()
     })
   })
