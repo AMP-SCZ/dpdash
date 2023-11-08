@@ -9,13 +9,8 @@ const Sidebar = ({ user, sidebarOpen, onLogout }) => {
     <Drawer
       variant="permanent"
       open={sidebarOpen}
-      sx={{
-        flexShrink: 0,
-        boxSizing: 'border-box',
-        width: '248px',
-        height: '100vh',
-      }}
-      PaperProps={{ sx: { padding: '8px' } }}
+      sx={{ height: '100vh' }}
+      PaperProps={{ sx: { padding: '8px', position: 'static' } }}
     >
       <SidebarLogo />
       <SideNavigation user={user} />
