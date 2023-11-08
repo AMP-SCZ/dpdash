@@ -10,51 +10,62 @@ import {
 } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { routes } from '../../routes/routes'
-import { FontSize14InRem } from '../../../constants'
+import { fontSize } from '../../../constants'
 import './SidebarFooter.css'
 
 const SidebarFooter = ({ user, onLogout }) => {
   return (
-    <Card sx={{ border: 0, boxShadow: 0, color: 'text.primary' }}>
+    <Card sx={{ border: 0, boxShadow: 0, marginTop: 'auto' }}>
       <CardHeader
         avatar={<Avatar alt={user.display_name[0]} src={user.icon} />}
+        sx={{ pb: '8px' }}
       />
-      <CardContent sx={{ pt: 0 }}>
-        <Typography sx={{ fontWeight: 600 }} variant="h5">
-          {user.display_name}
-        </Typography>
+      <CardContent sx={{ pt: 0, pb: '8px' }}>
+        <Typography sx={{ fontWeight: 600 }}>{user.display_name}</Typography>
         <Typography
-          sx={{ fontSize: FontSize14InRem, color: 'grey.A200' }}
+          sx={{ fontSize: fontSize[14], color: 'grey.A200' }}
           variant="subtitle1"
         >
           Title {user.title}
         </Typography>
       </CardContent>
       <CardActions
-        sx={{ fontSize: FontSize14InRem }}
+        sx={{ fontSize: fontSize[14], p: '16px' }}
         className="SidebarFooter_actions"
       >
         <Button
           variant="outlined"
           component={Link}
           to={routes.userAccount}
-          sx={{ borderColor: 'text.primary', color: 'text.primary' }}
+          sx={{
+            borderColor: '#DDDEE0',
+            color: 'text.primary',
+            fontSize: fontSize[14],
+            textTransform: 'none',
+            borderRadius: '8px',
+            padding: '2px 12px',
+          }}
         >
           Edit Profile
         </Button>
         <Button
           variant="text"
-          sx={{ color: 'text.primary' }}
+          sx={{
+            color: 'text.primary',
+            fontSize: fontSize[14],
+            textTransform: 'none',
+            padding: '2px 12px',
+          }}
           onClick={() => onLogout()}
         >
-          Log Out
+          Log out
         </Button>
       </CardActions>
-      <div className="SidebarFooter_version">
+      <CardContent>
         <Typography variant="caption" sx={{ color: 'grey.A100' }}>
           DpDash v{process.env.DPDASH_VERSION}
         </Typography>
-      </div>
+      </CardContent>
     </Card>
   )
 }

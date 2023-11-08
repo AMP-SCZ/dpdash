@@ -33,7 +33,7 @@ describe('SidebarFooter', () => {
 
   test('renders Edit Profile and Log Out buttons with correct links', () => {
     const editProfileButton = screen.getByText('Edit Profile')
-    const logOutButton = screen.getByText('Log Out')
+    const logOutButton = screen.getByText('Log out')
 
     expect(editProfileButton).toBeInTheDocument()
     expect(editProfileButton).toHaveAttribute('href', '/user-account')

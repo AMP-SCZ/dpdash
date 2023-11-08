@@ -1,5 +1,7 @@
 import React, { forwardRef } from 'react'
+import classNames from 'classnames'
 import { NavLink } from 'react-router-dom'
+
 import './SidebarLink.css'
 
 const SidebarLink = forwardRef((props, ref) => (
@@ -7,7 +9,7 @@ const SidebarLink = forwardRef((props, ref) => (
     ref={ref}
     to={props.to}
     className={({ isActive }) =>
-      isActive ? 'SidebarLink_link-active' : 'SidebarLink_link'
+      classNames('SidebarLink_link', { 'SidebarLink_link-active': isActive })
     }
   >
     {props.children}
