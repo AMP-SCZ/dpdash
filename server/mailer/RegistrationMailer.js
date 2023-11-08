@@ -19,7 +19,7 @@ export default class RegistrationMailer extends BaseMailer {
     )
 
     return renderFile(registrationEmailTemplate, {
-      ...user,
+      ...this.user,
       redirect: this.redirectUrl,
     })
   }
