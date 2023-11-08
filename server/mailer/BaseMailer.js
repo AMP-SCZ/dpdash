@@ -6,15 +6,15 @@ export default class BaseMailer {
     this.from = from
   }
 
-  sendMail() {
-    return this.mailService.sendEmail(this.emailParams)
+  async sendMail() {
+    return this.mailService.sendEmail(await this.emailParams())
   }
 
   get mailService() {
     return new SES({ apiVersion: '2010-12-01', region: 'us-east-1' })
   }
 
-  get emailParams() {
+  async emailParams() {
     return {
       Destination: {
         ToAddresses: this.to,
@@ -24,7 +24,7 @@ export default class BaseMailer {
         Body: {
           Html: {
             Charset: 'UTF-8',
-            Data: this.body,
+            Data: await this.body(),
           },
         },
         Subject: {
