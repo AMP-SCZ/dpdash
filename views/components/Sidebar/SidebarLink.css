@@ -20,3 +20,11 @@
   background-color: var(--primary-light);
   border-radius: 8px;
 }
+
+.SidebarLink_link-active .MuiListItemIcon-root {
+  color: #054DA7;
+}
+
+.SidebarLink_link-active .MuiListItemText-root {
+  color: #054DA7;
+}
