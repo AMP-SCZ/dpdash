@@ -4,8 +4,8 @@ import {
   StyledEngineProvider,
   createTheme,
   ThemeProvider,
+  Snackbar
 } from '@mui/material'
-import Snackbar from '@mui/material/Snackbar'
 import {
   AuthContext,
   ConfigurationsContext,

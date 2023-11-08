@@ -8,6 +8,7 @@ import ConfigPage from '../pages/ConfigPage'
 import EditChartPage from '../pages/EditChartPage'
 import EditConfigPage from '../pages/EditConfigPage'
 import GraphPage from '../pages/GraphPage'
+import HeroLayout from '../layouts/HeroLayout'
 import HomePage from '../pages/HomePage'
 import MainLayout from '../layouts/MainLayout'
 import NewChartPage from '../pages/NewChartPage'
@@ -21,13 +22,16 @@ const Router = (props) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path={routes.home}
-          element={<Navigate to={routes.login} replace={true} />}
-        />
-        <Route path={routes.login} element={<SignInPage />} />
-        <Route path={routes.register} element={<RegisterPage />} />
-        <Route path={routes.resetpw} element={<ResetPasswordPage />} />
+        <Route element={<HeroLayout />}>
+          <Route
+            path={routes.home}
+            element={<Navigate to={routes.login} replace={true} />}
+          />
+          <Route path={routes.login} element={<SignInPage />} />
+          <Route path={routes.register} element={<RegisterPage />} />
+          <Route path={routes.resetpw} element={<ResetPasswordPage />} />
+        </Route>
+
         <Route
           element={
             <AuthenticatedRoute>

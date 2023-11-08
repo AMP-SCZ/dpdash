@@ -1,0 +1,11 @@
+.HeroLayout_container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.HeroLayout_main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-height: 100%;
+}
