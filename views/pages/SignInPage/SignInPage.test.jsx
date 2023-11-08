@@ -26,7 +26,7 @@ describe('SignIn Page', () => {
     )
 
     const signInButton = screen.getByText('Sign In')
-    const registerCopy = screen.getByText('Need a DpDash Account?')
+    const registerCopy = screen.getByText('Need a DPDash Account?')
     const registerLink = screen.getByText('Sign Up')
     const resetPasswordLink = screen.getByText('Request Password Assistance')
 

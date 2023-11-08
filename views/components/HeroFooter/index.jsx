@@ -10,14 +10,19 @@ const HeroFooter = () => {
   return (
     <Box
       className="HeroFooter_container"
-      sx={{ borderTop: 1, borderColor: 'grey.100' }}
+      sx={{
+        borderTop: 1,
+        borderColor: 'grey.100',
+      }}
     >
       <Typography>
         ©{currentYear} Mass General Hospital. All rights reserved.
       </Typography>
-      <HeroFooterLink to={routes.contactUs} label="Contact Us" />
-      <HeroFooterLink to={routes.privacyPolicy} label="Privacy Policy" />
-      <HeroFooterLink to={routes.termsOfUse} label="Terms of Use" />
+      <div className="HeroFooter_linksContainer">
+        <HeroFooterLink to={routes.contactUs} label="Contact Us" />
+        <HeroFooterLink to={routes.privacyPolicy} label="Privacy Policy" />
+        <HeroFooterLink to={routes.termsOfUse} label="Terms of Use" />
+      </div>
     </Box>
   )
 }

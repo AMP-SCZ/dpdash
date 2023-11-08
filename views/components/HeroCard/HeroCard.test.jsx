@@ -20,7 +20,7 @@ describe('Hero Component', () => {
 
   test('renders Hero content', () => {
     const heroCopyContent =
-      'DPdash is a Deep/Digital Phenotyping Dashboard designed to manage and visualize multiple data streams coming in continuously over extended periods of time in individuals.'
+      'DPDash is a Deep/Digital Phenotyping Dashboard designed to manage and visualize multiple data streams coming in continuously over extended periods of time in individuals.'
     const content = screen.getByText(heroCopyContent)
 
     expect(content).toBeInTheDocument()

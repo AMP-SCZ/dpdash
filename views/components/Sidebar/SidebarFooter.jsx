@@ -38,7 +38,7 @@ const SidebarFooter = ({ user, onLogout }) => {
           component={Link}
           to={routes.userAccount}
           sx={{
-            borderColor: '#DDDEE0',
+            borderColor: 'grey.100',
             color: 'text.primary',
             fontSize: fontSize[14],
             textTransform: 'none',
