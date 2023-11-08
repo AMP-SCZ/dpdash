@@ -12,7 +12,7 @@ import { colorList } from '../fe-utils/colorList'
 const colors = colorList()
 
 const NewConfigPage = () => {
-  const { user, classes, users, setNotification } = useOutletContext()
+  const { user, users, setNotification } = useOutletContext()
   const { uid } = user
   const defaultValues = UserConfigModel.defaultFormValues({
     readers: [{ value: uid, label: uid, isFixed: true }],
@@ -52,7 +52,6 @@ const NewConfigPage = () => {
   return (
     <>
       <ConfigForm
-        classes={classes}
         colors={colors}
         control={control}
         fields={fields}

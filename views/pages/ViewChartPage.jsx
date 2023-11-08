@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import BarGraph from '../components/BarGraph'
 import GraphTable from '../components/GraphTable'
 import UserAvatar from '../components/UserAvatar'
@@ -18,7 +18,7 @@ import api from '../api'
 import StudiesModel from '../models/StudiesModel'
 
 const ViewChartPage = () => {
-  const { classes, setNotification } = useOutletContext()
+  const {  setNotification } = useOutletContext()
   const { search } = useLocation()
   const { chart_id } = useParams()
   const navigate = useNavigate()
@@ -75,17 +75,17 @@ const ViewChartPage = () => {
   return (
     <>
       {graph.description && (
-        <div className={classes.viewChartRow}>
-          <div className={classes.chartAvatarContainer}>
+        <div>
+          <div>
             <UserAvatar user={graph.chartOwner} />
-            <Typography variant="subtitle2" className={classes.chartAvatarName}>
+            <Typography variant="subtitle2">
               {graph.chartOwner.display_name}
             </Typography>
           </div>
           <Typography variant="subtitle1">{graph.description}</Typography>
         </div>
       )}
-      <div className={classes.filterFormContainer}>
+      <div>
         <ChartFilterForm
           initialValues={{
             ...graph.filters,
@@ -93,17 +93,12 @@ const ViewChartPage = () => {
           }}
           onSubmit={handleSubmit(handleFormSubmit)}
           siteOptions={StudiesModel.dropdownSelectOptions(graph.userSites)}
-          classes={classes}
           control={control}
         />
       </div>
-      <BarGraph graph={graph} classes={classes} />
+      <BarGraph graph={graph} />
       {!!graph.dataBySite.length && (
-        <GraphTable
-          graph={graph}
-          classes={classes}
-          onGetCsv={fetchGraphTableCSV}
-        />
+        <GraphTable graph={graph} onGetCsv={fetchGraphTableCSV} />
       )}
     </>
   )

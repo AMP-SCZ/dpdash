@@ -1,9 +1,8 @@
 import Form from '../Form'
 import TextInput from '../TextInput'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const ResetPasswordForm = ({
-  classes,
   onSubmit,
   control,
   errors,
@@ -49,19 +48,11 @@ const ResetPasswordForm = ({
         margin="normal"
       />
 
-      <div className={classes.register_container_button}>
-        <Button
-          color="primary"
-          onClick={() => navigate(`/login`)}
-          className={classes.register_cancel_button}
-        >
+      <div>
+        <Button color="primary" onClick={() => navigate(`/login`)}>
           Cancel
         </Button>
-        <Button
-          variant="outlined"
-          type="submit"
-          className={classes.register_submit_button}
-        >
+        <Button variant="outlined" type="submit">
           Submit
         </Button>
       </div>

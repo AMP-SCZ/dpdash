@@ -1,0 +1,19 @@
+.SidebarLink_link {
+  display: flex;
+  text-decoration: none;
+  padding: 6px;
+  &:visited&:focus {
+    text-decoration: none;
+  }
+}
+
+.SidebarLink_link-active {
+  display: flex;
+  text-decoration: none;
+  padding: 6px;
+  &:visited&:focus {
+    text-decoration: none;
+  }
+  background-color: var(--primary-main);
+  border-radius: 8px;
+}

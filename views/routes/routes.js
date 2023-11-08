@@ -25,6 +25,8 @@ export const routes = {
   login: '/login',
   logout: '/logout',
   main: '/main',
+  help: '/help',
+  participants: '/participants',
   editConfiguration: (configId) => `/config/${configId}/edit`,
   viewConfiguration: (configId) => `/u/configure?s=view&id=${configId}`,
   newConfiguration: '/configs/new',

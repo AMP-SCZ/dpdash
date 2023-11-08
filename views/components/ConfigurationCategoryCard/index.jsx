@@ -6,13 +6,11 @@ import {
   CardContent,
   Divider,
   IconButton,
-} from '@material-ui/core'
-import Delete from '@material-ui/icons/Delete'
-import Copy from '@material-ui/icons/FileCopy'
+} from '@mui/material'
+import { Delete, ContentCopy } from '@mui/icons-material'
 
 const ConfigurationCategoryCard = ({
   children,
-  classes,
   formIndex,
   onCopy,
   onRemove,
@@ -20,30 +18,16 @@ const ConfigurationCategoryCard = ({
   width,
 }) => {
   return (
-    <Card
-      className={classes.configurationCategoryCard}
-      style={{ width: width }}
-    >
-      <CardHeader
-        className={classes.configurationCategoryCardHeader}
-        subheader={'Row ' + rowNum}
-      ></CardHeader>
+    <Card style={{ width: width }}>
+      <CardHeader subheader={'Row ' + rowNum}></CardHeader>
       <Divider />
       <CardContent>{children}</CardContent>
-      <CardActions className={classes.configurationCategoryCardActions}>
-        <IconButton
-          aria-label="delete"
-          className={classes.categoryButtons}
-          onClick={() => onRemove(formIndex)}
-        >
+      <CardActions>
+        <IconButton aria-label="delete" onClick={() => onRemove(formIndex)}>
           <Delete />
         </IconButton>
-        <IconButton
-          aria-label="copy"
-          className={classes.categoryButtons}
-          onClick={() => onCopy(formIndex)}
-        >
-          <Copy />
+        <IconButton aria-label="copy" onClick={() => onCopy(formIndex)}>
+          <ContentCopy />
         </IconButton>
       </CardActions>
     </Card>

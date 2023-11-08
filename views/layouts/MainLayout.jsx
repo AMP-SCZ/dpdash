@@ -1,38 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
-import classNames from 'classnames'
-import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
-
-import api from '../api'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Box } from '@mui/material'
+import Sidebar from '../components/Sidebar/'
 import {
   AuthContext,
   ConfigurationsContext,
   NotificationContext,
-  SidebarContext,
 } from '../contexts'
-import { headerTitle } from './helpers'
+import api from '../api'
+import { routes } from '../routes/routes'
 
-const TEMPORARY_SIDEBAR = 'temporary'
-const PERSISTENT_SIDEBAR = 'persistent'
-const dashboard = 'dashboard'
-
-const MainLayout = ({ classes, theme }) => {
+const MainLayout = () => {
   const [configurations, setConfigurations] = useContext(ConfigurationsContext)
   const [, setNotification] = useContext(NotificationContext)
-  const [openSidebar, setOpenSidebar] = useContext(SidebarContext)
   const [user, setUser] = useContext(AuthContext)
   const [users, setUsers] = useState([])
-  const [drawerVariant, setDrawerVariant] = useState(PERSISTENT_SIDEBAR)
-  const { pathname } = useLocation()
-  const params = useParams()
   const navigate = useNavigate()
-  const [sideBarState, setSideBarState] = useState({
-    totalDays: 0,
-    totalStudies: 0,
-    totalSubjects: 0,
-  })
-  const toggleSidebar = () => setOpenSidebar(!openSidebar)
   const fetchUsers = async () => {
     try {
       const usersList = await api.users.loadAll()
@@ -50,68 +33,37 @@ const MainLayout = ({ classes, theme }) => {
       setNotification({ open: true, message: error.message })
     }
   }
-  const handleDashboardContent = () => {
-    if (pathname.includes(dashboard)) {
-      setDrawerVariant(TEMPORARY_SIDEBAR)
-    } else {
-      setDrawerVariant(PERSISTENT_SIDEBAR)
-      setOpenSidebar(true)
+  const handleLogout = async () => {
+    try {
+      await api.auth.logout()
+
+      setUser(null)
+      navigate(routes.login)
+    } catch (error) {
+      alert(error.message)
     }
   }
-  const fetchCounts = async () => {
-    const { numOfSites, maxDay, numOfParticipants } = await api.counts.all()
-
-    setSideBarState({
-      totalDays: maxDay,
-      totalStudies: numOfSites,
-      totalSubjects: numOfParticipants,
-    })
-  }
-
   useEffect(() => {
-    fetchCounts()
     fetchUsers()
     loadAllConfigurations()
   }, [])
-  useEffect(() => {
-    handleDashboardContent()
-  }, [pathname])
 
   return (
-    <div className={classes.root}>
-      <Header
-        onToggleSidebar={toggleSidebar}
-        title={headerTitle(pathname, params)}
-        isAccountPage={false}
-        user={user}
+    <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+      <Sidebar sidebarOpen={true} user={user} onLogout={handleLogout} />
+      <Outlet
+        context={{
+          configurations,
+          navigate,
+          setConfigurations,
+          setNotification,
+          setUser,
+          setUsers,
+          user,
+          users,
+        }}
       />
-      <Sidebar
-        drawerVariant={drawerVariant}
-        onToggleSidebar={toggleSidebar}
-        sidebarOpen={openSidebar}
-        totalDays={sideBarState.totalDays}
-        totalStudies={sideBarState.totalStudies}
-        totalSubjects={sideBarState.totalSubjects}
-      />
-      <div className={classNames(classes.content, classes.contentPadded)}>
-        <Outlet
-          context={{
-            classes,
-            configurations,
-            navigate,
-            openSidebar,
-            setConfigurations,
-            setOpenSidebar,
-            setNotification,
-            setUser,
-            setUsers,
-            theme,
-            user,
-            users,
-          }}
-        />
-      </div>
-    </div>
+    </Box>
   )
 }
 export default MainLayout
