@@ -7,8 +7,8 @@ import {
   DialogActions,
   Typography,
 } from '@mui/material'
+
 import ControlledReactSelect from '../ControlledReactSelect'
-import Form from '../Form'
 
 const ShareForm = ({ control, onClose, onSubmit, open, options, title }) => {
   return (
@@ -17,7 +17,7 @@ const ShareForm = ({ control, onClose, onSubmit, open, options, title }) => {
         <Typography variant="title">{title}</Typography>
       </DialogTitle>
       <DialogContent>
-        <Form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
           <ControlledReactSelect
             isMulti={true}
             control={control}
@@ -31,7 +31,7 @@ const ShareForm = ({ control, onClose, onSubmit, open, options, title }) => {
               Submit
             </Button>
           </DialogActions>
-        </Form>
+        </form>
       </DialogContent>
     </Dialog>
   )

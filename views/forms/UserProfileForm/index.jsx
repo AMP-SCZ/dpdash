@@ -1,12 +1,12 @@
-import Form from '../Form'
 import { Button, Tooltip } from '@mui/material'
-import TextInput from '../TextInput'
-import { EMAIL_REGEX } from '../../../constants'
 import { Controller } from 'react-hook-form'
+
+import { EMAIL_REGEX } from '../../../constants'
+import TextInput from '../TextInput'
 
 const UserProfileForm = ({ control, onSubmit, setUser, user }) => {
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <Controller
         control={control}
         name="icon"
@@ -80,7 +80,7 @@ const UserProfileForm = ({ control, onSubmit, setUser, user }) => {
           Save
         </Button>
       </div>
-    </Form>
+    </form>
   )
 }
 

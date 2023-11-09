@@ -1,6 +1,6 @@
-import Form from '../Form'
-import TextInput from '../TextInput'
 import { Button } from '@mui/material'
+
+import TextInput from '../TextInput'
 
 const ResetPasswordForm = ({
   onSubmit,
@@ -10,7 +10,7 @@ const ResetPasswordForm = ({
   onInputChange,
 }) => {
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <TextInput
         control={control}
         name="username"
@@ -56,7 +56,7 @@ const ResetPasswordForm = ({
           Submit
         </Button>
       </div>
-    </Form>
+    </form>
   )
 }
 
