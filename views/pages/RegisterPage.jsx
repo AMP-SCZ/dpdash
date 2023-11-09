@@ -28,7 +28,7 @@ const RegisterPage = () => {
   return (
     <>
       <Typography variant="h4">Welcome to DPdash!</Typography>
-      <Typography variant="body1" color="textSecondary">
+      <Typography variant="body1" color="text.secondary">
         Please create your DPdash account to continue.
       </Typography>
       <RegistrationForm

@@ -15,7 +15,7 @@ const TextInput = (props) => {
       InputLabelProps={{ shrink: true }}
       inputProps={props.inputProps}
       label={props.label}
-      margin="normal"
+      margin={props.margin || 'normal'}
       required={props.required}
       type={props.type}
       {...field}
