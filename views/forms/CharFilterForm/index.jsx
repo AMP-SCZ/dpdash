@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, List, ListItem, Typography, InputLabel } from '@mui/material'
-import Form from '../Form'
+
 import { FILTER_CATEGORIES, TRUE_STRING } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'
 import ControlledReactSelect from '../ControlledReactSelect'
@@ -13,7 +13,7 @@ const ChartFilterForm = ({
   siteOptions,
 }) => {
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <div>
         {Object.keys(initialValues)
           .filter((key) => key !== 'sites')
@@ -63,7 +63,7 @@ const ChartFilterForm = ({
           Apply Filters
         </Button>
       </div>
-    </Form>
+    </form>
   )
 }
 

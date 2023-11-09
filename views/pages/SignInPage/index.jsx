@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useForm, FormProvider } from 'react-hook-form'
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+
 import { routes } from '../../routes/routes'
 import api from '../../api'
 import { AuthContext, NotificationContext } from '../../contexts'
@@ -9,16 +9,10 @@ import SignInForm from '../../forms/SignInForm'
 import './SignInPage.css'
 
 const SignInPage = () => {
-  const methods = useForm({
-    defaultValues: {
-      username: '',
-      password: '',
-    },
-  })
   const navigate = useNavigate()
   const [, setUser] = useContext(AuthContext)
   const [, setNotification] = useContext(NotificationContext)
-  const handleFormSubmit = async (data) => {
+  const onSubmit = async (data) => {
     try {
       const user = await api.auth.login(data)
 
@@ -30,7 +24,7 @@ const SignInPage = () => {
   }
 
   return (
-    <Box className="SignInPage_container" sx={{ boxShadow: 5 }}>
+    <>
       <Typography variant="h4" gutterBottom={true}>
         Sign In
       </Typography>
@@ -40,9 +34,10 @@ const SignInPage = () => {
           Sign Up
         </Link>
       </Typography>
-      <FormProvider {...methods}>
-        <SignInForm onSubmit={methods.handleSubmit(handleFormSubmit)} />
-      </FormProvider>
+      <SignInForm
+        initialValues={{ username: '', password: '' }}
+        onSubmit={onSubmit}
+      />
       <Typography
         component={Link}
         to={routes.resetpw}
@@ -50,7 +45,7 @@ const SignInPage = () => {
       >
         Request Password Assistance
       </Typography>
-    </Box>
+    </>
   )
 }
 

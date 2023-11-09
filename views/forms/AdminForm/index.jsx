@@ -1,5 +1,5 @@
 import React from 'react'
-import Form from '../Form'
+
 import UserResetKeyFields from '../UserResetKeyFormFields'
 import AdminUsersTable from '../../components/VirtualTables/AdminUsersTable'
 import UserPriviligeFields from '../UserPriviligeFormFields'
@@ -25,7 +25,7 @@ const AdminForm = ({
   width,
 }) => {
   return (
-    <Form>
+    <form>
       <AdminUsersTable
         users={users}
         control={control}
@@ -53,7 +53,7 @@ const AdminForm = ({
         resetKey={resetKey}
         onClose={onClose}
       />
-    </Form>
+    </form>
   )
 }
 

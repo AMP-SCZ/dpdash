@@ -22,9 +22,9 @@
 }
 
 .SidebarLink_link-active .MuiListItemIcon-root {
-  color: #054DA7;
+  color: var(--text-secondary);
 }
 
 .SidebarLink_link-active .MuiListItemText-root {
-  color: #054DA7;
+  color: var(--text-secondary);
 }

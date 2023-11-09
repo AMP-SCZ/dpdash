@@ -26,7 +26,7 @@ const SidebarFooter = ({ user, onLogout }) => {
           sx={{ fontSize: fontSize[14], color: 'grey.A200' }}
           variant="subtitle1"
         >
-          Title {user.title}
+          {user.title}
         </Typography>
       </CardContent>
       <CardActions

@@ -1,62 +1,23 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardMedia, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+
 import RegistrationForm from '../forms/RegisterForm'
 import { NotificationContext } from '../contexts'
-import { MIN_WIDTH, VALIDATION_EMAIL_REGEX } from '../../constants'
 import api from '../api'
+import { routes } from '../routes/routes'
 
 const RegisterPage = () => {
   const [, setNotification] = useContext(NotificationContext)
-  const [errors, setErrors] = useState({
-    password: { error: false, message: '' },
-    email: { error: false, message: '' },
-    confirmPassword: { error: false, message: '' },
-  })
-  const { handleSubmit, control } = useForm({
-    defaultValues: {
-      username: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
-      fullName: '',
-    },
-  })
   const navigate = useNavigate()
-  const handleFormSubmit = async (data) => {
+  const onSubmit = async (data) => {
     try {
-      if (data.password !== data.confirmPassword) {
-        setErrors({
-          ...errors,
-          password: { error: true, message: 'passwords do not match' },
-        })
-
-        return
-      } else {
-        setErrors({
-          ...errors,
-          password: { error: false, message: '' },
-        })
-      }
-
-      const isFormReadyToBeSubmitted = Object.values(errors).every(
-        (value) => value.error === false
-      )
-
-      if (isFormReadyToBeSubmitted) {
-        await api.auth.signup(data)
-        setNotification({
-          open: true,
-          message:
-            'Account has been created, please wait for an Admin to provide access.',
-        })
-      } else {
-        setNotification({
-          open: true,
-          message: 'There are still errors in your form.',
-        })
-      }
+      await api.auth.signup(data)
+      setNotification({
+        open: true,
+        message:
+          'Account has been created, please wait for an Admin to provide access.',
+      })
     } catch (error) {
       setNotification({
         open: true,
@@ -64,63 +25,24 @@ const RegisterPage = () => {
       })
     }
   }
-  const handleChange = (e) => {
-    const { name, value } = e.target
-
-    if (name === 'email') {
-      if (VALIDATION_EMAIL_REGEX.test(value)) {
-        setErrors({
-          ...errors,
-          email: { error: false, message: '' },
-        })
-      } else if (!VALIDATION_EMAIL_REGEX.test(value)) {
-        setErrors({
-          ...errors,
-          email: { error: true, message: 'incorrect email format' },
-        })
-      }
-    }
-    if (name === 'password' || name === 'confirmPassword') {
-      if (value.length < 8) {
-        setErrors({
-          ...errors,
-          [name]: {
-            error: true,
-            message: 'passwords must be a minimum of 8 characters',
-          },
-        })
-      } else {
-        setErrors({
-          ...errors,
-          [name]: { error: false, message: '' },
-        })
-      }
-    }
-  }
   return (
-    <div>
-      <Card>
-        <div>
-          <CardContent>
-            <Typography variant="title">Welcome to DPdash!</Typography>
-            <Typography variant="subheading" color="textSecondary">
-              Please create your DPdash account to continue.
-            </Typography>
-          </CardContent>
-          <div>
-            <div>
-              <RegistrationForm
-                control={control}
-                onSubmit={handleSubmit(handleFormSubmit)}
-                errors={errors}
-                navigate={navigate}
-                onInputChange={handleChange}
-              />
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
+    <>
+      <Typography variant="h4">Welcome to DPdash!</Typography>
+      <Typography variant="body1" color="text.secondary">
+        Please create your DPdash account to continue.
+      </Typography>
+      <RegistrationForm
+        initialValues={{
+          username: '',
+          password: '',
+          confirmPassword: '',
+          email: '',
+          fullName: '',
+        }}
+        onCancel={() => navigate(routes.login)}
+        onSubmit={onSubmit}
+      />
+    </>
   )
 }
 

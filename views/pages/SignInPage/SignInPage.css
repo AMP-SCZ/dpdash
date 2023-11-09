@@ -1,17 +1,9 @@
-.SignInPage_container {
-  width: 458px;
-  height: 447px;
-  display: flex;
-  flex-direction: column;
-  padding-left: 64px;
-  padding-right: 64px;
-  padding-top: 50px;
-}
 .SignInPageRegister_link {
   text-decoration: none;
   padding-left: 6px;
   color: var(--primary-main);
 }
+
 .SignInPageResetPW_link {
   padding-top: 16px;
   text-decoration: none;

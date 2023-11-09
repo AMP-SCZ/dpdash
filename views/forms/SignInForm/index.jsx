@@ -1,27 +1,35 @@
 import React from 'react'
-import TextInput from '../TextInput'
 import { Button } from '@mui/material'
-import Form from '../Form'
+import { useForm } from 'react-hook-form'
+
+import TextInput from '../TextInput'
 import './SignInForm.css'
 
-const SignInForm = ({ onSubmit }) => {
+const SignInForm = ({ initialValues, onSubmit }) => {
+  const { control, handleSubmit } = useForm({
+    defaultValues: initialValues,
+  })
+
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <TextInput
+        control={control}
         name="username"
         label="Username"
         required={true}
         fullWidth={true}
         margin="normal"
-        variant="outlined"
+        type="text"
       />
       <TextInput
-        name="password"
-        type="password"
+        control={control}
+        fullWidth={true}
+        inputProps={{ 'data-testid': 'pw' }}
         label="Password"
-        required={true}
         margin="normal"
-        variant="outlined"
+        name="password"
+        required={true}
+        type="password"
       />
       <div className="SignInForm_submitBtnContainer">
         <Button
@@ -36,7 +44,7 @@ const SignInForm = ({ onSubmit }) => {
           Sign in
         </Button>
       </div>
-    </Form>
+    </form>
   )
 }
 

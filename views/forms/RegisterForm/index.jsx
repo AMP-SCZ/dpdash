@@ -1,73 +1,91 @@
-import Form from '../Form'
-import TextInput from '../TextInput'
 import { Button } from '@mui/material'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-const RegistrationForm = ({
-  onSubmit,
-  control,
-  errors,
-  navigate,
-  onInputChange,
-}) => {
+import TextInput from '../TextInput'
+
+const schema = yup.object({
+  username: yup.string().required(),
+  password: yup.string().required().min(8),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'passwords do not match'),
+  fullName: yup.string().required(),
+  email: yup.string().required().email(),
+})
+
+const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialValues,
+    resolver: yupResolver(schema),
+  })
+
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <TextInput
         control={control}
-        name="username"
+        errors={errors.username}
+        fullWidth
         label="Username"
-        required={true}
         margin="normal"
+        name="username"
+        required={true}
       />
       <TextInput
         control={control}
-        type="password"
-        name="password"
+        errors={errors.password}
+        fullWidth
+        inputProps={{ 'data-testid': 'pw' }}
         label="Password"
-        required={true}
         margin="normal"
-        onChange={(e) => onInputChange(e)}
-        error={errors.password.error}
-        helperText={errors.password.message}
-      />
-      <TextInput
-        control={control}
+        name="password"
+        required={true}
         type="password"
-        name="confirmPassword"
+      />
+      <TextInput
+        control={control}
+        errors={errors.confirmPassword}
+        fullWidth
+        inputProps={{ 'data-testid': 'confirm-pw' }}
         label="Confirm Password"
-        onChange={(e) => onInputChange(e)}
-        required={true}
-        error={errors.confirmPassword.error}
-        helperText={errors.confirmPassword.message}
         margin="normal"
+        name="confirmPassword"
+        required={true}
+        type="password"
       />
       <TextInput
-        name="fullName"
+        control={control}
+        errors={errors.fullName}
+        fullWidth
         label="Full Name"
-        control={control}
-        required={true}
         margin="normal"
-        onChange={(e) => onInputChange(e)}
+        name="fullName"
+        required={true}
       />
       <TextInput
-        name="email"
-        label="Email"
         control={control}
-        required={true}
+        errors={errors.email}
+        fullWidth
+        label="Email"
         margin="normal"
-        onChange={(e) => onInputChange(e)}
-        error={errors.email.error}
-        helperText={errors.email.message}
+        name="email"
+        required={true}
       />
 
       <div>
-        <Button color="primary" onClick={() => navigate(`/login`)}>
+        <Button color="primary" onClick={() => onCancel()}>
           Cancel
         </Button>
         <Button variant="outlined" type="submit">
           Submit
         </Button>
       </div>
-    </Form>
+    </form>
   )
 }
 
