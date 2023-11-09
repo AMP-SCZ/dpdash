@@ -1,8 +1,9 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Box } from '@mui/material'
-import HeroCard from '../components/HeroCard'
-import HeroFooter from '../components/HeroFooter'
+
+import HeroCard from '../../components/HeroCard'
+import HeroFooter from '../../components/HeroFooter'
 import './HeroLayout.css'
 
 const HeroLayout = () => {

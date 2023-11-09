@@ -35,7 +35,7 @@ const SignInPage = () => {
         Sign In
       </Typography>
       <Typography variant="body1">
-        Need a DpDash Account?{' '}
+        Need a DPDash Account?{' '}
         <Link className="SignInPageRegister_link" to={routes.register}>
           Sign Up
         </Link>

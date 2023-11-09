@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { Box } from '@mui/material'
-import Sidebar from '../components/Sidebar/'
+
+import Sidebar from '../../components/Sidebar'
 import {
   AuthContext,
   ConfigurationsContext,
   NotificationContext,
-} from '../contexts'
-import api from '../api'
-import { routes } from '../routes/routes'
+} from '../../contexts'
+import api from '../../api'
+import { routes } from '../../routes/routes'
+import './MainLayout.css'
 
 const MainLayout = () => {
   const [configurations, setConfigurations] = useContext(ConfigurationsContext)
@@ -49,21 +50,23 @@ const MainLayout = () => {
   }, [])
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+    <div className="MainLayout_container">
       <Sidebar sidebarOpen={true} user={user} onLogout={handleLogout} />
-      <Outlet
-        context={{
-          configurations,
-          navigate,
-          setConfigurations,
-          setNotification,
-          setUser,
-          setUsers,
-          user,
-          users,
-        }}
-      />
-    </Box>
+      <div>
+        <Outlet
+          context={{
+            configurations,
+            navigate,
+            setConfigurations,
+            setNotification,
+            setUser,
+            setUsers,
+            user,
+            users,
+          }}
+        />
+      </div>
+    </div>
   )
 }
 export default MainLayout

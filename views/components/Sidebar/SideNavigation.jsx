@@ -10,11 +10,10 @@ import {
 } from '@mui/icons-material'
 import NavItem from './NavItem'
 import { routes } from '../../routes/routes'
-import './SideNavigation.css'
 
 const SideNavigation = ({ user }) => {
   return (
-    <nav className="SideNavigation_nav" data-testid="nav">
+    <nav data-testid="nav">
       <List>
         <NavItem Icon={SpaceDashboard} to={routes.main} label="Dashboard" />
         <NavItem Icon={Group} to={routes.participants} label="Participants" />

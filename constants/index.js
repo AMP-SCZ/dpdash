@@ -23,7 +23,7 @@ import {
   TOTALS,
   TRUE_STRING,
 } from './vars'
-import { THEME, FontSize14InRem } from './theme'
+import { THEME, fontSize } from './theme'
 
 export {
   ADMIN_ROLE,
@@ -39,7 +39,7 @@ export {
   FALSE_STRING,
   EMAIL_REGEX,
   FILTER_CATEGORIES,
-  FontSize14InRem,
+  fontSize,
   MIN_WIDTH,
   N_A,
   NOTIFICATION_DEFAULT,

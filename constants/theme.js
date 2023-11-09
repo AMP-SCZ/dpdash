@@ -27,4 +27,7 @@ export const THEME = {
   },
 }
 
-export const FontSize14InRem = '0.875rem'
+export const fontSize = {
+  12: '0.75rem',
+  14: '0.875rem',
+}

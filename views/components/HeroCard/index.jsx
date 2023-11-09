@@ -14,14 +14,14 @@ const HeroCard = () => {
   return (
     <Card raised={false} className="HeroCard_container">
       <CardMedia className="HeroCard_image" image="/img/dpdash.png" />
-      <CardContent className="HeroCard_content">
+      <CardContent sx={{ px: 0 }}>
         <Typography gutterBottom={false} variant="subtitle1">
-          DPdash is a Deep/Digital Phenotyping Dashboard designed to manage and
+          DPDash is a Deep/Digital Phenotyping Dashboard designed to manage and
           visualize multiple data streams coming in continuously over extended
           periods of time in individuals.
         </Typography>
       </CardContent>
-      <CardActions className="HeroCard_actions">
+      <CardActions sx={{ px: 0 }}>
         <Button
           className="HeroCard_button"
           size="small"
