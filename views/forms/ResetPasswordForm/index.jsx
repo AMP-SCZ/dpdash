@@ -80,7 +80,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
       />
 
       <div>
-        <Button color="primary" onClick={onCancel}>
+        <Button color="primary" onClick={() => onCancel()}>
           Cancel
         </Button>
         <Button variant="outlined" type="submit">

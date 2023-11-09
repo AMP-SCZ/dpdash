@@ -11,7 +11,10 @@ const HeroLayout = () => {
     <Box className="HeroLayout_container">
       <Box className="HeroLayout_main">
         <HeroCard />
-        <Outlet />
+
+        <Box sx={{ width: '458px', boxShadow: 5, px: '64px', py: '50px' }}>
+          <Outlet />
+        </Box>
       </Box>
       <HeroFooter />
     </Box>

@@ -2,15 +2,16 @@ import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import ResetPasswordForm from '.'
+import RegisterForm from '.'
 
-describe('Reset Password Form', () => {
+describe('Register Form', () => {
   const defaultProps = {
     initialValues: {
       username: '',
       password: '',
       confirmPassword: '',
-      reset_key: '',
+      fullName: '',
+      email: '',
     },
     onCancel: () => {},
     onSubmit: () => {},
@@ -19,12 +20,13 @@ describe('Reset Password Form', () => {
     usernameField: () => screen.getByRole('textbox', { name: 'Username' }),
     passwordField: () => screen.getByTestId('pw'),
     confirmPasswordField: () => screen.getByTestId('confirm-pw'),
-    resetKeyField: () => screen.getByRole('textbox', { name: 'Reset Key' }),
+    fullNameField: () => screen.getByRole('textbox', { name: 'Full Name' }),
+    emailField: () => screen.getByRole('textbox', { name: 'Email' }),
     cancelBtn: () => screen.getByText('Cancel'),
     submitBtn: () => screen.getByText('Submit'),
   }
   const renderForm = (props = defaultProps) => {
-    render(<ResetPasswordForm {...props} />)
+    render(<RegisterForm {...props} />)
   }
 
   test('calls the onSubmit prop when the form is submitted with valid data', async () => {
@@ -36,7 +38,8 @@ describe('Reset Password Form', () => {
     await user.type(elements.usernameField(), 'myUsername')
     await user.type(elements.passwordField(), 'myPassword')
     await user.type(elements.confirmPasswordField(), 'myPassword')
-    await user.type(elements.resetKeyField(), 'myResetKey')
+    await user.type(elements.fullNameField(), 'Joe Schmoe')
+    await user.type(elements.emailField(), 'joe@example.test')
     await user.click(elements.submitBtn())
 
     await waitFor(() =>
@@ -45,7 +48,8 @@ describe('Reset Password Form', () => {
           username: 'myUsername',
           password: 'myPassword',
           confirmPassword: 'myPassword',
-          reset_key: 'myResetKey',
+          fullName: 'Joe Schmoe',
+          email: 'joe@example.test',
         },
         expect.anything()
       )
@@ -61,7 +65,8 @@ describe('Reset Password Form', () => {
     await user.type(elements.usernameField(), 'myUsername')
     await user.type(elements.passwordField(), 'nope')
     await user.type(elements.confirmPasswordField(), 'nope')
-    await user.type(elements.resetKeyField(), 'myResetKey')
+    await user.type(elements.fullNameField(), 'Joe Schmoe')
+    await user.type(elements.emailField(), 'not-an-email')
     await user.click(elements.submitBtn())
 
     await waitFor(() =>
@@ -69,6 +74,7 @@ describe('Reset Password Form', () => {
         screen.getAllByText('String must contain at least 8 character(s)')
       ).toHaveLength(2)
     )
+    expect(screen.getByText('Invalid email')).toBeInTheDocument()
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -85,7 +91,8 @@ describe('Reset Password Form', () => {
       elements.confirmPasswordField(),
       'thisIsMyConfirmedPassword'
     )
-    await user.type(elements.resetKeyField(), 'myResetKey')
+    await user.type(elements.fullNameField(), 'Joe Schmoe')
+    await user.type(elements.emailField(), 'joe@example.test')
     await user.click(elements.submitBtn())
 
     await waitFor(() =>

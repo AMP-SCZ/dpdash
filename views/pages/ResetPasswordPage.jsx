@@ -26,7 +26,7 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <Box sx={{ width: '458px', boxShadow: 5, px: '64px', py: '50px' }}>
+    <>
       <Typography variant="body1">Reset your DPDash account</Typography>
 
       <ResetPasswordForm
@@ -39,7 +39,7 @@ const ResetPasswordPage = () => {
         onCancel={() => navigate(routes.login)}
         onSubmit={onSubmit}
       />
-    </Box>
+    </>
   )
 }
 

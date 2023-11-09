@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+
 import { routes } from '../../routes/routes'
 import api from '../../api'
 import { AuthContext, NotificationContext } from '../../contexts'
@@ -23,7 +24,7 @@ const SignInPage = () => {
   }
 
   return (
-    <Box className="SignInPage_container" sx={{ boxShadow: 5 }}>
+    <>
       <Typography variant="h4" gutterBottom={true}>
         Sign In
       </Typography>
@@ -44,7 +45,7 @@ const SignInPage = () => {
       >
         Request Password Assistance
       </Typography>
-    </Box>
+    </>
   )
 }
 

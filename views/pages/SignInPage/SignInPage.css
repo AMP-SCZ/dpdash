@@ -1,12 +1,9 @@
-.SignInPage_container {
-  width: 458px;
-  padding: 50px 64px;
-}
 .SignInPageRegister_link {
   text-decoration: none;
   padding-left: 6px;
   color: var(--primary-main);
 }
+
 .SignInPageResetPW_link {
   padding-top: 16px;
   text-decoration: none;
