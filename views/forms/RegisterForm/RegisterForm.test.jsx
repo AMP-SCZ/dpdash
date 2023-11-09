@@ -71,10 +71,10 @@ describe('Register Form', () => {
 
     await waitFor(() =>
       expect(
-        screen.getAllByText('String must contain at least 8 character(s)')
-      ).toHaveLength(2)
+        screen.getByText('password must be at least 8 characters')
+      ).toBeInTheDocument()
     )
-    expect(screen.getByText('Invalid email')).toBeInTheDocument()
+    expect(screen.getByText('email must be a valid email')).toBeInTheDocument()
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -96,7 +96,7 @@ describe('Register Form', () => {
     await user.click(elements.submitBtn())
 
     await waitFor(() =>
-      expect(screen.getAllByText('Passwords do not match')).toHaveLength(2)
+      expect(screen.getByText('passwords do not match')).toBeInTheDocument()
     )
 
     expect(onSubmit).not.toHaveBeenCalled()

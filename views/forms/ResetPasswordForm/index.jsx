@@ -1,31 +1,18 @@
 import { Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import TextInput from '../TextInput'
 
-const schema = z
-  .object({
-    username: z.string(),
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-    reset_key: z.string(),
-  })
-  .superRefine(({ confirmPassword, password }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Passwords do not match',
-        path: ['confirmPassword'],
-      })
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Passwords do not match',
-        path: ['password'],
-      })
-    }
-  })
+const schema = yup.object({
+  username: yup.string().required(),
+  password: yup.string().required().min(8),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'passwords do not match'),
+  reset_key: yup.string().required(),
+})
 
 const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
   const {
@@ -34,7 +21,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
     formState: { errors },
   } = useForm({
     defaultValues: initialValues,
-    resolver: zodResolver(schema),
+    resolver: yupResolver(schema),
   })
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
