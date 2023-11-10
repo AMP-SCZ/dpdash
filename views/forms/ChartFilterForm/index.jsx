@@ -1,19 +1,18 @@
 import React from 'react'
+import { useForm } from 'react-hook-form'
 import { Button, List, ListItem, Typography, InputLabel } from '@mui/material'
 
 import { FILTER_CATEGORIES, TRUE_STRING } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'
-import ControlledReactSelect from '../ControlledReactSelect'
+import ControlledMultiSelect from '../ControlledMultiSelect'
 
-const ChartFilterForm = ({
-  initialValues,
-  onSubmit,
+const ChartFilterForm = ({ initialValues, onSubmit, siteOptions }) => {
+  const { handleSubmit, control } = useForm({
+    defaultValues: initialValues,
+  })
 
-  control,
-  siteOptions,
-}) => {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         {Object.keys(initialValues)
           .filter((key) => key !== 'sites')
@@ -49,13 +48,16 @@ const ChartFilterForm = ({
           })}
       </div>
       <div>
-        <Typography variant="subtitle2">Sites</Typography>
-        <ControlledReactSelect
+        <InputLabel id="sites-select" variant="subtitle2">
+          Sites
+        </InputLabel>
+        <ControlledMultiSelect
+          labelId="sites-select"
           name="sites"
           control={control}
           options={siteOptions}
           placeholder="Select a site to view data"
-          isMulti
+          fullWidth
         />
       </div>
       <div>

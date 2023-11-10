@@ -7,35 +7,30 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
 import { Typography } from '@mui/material'
+
 import BarGraph from '../components/BarGraph'
 import GraphTable from '../components/GraphTable'
 import UserAvatar from '../components/UserAvatar'
-import ChartFilterForm from '../forms/CharFilterForm'
+import ChartFilterForm from '../forms/ChartFilterForm'
 import { apiRoutes, routes } from '../routes/routes'
 import api from '../api'
 import StudiesModel from '../models/StudiesModel'
 
 const ViewChartPage = () => {
-  const {  setNotification } = useOutletContext()
+  const { setNotification } = useOutletContext()
   const { search } = useLocation()
   const { chart_id } = useParams()
   const navigate = useNavigate()
   const [graph, setGraph] = useState(null)
-  const { handleSubmit, control, reset } = useForm()
-  const handleFormSubmit = async (updatedFilters) => {
-    if (!updatedFilters.sites.length) {
+  const onSubmit = async (filters) => {
+    if (!filters.sites.length) {
       setNotification({
         open: true,
         message: 'Please select a site to view data',
       })
     } else {
-      const sites = updatedFilters.sites.map((obj) => obj.value)
-      const queryParams = {
-        filters: { ...updatedFilters, sites },
-      }
-      const newRoute = routes.viewChart(chart_id, queryParams)
+      const newRoute = routes.viewChart(chart_id, { filters })
 
       navigate(newRoute)
     }
@@ -64,10 +59,6 @@ const ViewChartPage = () => {
 
     fetchGraph(chart_id, parsedQuery.filters).then((newGraph) => {
       setGraph(newGraph)
-      reset({
-        ...newGraph.filters,
-        sites: StudiesModel.dropdownSelectOptions(newGraph.filters.sites),
-      })
     })
   }, [chart_id, search])
 
@@ -87,13 +78,9 @@ const ViewChartPage = () => {
       )}
       <div>
         <ChartFilterForm
-          initialValues={{
-            ...graph.filters,
-            sites: StudiesModel.dropdownSelectOptions(graph.filters.sites),
-          }}
-          onSubmit={handleSubmit(handleFormSubmit)}
+          initialValues={graph.filters}
+          onSubmit={onSubmit}
           siteOptions={StudiesModel.dropdownSelectOptions(graph.userSites)}
-          control={control}
         />
       </div>
       <BarGraph graph={graph} />
