@@ -48,15 +48,12 @@ const ChartFilterForm = ({ initialValues, onSubmit, siteOptions }) => {
           })}
       </div>
       <div>
-        <InputLabel id="sites-select" variant="subtitle2">
-          Sites
-        </InputLabel>
         <ControlledMultiSelect
-          labelId="sites-select"
+          label="Sites"
           name="sites"
           control={control}
           options={siteOptions}
-          placeholder="Select a site to view data"
+          placeholder="Select sites to view data"
           fullWidth
         />
       </div>

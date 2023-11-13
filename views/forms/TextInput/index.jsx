@@ -18,6 +18,7 @@ const TextInput = (props) => {
       margin={props.margin || 'normal'}
       required={props.required}
       type={props.type}
+      placeholder={props.placeholder}
       {...field}
     />
   )
