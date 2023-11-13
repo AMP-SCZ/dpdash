@@ -8,40 +8,43 @@ describe('User Profile Form', () => {
   const pngFile = new File(['hello'], 'hello.png', { type: 'image/png' })
   const defaultProps = {
     initialValues: {
-      icon: '',
       display_name: '',
-      mail: '',
+      mail: 'myEmail@example.test',
       title: '',
-      department: '',
-      company: '',
+      iconFile: pngFile,
     },
     onCancel: () => {},
     onSubmit: () => {},
   }
   const elements = {
-    displayNameField: () => screen.getByRole('textbox', { name: 'Full Name' }),
+    displayNameField: () => screen.getByRole('textbox', { name: 'Full name' }),
     emailField: () => screen.getByRole('textbox', { name: 'Email' }),
-    titleField: () => screen.getByRole('textbox', { name: 'Title' }),
-    departmentField: () => screen.getByRole('textbox', { name: 'Department' }),
-    companyField: () => screen.getByRole('textbox', { name: 'Company' }),
+    titleField: () =>
+      screen.getByRole('textbox', { name: 'Title and institution (optional)' }),
     iconField: () => screen.getByTestId('icon-input'),
-    submitBtn: () => screen.getByText('Save'),
+    submitBtn: () => screen.getByText('Save changes'),
   }
   const renderForm = (props = defaultProps) => {
     render(<UserProfileForm {...props} />)
   }
 
+  test('email field should be disabled', () => {
+    renderForm({ ...defaultProps })
+
+    expect(elements.emailField()).toBeDisabled()
+  })
+
   test('calls the onSubmit prop when the form is submitted with valid data', async () => {
     const user = userEvent.setup()
     const onSubmit = jest.fn()
-    const props = { ...defaultProps, onSubmit }
+    const props = {
+      ...defaultProps,
+      onSubmit,
+    }
 
     renderForm(props)
     await user.type(elements.displayNameField(), 'My Full Name')
-    await user.type(elements.emailField(), 'myEmail@example.test')
     await user.type(elements.titleField(), 'My Title')
-    await user.type(elements.departmentField(), 'My Department')
-    await user.type(elements.companyField(), 'My Company')
     await user.upload(elements.iconField(), pngFile)
     await user.click(elements.submitBtn())
 
@@ -51,9 +54,7 @@ describe('User Profile Form', () => {
           display_name: 'My Full Name',
           mail: 'myEmail@example.test',
           title: 'My Title',
-          department: 'My Department',
-          company: 'My Company',
-          icon: expect.stringContaining('data:image/png;base64'),
+          iconFile: pngFile,
         },
         expect.anything()
       )
@@ -66,15 +67,16 @@ describe('User Profile Form', () => {
     const props = { ...defaultProps, onSubmit }
 
     renderForm(props)
-    await user.type(elements.emailField(), 'not-an-email')
+    await user.type(elements.displayNameField(), 'My name')
+    await user.clear(elements.displayNameField())
     await user.click(elements.submitBtn())
 
-    await waitFor(() =>
-      expect(screen.getByText('mail must be a valid email')).toBeInTheDocument()
-    )
-    expect(
-      screen.getByText('display_name is a required field')
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByText('display_name is a required field')
+      ).toBeInTheDocument()
+    })
+
     expect(onSubmit).not.toHaveBeenCalled()
   })
 })

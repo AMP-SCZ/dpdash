@@ -1,11 +1,13 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { EMAIL_REGEX } from '../../../constants'
-import TextInput from '../TextInput'
+import { borderRadius } from '../../../constants'
+import UserProfileImage from './UserProfileImage'
+import UserProfileFormFields from './UserProfileFormFields'
+import { FileModel } from '../../models'
 
 const schema = yup.object({
   company: yup.string(),
@@ -17,99 +19,61 @@ const schema = yup.object({
 })
 
 const UserProfileForm = ({ initialValues, onSubmit }) => {
-  const profileImageRef = useRef()
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    watch,
-  } = useForm({
+  const { handleSubmit, control, watch, setValue } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
+    mode: 'onChange',
   })
+  const fileInput = useRef()
+  const iconFile = watch('iconFile')
+  const [iconSrc, setIconSrc] = useState()
+  const [iconName, setIconName] = useState()
 
+  useEffect(() => {
+    if (iconFile) {
+      setIconName(iconFile.name)
+      FileModel.toDataURL(iconFile).then(setIconSrc)
+    } else {
+      setIconSrc(undefined)
+    }
+  }, [iconFile])
+
+  const onRemoveIcon = () => {
+    setValue('iconFileName', '')
+    setValue('iconFile', null)
+    setIconName('')
+
+    fileInput.current.value = ''
+  }
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
+        <UserProfileImage
           control={control}
-          name="icon"
-          render={({ field }) => {
-            return (
-              <div>
-                <input
-                  accept="image/*"
-                  data-testid="icon-input"
-                  id="icon"
-                  multiple
-                  type="file"
-                  {...field}
-                  value={field.value?.fileName}
-                  onChange={(event) => {
-                    const { files } = event.target
-
-                    if (files[0]) {
-                      const reader = new FileReader()
-
-                      reader.readAsDataURL(files[0])
-                      reader.onload = (e) => {
-                        field.onChange(e.target.result)
-                      }
-                    }
-                  }}
-                />
-                <label htmlFor="icon">Edit Profile Photo</label>
-              </div>
-            )
-          }}
+          iconFileName={iconName}
+          fileInputRef={fileInput}
+          onRemoveIcon={onRemoveIcon}
+          iconSrc={iconSrc}
         />
-        <TextInput
-          control={control}
-          errors={errors.display_name}
-          label="Full Name"
-          name="display_name"
-          fullWidth={true}
-        />
-        <TextInput
-          control={control}
-          errors={errors.mail}
-          label="Email"
-          pattern={EMAIL_REGEX}
-          name="mail"
-          fullWidth={true}
-        />
-        <TextInput
-          control={control}
-          errors={errors.title}
-          label="Title"
-          name="title"
-          fullWidth={true}
-        />
-        <TextInput
-          control={control}
-          errors={errors.department}
-          label="Department"
-          name="department"
-          fullWidth={true}
-        />
-        <TextInput
-          control={control}
-          errors={errors.company}
-          label="Company"
-          name="company"
-          fullWidth={true}
-        />
+        <UserProfileFormFields control={control} />
         <div>
-          <Button variant="outlined" type="submit">
-            Save
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              textTransform: 'none',
+              backgroundColor: 'primary.light',
+              borderRadius: borderRadius[8],
+              mb: '40px',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+          >
+            Save changes
           </Button>
         </div>
       </form>
-      <img
-        ref={profileImageRef}
-        src={watch('icon')}
-        style={{ height: 200, width: 200, objectFit: 'scale-down' }}
-      />
     </>
   )
 }

@@ -24,7 +24,7 @@ import {
   TOTALS,
   TRUE_STRING,
 } from './vars'
-import { THEME, fontSize } from './theme'
+import { THEME, borderRadius, fontSize, lineHeight } from './theme'
 
 export {
   ADMIN_ROLE,
@@ -33,6 +33,7 @@ export {
   TABLE_ROW_HEIGHT,
   baseGridWidth,
   baseInnerWidth,
+  borderRadius,
   colors,
   DRAWER_WIDTH,
   DISALLOWED_STUDIES,
@@ -41,6 +42,7 @@ export {
   EMAIL_REGEX,
   FILTER_CATEGORIES,
   fontSize,
+  lineHeight,
   MIN_WIDTH,
   N_A,
   NOTIFICATION_DEFAULT,
