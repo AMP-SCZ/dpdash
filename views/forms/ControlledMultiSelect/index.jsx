@@ -7,20 +7,20 @@ const ControlledMultiSelect = (props) => {
     <Controller
       name={props.name}
       control={props.control}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <Autocomplete
           id={props.name}
           fullWidth={props.fullWidth}
-          isOptionEqualToValue={(option, value) => {
-            return option.value === value.value
-          }}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
           multiple
           onChange={(_, data) => field.onChange(data)}
           options={props.options}
           renderInput={(params) => (
             <TextField
               {...params}
+              aria-invalid={!!fieldState.error ? 'true' : 'false'}
               label={props.label}
+              helperText={fieldState.error?.message}
               placeholder={props.placeholder}
             />
           )}

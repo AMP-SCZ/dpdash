@@ -18,26 +18,18 @@ import api from '../api'
 import StudiesModel from '../models/StudiesModel'
 
 const ViewChartPage = () => {
-  const { setNotification } = useOutletContext()
   const { search } = useLocation()
   const { chart_id } = useParams()
   const navigate = useNavigate()
   const [graph, setGraph] = useState(null)
   const onSubmit = async (formValues) => {
-    if (!formValues.sites.length) {
-      setNotification({
-        open: true,
-        message: 'Please select a site to view data',
-      })
-    } else {
-      const filters = {
-        ...formValues,
-        sites: formValues.sites.map((option) => option.value),
-      }
-      const newRoute = routes.viewChart(chart_id, { filters })
-
-      navigate(newRoute)
+    const filters = {
+      ...formValues,
+      sites: formValues.sites.map((option) => option.value),
     }
+    const newRoute = routes.viewChart(chart_id, { filters })
+
+    navigate(newRoute)
   }
   const fetchGraph = async (chart_id, filters) =>
     await api.charts.chartsData.show(chart_id, { filters })

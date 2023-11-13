@@ -1,14 +1,21 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, List, ListItem, Typography, InputLabel } from '@mui/material'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import { FILTER_CATEGORIES, TRUE_STRING } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'
 import ControlledMultiSelect from '../ControlledMultiSelect'
 
+const schema = yup.object({
+  sites: yup.array().min(1, 'You must select at least 1 site'),
+})
+
 const ChartFilterForm = ({ initialValues, onSubmit, siteOptions }) => {
   const { handleSubmit, control } = useForm({
     defaultValues: initialValues,
+    resolver: yupResolver(schema),
   })
 
   return (

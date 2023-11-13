@@ -90,4 +90,25 @@ describe('Chart Filter Form', () => {
       )
     )
   })
+
+  test('does not call the onSubmit prop with no sites', async () => {
+    const user = userEvent.setup()
+    const onSubmit = jest.fn()
+    const props = { ...defaultProps, onSubmit }
+
+    renderForm(props)
+    await user.click(elements.hcField())
+    await user.click(elements.includedExcludedMissing())
+    const siteSelect = elements.siteSelect()
+    await userEvent.type(siteSelect, '{backspace}')
+    await userEvent.type(siteSelect, '{backspace}')
+    await user.click(elements.submitBtn())
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('You must select at least 1 site')
+      ).toBeInTheDocument()
+    )
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
 })
