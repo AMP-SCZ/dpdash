@@ -3,16 +3,26 @@ import { useOutletContext } from 'react-router-dom'
 
 import api from '../api'
 import UserProfileForm from '../forms/UserProfileForm'
+import FileModel from '../models/FileModel'
 
 const AccountPage = () => {
   const { user, setUser, setNotification } = useOutletContext()
-  const { icon, display_name, mail, title, department, company } = user
+  const { icon, iconFileName, display_name, mail, title, department, company } =
+    user
+  const iconFile =
+    !!icon && !!iconFileName
+      ? FileModel.fromDataURL(icon, iconFileName)
+      : undefined
 
   const onSubmit = async (userProfileValues) => {
+    const { iconFile, ...formData } = userProfileValues
     try {
+      const icon = iconFile ? await FileModel.toDataURL(iconFile) : ''
+      const iconFileName = iconFile ? iconFile.name : ''
       const updatedUser = await api.users.update(user.uid, {
-        ...user,
-        ...userProfileValues,
+        ...formData,
+        icon,
+        iconFileName,
       })
 
       setUser(updatedUser)
@@ -30,7 +40,14 @@ const AccountPage = () => {
 
   return (
     <UserProfileForm
-      initialValues={{ icon, display_name, mail, title, department, company }}
+      initialValues={{
+        iconFile,
+        display_name,
+        mail,
+        title,
+        department,
+        company,
+      }}
       onSubmit={onSubmit}
     />
   )

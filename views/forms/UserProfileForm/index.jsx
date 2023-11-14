@@ -1,11 +1,11 @@
-import React, { useRef } from 'react'
-import { Button } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { Avatar, Button } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { EMAIL_REGEX } from '../../../constants'
 import TextInput from '../TextInput'
+import FileModel from '../../models/FileModel'
 
 const schema = yup.object({
   company: yup.string(),
@@ -17,52 +17,71 @@ const schema = yup.object({
 })
 
 const UserProfileForm = ({ initialValues, onSubmit }) => {
-  const profileImageRef = useRef()
   const {
     handleSubmit,
     control,
     formState: { errors },
+    setValue,
     watch,
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   })
+  const fileInput = useRef()
+  const iconFile = watch('iconFile')
+  const [iconSrc, setIconSrc] = useState()
+
+  useEffect(() => {
+    if (iconFile) {
+      FileModel.toDataURL(iconFile).then(setIconSrc)
+    } else {
+      setIconSrc(undefined)
+    }
+  }, [iconFile])
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
-          name="icon"
+          name="iconFile"
           render={({ field }) => {
             return (
               <div>
                 <input
                   accept="image/*"
                   data-testid="icon-input"
-                  id="icon"
+                  id="iconFile"
                   multiple
                   type="file"
                   {...field}
-                  value={field.value?.fileName}
+                  ref={(inputRef) => {
+                    fileInput.current = inputRef
+                    field.ref(inputRef)
+                  }}
+                  value={undefined}
                   onChange={(event) => {
                     const { files } = event.target
 
                     if (files[0]) {
-                      const reader = new FileReader()
-
-                      reader.readAsDataURL(files[0])
-                      reader.onload = (e) => {
-                        field.onChange(e.target.result)
-                      }
+                      field.onChange(files[0])
                     }
                   }}
                 />
-                <label htmlFor="icon">Edit Profile Photo</label>
+                <label htmlFor="iconFile">Edit Profile Photo</label>
               </div>
             )
           }}
         />
+        <button
+          type="button"
+          onClick={() => {
+            setValue('iconFile', null)
+            fileInput.current.value = ''
+          }}
+        >
+          Remove profile image
+        </button>
         <TextInput
           control={control}
           errors={errors.display_name}
@@ -74,7 +93,6 @@ const UserProfileForm = ({ initialValues, onSubmit }) => {
           control={control}
           errors={errors.mail}
           label="Email"
-          pattern={EMAIL_REGEX}
           name="mail"
           fullWidth={true}
         />
@@ -105,10 +123,10 @@ const UserProfileForm = ({ initialValues, onSubmit }) => {
           </Button>
         </div>
       </form>
-      <img
-        ref={profileImageRef}
-        src={watch('icon')}
-        style={{ height: 200, width: 200, objectFit: 'scale-down' }}
+      <Avatar
+        alt="User avatar"
+        src={iconSrc}
+        style={{ height: 100, width: 100, objectFit: 'scale-down' }}
       />
     </>
   )
