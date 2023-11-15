@@ -1,3 +1,8 @@
 .MainLayout_container {
   display: flex;
 }
+
+.MainLayout_main {
+  flex-shrink: 0;
+  flex: 1;
+}

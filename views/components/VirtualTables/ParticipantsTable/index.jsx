@@ -1,101 +1,76 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Column, Table } from 'react-virtualized'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { Checkbox } from '@mui/material'
 import StarBorder from '@mui/icons-material/StarBorder'
 import Star from '@mui/icons-material/Star'
-import { routes } from '../../../routes/routes'
-import '../Table.css'
-import {
-  DRAWER_WIDTH,
-  ADMIN_TABLE_MAX_WIDTH,
-  TABLE_ROW_HEIGHT,
-} from '../../../../constants'
+
+import Table from '../../Table'
+import { SORT_DIRECTION } from '../../../../constants'
 
 const ParticipantsTable = (props) => {
-  return (
-    <Table
-      width={
-        props.width < ADMIN_TABLE_MAX_WIDTH
-          ? props.width
-          : props.width - DRAWER_WIDTH
-      }
-      height={props.height}
-      headerHeight={TABLE_ROW_HEIGHT}
-      headerClassName="ParticipantTableHeader"
-      rowHeight={TABLE_ROW_HEIGHT}
-      rowCount={props.rowCount}
-      rowGetter={({ index }) => props.participants.find((_, i) => i === index)}
-      rowClassName="ParticipantTableRow"
-      sort={props.sort}
-      sortBy={props.sortBy}
-      sortDirection={props.sortDirection}
-    >
-      <Column
-        label="Participant"
-        dataKey="subject"
-        width={props.width / 5}
-        cellRenderer={({ rowData: { study, subject } }) => {
-          return (
-            <Link
-              style={{ textDecoration: 'none' }}
-              to={routes.dashboard(study, subject)}
-            >
-              {subject}
-            </Link>
-          )
-        }}
-      />
-      <Column
-        label="Study"
-        dataKey="study"
-        width={props.width / 5}
-        cellRenderer={({ rowData }) => {
-          return (
-            <Link
-              style={{ textDecoration: 'none' }}
-              to={`/dashboard/${rowData.study}`}
-            >
-              {rowData.study}
-            </Link>
-          )
-        }}
-      />
-      <Column
-        label="Complete"
-        cellRenderer={({ rowData: { study, subject, complete } }) => (
+  const {
+    onSort,
+    sortProperty,
+    sortDirection,
+    sortable,
+    participants,
+    onUpdate,
+  } = props
+  const handleRequestSort = (_event, property) => {
+    const isAsc =
+      sortProperty === property && sortDirection === SORT_DIRECTION.ASC
+    return onSort(property, isAsc ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC)
+  }
+  const headers = [
+    {
+      dataProperty: 'subject',
+      label: 'Participant ID',
+      sortable: !!sortable,
+    },
+    {
+      dataProperty: 'study',
+      label: 'Study',
+      sortable: !!sortable,
+    },
+    {
+      dataProperty: 'days',
+      label: 'Days In Study',
+      sortable: !!sortable,
+    },
+    {
+      dataProperty: 'star',
+      label: '',
+      sortable: false,
+    },
+  ]
+  const cellRenderer = (participant, property) => {
+    switch (property) {
+      case 'star':
+        return (
           <Checkbox
-            name={`complete-${study}`}
-            icon={<CheckBoxOutlineBlankIcon />}
-            checkedIcon={
-              <CheckBoxIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} />
-            }
-            checked={complete}
-            disableRipple={true}
-            value={subject}
-            onChange={props.onUpdate}
-          />
-        )}
-        width={props.width / 5}
-      />
-      <Column
-        label="Star"
-        cellRenderer={({ rowData: { study, subject, star } }) => (
-          <Checkbox
-            name={`star-${study}`}
+            name={`star-${participant.study}`}
             disableRipple={true}
             icon={<StarBorder />}
-            checked={star}
+            checked={participant.star || false}
             checkedIcon={<Star style={{ color: '#FFB80A' }} />}
-            value={subject}
-            onChange={props.onUpdate}
+            value={participant.subject}
+            onChange={onUpdate}
           />
-        )}
-        width={props.width / 5}
-      />
-    </Table>
+        )
+
+      default:
+        return participant[property]
+    }
+  }
+
+  return (
+    <Table
+      cellRenderer={cellRenderer}
+      data={participants}
+      headers={headers}
+      sortDirection={sortDirection}
+      sortProperty={sortProperty}
+      handleRequestSort={handleRequestSort}
+    />
   )
 }
 

@@ -6,9 +6,7 @@ import ParticipantsTable from '../components/VirtualTables/ParticipantsTable'
 import { components } from '../forms/ControlledReactSelect/components'
 import { useEffect } from 'react'
 import api from '../api'
-
-const asc = 'ASC'
-const category = 'subject'
+import { SORT_DIRECTION } from '../../constants'
 
 const HomePage = () => {
   const { user, setNotification, setUser } = useOutletContext()
@@ -17,15 +15,8 @@ const HomePage = () => {
   const [participants, setParticipants] = useState([])
   const [searchSubjects, setSearchSubjects] = useState([])
   const [searchOptions, setSearchOptions] = useState([])
-  const [dimensions, setDimensions] = useState({
-    width: 0,
-    height: 0,
-  })
-  const [sortDirection, setDirection] = useState(asc)
-  const [sortBy, setSortBy] = useState(category)
-  const [rowCount, setRowcount] = useState(0)
-  const handleResize = () =>
-    setDimensions({ width: window.innerWidth, height: window.innerHeight })
+  const [sortDirection, setDirection] = useState(SORT_DIRECTION.ASC)
+  const [sortBy, setSortBy] = useState('')
 
   const fetchParticipants = async (sortParams) =>
     await api.participants.all(sortParams)
@@ -48,10 +39,13 @@ const HomePage = () => {
         preferences: { ...preferences, [key]: values },
       }
       const updatedUser = await api.users.update(uid, userAttributes)
-      const participantsList = await fetchParticipants({
-        sortBy,
-        sortDirection,
-      })
+      const participantsList =
+        sortBy && sortDirection
+          ? await fetchParticipants({
+              sortBy,
+              sortDirection,
+            })
+          : await fetchParticipants()
 
       setUser(updatedUser)
       setParticipants(participantsList)
@@ -60,16 +54,15 @@ const HomePage = () => {
       setNotification({ open: true, message: error.message })
     }
   }
-  const sort = async ({ sortBy, sortDirection }) => {
-    setSortBy(sortBy)
-    setDirection(sortDirection)
-
+  const sort = async (newSortBy, newSortDirection) => {
     const participantList = await fetchParticipants({
-      sortBy,
-      sortDirection,
+      sortBy: newSortBy,
+      sortDirection: newSortDirection,
       searchSubjects: normalizeSearchSubjects(searchSubjects),
     })
 
+    setSortBy(newSortBy)
+    setDirection(newSortDirection)
     setParticipants(participantList)
   }
 
@@ -89,13 +82,12 @@ const HomePage = () => {
       const participantsList = await fetchParticipants()
 
       setParticipants(participantsList)
-      setRowcount(participantsList.length)
     }
   }
   const normalizeSearchSubjects = (searchSubjects) =>
     searchSubjects.map(({ value }) => value)
+
   useEffect(() => {
-    handleResize()
     fetchParticipants().then((participantsList) => {
       const dropDownOptions = participantsList.map(({ study, subject }) => ({
         value: `${subject}`,
@@ -104,13 +96,9 @@ const HomePage = () => {
 
       setParticipants(participantsList)
       setSearchOptions(dropDownOptions)
-      setRowcount(participantsList.length)
     })
-
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
   }, [])
+
   return (
     <>
       <ReactSelect
@@ -123,15 +111,12 @@ const HomePage = () => {
         isMulti
       />
       <ParticipantsTable
-        width={dimensions.width}
-        height={dimensions.height}
-        rowCount={rowCount}
         participants={participants}
-        user={user}
         onUpdate={handleUserUpdate}
-        sort={sort}
-        sortBy={sortBy}
+        onSort={sort}
+        sortProperty={sortBy}
         sortDirection={sortDirection}
+        sortable
       />
     </>
   )
