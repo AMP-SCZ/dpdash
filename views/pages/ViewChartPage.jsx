@@ -18,22 +18,18 @@ import api from '../api'
 import StudiesModel from '../models/StudiesModel'
 
 const ViewChartPage = () => {
-  const { setNotification } = useOutletContext()
   const { search } = useLocation()
   const { chart_id } = useParams()
   const navigate = useNavigate()
   const [graph, setGraph] = useState(null)
-  const onSubmit = async (filters) => {
-    if (!filters.sites.length) {
-      setNotification({
-        open: true,
-        message: 'Please select a site to view data',
-      })
-    } else {
-      const newRoute = routes.viewChart(chart_id, { filters })
-
-      navigate(newRoute)
+  const onSubmit = async (formValues) => {
+    const filters = {
+      ...formValues,
+      sites: formValues.sites.map((option) => option.value),
     }
+    const newRoute = routes.viewChart(chart_id, { filters })
+
+    navigate(newRoute)
   }
   const fetchGraph = async (chart_id, filters) =>
     await api.charts.chartsData.show(chart_id, { filters })
@@ -53,6 +49,9 @@ const ViewChartPage = () => {
 
     return res
   }
+  const siteOptions = graph
+    ? StudiesModel.dropdownSelectOptions(graph.userSites)
+    : []
 
   useEffect(() => {
     const parsedQuery = qs.parse(search.replace(/^\?/, ''))
@@ -63,6 +62,7 @@ const ViewChartPage = () => {
   }, [chart_id, search])
 
   if (!graph) return <div>Loading...</div>
+
   return (
     <>
       {graph.description && (
@@ -78,9 +78,14 @@ const ViewChartPage = () => {
       )}
       <div>
         <ChartFilterForm
-          initialValues={graph.filters}
+          initialValues={{
+            ...graph.filters,
+            sites: siteOptions.filter((option) =>
+              graph.filters.sites.includes(option.value)
+            ),
+          }}
           onSubmit={onSubmit}
-          siteOptions={StudiesModel.dropdownSelectOptions(graph.userSites)}
+          siteOptions={siteOptions}
         />
       </div>
       <BarGraph graph={graph} />

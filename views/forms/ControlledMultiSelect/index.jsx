@@ -1,32 +1,31 @@
 import React from 'react'
 import { Controller } from 'react-hook-form'
-import Select from '@mui/material/Select'
-import { Box, Chip, MenuItem } from '@mui/material'
+import { Autocomplete, TextField } from '@mui/material'
 
-const ControlledMultiSelect = ({ name, control, options, ...rest }) => {
+const ControlledMultiSelect = (props) => {
   return (
     <Controller
-      name={name}
-      control={control}
-      render={({ field }) => (
-        <Select
-          {...rest}
-          {...field}
+      name={props.name}
+      control={props.control}
+      render={({ field, fieldState }) => (
+        <Autocomplete
+          id={props.name}
+          fullWidth={props.fullWidth}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
           multiple
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
+          onChange={(_, data) => field.onChange(data)}
+          options={props.options}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              aria-invalid={!!fieldState.error ? 'true' : 'false'}
+              label={props.label}
+              helperText={fieldState.error?.message}
+              placeholder={props.placeholder}
+            />
           )}
-        >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
+          value={field.value}
+        />
       )}
     />
   )
