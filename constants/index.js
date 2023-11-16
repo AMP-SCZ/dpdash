@@ -19,16 +19,12 @@ import {
   N_A,
   NOTIFICATION_DEFAULT,
   ROLE_OPTIONS,
+  SORT_DIRECTION,
   TOTAL_LABEL,
   TOTALS,
   TRUE_STRING,
 } from './vars'
 import { THEME, fontSize } from './theme'
-
-const SORT_DIRECTION = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-}
 
 export {
   ADMIN_ROLE,

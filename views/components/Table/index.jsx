@@ -73,7 +73,7 @@ const Table = (props) => {
                     borderTopWidth: 1,
                     borderTopColor: 'grey.100',
                     borderTopStyle: 'solid',
-                    fontSize: fontSize[16],
+                    typography: 'body1',
                     ...firstCellStyles(cellIndex),
                     ...lastCellStyles(cellIndex, headers),
                   }}

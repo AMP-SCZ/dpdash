@@ -30,5 +30,4 @@ export const THEME = {
 export const fontSize = {
   12: '0.75rem',
   14: '0.875rem',
-  16: '1rem',
 }
