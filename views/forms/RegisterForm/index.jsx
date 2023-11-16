@@ -12,7 +12,7 @@ const schema = yup.object({
     .string()
     .oneOf([yup.ref('password'), null], 'passwords do not match'),
   fullName: yup.string().required(),
-  email: yup.string().required().email(),
+  mail: yup.string().required().email(),
 })
 
 const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
@@ -32,9 +32,8 @@ const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
         errors={errors.username}
         fullWidth
         label="Username"
-        margin="normal"
         name="username"
-        required={true}
+        required
       />
       <TextInput
         control={control}
@@ -42,9 +41,8 @@ const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
         fullWidth
         inputProps={{ 'data-testid': 'pw' }}
         label="Password"
-        margin="normal"
         name="password"
-        required={true}
+        required
         type="password"
       />
       <TextInput
@@ -53,9 +51,8 @@ const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
         fullWidth
         inputProps={{ 'data-testid': 'confirm-pw' }}
         label="Confirm Password"
-        margin="normal"
         name="confirmPassword"
-        required={true}
+        required
         type="password"
       />
       <TextInput
@@ -63,28 +60,32 @@ const RegistrationForm = ({ initialValues, onCancel, onSubmit }) => {
         errors={errors.fullName}
         fullWidth
         label="Full Name"
-        margin="normal"
         name="fullName"
-        required={true}
+        required
       />
       <TextInput
         control={control}
-        errors={errors.email}
+        errors={errors.mail}
         fullWidth
         label="Email"
-        margin="normal"
-        name="email"
-        required={true}
+        name="mail"
+        required
+        sx={{ pb: '16.5px' }}
       />
 
-      <div>
-        <Button color="primary" onClick={() => onCancel()}>
-          Cancel
-        </Button>
-        <Button variant="outlined" type="submit">
-          Submit
-        </Button>
-      </div>
+      <Button
+        variant="outlined"
+        type="submit"
+        fullWidth
+        sx={{
+          backgroundColor: 'primary.dark',
+          color: 'common.white',
+          borderRadius: '8px',
+          textTransform: 'none',
+        }}
+      >
+        Sign up
+      </Button>
     </form>
   )
 }

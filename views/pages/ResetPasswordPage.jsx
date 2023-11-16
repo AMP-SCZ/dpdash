@@ -14,7 +14,7 @@ const ResetPasswordPage = () => {
     try {
       await api.auth.resetPassword(resetAttributes)
 
-      navigate(routes.login)
+      navigate(routes.signin)
 
       setNotification({
         open: true,
@@ -36,7 +36,7 @@ const ResetPasswordPage = () => {
           confirmPassword: '',
           reset_key: '',
         }}
-        onCancel={() => navigate(routes.login)}
+        onCancel={() => navigate(routes.signin)}
         onSubmit={onSubmit}
       />
     </>

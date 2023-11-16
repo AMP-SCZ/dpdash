@@ -39,7 +39,7 @@ const MainLayout = () => {
       await api.auth.logout()
 
       setUser(null)
-      navigate(routes.login)
+      navigate(routes.signin)
     } catch (error) {
       alert(error.message)
     }
