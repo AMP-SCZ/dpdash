@@ -11,6 +11,34 @@ import {
 import TableHead from './TableHead'
 import { fontSize } from '../../../constants'
 
+const firstCellStyles = (cellIndex) => {
+  if (cellIndex !== 0) {
+    return {}
+  }
+
+  return {
+    borderLeftWidth: 1,
+    borderLeftStyle: 'solid',
+    borderLeftColor: 'grey.100',
+    borderBottomLeftRadius: 4,
+    borderTopLeftRadius: 4,
+  }
+}
+
+const lastCellStyles = (cellIndex, headers) => {
+  if (cellIndex !== headers.length - 1) {
+    return {}
+  }
+
+  return {
+    borderRightWidth: 1,
+    borderRightStyle: 'solid',
+    borderRightColor: 'grey.100',
+    borderBottomRightRadius: 4,
+    borderTopRightRadius: 4,
+  }
+}
+
 const Table = (props) => {
   const {
     cellRenderer,
@@ -40,24 +68,6 @@ const Table = (props) => {
                 <TableCell
                   key={header.dataProperty}
                   sx={{
-                    ...(cellIndex === 0
-                      ? {
-                          borderLeftWidth: 1,
-                          borderLeftStyle: 'solid',
-                          borderLeftColor: 'grey.100',
-                          borderBottomLeftRadius: 4,
-                          borderTopLeftRadius: 4,
-                        }
-                      : {}),
-                    ...(cellIndex === headers.length - 1
-                      ? {
-                          borderRightWidth: 1,
-                          borderRightStyle: 'solid',
-                          borderRightColor: 'grey.100',
-                          borderBottomRightRadius: 4,
-                          borderTopRightRadius: 4,
-                        }
-                      : {}),
                     borderBottomWidth: 1,
                     borderBottomColor: 'grey.100',
                     borderBottomStyle: 'solid',
@@ -65,6 +75,8 @@ const Table = (props) => {
                     borderTopColor: 'grey.100',
                     borderTopStyle: 'solid',
                     fontSize: fontSize[16],
+                    ...firstCellStyles(cellIndex),
+                    ...lastCellStyles(cellIndex, headers),
                   }}
                 >
                   {cellRenderer(rowData, header.dataProperty)}

@@ -85,42 +85,40 @@ const HomePage = () => {
   }, [fetchParticipants, setParticipants, setSearchOptions])
 
   return (
-    <>
-      <Box sx={{ p: '20px' }}>
-        <Box
-          sx={{
-            mb: '20px',
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, width: 192 }}>
-            Participants
-          </Typography>
+    <Box sx={{ p: '20px' }}>
+      <Box
+        sx={{
+          mb: '20px',
+          display: 'flex',
+          gap: '16px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Typography sx={{ fontWeight: 600, width: 192 }}>
+          Participants
+        </Typography>
 
-          <Box sx={{ flex: 1 }}>
-            <ParticipantsSearchForm
-              onSubmit={handleSearch}
-              initialValues={{
-                participants: searchSubjects,
-              }}
-              allOptions={searchOptions}
-            />
-          </Box>
+        <Box sx={{ flex: 1 }}>
+          <ParticipantsSearchForm
+            onSubmit={handleSearch}
+            initialValues={{
+              participants: searchSubjects,
+            }}
+            allOptions={searchOptions}
+          />
         </Box>
-
-        <ParticipantsTable
-          participants={participants}
-          onStar={onStar}
-          onSort={onSort}
-          sortProperty={sortBy}
-          sortDirection={sortDirection}
-          sortable
-        />
       </Box>
-    </>
+
+      <ParticipantsTable
+        participants={participants}
+        onStar={onStar}
+        onSort={onSort}
+        sortProperty={sortBy}
+        sortDirection={sortDirection}
+        sortable
+      />
+    </Box>
   )
 }
 

@@ -14,6 +14,7 @@ const schema = yup.object({
 const ParticipantsSearchForm = ({ initialValues, onSubmit, allOptions }) => {
   const { handleSubmit, control, formState, watch } = useForm({
     defaultValues: initialValues,
+    mode: 'onChange',
     resolver: yupResolver(schema),
   })
   const data = watch()
