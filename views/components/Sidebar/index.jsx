@@ -10,7 +10,16 @@ const Sidebar = ({ user, sidebarOpen, onLogout }) => {
       variant="permanent"
       open={sidebarOpen}
       sx={{ height: '100vh' }}
-      PaperProps={{ sx: { padding: '8px', position: 'static' } }}
+      PaperProps={{
+        sx: {
+          padding: '8px',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: '253px',
+        },
+      }}
     >
       <SidebarLogo />
       <SideNavigation user={user} />

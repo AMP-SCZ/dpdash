@@ -9,15 +9,16 @@ import { SORT_DIRECTION } from '../../../../constants'
 const ParticipantsTable = (props) => {
   const {
     onSort,
-    sortProperty,
-    sortDirection,
-    sortable,
+    onStar,
     participants,
-    onUpdate,
+    sortable,
+    sortDirection,
+    sortProperty,
   } = props
   const handleRequestSort = (_event, property) => {
     const isAsc =
       sortProperty === property && sortDirection === SORT_DIRECTION.ASC
+
     return onSort(property, isAsc ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC)
   }
   const headers = [
@@ -49,11 +50,16 @@ const ParticipantsTable = (props) => {
           <Checkbox
             name={`star-${participant.study}`}
             disableRipple={true}
-            icon={<StarBorder />}
-            checked={participant.star || false}
-            checkedIcon={<Star style={{ color: '#FFB80A' }} />}
+            icon={<StarBorder sx={{ color: 'primary.dark' }} />}
+            checked={participant.star}
+            checkedIcon={<Star sx={{ color: 'primary.dark' }} />}
             value={participant.subject}
-            onChange={onUpdate}
+            onChange={onStar}
+            sx={{
+              border: 1,
+              borderRadius: '8px',
+              borderColor: 'primary.light',
+            }}
           />
         )
 

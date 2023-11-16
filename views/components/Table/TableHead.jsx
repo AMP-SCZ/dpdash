@@ -21,17 +21,20 @@ function TableHead(props) {
       <TableRow>
         {headCells.map((headCell) => {
           const cellIsActive = sortProperty === headCell.dataProperty
+          const activeSortDirection = cellIsActive
+            ? sortDirection?.toLowerCase()
+            : undefined
 
           return (
             <TableCell
               key={headCell.dataProperty}
-              sortDirection={cellIsActive ? sortDirection : false}
-              sx={{ fontSize: fontSize[12], fontWeight: 400 }}
+              sortDirection={activeSortDirection}
+              sx={{ border: 0, fontSize: fontSize[12], fontWeight: 400 }}
             >
               {headCell.sortable ? (
                 <TableSortLabel
                   active={cellIsActive}
-                  direction={cellIsActive ? sortDirection : SORT_DIRECTION.ASC}
+                  direction={activeSortDirection}
                   onClick={createSortHandler(headCell.dataProperty)}
                 >
                   {headCell.label}
