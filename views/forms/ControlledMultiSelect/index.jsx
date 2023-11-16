@@ -1,6 +1,6 @@
 import React from 'react'
 import { Controller } from 'react-hook-form'
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, InputAdornment, TextField } from '@mui/material'
 
 const ControlledMultiSelect = (props) => {
   return (
@@ -21,6 +21,15 @@ const ControlledMultiSelect = (props) => {
               aria-invalid={!!fieldState.error ? 'true' : 'false'}
               label={props.label}
               helperText={fieldState.error?.message}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <>
+                    {props.startAdornment}
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+              }}
               placeholder={props.placeholder}
             />
           )}

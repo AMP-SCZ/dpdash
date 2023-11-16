@@ -52,7 +52,8 @@ const MainLayout = () => {
   return (
     <div className="MainLayout_container">
       <Sidebar sidebarOpen={true} user={user} onLogout={handleLogout} />
-      <div>
+
+      <main className="MainLayout_main">
         <Outlet
           context={{
             configurations,
@@ -65,7 +66,7 @@ const MainLayout = () => {
             users,
           }}
         />
-      </div>
+      </main>
     </div>
   )
 }
