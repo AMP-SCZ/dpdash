@@ -5,7 +5,6 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
 } from '@mui/material'
 
 import TableHead from './TableHead'
@@ -50,7 +49,7 @@ const Table = (props) => {
   } = props
 
   return (
-    <TableContainer component={Paper} sx={{ border: 0, boxShadow: 'none' }}>
+    <TableContainer>
       <MuiTable
         size="small"
         sx={{ border: 0, borderCollapse: 'separate', borderSpacing: '0 16px' }}
