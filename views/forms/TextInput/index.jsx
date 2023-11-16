@@ -19,6 +19,7 @@ const TextInput = (props) => {
       required={props.required}
       type={props.type}
       placeholder={props.placeholder}
+      sx={props.sx}
       {...field}
     />
   )

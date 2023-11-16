@@ -11,9 +11,8 @@ describe('Register Form', () => {
       password: '',
       confirmPassword: '',
       fullName: '',
-      email: '',
+      mail: '',
     },
-    onCancel: () => {},
     onSubmit: () => {},
   }
   const elements = {
@@ -22,8 +21,7 @@ describe('Register Form', () => {
     confirmPasswordField: () => screen.getByTestId('confirm-pw'),
     fullNameField: () => screen.getByRole('textbox', { name: 'Full Name' }),
     emailField: () => screen.getByRole('textbox', { name: 'Email' }),
-    cancelBtn: () => screen.getByText('Cancel'),
-    submitBtn: () => screen.getByText('Submit'),
+    signUpBtn: () => screen.getByText('Sign up'),
   }
   const renderForm = (props = defaultProps) => {
     render(<RegisterForm {...props} />)
@@ -40,7 +38,7 @@ describe('Register Form', () => {
     await user.type(elements.confirmPasswordField(), 'myPassword')
     await user.type(elements.fullNameField(), 'Joe Schmoe')
     await user.type(elements.emailField(), 'joe@example.test')
-    await user.click(elements.submitBtn())
+    await user.click(elements.signUpBtn())
 
     await waitFor(() =>
       expect(onSubmit).toHaveBeenCalledWith(
@@ -49,7 +47,7 @@ describe('Register Form', () => {
           password: 'myPassword',
           confirmPassword: 'myPassword',
           fullName: 'Joe Schmoe',
-          email: 'joe@example.test',
+          mail: 'joe@example.test',
         },
         expect.anything()
       )
@@ -67,14 +65,14 @@ describe('Register Form', () => {
     await user.type(elements.confirmPasswordField(), 'nope')
     await user.type(elements.fullNameField(), 'Joe Schmoe')
     await user.type(elements.emailField(), 'not-an-email')
-    await user.click(elements.submitBtn())
+    await user.click(elements.signUpBtn())
 
     await waitFor(() =>
       expect(
         screen.getByText('password must be at least 8 characters')
       ).toBeInTheDocument()
     )
-    expect(screen.getByText('email must be a valid email')).toBeInTheDocument()
+    expect(screen.getByText('mail must be a valid email')).toBeInTheDocument()
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -93,23 +91,12 @@ describe('Register Form', () => {
     )
     await user.type(elements.fullNameField(), 'Joe Schmoe')
     await user.type(elements.emailField(), 'joe@example.test')
-    await user.click(elements.submitBtn())
+    await user.click(elements.signUpBtn())
 
     await waitFor(() =>
       expect(screen.getByText('passwords do not match')).toBeInTheDocument()
     )
 
     expect(onSubmit).not.toHaveBeenCalled()
-  })
-
-  test('calls the onCancel prop when the cancel button is clicked', async () => {
-    const user = userEvent.setup()
-    const onCancel = jest.fn()
-    const props = { ...defaultProps, onCancel }
-
-    renderForm(props)
-    await user.click(elements.cancelBtn())
-
-    await waitFor(() => expect(onCancel).toHaveBeenCalledWith())
   })
 })

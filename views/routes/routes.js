@@ -22,7 +22,7 @@ export const routes = {
   admin: '/admin',
   register: '/register',
   resetpw: '/reset-password',
-  login: '/login',
+  signin: '/signin',
   logout: '/logout',
   main: '/main',
   help: '/help',

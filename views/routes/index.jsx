@@ -14,7 +14,7 @@ import MainLayout from '../layouts/MainLayout'
 import NewChartPage from '../pages/NewChartPage'
 import NewConfigPage from '../pages/NewConfigPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
-import RegisterPage from '../pages/RegisterPage'
+import RegistrationPage from '../pages/RegistrationPage'
 import ViewChartPage from '../pages/ViewChartPage'
 import SignInPage from '../pages/SignInPage'
 
@@ -25,10 +25,10 @@ const Router = (props) => {
         <Route element={<HeroLayout />}>
           <Route
             path={routes.home}
-            element={<Navigate to={routes.login} replace={true} />}
+            element={<Navigate to={routes.signin} replace={true} />}
           />
-          <Route path={routes.login} element={<SignInPage />} />
-          <Route path={routes.register} element={<RegisterPage />} />
+          <Route path={routes.signin} element={<SignInPage />} />
+          <Route path={routes.register} element={<RegistrationPage />} />
           <Route path={routes.resetpw} element={<ResetPasswordPage />} />
         </Route>
 
