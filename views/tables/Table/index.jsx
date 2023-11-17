@@ -60,8 +60,8 @@ const Table = (props) => {
           headCells={headers}
         />
         <TableBody>
-          {data.map((rowData) => (
-            <TableRow>
+          {data.map((rowData, rowIndex) => (
+            <TableRow data-testid={`row-${rowIndex}`}>
               {headers.map((header, cellIndex) => (
                 <TableCell
                   align={header.dataAlign}
