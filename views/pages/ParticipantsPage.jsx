@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
 
-import ParticipantsTable from '../components/VirtualTables/ParticipantsTable'
+import ParticipantsTable from '../tables/ParticipantsTable'
 import api from '../api'
 import { SORT_DIRECTION } from '../../constants'
 import ParticipantsSearchForm from '../forms/ParticipantsSearchForm'

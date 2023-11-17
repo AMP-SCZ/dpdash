@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 
 import TableHead from './TableHead'
-import { fontSize } from '../../../constants'
 
 const firstCellStyles = (cellIndex) => {
   if (cellIndex !== 0) {
@@ -65,6 +64,7 @@ const Table = (props) => {
             <TableRow>
               {headers.map((header, cellIndex) => (
                 <TableCell
+                  align={header.dataAlign}
                   key={header.dataProperty}
                   sx={{
                     borderBottomWidth: 1,
