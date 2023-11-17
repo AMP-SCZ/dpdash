@@ -5,7 +5,7 @@ const apiPath = '/api/v1'
 export const routes = {
   home: `/`,
   userAccount: '/user-account',
-  configs: '/configs',
+  configurations: '/configurations',
   editConfigPage: '/config/:config_id/edit',
   dashboards: `/dashboard`,
   dashboard: (study = ':study', subject = ':subject') =>

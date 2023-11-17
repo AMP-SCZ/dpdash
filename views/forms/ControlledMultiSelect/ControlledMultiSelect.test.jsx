@@ -94,4 +94,44 @@ describe('Controlled Multi Select', () => {
       )
     )
   })
+
+  test('fixed value remains after input field has been cleared', async () => {
+    const user = userEvent.setup()
+
+    const onSubmit = jest.fn()
+    const defaultComponentPropsWithStaticOption = {
+      label: 'Input label',
+      name: 'field_name',
+      options: [
+        { label: 'One', value: '1' },
+        { label: 'Two', value: '2' },
+        { label: 'Three', value: '3', isFixed: true },
+      ],
+    }
+    const updatedProps = {
+      initialValues: {
+        field_name: [
+          { label: 'One', value: '1' },
+          { label: 'Two', value: '2' },
+          { label: 'Three', value: '3', isFixed: true },
+        ],
+      },
+      onSubmit,
+      componentProps: defaultComponentPropsWithStaticOption,
+    }
+
+    renderComponent(updatedProps)
+    await userEvent.click(elements.autoComplete())
+    await userEvent.click(screen.getByTitle('Clear'))
+    await user.click(elements.submitBtn())
+
+    await waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith(
+        {
+          field_name: [defaultComponentPropsWithStaticOption.options[2]],
+        },
+        expect.anything()
+      )
+    )
+  })
 })

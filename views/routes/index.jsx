@@ -4,7 +4,6 @@ import AccountPage from '../pages/AccountPage'
 import AdminPage from '../pages/AdminPage'
 import AuthenticatedRoute from '../hoc/AuthenticatedRoute'
 import ChartsPage from '../pages/ChartsPage'
-import ConfigPage from '../pages/ConfigPage'
 import EditChartPage from '../pages/EditChartPage'
 import EditConfigPage from '../pages/EditConfigPage'
 import GraphPage from '../pages/GraphPage'
@@ -17,8 +16,9 @@ import ResetPasswordPage from '../pages/ResetPasswordPage'
 import RegistrationPage from '../pages/RegistrationPage'
 import ViewChartPage from '../pages/ViewChartPage'
 import SignInPage from '../pages/SignInPage'
+import ConfigurationsPage from '../pages/ConfigurationsPage'
 
-const Router = (props) => {
+const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -40,7 +40,10 @@ const Router = (props) => {
           }
         >
           <Route path={routes.dashboard()} element={<GraphPage />} />
-          <Route path={routes.configs} element={<ConfigPage />} />
+          <Route
+            path={routes.configurations}
+            element={<ConfigurationsPage />}
+          />
           <Route path={routes.userAccount} element={<AccountPage />} />
           <Route path={routes.main} element={<ParticipantsPage />} />
           <Route path={routes.participants} element={<ParticipantsPage />} />

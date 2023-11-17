@@ -20,7 +20,7 @@ const SideNavigation = ({ user }) => {
         <NavItem Icon={ShowChart} to={routes.charts} label="Charts" />
         <NavItem
           Icon={DashboardCustomize}
-          to={routes.configs}
+          to={routes.configurations}
           label="Configurations"
         />
         {user.role === 'admin' && (

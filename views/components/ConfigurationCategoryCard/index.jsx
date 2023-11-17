@@ -15,10 +15,9 @@ const ConfigurationCategoryCard = ({
   onCopy,
   onRemove,
   rowNum,
-  width,
 }) => {
   return (
-    <Card style={{ width: width }}>
+    <Card sx={{ maxWidth: '552px' }}>
       <CardHeader subheader={'Row ' + rowNum}></CardHeader>
       <Divider />
       <CardContent>{children}</CardContent>

@@ -32,6 +32,10 @@ export const THEME = {
     black: {
       A100: 'rgba(0, 0, 0, 0.87)',
     },
+    purple: {
+      100: '#F4EAFF',
+      600: '#5F35AE',
+    },
     error: {
       main: '#D32F2F',
       light: '#FDEDED',
@@ -52,5 +56,6 @@ export const lineHeight = {
 
 export const borderRadius = {
   8: '8px',
+  24: '24px',
   50: '50%',
 }
