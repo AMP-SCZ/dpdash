@@ -11,6 +11,7 @@ import { routes } from '../../routes/routes'
 import ChartModel from '../../models/ChartModel'
 
 const MENU_ITEM_STYLES = { display: 'flex', gap: '32px' }
+const COLOR_STYLES = { color: 'black.A100' }
 const TableMenu = (props) => {
   const { chart, onDelete, onDuplicate, onShare, user } = props
   const [menuAnchor, setMenuAnchor] = React.useState(null)
@@ -61,8 +62,8 @@ const TableMenu = (props) => {
             to={editChart}
             sx={MENU_ITEM_STYLES}
           >
-            <EditIcon sx={{ color: 'text.primary' }} />
-            <Typography sx={{ color: 'text.primary' }}>Edit</Typography>
+            <EditIcon sx={COLOR_STYLES} />
+            <Typography sx={COLOR_STYLES}>Edit</Typography>
           </MenuItem>
           <MenuItem
             onClick={deleteAndClose}
@@ -70,20 +71,20 @@ const TableMenu = (props) => {
             disabled={!userOwnsChart}
             sx={MENU_ITEM_STYLES}
           >
-            <DeleteIcon />
-            Delete
+            <DeleteIcon sx={COLOR_STYLES} />
+            <Typography sx={COLOR_STYLES}>Delete</Typography>
           </MenuItem>
           <MenuItem
             onClick={duplicateAndClose}
             disableRipple
             sx={MENU_ITEM_STYLES}
           >
-            <ContentCopyIcon />
-            Duplicate
+            <ContentCopyIcon sx={COLOR_STYLES} />
+            <Typography sx={COLOR_STYLES}>Duplicate</Typography>
           </MenuItem>
           <MenuItem onClick={shareAndClose} disableRipple sx={MENU_ITEM_STYLES}>
-            <ShareIcon />
-            Share
+            <ShareIcon sx={COLOR_STYLES} />
+            <Typography sx={COLOR_STYLES}>Share</Typography>
           </MenuItem>
         </MenuList>
       </Menu>
