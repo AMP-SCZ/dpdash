@@ -1,6 +1,6 @@
 import React from 'react'
 import { Fab } from '@mui/material'
-import { ContentAdd, Save } from '@mui/icons-material'
+import { AddCircleOutline, Save } from '@mui/icons-material'
 
 import ConfigFormFields from '../ConfigFields'
 
@@ -10,7 +10,7 @@ const ConfigForm = ({ onSubmit, onAddNewField, ...rest }) => {
       <ConfigFormFields {...rest} />
       <div>
         <Fab onClick={() => onAddNewField()}>
-          <ContentAdd />
+          <AddCircleOutline />
         </Fab>
         <Fab type="submit">
           <Save />

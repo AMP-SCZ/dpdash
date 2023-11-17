@@ -12,12 +12,12 @@ const Sidebar = ({ user, sidebarOpen, onLogout }) => {
       sx={{ height: '100vh' }}
       PaperProps={{
         sx: {
-          padding: '8px',
+          p: '8px',
           position: 'fixed',
+          width: '253px',
           left: 0,
           top: 0,
           bottom: 0,
-          width: '253px',
         },
       }}
     >

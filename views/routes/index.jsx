@@ -42,10 +42,7 @@ const Router = (props) => {
           <Route path={routes.dashboard()} element={<GraphPage />} />
           <Route path={routes.configs} element={<ConfigPage />} />
           <Route path={routes.main} element={<HomePage />} />
-          <Route
-            path={routes.userAccount}
-            element={<AccountPage user={props.user} />}
-          />
+          <Route path={routes.userAccount} element={<AccountPage />} />
           <Route path={routes.admin} element={<AdminPage />} />
           <Route path={routes.charts} element={<ChartsPage />} />
           <Route path={routes.newChart} element={<NewChartPage />} />

@@ -28,6 +28,7 @@ export const routes = {
   help: '/help',
   contactUs: '/contact-us',
   privacyPolicy: '/privacy-policy',
+  previewProfile: '/preview-profile',
   termsOfUse: '/terms-of-use',
   participants: '/participants',
   editConfiguration: (configId) => `/config/${configId}/edit`,
