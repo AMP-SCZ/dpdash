@@ -9,10 +9,10 @@ import EditChartPage from '../pages/EditChartPage'
 import EditConfigPage from '../pages/EditConfigPage'
 import GraphPage from '../pages/GraphPage'
 import HeroLayout from '../layouts/HeroLayout'
-import HomePage from '../pages/HomePage'
 import MainLayout from '../layouts/MainLayout'
 import NewChartPage from '../pages/NewChartPage'
 import NewConfigPage from '../pages/NewConfigPage'
+import ParticipantsPage from '../pages/ParticipantsPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
 import RegistrationPage from '../pages/RegistrationPage'
 import ViewChartPage from '../pages/ViewChartPage'
@@ -41,8 +41,9 @@ const Router = (props) => {
         >
           <Route path={routes.dashboard()} element={<GraphPage />} />
           <Route path={routes.configs} element={<ConfigPage />} />
-          <Route path={routes.main} element={<HomePage />} />
           <Route path={routes.userAccount} element={<AccountPage />} />
+          <Route path={routes.main} element={<ParticipantsPage />} />
+          <Route path={routes.participants} element={<ParticipantsPage />} />
           <Route path={routes.admin} element={<AdminPage />} />
           <Route path={routes.charts} element={<ChartsPage />} />
           <Route path={routes.newChart} element={<NewChartPage />} />

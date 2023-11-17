@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
 
-import ParticipantsTable from '../components/VirtualTables/ParticipantsTable'
+import ParticipantsTable from '../tables/ParticipantsTable'
 import api from '../api'
 import { SORT_DIRECTION } from '../../constants'
 import ParticipantsSearchForm from '../forms/ParticipantsSearchForm'
-import { Box, Typography } from '@mui/material'
+import PageHeader from '../components/PageHeader'
 
-const HomePage = () => {
+const ParticipantsPage = () => {
   const { user, setNotification, setUser } = useOutletContext()
   const { uid, preferences } = user
 
@@ -86,20 +87,9 @@ const HomePage = () => {
 
   return (
     <Box sx={{ p: '20px' }}>
-      <Box
-        sx={{
-          mb: '20px',
-          display: 'flex',
-          gap: '16px',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography sx={{ fontWeight: 600, width: 192 }}>
-          Participants
-        </Typography>
-
-        <Box sx={{ flex: 1 }}>
+      <PageHeader
+        title="Participants"
+        form={
           <ParticipantsSearchForm
             onSubmit={handleSearch}
             initialValues={{
@@ -107,8 +97,8 @@ const HomePage = () => {
             }}
             allOptions={searchOptions}
           />
-        </Box>
-      </Box>
+        }
+      />
 
       <ParticipantsTable
         participants={participants}
@@ -122,4 +112,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default ParticipantsPage
