@@ -15,7 +15,7 @@ const ConfigFormFields = ({
   return (
     <>
       <ConfigTypeFormFields control={control} friendsList={friendsList} />
-      <ImageList cellHeight="auto" cols={gridState.columns}>
+      <ImageList cols={4}>
         {fields.map((field, index) => {
           const { id, ...rest } = field
 
@@ -28,7 +28,6 @@ const ConfigFormFields = ({
               id={id}
               onCopy={onCopy}
               onRemove={onRemove}
-              width={gridState.gridWidth}
               {...rest}
             />
           )

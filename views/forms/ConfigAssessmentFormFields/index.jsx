@@ -20,7 +20,6 @@ const ConfigAssessmentFormFields = ({
       onCopy={onCopy}
       onRemove={onRemove}
       rowNum={index + 1}
-      width={width}
     >
       <TextInput
         key={id + 'category'}
