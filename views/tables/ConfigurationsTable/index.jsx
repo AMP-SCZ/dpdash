@@ -14,6 +14,7 @@ const ConfigurationsTable = (props) => {
     onEdit,
     onShare,
     user,
+    maxRows,
   } = props
   const headers = [
     { dataProperty: 'name', label: 'Configuration Name', sortable: false },
@@ -76,6 +77,7 @@ const ConfigurationsTable = (props) => {
       cellRenderer={cellRenderer}
       data={configurations}
       headers={headers}
+      maxRows={maxRows}
     />
   )
 }
