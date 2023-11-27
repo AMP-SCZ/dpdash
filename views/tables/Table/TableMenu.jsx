@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Menu, MenuItem, MenuList, Typography } from '@mui/material'
+import { IconButton, Menu, MenuItem, MenuList, Typography } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 const MENU_ITEM_STYLES = { display: 'flex', gap: '32px' }
@@ -12,7 +12,7 @@ const TableMenu = (props) => {
 
   return (
     <>
-      <Button
+      <IconButton
         id={`menu-button-${props.id}`}
         data-testid={props.id}
         aria-label="open menu"
@@ -20,9 +20,10 @@ const TableMenu = (props) => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={(event) => setMenuAnchor(event.currentTarget)}
+        color="primary"
       >
         <MoreVertIcon />
-      </Button>
+      </IconButton>
       <Menu
         id={`menu-${props.id}`}
         anchorEl={menuAnchor}
@@ -33,8 +34,9 @@ const TableMenu = (props) => {
         }}
       >
         <MenuList sx={{ minWidth: '214px', maxWidth: '100%' }}>
-          {menuItems.map((menuItem) => (
+          {menuItems.map((menuItem, idx) => (
             <MenuItem
+              key={idx}
               component={menuItem.component}
               onClick={() => {
                 menuItem.onClick()
