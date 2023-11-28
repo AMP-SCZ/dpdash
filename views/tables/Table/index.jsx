@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 
 import TableHead from './TableHead'
-import { max } from 'lodash'
 
 const firstCellStyles = (cellIndex) => {
   if (cellIndex !== 0) {
