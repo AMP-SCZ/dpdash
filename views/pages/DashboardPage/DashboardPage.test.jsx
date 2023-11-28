@@ -5,19 +5,27 @@ import { MemoryRouter } from 'react-router-dom'
 import DashboardPage from '.'
 import { createParticipantList, createUser } from '../../../test/fixtures'
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useOutletContext: () => {
-    return {
-      user: createUser()
+const mockUser = createUser()
+const mockParticipants = createParticipantList()
+
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useOutletContext: () => {
+      return {
+        user: mockUser
+      }
     }
   }
-}))
-jest.mock('../../api', () => ({
-  participants: {
-    all: () => Promise.resolve(createParticipantList())
-  },
-}))
+}, { })
+
+jest.mock('../../api', () =>{
+  return {
+    participants: {
+      all: () => Promise.resolve(mockParticipants)
+    },
+  }
+})
 describe('Dashboard Page', () => {
   
   test('Dashboard Page renders', async () => {
