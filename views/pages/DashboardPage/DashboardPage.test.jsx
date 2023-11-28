@@ -1,9 +1,11 @@
 import React from 'react'
 import { render, screen, within, waitFor } from '@testing-library/react'
-import { AuthContext, NotificationContext } from '../../contexts'
 import { MemoryRouter } from 'react-router-dom'
-import DashboardPage from '.'
+
+import { AuthContext, NotificationContext } from '../../contexts'
 import { createParticipantList, createUser } from '../../../test/fixtures'
+
+import DashboardPage from '.'
 
 const mockUser = createUser()
 const mockParticipants = createParticipantList()
