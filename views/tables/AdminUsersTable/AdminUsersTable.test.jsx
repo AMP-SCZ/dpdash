@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { render, screen } from '@testing-library/react'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { screen } from '@testing-library/react'
 
 import AdminUsersTable from '.'
 import { createUser } from '../../../test/fixtures'
+import renderPage from '../../../test/PageRenderer'
 
 describe('AdminUsersTable', () => {
   const users = [
@@ -21,16 +20,7 @@ describe('AdminUsersTable', () => {
     }),
   ]
   it('renders the table', () => {
-    render(
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <AdminUsersTable  users={users}
-                          onAccess={jest.fn()} 
-                          onUserBlock={jest.fn()} 
-                          onResetPassword={jest.fn()} 
-                          onDeleteUser={jest.fn()} 
-                          onChangeAccountExpiration={jest.fn()}/>
-      </LocalizationProvider>
-    )
+    renderPage(AdminUsersTable, {users, onAccess: jest.fn(), onUserBlock: jest.fn(), onResetPassword: jest.fn(), onDeleteUser: jest.fn(), onChangeAccountExpiration: jest.fn()})
 
     expect(screen.getByRole('table')).toBeInTheDocument()
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
