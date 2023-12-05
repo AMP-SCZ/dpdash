@@ -34,7 +34,9 @@ const AdminPage = () => {
   const [currentRowIndex, setCurrentRowIndex] = useState(null)
   const [openAccessModal, setOpenAccessModal] = useState(false)
 
-  const filteredUsers = (searchOptionsValue || []).length ? users.filter(u => searchOptionsValue.map(s => s.value).includes(u.uid)) : users
+  const filteredUsers = (searchOptionsValue || []).length ?
+    users.filter(user => searchOptionsValue.map(searchOption => searchOption.value).includes(user.uid)) :
+    users
 
   const updateUsers = (newUser) => {
     const newUserIndex = users.findIndex(u => u.uid === newUser.uid) 
