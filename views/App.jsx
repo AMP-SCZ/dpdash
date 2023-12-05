@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   CssBaseline,
   StyledEngineProvider,
@@ -17,7 +17,6 @@ import {
 import Router from './routes'
 import { NOTIFICATION_DEFAULT, THEME } from '../constants'
 
-import 'react-virtualized/styles.css'
 import './App.css'
 
 const theme = createTheme(THEME)
