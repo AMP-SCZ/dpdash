@@ -14,22 +14,22 @@ const AdminUsersTable = (props) => {
     {
       dataProperty: 'uid',
       label: 'Username',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'display_name',
       label: 'Name',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'mail',
       label: 'Email',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'role',
       label: 'Role',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'access',
@@ -39,7 +39,7 @@ const AdminUsersTable = (props) => {
     {
       dataProperty: 'account_expires',
       label: 'Account Expiration',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'force_reset_pw',
@@ -49,7 +49,7 @@ const AdminUsersTable = (props) => {
     {
       dataProperty: 'blocked',
       label: 'Inactive',
-      sortable: true,
+      sortable: false,
     },
     {
       dataProperty: 'delete',
