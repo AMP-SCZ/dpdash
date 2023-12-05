@@ -1,9 +1,7 @@
 import React from 'react'
-import Settings from '@mui/icons-material/Settings'
-import Clear from '@mui/icons-material/Clear'
-import LockOpen from '@mui/icons-material/LockOpen'
-import IconButton from '@mui/material/IconButton'
-import Checkbox from '@mui/material/Checkbox'
+
+import { Settings, Clear, LockOpen } from '@mui/icons-material'
+import { IconButton, Checkbox } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 
