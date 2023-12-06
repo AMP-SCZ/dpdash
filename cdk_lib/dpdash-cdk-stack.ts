@@ -25,6 +25,7 @@ export class DpdashCdkStack extends cdk.Stack {
     });
     let devCertArn
     let sesIdentityArn
+    let devCert
 
     if (!process.env.BASE_DOMAIN || !process.env.ADMIN_EMAIL || !process.env.EMAIL_SENDER) {
       throw new Error('Missing required environment variables: BASE_DOMAIN, ADMIN_EMAIL, EMAIL_SENDER');
@@ -34,15 +35,15 @@ export class DpdashCdkStack extends cdk.Stack {
       devCertArn = process.env.DEV_CERT_ARN;
       sesIdentityArn = `arn:aws:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${process.env.BASE_DOMAIN}`
     } else {
-      const hostedZone = route53.HostedZone.fromLookup(this, `${APP_NAME}HostedZone`, {
-        domainName: process.env.BASE_DOMAIN,
+      const hostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
+        zoneName: process.env.BASE_DOMAIN,
       });
 
       const devHostedZone = new route53.PublicHostedZone(this, `${APP_NAME}DevHostedZone`, {
         zoneName: `staging.${process.env.BASE_DOMAIN}`,
       });
 
-      const devCert = new certificate_manager.Certificate(this, `${APP_NAME}DevCertificate`, {
+      devCert = new certificate_manager.Certificate(this, `${APP_NAME}DevCertificate`, {
         domainName: `staging.${process.env.BASE_DOMAIN}`,
         validation: certificate_manager.CertificateValidation.fromDns(devHostedZone),
       });
@@ -255,7 +256,7 @@ export class DpdashCdkStack extends cdk.Stack {
       assignPublicIp: true,
       publicLoadBalancer: true,
       redirectHTTP: true,
-      certificate: certificate_manager.Certificate.fromCertificateArn(this, `${APP_NAME}DevCertificate`, devCertArn),
+      certificate: devCert || certificate_manager.Certificate.fromCertificateArn(this, `${APP_NAME}DevCertificate`, devCertArn),
       taskSubnets: {
         subnets: vpc.publicSubnets.concat(vpc.privateSubnets),
       },
