@@ -46,7 +46,6 @@ const ParticipantsTable = (props) => {
     },
   ]
   const cellRenderer = (participant, property) => {
-    console.log(participant, 'THe participant')
     switch (property) {
       case 'subject':
         return (
