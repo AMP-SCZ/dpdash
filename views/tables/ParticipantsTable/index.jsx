@@ -1,9 +1,11 @@
 import React from 'react'
-import { Checkbox } from '@mui/material'
+import { Link } from 'react-router-dom'
+import { Checkbox, Typography } from '@mui/material'
 import { Star, StarBorder } from '@mui/icons-material'
 
 import Table from '../Table'
 import { SORT_DIRECTION } from '../../../constants'
+import { routes } from '../../routes/routes'
 
 const ParticipantsTable = (props) => {
   const {
@@ -44,7 +46,18 @@ const ParticipantsTable = (props) => {
     },
   ]
   const cellRenderer = (participant, property) => {
+    console.log(participant, 'THe participant')
     switch (property) {
+      case 'subject':
+        return (
+          <Typography
+            component={Link}
+            to={routes.dashboard(participant.study, participant.subject)}
+            sx={{ textDecoration: 'none', color: 'text.primary' }}
+          >
+            {participant[property]}
+          </Typography>
+        )
       case 'star':
         return (
           <Checkbox
