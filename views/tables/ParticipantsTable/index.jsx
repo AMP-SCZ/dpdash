@@ -74,7 +74,16 @@ const ParticipantsTable = (props) => {
             }}
           />
         )
-
+      case 'study':
+        return (
+          <Typography
+            component={Link}
+            to={routes.studyDashboard(participant.study)}
+            sx={{ textDecoration: 'none', color: 'text.primary' }}
+          >
+            {participant[property]}
+          </Typography>
+        )
       default:
         return participant[property]
     }
