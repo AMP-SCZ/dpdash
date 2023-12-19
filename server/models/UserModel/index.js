@@ -1,4 +1,8 @@
+import crypto from 'crypto'
+
 import { collections } from '../../utils/mongoCollections'
+import StudiesModel from '../StudiesModel'
+import AdminAccountPasswordMailer from '../../mailer/AdminAccountPasswordMailer'
 
 const userMongoProjection = {
   _id: 0,
@@ -57,6 +61,32 @@ const UserModel = {
     if (!value) throw new Error('Could not update user.')
 
     return value
+  },
+  hasNoAdmin: async (db) => {
+    const userCt = await db
+      .collection(collections.users)
+      .countDocuments({ role: "admin" })
+    return userCt === 0
+  },
+  createFirstAdmin: async (db, dataDb) => {
+    const reset_key = crypto.randomBytes(32).toString('hex')
+    const access = await StudiesModel.all(dataDb)
+
+    await UserModel.save(db, {
+      uid: 'admin',
+      password: null,
+      role: 'admin',
+      force_reset_pw: true,
+      reset_key,
+      access,
+    })
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`RESET KEY: ${reset_key}`)
+    } else {
+      const adminMailer = new AdminAccountPasswordMailer(reset_key)
+      await adminMailer.sendMail()
+    }
   },
   withDefaults: (overrides = {}) => ({
     display_name: '',
