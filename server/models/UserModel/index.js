@@ -45,7 +45,7 @@ const UserModel = {
     return user
   },
   update: async (db, dataDb, uid, userUpdates) => {
-    const user = findOne(db, { uid })
+    const user = await UserModel.findOne(db, { uid })
     const updatedUser = { ...user, ...userUpdates }
     if (updatedUser.role === 'admin') {
       updatedUser.access = await StudiesModel.all(dataDb)
@@ -74,7 +74,7 @@ const UserModel = {
     return userCt !== 0
   },
   createFirstAdmin: async (db) => {
-    if (await UserModel.hasAdmin(app.locals.appDb)) {
+    if (await UserModel.hasAdmin(db)) {
       return
     } 
 
