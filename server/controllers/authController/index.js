@@ -75,7 +75,7 @@ const AuthController = {
       if (password !== confirmPassword)
         return res.status(400).json({ error: 'passwords do not match' })
 
-      const { appDb } = req.app.locals
+      const { appDb, dataDb } = req.app.locals
       const encryptPassword = hash(password)
       const user = await UserModel.findOne(appDb, {
         uid: String(username),
@@ -95,6 +95,7 @@ const AuthController = {
       }
       const updatedUser = await UserModel.update(
         appDb,
+        dataDb,
         username,
         userAttributes
       )

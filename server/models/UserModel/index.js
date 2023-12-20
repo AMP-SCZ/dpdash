@@ -29,10 +29,6 @@ const UserModel = {
   },
   create: async (db, userAttributes) => {
     const newUser = UserModel.withDefaults(userAttributes)
-    if (newUser.role === 'admin') {
-      newUser.access = await StudiesModel.all(dataDb)
-    }
-
     const { insertedId } = await db
       .collection(collections.users)
       .insertOne(newUser)
@@ -48,11 +44,16 @@ const UserModel = {
 
     return user
   },
-  update: async (db, uid, userUpdates) => {
+  update: async (db, dataDb, uid, userUpdates) => {
+    const user = findOne(db, { uid })
+    const updatedUser = { ...user, ...userUpdates }
+    if (updatedUser.role === 'admin') {
+      updatedUser.access = await StudiesModel.all(dataDb)
+    }
     const { value } = await db.collection(collections.users).findOneAndUpdate(
       { uid },
       {
-        $set: userUpdates,
+        $set: updatedUser,
       },
       {
         projection: userMongoProjection,
@@ -72,7 +73,7 @@ const UserModel = {
       .countDocuments({ role: "admin" })
     return userCt !== 0
   },
-  createFirstAdmin: async (db, dataDb) => {
+  createFirstAdmin: async (db) => {
     if (await UserModel.hasAdmin(app.locals.appDb)) {
       return
     } 
