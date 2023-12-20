@@ -31,7 +31,7 @@ export default (req, res, _, user) => {
       if (!config) {
         const configAttributes = { owner: uid, readers: [uid] }
 
-        await ConfigModel.save(appDb, configAttributes)
+        await ConfigModel.create(appDb, configAttributes)
       }
 
       const userInfo = await UserModel.update(appDb, uid, {

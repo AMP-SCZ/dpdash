@@ -96,9 +96,8 @@ const mongodbPromise = MongoClient.connect(mongoURI, {
     app.locals.dataDb = res.db('dpdata')
     res.db().collection('sessions').drop()
 
-    if (await UserModel.hasNoAdmin(app.locals.appDb)) {
-      await UserModel.createFirstAdmin(app.locals.appDb, app.locals.dataDb)
-    }
+    await UserModel.createFirstAdmin(app.locals.appDb, app.locals.dataDb)
+
     return res
   },
   function (err) {

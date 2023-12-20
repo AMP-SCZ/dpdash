@@ -45,15 +45,15 @@ const AssessmentDayDataController = {
           .catch((err) => console.error(err))
 
         if (subject_assessments.length) {
-          AssessmentDayDataModel.saveMany(
+          AssessmentDayDataModel.createMany(
             dataDb,
             collection,
             subject_assessments
           )
-            .then(() => console.log('inserting new data'))
-            .catch((error) => {
-              throw new Error(error)
-            })
+          .then(() => console.log('inserting new data'))
+          .catch((error) => {
+            throw new Error(error)
+          })
         }
         Promise.all(
           updatedParticipants.map(async (participant) => {

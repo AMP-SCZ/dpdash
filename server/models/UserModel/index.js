@@ -27,8 +27,12 @@ const UserModel = {
 
     if (deletedCount !== 1) throw new Error('Unable to delete user')
   },
-  save: async (db, userAttributes) => {
+  create: async (db, userAttributes) => {
     const newUser = UserModel.withDefaults(userAttributes)
+    if (newUser.role === 'admin') {
+      newUser.access = await StudiesModel.all(dataDb)
+    }
+
     const { insertedId } = await db
       .collection(collections.users)
       .insertOne(newUser)
@@ -62,23 +66,25 @@ const UserModel = {
 
     return value
   },
-  hasNoAdmin: async (db) => {
+  hasAdmin: async (db) => {
     const userCt = await db
       .collection(collections.users)
       .countDocuments({ role: "admin" })
-    return userCt === 0
+    return userCt !== 0
   },
   createFirstAdmin: async (db, dataDb) => {
-    const reset_key = crypto.randomBytes(32).toString('hex')
-    const access = await StudiesModel.all(dataDb)
+    if (await UserModel.hasAdmin(app.locals.appDb)) {
+      return
+    } 
 
-    await UserModel.save(db, {
+    const reset_key = crypto.randomBytes(32).toString('hex')
+
+    await UserModel.create(db, {
       uid: 'admin',
       password: null,
       role: 'admin',
       force_reset_pw: true,
       reset_key,
-      access,
     })
 
     if (process.env.NODE_ENV === 'development') {
