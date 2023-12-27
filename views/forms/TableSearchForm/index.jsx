@@ -7,15 +7,15 @@ import * as yup from 'yup'
 
 import ControlledMultiSelect from '../ControlledMultiSelect'
 
-const schema = yup.object({
-  participants: yup.array(),
-})
-
-const ParticipantsSearchForm = ({ initialValues, onSubmit, allOptions }) => {
+const TableSearchForm = ({ initialValues, name, onSubmit, allOptions }) => {
   const { handleSubmit, control, formState, watch } = useForm({
     defaultValues: initialValues,
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(
+      yup.object({
+        [name]: yup.array(),
+      })
+    ),
   })
   const data = watch()
 
@@ -28,10 +28,10 @@ const ParticipantsSearchForm = ({ initialValues, onSubmit, allOptions }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <ControlledMultiSelect
-        name="participants"
+        name={name}
         control={control}
         options={allOptions}
-        placeholder="Search participants you'd like to view"
+        placeholder={`Search ${name} you'd like to view`}
         startAdornment={
           <InputAdornment position="start">
             <SearchIcon />
@@ -43,4 +43,4 @@ const ParticipantsSearchForm = ({ initialValues, onSubmit, allOptions }) => {
   )
 }
 
-export default ParticipantsSearchForm
+export default TableSearchForm

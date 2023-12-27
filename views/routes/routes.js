@@ -88,7 +88,7 @@ export const apiRoutes = {
   },
   chart: {
     show: (chart_id) => `${apiPath}/charts/${chart_id}`,
-    index: `${apiPath}/charts`,
+    all: `${apiPath}/charts`,
   },
   shareChart: {
     show: (chart_id) => `${apiPath}/charts/${chart_id}/share`,

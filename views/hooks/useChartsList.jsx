@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import api from '../api'
 
@@ -11,6 +11,9 @@ export default function useChartsList() {
 
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [searchOptions, setSearchOptions] = useState([])
+  const [searchedCharts, setSearchedCharts] = useState([])
   const [usernames, setUsernames] = useState([])
 
   const closeDialog = () => setChartToShare(NULL_CHART)
@@ -71,17 +74,39 @@ export default function useChartsList() {
   }
   const loadCharts = async () => {
     try {
-      const data = await api.charts.chart.index()
+      const chartParams = {
+        ...(searchedCharts
+          ? { searchedCharts: searchedCharts.map(({ value }) => value) }
+          : {}),
+      }
+
+      const data = await api.charts.chart.all(chartParams)
 
       setChartList(data)
+
+      return data
     } catch (error) {
       setNotification({ open: true, message: error.message })
     }
   }
 
+  const handleSearch = async (formData) => setSearchedCharts(formData.charts)
+
   useEffect(() => {
-    loadCharts()
-  }, [])
+    loadCharts().then((initialCharts) => {
+      if (initialLoad) {
+        const searchDropdownOptions = initialCharts.map((chart) => {
+          return {
+            label: chart.title,
+            value: chart._id,
+          }
+        })
+
+        setSearchOptions(searchDropdownOptions)
+        setInitialLoad(false)
+      }
+    })
+  }, [searchedCharts])
 
   useEffect(() => {
     const apiUsernames = users
@@ -98,10 +123,13 @@ export default function useChartsList() {
     charts: chartList,
     chartToShare,
     closeDialog,
+    handleSearch,
     onFavorite,
     onShare,
     onDelete,
     onDuplicate,
+    searchOptions,
+    searchedCharts,
     shareWithUsers,
     user,
     usernames,

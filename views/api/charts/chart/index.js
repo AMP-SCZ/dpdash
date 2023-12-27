@@ -3,9 +3,9 @@ import { apiRoutes } from '../../../routes/routes'
 
 const chart = {
   create: async (chartAttributes) =>
-    http.post(apiRoutes.chart.index, chartAttributes),
+    http.post(apiRoutes.chart.all, chartAttributes),
   destroy: async (chart_id) => http.delete(apiRoutes.chart.show(chart_id)),
-  index: async () => http.get(apiRoutes.chart.index),
+  all: async (queryParams) => http.get(apiRoutes.chart.all, queryParams),
   update: async (chart_id, chartAttributes) =>
     http.patch(apiRoutes.chart.show(chart_id), chartAttributes),
   show: async (chart_id) => http.get(apiRoutes.chart.show(chart_id)),
