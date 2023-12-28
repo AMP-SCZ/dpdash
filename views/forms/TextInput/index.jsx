@@ -23,6 +23,13 @@ const TextInput = (props) => {
       size={props.size}
       disabled={props.disabled}
       {...field}
+      onChange={(e) => {
+        if (props.onChange) {
+          props.onChange(e.target.value)
+        }
+
+        field.onChange(e)
+      }}
     />
   )
 }

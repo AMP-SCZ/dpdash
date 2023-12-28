@@ -11,9 +11,6 @@ export default function useChartsList() {
 
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
-  const [initialLoad, setInitialLoad] = useState(true)
-  const [searchOptions, setSearchOptions] = useState([])
-  const [searchedCharts, setSearchedCharts] = useState([])
   const [usernames, setUsernames] = useState([])
 
   const closeDialog = () => setChartToShare(NULL_CHART)
@@ -72,41 +69,21 @@ export default function useChartsList() {
       setNotification({ open: true, message: error.message })
     }
   }
-  const loadCharts = async () => {
+  const loadCharts = async (queryParams = {}) => {
     try {
-      const chartParams = {
-        ...(searchedCharts
-          ? { searchedCharts: searchedCharts.map(({ value }) => value) }
-          : {}),
-      }
-
-      const data = await api.charts.chart.all(chartParams)
+      const data = await api.charts.chart.all(queryParams)
 
       setChartList(data)
-
-      return data
     } catch (error) {
       setNotification({ open: true, message: error.message })
     }
   }
 
-  const handleSearch = async (formData) => setSearchedCharts(formData.charts)
+  const handleSearch = async (formData) => await loadCharts(formData)
 
   useEffect(() => {
-    loadCharts().then((initialCharts) => {
-      if (initialLoad) {
-        const searchDropdownOptions = initialCharts.map((chart) => {
-          return {
-            label: chart.title,
-            value: chart._id,
-          }
-        })
-
-        setSearchOptions(searchDropdownOptions)
-        setInitialLoad(false)
-      }
-    })
-  }, [searchedCharts])
+    loadCharts()
+  }, [])
 
   useEffect(() => {
     const apiUsernames = users
@@ -128,8 +105,6 @@ export default function useChartsList() {
     onShare,
     onDelete,
     onDuplicate,
-    searchOptions,
-    searchedCharts,
     shareWithUsers,
     user,
     usernames,

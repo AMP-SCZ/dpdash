@@ -38,6 +38,7 @@ const chartsController = {
       const parsedQueryParams = Object.keys(req.query).length
         ? req.query
         : undefined
+
       const currentUser = await UserModel.findOne(appDb, { uid: req.user })
       const chartListCursor = await ChartsModel.all(
         dataDb,

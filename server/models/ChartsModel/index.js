@@ -35,15 +35,18 @@ const ChartsModel = {
 
 const chartsListQuery = (user, queryParams) => {
   const { uid, favoriteCharts } = user
-  const sort = {
-    $sort: { favorite: -1, title: 1 },
-  }
+  const searchQuery = queryParams?.searchedCharts
+    ? {
+        title: { $regex: queryParams.searchedCharts, $options: 'i' },
+        $or: [{ owner: uid }, { sharedWith: uid }, { public: true }],
+      }
+    : {
+        $or: [{ owner: uid }, { sharedWith: uid }, { public: true }],
+      }
 
   const query = [
     {
-      $match: {
-        $or: [{ owner: uid }, { sharedWith: uid }, { public: true }],
-      },
+      $match: searchQuery,
     },
     { $set: { chart_id: { $toString: id } } },
     {
@@ -51,33 +54,11 @@ const chartsListQuery = (user, queryParams) => {
         favorite: { $in: [idKey, favoriteCharts || []] },
       },
     },
+    { $unset: chartId },
+    { $sort: { favorite: -1, title: 1 } },
   ]
-
-  if (queryParams?.searchedCharts.length) {
-    query.push({
-      $match: {
-        $or: [
-          {
-            chart_id: {
-              $in: queryParams.searchedCharts,
-            },
-          },
-        ],
-      },
-    })
-  }
-
-  query.push({ $unset: chartId })
-  query.push(sort)
 
   return query
 }
 
 export default ChartsModel
-/**
- *
- *
- *  {
-      $sort: { favorite: -1, title: 1 },
-    },
- */

@@ -5,7 +5,7 @@ import { Link, useOutletContext } from 'react-router-dom'
 import ChartsTable from '../tables/ChartsTable'
 import PageHeader from '../components/PageHeader'
 import ShareChart from '../components/ShareCharts'
-import TableSearchForm from '../forms/TableSearchForm'
+import ChartsSearchForm from '../forms/ChartsSearchForm'
 import { routes } from '../routes/routes'
 
 import useChartsList from '../hooks/useChartsList'
@@ -21,8 +21,6 @@ const ChartsPage = () => {
     onDuplicate,
     onFavorite,
     onShare,
-    searchOptions,
-    searchedCharts,
     shareWithUsers,
     usernames,
   } = useChartsList()
@@ -43,13 +41,11 @@ const ChartsPage = () => {
           </Button>
         }
         form={
-          <TableSearchForm
-            name="charts"
+          <ChartsSearchForm
             onSubmit={handleSearch}
             initialValues={{
-              charts: searchedCharts,
+              searchCharts: '',
             }}
-            allOptions={searchOptions}
           />
         }
       />
