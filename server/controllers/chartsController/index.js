@@ -35,14 +35,22 @@ const chartsController = {
     try {
       const chartList = []
       const { dataDb, appDb } = req.app.locals
-      const chartListCursor = await ChartsModel.index(dataDb, {
-        $or: [{ owner: req.user }, { sharedWith: req.user }, { public: true }],
-      })
+      const parsedQueryParams = Object.keys(req.query).length
+        ? req.query
+        : undefined
+
+      const currentUser = await UserModel.findOne(appDb, { uid: req.user })
+      const chartListCursor = await ChartsModel.all(
+        dataDb,
+        currentUser,
+        parsedQueryParams
+      )
 
       while (await chartListCursor.hasNext()) {
         const chart = await chartListCursor.next()
 
         chart.chartOwner = await UserModel.findOne(appDb, { uid: chart.owner })
+
         chartList.push(chart)
       }
 

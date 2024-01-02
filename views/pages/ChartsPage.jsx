@@ -5,6 +5,7 @@ import { Link, useOutletContext } from 'react-router-dom'
 import ChartsTable from '../tables/ChartsTable'
 import PageHeader from '../components/PageHeader'
 import ShareChart from '../components/ShareCharts'
+import ChartsSearchForm from '../forms/ChartsSearchForm'
 import { routes } from '../routes/routes'
 
 import useChartsList from '../hooks/useChartsList'
@@ -15,9 +16,11 @@ const ChartsPage = () => {
     charts,
     chartToShare,
     closeDialog,
-    onShare,
+    handleSearch,
     onDelete,
     onDuplicate,
+    onFavorite,
+    onShare,
     shareWithUsers,
     usernames,
   } = useChartsList()
@@ -37,12 +40,21 @@ const ChartsPage = () => {
             New chart
           </Button>
         }
+        form={
+          <ChartsSearchForm
+            onSubmit={handleSearch}
+            initialValues={{
+              search: '',
+            }}
+          />
+        }
       />
       <ChartsTable
-        onShare={onShare}
         charts={charts}
         onDelete={onDelete}
         onDuplicate={onDuplicate}
+        onFavorite={onFavorite}
+        onShare={onShare}
         user={user}
       />
       {!!chartToShare._id && (
