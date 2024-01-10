@@ -72,26 +72,25 @@ const UserModel = {
     const userCt = await db
       .collection(collections.users)
       .countDocuments({ role: 'admin', password: { $ne: null } })
-    return userCt !== 0
+
+    return userCt > 0
   },
   createFirstAdmin: async (db) => {
-    if (await UserModel.hasAdmin(db)) {
-      return
-    }
+    if (await UserModel.hasAdmin(db)) return
 
     const reset_key = crypto.randomBytes(32).toString('hex')
 
     await UserModel.create(db, {
       uid: 'admin',
-      password: null,
+      password: reset_key,
       role: 'admin',
       force_reset_pw: true,
       reset_key,
     })
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development')
       console.log(`RESET KEY: ${reset_key}`)
-    } else {
+    else {
       const adminMailer = new AdminAccountPasswordMailer(reset_key)
       await adminMailer.sendMail()
     }
