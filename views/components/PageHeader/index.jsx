@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useMediaQuery } from '@mui/material'
 
 const PageHeader = (props) => {
   return (
@@ -9,14 +9,21 @@ const PageHeader = (props) => {
         display: 'flex',
         gap: '16px',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: { xs: 'column', lg: 'row' },
+        alignItems: { xs: 'left', lg: 'center' },
       }}
     >
       <Typography sx={{ fontWeight: 600, width: 192 }}>
         {props.title}
       </Typography>
 
-      <Box sx={{ flex: 1 }}>{props.form}</Box>
+      <Box
+        sx={{
+          flex: 1,
+        }}
+      >
+        {props.form}
+      </Box>
 
       {props.cta && <Box>{props.cta}</Box>}
     </Box>

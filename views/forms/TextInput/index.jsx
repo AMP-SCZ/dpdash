@@ -13,11 +13,11 @@ const TextInput = (props) => {
       fullWidth={props.fullWidth}
       helperText={errors?.message}
       InputLabelProps={{ shrink: true }}
-      inputProps={props.inputProps}
+      inputProps={{ ...props.inputProps, autoComplete: 'off' }}
       label={props.label}
       margin={props.margin || 'normal'}
       required={props.required}
-      type={props.type}
+      type={props.type || 'text'}
       placeholder={props.placeholder}
       sx={props.sx}
       size={props.size}
