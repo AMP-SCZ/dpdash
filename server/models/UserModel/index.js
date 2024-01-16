@@ -14,6 +14,8 @@ const userMongoProjection = {
   force_reset_pw: 0,
 }
 
+const admin = 'admin'
+
 const UserModel = {
   all: async (db) =>
     await db
@@ -46,9 +48,9 @@ const UserModel = {
   },
   update: async (db, dataDb, uid, userUpdates) => {
     const user = await UserModel.findOne(db, { uid })
-    const updatedUser = { ...user, ...userUpdates }
+    const updatedUser = { preferences: {}, ...user, ...userUpdates }
 
-    if (updatedUser.role === 'admin')
+    if (updatedUser.role === admin)
       updatedUser.access = await StudiesModel.all(dataDb)
 
     const { value } = await db.collection(collections.users).findOneAndUpdate(
@@ -69,29 +71,40 @@ const UserModel = {
     return value
   },
   hasAdmin: async (db) => {
+    const pseudoAdmins = await db
+      .collection(collections.users)
+      .find({ uid: admin }, { projection: { _id: 1 } })
+      .toArray()
+
+    if (pseudoAdmins.length > 1) {
+      const [_, ...rest] = pseudoAdmins.map((el) => el._id)
+
+      await db.collection(collections.users).deleteMany({ _id: { $in: rest } })
+    }
+
     const userCt = await db
       .collection(collections.users)
-      .countDocuments({ role: 'admin', password: { $ne: null } })
-    return userCt !== 0
+      .countDocuments({ role: admin, password: { $ne: null } })
+
+    return userCt > 0
   },
   createFirstAdmin: async (db) => {
-    if (await UserModel.hasAdmin(db)) {
-      return
-    }
+    if (await UserModel.hasAdmin(db)) return
 
     const reset_key = crypto.randomBytes(32).toString('hex')
 
     await UserModel.create(db, {
-      uid: 'admin',
-      password: null,
-      role: 'admin',
+      uid: admin,
+      password: reset_key,
+      role: admin,
+      mail: process.env.ADMIN_EMAIL,
       force_reset_pw: true,
       reset_key,
     })
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development')
       console.log(`RESET KEY: ${reset_key}`)
-    } else {
+    else {
       const adminMailer = new AdminAccountPasswordMailer(reset_key)
       await adminMailer.sendMail()
     }
