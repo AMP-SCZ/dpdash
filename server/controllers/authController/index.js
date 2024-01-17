@@ -44,6 +44,7 @@ const AuthController = {
     )(req, res, next)
   },
   create: async (req, res, next) => {
+    try {
       const { appDb } = req.app.locals
       const info = req.body
 
@@ -82,6 +83,9 @@ const AuthController = {
       await registrationMailer.sendMail()
 
       return res.status(200).json({ data: newUser })
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
   },
   destroy: async (req, res, next) => {
     try {
