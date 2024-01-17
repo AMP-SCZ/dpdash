@@ -1,3 +1,5 @@
+import UserModel from '../../models/UserModel'
+
 export default async function ensureUser(req, res, next) {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ error: 'Unathorized' })

@@ -28,8 +28,7 @@ const AuthController = {
         const { role, account_expires } = userInfo
     
         if (isAccountExpired(account_expires, role)) {
-          await req.session.destroy()
-          await req.logout()
+          logout(req, res, next)
   
           res.clearCookie('connect.sid')
   
@@ -84,7 +83,7 @@ const AuthController = {
 
       return res.status(200).json({ data: newUser })
   },
-  destroy: async (req, res) => {
+  destroy: async (req, res, next) => {
     try {
       logout(req, res, next)
 
