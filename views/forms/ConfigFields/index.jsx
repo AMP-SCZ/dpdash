@@ -2,6 +2,8 @@ import React from 'react'
 import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
 
+import './ConfigFields.css'
+
 const ConfigFormFields = ({
   control,
   colors,
@@ -13,13 +15,7 @@ const ConfigFormFields = ({
   return (
     <React.Fragment>
       <ConfigTypeFormFields control={control} friendsList={friendsList} />
-      <div
-        style={{
-          display: 'flex',
-          gap: '10px',
-          flexFlow: 'wrap',
-        }}
-      >
+      <div className="ConfigFields">
         {fields.map((field, index) => {
           const { id, ...rest } = field
 
