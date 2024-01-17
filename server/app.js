@@ -145,13 +145,9 @@ passport.use(
         uid: 1,
       })
 
-      if (!user) {
-        return done(null, false)
-      }
+      if (!user) return done(null, false)
 
-      if (!verifyHash(password, user?.password)) {
-        return done(null, false)
-      }
+      if (!verifyHash(password, user?.password)) return done(null, false)
 
       delete user.password
 

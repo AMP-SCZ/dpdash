@@ -14,10 +14,8 @@ const AuthController = {
       'local',
       { session: true },
       async function (err, user, info) {
-        if (err) {
-          return next(err)
-        }
-
+        if (err) return next(err)
+        
         const { uid } = user
 
         const { appDb, dataDb } = req.app.locals
