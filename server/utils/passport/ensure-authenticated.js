@@ -3,6 +3,8 @@ import { isAccountExpired } from './helpers'
 import { logout } from './logout'
 
 export default async function ensureAuthenticated(req, res, next) {
+  req.user = await UserModel.findOne({ _id: req.user._id })
+  
   if (!req.isAuthenticated())
     return res.status(401).json({ error: 'Please login' })
 

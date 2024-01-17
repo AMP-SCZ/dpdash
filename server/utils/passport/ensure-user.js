@@ -1,4 +1,5 @@
-export default function ensureUser(req, res, next) {
+export default async function ensureUser(req, res, next) {
+  req.user = await UserModel.findOne({ _id: req.user._id })
   if (!req.isAuthenticated()) {
     return res.status(401).json({ error: 'Unathorized' })
   } else if (req.params.uid !== req.user.uid) {
