@@ -95,10 +95,13 @@ describe('chartsController', () => {
           .collection(collections.charts)
           .insertMany([chart1, chart2, chart3])
 
-        const request = createRequestWithUser({
-          app: { locals: { dataDb: dataDb, appDb: appDb } },
-          query: { sortBy: 'title', sortDirection: 'ASC' },
-        }, await UserModel.findOne(appDb, { uid: user.uid }))
+        const request = createRequestWithUser(
+          {
+            app: { locals: { dataDb: dataDb, appDb: appDb } },
+            query: { sortBy: 'title', sortDirection: 'ASC' },
+          },
+          await UserModel.findOne(appDb, { uid: user.uid })
+        )
 
         const response = createResponse()
         const { _id, ...restOfUser } = user
@@ -157,10 +160,13 @@ describe('chartsController', () => {
           .collection(collections.charts)
           .insertMany([chart1, chart2, chart3])
 
-        const request = createRequestWithUser({
-          app: { locals: { dataDb: dataDb, appDb: appDb } },
-          query: { search: 'recent', sortBy: 'title', sortDirection: 'ASC' },
-        }, await UserModel.findOne(appDb, { uid: user.uid }))
+        const request = createRequestWithUser(
+          {
+            app: { locals: { dataDb: dataDb, appDb: appDb } },
+            query: { search: 'recent', sortBy: 'title', sortDirection: 'ASC' },
+          },
+          await UserModel.findOne(appDb, { uid: user.uid })
+        )
         const response = createResponse()
 
         await chartsController.index(request, response)
@@ -240,10 +246,12 @@ describe('chartsController', () => {
     describe('When successful', () => {
       it('returns a status of 200 and a chart', async () => {
         const params = { chart_id: 'chart-id' }
-        const request = createRequestWithUser(params)
+        const userOverrides = { access: ['YA', 'CA'] }
+        const request = createRequestWithUser(params, userOverrides)
         const response = createResponse()
         const chart = createChart()
 
+        request.app.locals.appDb.findOne.mockResolvedValueOnce(request.user)
         request.app.locals.dataDb.findOne.mockResolvedValueOnce(chart)
 
         await chartsController.show(request, response)
@@ -261,15 +269,15 @@ describe('chartsController', () => {
         const request = createRequestWithUser(params)
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockRejectedValueOnce(
-          new Error('Chart does not exist')
+        request.app.locals.appDb.findOne.mockRejectedValueOnce(
+          new Error('some error')
         )
 
         await chartsController.show(request, response)
 
         expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
-          error: 'Chart does not exist',
+          error: 'some error',
         })
       })
     })
