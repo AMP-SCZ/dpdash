@@ -251,7 +251,6 @@ describe('chartsController', () => {
         const response = createResponse()
         const chart = createChart()
 
-        request.app.locals.appDb.findOne.mockResolvedValueOnce(request.user)
         request.app.locals.dataDb.findOne.mockResolvedValueOnce(chart)
 
         await chartsController.show(request, response)
@@ -269,7 +268,7 @@ describe('chartsController', () => {
         const request = createRequestWithUser(params)
         const response = createResponse()
 
-        request.app.locals.appDb.findOne.mockRejectedValueOnce(
+        request.app.locals.dataDb.findOne.mockRejectedValueOnce(
           new Error('some error')
         )
 

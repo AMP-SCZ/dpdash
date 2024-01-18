@@ -81,10 +81,9 @@ const chartsController = {
   },
   show: async (req, res) => {
     try {
-      const { dataDb, appDb } = req.app.locals
+      const { dataDb } = req.app.locals
       const { chart_id } = req.params
-      const user = await UserModel.findOne(appDb, { uid: req.user.uid })
-      const { access } = user
+      const { access } = req.user
       const chart = await ChartsModel.show(dataDb, {
         _id: new ObjectId(chart_id),
         owner: req.user.uid,
