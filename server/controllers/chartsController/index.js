@@ -23,7 +23,7 @@ const chartsController = {
         description,
         fieldLabelValueMap,
         public: isPublic,
-        owner: req.user,
+        owner: req.user.uid,
       })
 
       return res.status(200).json({ data: { chart_id: insertedId } })
@@ -39,7 +39,7 @@ const chartsController = {
         ? req.query
         : undefined
 
-      const currentUser = await UserModel.findOne(appDb, { uid: req.user })
+      const currentUser = await UserModel.findOne(appDb, { uid: req.user.uid })
       const chartListCursor = await ChartsModel.all(
         dataDb,
         currentUser,
@@ -67,7 +67,7 @@ const chartsController = {
         _id: new ObjectId(chart_id),
       })
 
-      if (owner !== req.user)
+      if (owner !== req.user.uid)
         return res
           .status(422)
           .json({ message: 'Only the owner can delete a chart' })
@@ -83,15 +83,15 @@ const chartsController = {
     try {
       const { dataDb } = req.app.locals
       const { chart_id } = req.params
-      const { userAccess } = req.session
+      const { access } = req.user
       const chart = await ChartsModel.show(dataDb, {
         _id: new ObjectId(chart_id),
-        owner: req.user,
+        owner: req.user.uid,
       })
 
       if (!chart) return res.status(400).json({ error: 'Chart not found.' })
 
-      const targetValuesMap = defaultTargetValueMap(userAccess)
+      const targetValuesMap = defaultTargetValueMap(access)
       chart.fieldLabelValueMap = chart.fieldLabelValueMap.map((fieldValue) => {
         const updateTargetValues = {
           ...targetValuesMap,

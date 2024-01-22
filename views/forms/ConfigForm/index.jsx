@@ -32,12 +32,14 @@ const schema = yup.object({
       color: yup.number(),
       min: yup.string(),
       max: yup.string(),
+      text: yup.boolean(),
     })
   ),
 })
 
 const ConfigForm = ({ colors, friendsList, initialValues, onSubmit }) => {
   const defaultFieldValue = UserConfigModel.defaultConfigValues
+
   const { handleSubmit, control, getValues } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
@@ -47,6 +49,7 @@ const ConfigForm = ({ colors, friendsList, initialValues, onSubmit }) => {
     name: 'config',
     defaultFieldValue,
   })
+
   const onCopy = (configCategoryIndex) =>
     addNewField(getValues(`config[${configCategoryIndex}]`))
 
