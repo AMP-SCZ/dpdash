@@ -1,18 +1,22 @@
 import { Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { VALIDATION_EMAIL_REGEX } from '../../../constants'
 import * as yup from 'yup'
 
 import TextInput from '../TextInput'
 
 const schema = yup.object({
   username: yup.string().required(),
-  password: yup.string().required().min(8),
+  password: yup.string().min(8).required(),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password'), null], 'passwords do not match'),
   fullName: yup.string().required(),
-  mail: yup.string().required().email(),
+  mail: yup
+    .string()
+    .matches(VALIDATION_EMAIL_REGEX, 'Please enter a valid email')
+    .required(),
 })
 
 const RegistrationForm = ({ initialValues, onSubmit }) => {
