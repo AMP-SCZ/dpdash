@@ -5,7 +5,6 @@ import { v1Routes } from '../utils/routes'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import AuthController from '../controllers/authController'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
-import { VALIDATION_EMAIL_REGEX } from '../../constants'
 
 const router = Router()
 
@@ -17,10 +16,7 @@ const signUpSchema = baseSchema({
       .string()
       .oneOf([yup.ref('password'), null], 'passwords do not match'),
     fullName: yup.string().required(),
-    mail: yup
-      .string()
-      .matches(VALIDATION_EMAIL_REGEX, 'Please send a valid email.')
-      .required(),
+    mail: yup.string().email().required(),
   }),
 })
 
