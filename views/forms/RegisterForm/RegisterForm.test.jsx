@@ -72,7 +72,7 @@ describe('Register Form', () => {
         screen.getByText('password must be at least 8 characters')
       ).toBeInTheDocument()
     )
-    expect(screen.getByText('Please enter a valid email')).toBeInTheDocument()
+    expect(screen.getByText('mail must be a valid email')).toBeInTheDocument()
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
