@@ -58,7 +58,7 @@ const allParticipantsQuery = (user, queryParams) => {
           $in: [$subject, starred],
         },
         study: 1,
-        subject: 1,
+        participant: 1,
         synced: 1,
         daysInStudy: {
           $cond: {

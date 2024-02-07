@@ -66,7 +66,6 @@ const UserModel = {
         returnDocument: 'after',
       }
     )
-
     if (!value) throw new Error('Could not update user.')
 
     return value

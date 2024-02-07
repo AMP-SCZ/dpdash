@@ -31,7 +31,7 @@ const ParticipantsTable = (props) => {
   }
   const headers = [
     {
-      dataProperty: 'subject',
+      dataProperty: 'participant',
       label: 'Participant ID',
       sortable: !!sortable,
     },

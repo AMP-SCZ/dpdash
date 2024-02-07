@@ -9,14 +9,29 @@ import {
 describe('chartsShareController', () => {
   describe('create', () => {
     describe('When successful', () => {
+      let appDb
+
+      beforeAll(() => {
+        appDb = global.MONGO_INSTANCE.db()
+      })
+      beforeEach(async () => {
+        await appDb.createCollection('charts')
+      })
+      afterEach(async () => {
+        await appDb.collection('charts').drop()
+      })
+      afterAll(async () => {
+        await appDb.dropDatabase()
+      })
       it('retusna status of 200 and the new chart id', async () => {
-        const sourceChart = new ObjectId().toString()
-        const sharedWith = ['owl', 'eagle']
+        const sourceChart = new ObjectId()
+        const chartId = sourceChart.toString()
+        const sharedWith = ['eagle']
         const body = { sharedWith }
-        const params = { chart_id: sourceChart }
-        const request = createRequestWithUser({ body, params })
+        const params = { chart_id: chartId }
+        const request = createRequestWithUser({ body, params }, { uid: 'owl' })
         const response = createResponse()
-        const chart = createChart({ _id: sourceChart, sharedWith })
+        const chart = createChart({ _id: sourceChart.toString(), sharedWith })
 
         request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(chart)
 
