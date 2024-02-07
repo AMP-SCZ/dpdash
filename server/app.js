@@ -88,6 +88,7 @@ const mongoURI =
 const client = new MongoClient(mongoURI, { monitorCommands: true })
 
 app.locals.appDb = client.db()
+app.locals.dataDb = client.db('dpdata')
 
 client.on('connectionCreated', async () => {
   await UserModel.createFirstAdmin(app.locals.appDb)
