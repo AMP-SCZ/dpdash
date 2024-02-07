@@ -8,19 +8,19 @@ import {
 describe('siteMetadataController', () => {
   describe(SiteMetadataController.create, () => {
     describe('When new data is imported', () => {
-      let dataDb
+      let appDb
 
       beforeAll(() => {
-        dataDb = global.MONGO_INSTANCE.db('dpdata')
+        appDb = global.MONGO_INSTANCE.db()
       })
       beforeEach(async () => {
-        await dataDb.createCollection('metadata')
+        await appDb.createCollection('metadata')
       })
       afterEach(async () => {
-        await dataDb.collection('metadata').drop()
+        await appDb.collection('metadata').drop()
       })
       afterAll(async () => {
-        await dataDb.dropDatabase()
+        await appDb.dropDatabase()
       })
 
       it('creates new metadata document', async () => {
@@ -45,13 +45,13 @@ describe('siteMetadataController', () => {
         })
         const request = createRequest({
           body,
-          app: { locals: { dataDb: dataDb } },
+          app: { locals: { appDb: appDb } },
         })
         const response = createResponse()
 
         await SiteMetadataController.create(request, response)
 
-        const newDocumentCount = await dataDb
+        const newDocumentCount = await appDb
           .collection('metadata')
           .countDocuments({ study: 'CA' })
 
@@ -78,13 +78,13 @@ describe('siteMetadataController', () => {
         })
         const request = createRequest({
           body,
-          app: { locals: { dataDb: dataDb } },
+          app: { locals: { appDb: appDb } },
         })
         const response = createResponse()
 
         await SiteMetadataController.create(request, response)
 
-        const updatedSiteMetadata = await dataDb
+        const updatedSiteMetadata = await appDb
           .collection('metadata')
           .findOne({ subjects: { $elemMatch: { subject: 'LA3' } } })
 
@@ -112,13 +112,13 @@ describe('siteMetadataController', () => {
         })
         const request = createRequest({
           body,
-          app: { locals: { dataDb: dataDb } },
+          app: { locals: { appDb: appDb } },
         })
         const response = createResponse()
 
         await SiteMetadataController.create(request, response)
 
-        const updatedDocs = await dataDb
+        const updatedDocs = await appDb
           .collection('metadata')
           .findOne({ study: 'YA' })
 
@@ -165,8 +165,8 @@ describe('siteMetadataController', () => {
         })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce(null)
-        request.app.locals.dataDb.findOneAndUpdate.mockImplementation()
+        request.app.locals.appDb.findOne.mockResolvedValueOnce(null)
+        request.app.locals.appDb.findOneAndUpdate.mockImplementation()
 
         await SiteMetadataController.create(request, response)
 
@@ -202,7 +202,7 @@ describe('siteMetadataController', () => {
         const request = createRequest({ body })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockRejectedValueOnce(
+        request.app.locals.appDb.findOne.mockRejectedValueOnce(
           new Error('some error')
         )
 
@@ -217,16 +217,16 @@ describe('siteMetadataController', () => {
   })
   describe(SiteMetadataController.destroy, () => {
     describe('When successful', () => {
-      let dataDb
+      let appDb
 
       beforeAll(() => {
-        dataDb = global.MONGO_INSTANCE.db('dpdata')
+        appDb = global.MONGO_INSTANCE.db('dpdata')
       })
       beforeEach(async () => {
-        await dataDb.createCollection('metadata')
+        await appDb.createCollection('metadata')
       })
       afterAll(async () => {
-        await dataDb.dropDatabase()
+        await appDb.dropDatabase()
       })
 
       it('removes the metadata collection', async () => {
@@ -246,7 +246,7 @@ describe('siteMetadataController', () => {
         const request = createRequest()
         const response = createResponse()
 
-        request.app.locals.dataDb.collection.mockImplementation(() => {
+        request.app.locals.appDb.collection.mockImplementation(() => {
           return {
             drop: jest.fn().mockRejectedValueOnce(new Error('some error')),
           }
