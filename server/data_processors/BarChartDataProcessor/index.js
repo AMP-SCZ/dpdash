@@ -36,16 +36,17 @@ class BarChartDataProcessor {
     this.dataMap = new Map()
   }
 
-  processData = (participants) => {
-    participants.forEach((participant) => {
-      this.chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-        this._processFieldLabelValueMap(
-          fieldLabelValueMap,
-          participant.study,
-          participant.dayData
-        )
-      })
+  processDocument = (document) => {
+    this.chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
+      this._processFieldLabelValueMap(
+        fieldLabelValueMap,
+        document.study,
+        document.dayData
+      )
     })
+  }
+
+  processData = () => {
     this._postProcessData()
 
     if (this._isAnyTargetIncluded()) {

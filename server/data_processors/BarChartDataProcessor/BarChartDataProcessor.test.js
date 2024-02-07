@@ -36,8 +36,9 @@ describe(BarChartDataProcessor, () => {
   describe('.processData', () => {
     it('returns processed data', async () => {
       const service = new BarChartDataProcessor(chart, initialStudyTotals)
+      participants.forEach((doc) => service.processDocument(doc))
 
-      const processedData = service.processData(participants)
+      const processedData = service.processData()
       const expectedLabelMap = {
         Bar: {
           color: 'red',

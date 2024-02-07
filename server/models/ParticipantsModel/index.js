@@ -27,7 +27,7 @@ const ParticipantsModel = {
       return await db
         .collection(collections.assessmentDayData)
         .find(query, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
-        .toArray()
+        .stream()
     } else {
       const mongoFacet = filtersService.barChartMongoQueries()
       const isAggregateQuery = Array.isArray(mongoFacet)
@@ -53,7 +53,7 @@ const ParticipantsModel = {
       return await db
         .collection(collections.assessmentDayData)
         .find(chartQuery, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
-        .toArray()
+        .stream()
     }
   },
 }
