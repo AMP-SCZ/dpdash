@@ -18,9 +18,7 @@ describe('chartsShareController', () => {
         const response = createResponse()
         const chart = createChart({ _id: sourceChart, sharedWith })
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce({
-          value: chart,
-        })
+        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(chart)
 
         await chartsShareController.create(request, response)
 

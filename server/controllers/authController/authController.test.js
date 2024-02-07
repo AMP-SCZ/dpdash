@@ -105,9 +105,9 @@ describe('AuthController', () => {
         }
 
         request.app.locals.appDb.findOne.mockResolvedValueOnce(user)
-        request.app.locals.appDb.findOneAndUpdate.mockResolvedValueOnce({
-          value: updatedUser,
-        })
+        request.app.locals.appDb.findOneAndUpdate.mockResolvedValueOnce(
+          updatedUser
+        )
 
         await AuthController.update(request, response)
 

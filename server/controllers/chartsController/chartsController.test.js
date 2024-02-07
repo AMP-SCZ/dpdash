@@ -305,9 +305,9 @@ describe('chartsController', () => {
         })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce({
-          value: updatedChart,
-        })
+        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(
+          updatedChart
+        )
 
         await chartsController.update(request, response)
 
