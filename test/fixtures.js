@@ -142,7 +142,7 @@ export const createSubject = (overrides = {}) => ({
   ...overrides,
 })
 
-export const createSubjectDayData = (overrides = {}) => ({
+export const createParticipantDayData = (overrides = {}) => ({
   ...overrides,
 })
 

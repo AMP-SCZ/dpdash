@@ -1,11 +1,13 @@
 import { STUDIES_TO_OMIT, TOTALS_STUDY } from '../../constants'
-import BarChartDataProcessor from '../../data_processors/BarChartDataProcessor'
 import { SITE_NAMES } from '../../utils/siteNames'
+import BarChartDataProcessor from '../../data_processors/BarChartDataProcessor'
+import ParticipantsModel from '../../models/ParticipantsModel'
 
 class BarChartService {
-  constructor(db, chart) {
-    this.db = db
+  constructor(appDb, chart, filtersService) {
     this.chart = chart
+    this.appDb = appDb
+    this.filtersService = filtersService
   }
 
   legend = () => {
@@ -18,30 +20,11 @@ class BarChartService {
     }))
   }
 
-  createChart = (participants, userAccess) => {
+  generateStudyTargetTotals = (userAccess) => {
     const allowedStudies = userAccess.filter(
       (study) => !STUDIES_TO_OMIT.includes(study)
     )
-    const initialStudyTotals = this._generateStudyTargetTotals(allowedStudies)
-    const dataProcessor = new BarChartDataProcessor(
-      this.chart,
-      initialStudyTotals
-    )
-    const processedData = dataProcessor.processData(participants)
-    const { processedDataBySite, studyTotals, labelMap } = processedData
 
-    const dataBySite =
-      participants.length > 0 ? Array.from(processedDataBySite.values()) : []
-    const labels = Array.from(labelMap.values())
-
-    return {
-      dataBySite,
-      labels,
-      studyTotals,
-    }
-  }
-
-  _generateStudyTargetTotals = (allowedStudies) => {
     const studyTotals = {
       [TOTALS_STUDY]: {
         count: 0,
@@ -103,6 +86,30 @@ class BarChartService {
     return !!siteTargetValue
       ? totalsStudyTargetTotal + siteTargetValue
       : undefined
+  }
+
+  createChart = async () => {
+    const { filters } = this.filtersService
+    const chartProcessor = new BarChartDataProcessor(
+      this.chart,
+      this.generateStudyTargetTotals(filters.sites)
+    )
+    const dataStream = await ParticipantsModel.allForAssessment(
+      this.appDb,
+      this.chart,
+      this.filtersService
+    )
+    dataStream.on('data', (doc) => chartProcessor.processDocument(doc))
+    await new Promise((resolve, reject) => {
+      dataStream.on('end', () => resolve())
+
+      dataStream.on('error', (err) => reject(err))
+    })
+
+    const { processedDataBySite, studyTotals, labelMap } =
+      chartProcessor.processData()
+
+    return { processedDataBySite, studyTotals, labelMap }
   }
 }
 

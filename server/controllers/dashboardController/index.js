@@ -8,7 +8,6 @@ const DashboardsController = {
     try {
       const { appDb } = req.app.locals
       const { study, subject } = req.params
-
       const user = await UserModel.findOne(appDb, { uid: req.user.uid })
       const userConfigurationQuery = {
         _id: new ObjectId(user.preferences.config),
@@ -16,14 +15,14 @@ const DashboardsController = {
       const config = await ConfigModel.findOne(appDb, userConfigurationQuery)
       const flatConfig = Object.values(config.config).flat()
 
-      const dashboardService = new DashboardService(
+      const { createMatrix, consentDate } = new DashboardService(
         appDb,
         study,
         subject,
         flatConfig
       )
-      const { matrixData, consentDate } =
-        await dashboardService.createDashboard()
+      const participantConsentDate = await consentDate()
+      const matrixData = await createMatrix()
 
       return res.status(200).json({
         data: {
@@ -31,7 +30,7 @@ const DashboardsController = {
           graph: {
             matrixData,
             configurations: flatConfig,
-            consentDate: consentDate,
+            consentDate: participantConsentDate,
           },
         },
       })
