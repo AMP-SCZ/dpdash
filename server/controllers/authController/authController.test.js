@@ -7,7 +7,6 @@ import {
   createUser,
 } from '../../../test/fixtures'
 import { collections } from '../../utils/mongoCollections'
-import UserModel from '../../models/UserModel'
 
 afterEach(() => {
   jest.clearAllMocks()
@@ -223,7 +222,7 @@ describe('AuthController', () => {
       let appDb
 
       beforeAll(async () => {
-        appDb = await global.MONGO_INSTANCE.db('appDb')
+        appDb = await global.MONGO_INSTANCE.db()
       })
 
       beforeEach(async () => {

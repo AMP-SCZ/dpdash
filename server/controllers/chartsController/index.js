@@ -121,7 +121,7 @@ const chartsController = {
       } = req.body
       const { value } = await ChartsModel.update(
         dataDb,
-        { _id: ObjectId(chart_id) },
+        { _id: new ObjectId(chart_id) },
         {
           title,
           variable,

@@ -9,6 +9,27 @@ import { collections } from '../../../utils/mongoCollections'
 describe('assessmentDayDataController', () => {
   describe(AssessmentDayDataController.create, () => {
     describe('When successful', () => {
+      const metadata = {
+        path: 'study-participant-assessment-day1to4.csv',
+        filetype: 'text/csv',
+        encoding: 'utf-8',
+        basename: 'study-participant-assessment-day1to4.csv',
+        dirname: '/path/to/files',
+        mtime: 1234567890.0,
+        size: 1024,
+        uid: 1000,
+        gid: 1000,
+        mode: 420,
+        role: 'data',
+        study: 'study',
+        participant: 'participant',
+        assessment: 'assessment',
+        units: 'day',
+        start: '1',
+        end: '4',
+        extension: '.csv',
+        time_end: '4',
+      }
       let appDb
 
       beforeAll(async () => {
@@ -29,27 +50,7 @@ describe('assessmentDayDataController', () => {
 
       it('creates a participants assessment day data', async () => {
         const data = createNewAssessmentDayData({
-          metadata: {
-            path: 'study-participant-assessment-day1to4.csv',
-            filetype: 'text/csv',
-            encoding: 'utf-8',
-            basename: 'study-participant-assessment-day1to4.csv',
-            dirname: '/path/to/files',
-            mtime: 1234567890.0,
-            size: 1024,
-            uid: 1000,
-            gid: 1000,
-            mode: 420,
-            role: 'data',
-            study: 'study',
-            participant: 'participant',
-            assessment: 'assessment',
-            units: 'day',
-            start: '1',
-            end: '4',
-            extension: '.csv',
-            time_end: '4',
-          },
+          metadata,
           participant_assessments: [
             {
               day: 1,
@@ -288,27 +289,7 @@ describe('assessmentDayDataController', () => {
       })
       it('creates a metadata document', async () => {
         const data = createNewAssessmentDayData({
-          metadata: {
-            path: 'study-participant-assessment-day1to4.csv',
-            filetype: 'text/csv',
-            encoding: 'utf-8',
-            basename: 'study-participant-assessment-day1to4.csv',
-            dirname: '/path/to/files',
-            mtime: 1234567890.0,
-            size: 1024,
-            uid: 1000,
-            gid: 1000,
-            mode: 420,
-            role: 'data',
-            study: 'study',
-            participant: 'participant',
-            assessment: 'assessment',
-            units: 'day',
-            start: '1',
-            end: '4',
-            extension: '.csv',
-            time_end: '4',
-          },
+          metadata,
           participant_assessments: [
             {
               day: 1,

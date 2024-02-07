@@ -5,10 +5,10 @@ import { createRequestWithUser, createResponse } from '../../../test/fixtures'
 describe('chartsDuplicateController', () => {
   describe('create', () => {
     describe('When successful', () => {
-      it('retusna status of 200 and the new chart id', async () => {
-        const sourceChart = ObjectId().toString()
+      it('returns status of 200 and the new chart id', async () => {
+        const sourceChart = new ObjectId().toString()
         const body = { chart_id: sourceChart }
-        const newChartId = ObjectId().toString()
+        const newChartId = new ObjectId().toString()
         const request = createRequestWithUser(body)
         const response = createResponse()
 
@@ -30,7 +30,7 @@ describe('chartsDuplicateController', () => {
     })
     describe('When unsuccessful', () => {
       it('returns a status of 400 and an error message', async () => {
-        const sourceChart = ObjectId().toString()
+        const sourceChart = new ObjectId().toString()
         const body = { chart_id: sourceChart }
         const request = createRequestWithUser(body)
         const response = createResponse()
