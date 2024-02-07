@@ -11,10 +11,10 @@ class DashboardService {
   #salt = 'sha256'
   #subjectKey = 'Subject ID'
 
-  constructor(dataDb, study, subject, configuration) {
+  constructor(appDb, study, subject, configuration) {
     this.configuration = configuration
     this.consentDate = ''
-    this.db = dataDb
+    this.db = appDb
     this.study = study
     this.subject = subject
   }

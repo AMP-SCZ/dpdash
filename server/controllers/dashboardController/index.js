@@ -6,7 +6,7 @@ import DashboardService from '../../services/DashboardService'
 const DashboardsController = {
   show: async (req, res) => {
     try {
-      const { appDb, dataDb } = req.app.locals
+      const { appDb } = req.app.locals
       const { study, subject } = req.params
 
       const user = await UserModel.findOne(appDb, { uid: req.user.uid })
@@ -17,7 +17,7 @@ const DashboardsController = {
       const flatConfig = Object.values(config.config).flat()
 
       const dashboardService = new DashboardService(
-        dataDb,
+        appDb,
         study,
         subject,
         flatConfig

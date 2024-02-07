@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb'
 import qs from 'qs'
 
 import { collections } from '../../utils/mongoCollections'
-import SubjectModel from '../../models/SubjectModel'
+import ParticipantsModel from '../../models/ParticipantsModel'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import CsvService from '../../services/CSVService'
@@ -12,7 +12,7 @@ import UserModel from '../../models/UserModel'
 
 const show = async (req, res, next) => {
   try {
-    const { dataDb, appDb } = req.app.locals
+    const { appDb } = req.app.locals
     const user = await UserModel.findOne(appDb, { uid: req.user.uid })
     const userSites = StudiesModel.sanitizeAndSort(user.access)
     const { chart_id } = req.params
@@ -21,18 +21,19 @@ const show = async (req, res, next) => {
       parsedQueryParams.filters,
       userSites
     )
-    const chart = await dataDb
-      .collection(collections.charts)
-      .findOne({ _id: new ObjectId(chart_id) })
-    const chartService = new BarChartService(dataDb, chart)
+    const chart = await appDb.collection(collections.charts).findOne({
+      _id: new ObjectId(chart_id),
+    })
+    const chartService = new BarChartService(appDb, chart)
     const filters = filtersService.filters
-    const subjects = await SubjectModel.allForAssessment(
-      dataDb,
-      chart.assessment,
+    const participants = await ParticipantsModel.allForAssessment(
+      appDb,
+      chart,
       filtersService
     )
-    const { dataBySite, labels, studyTotals } = await chartService.createChart(
-      subjects,
+
+    const { dataBySite, labels, studyTotals } = chartService.createChart(
+      participants,
       filters.sites
     )
     const chartTableService = new BarChartTableService(dataBySite, labels)
@@ -76,8 +77,6 @@ const show = async (req, res, next) => {
     }
     return res.status(200).json({ data: graph })
   } catch (err) {
-    console.error(err.stack)
-
     return res.status(500).send({ message: err.message })
   }
 }

@@ -33,7 +33,7 @@ describe('assessmentDayDataController', () => {
       let appDb
 
       beforeAll(async () => {
-        appDb = await global.MONGO_INSTANCE.db()
+        appDb = await global.MONGO_INSTANCE.db('assessmentDayData')
       })
       beforeEach(async () => {
         await appDb.createCollection(collections.metadata)
@@ -323,36 +323,36 @@ describe('assessmentDayDataController', () => {
             {
               projection: {
                 _id: 0,
-                'subjects.Consent': 0,
-                'subjects.synced': 0,
+                'participants.Consent': 0,
+                'participants.synced': 0,
               },
             }
           )
 
         expect(newDocument).toEqual({
           study: 'study',
-          subjects: [
+          participants: [
             {
               Active: 1,
               study: 'study',
-              subject: 'participant',
+              participant: 'participant',
             },
           ],
         })
-        expect(newDocument.subjects.length).toEqual(1)
+        expect(newDocument.participants.length).toEqual(1)
       })
 
       it('updates a metadata document', async () => {
         const participant = {
           Active: 1,
           study: 'study',
-          subject: 'participant',
+          participant: 'participant',
           Consent: new Date('2022-06-09'),
         }
 
         await appDb.collection(collections.metadata).insertOne({
           study: 'study',
-          subjects: [participant],
+          participants: [participant],
         })
 
         const data = createNewAssessmentDayData({
@@ -414,7 +414,7 @@ describe('assessmentDayDataController', () => {
             }
           )
 
-        expect(newDocument.subjects[0]).toHaveProperty('synced')
+        expect(newDocument.participants[0]).toHaveProperty('synced')
       })
     })
     describe('When unsuccessful', () => {
