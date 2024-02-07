@@ -36,7 +36,6 @@ const AssessmentDayDataController = {
           dayData: participant_assessments,
         })
       }
-
       const studyMetadata = await SiteMetadataModel.findOne(appDb, {
         study,
       })
