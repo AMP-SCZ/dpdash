@@ -56,12 +56,12 @@ const AssessmentDayDataController = {
           {
             $set: {
               study,
-              subjects: [
+              participants: [
                 {
                   Active: 1,
                   Consent: new Date(),
                   study,
-                  subject: participant,
+                  participant,
                   synced: new Date(),
                 },
               ],
@@ -71,8 +71,8 @@ const AssessmentDayDataController = {
       } else {
         await SiteMetadataModel.upsert(
           appDb,
-          { subjects: { $elemMatch: { subject: participant } } },
-          { $set: { 'subjects.$.synced': new Date() } }
+          { participants: { $elemMatch: { participant } } },
+          { $set: { 'participants.$.synced': new Date() } }
         )
       }
 

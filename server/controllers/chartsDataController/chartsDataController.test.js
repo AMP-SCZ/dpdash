@@ -80,7 +80,7 @@ describe('chartsDataController', () => {
       const filtersService = new FiltersService()
       mockWebsiteTableData.mockReturnValueOnce(graphTable)
       request.app.locals.appDb.findOne.mockResolvedValueOnce(chartOwner)
-      request.app.locals.dataDb.findOne.mockResolvedValueOnce(chart)
+      request.app.locals.appDb.findOne.mockResolvedValueOnce(chart)
       request.app.locals.appDb.findOne.mockResolvedValueOnce(chartOwner)
 
       await chartsDataController.show(request, response)

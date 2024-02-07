@@ -237,18 +237,19 @@ export const createAssessmentsFromConfig = (overrides = {}) => ({
 export const createMetadataParticipant = (overrides = {}) => ({
   Active: 1,
   Consent: '',
-  subject: '',
+  participant: '',
   synced: '',
   study: '',
   ...overrides,
 })
 
 export const createParticipantRow = (overrides = {}) => ({
-  subject: 'CA00066',
+  participant: 'CA00066',
   days: 1,
   study: 'CA',
   star: true,
   complete: true,
+  ...overrides,
 })
 
 export const createParticipantList = (length = 10, overrides = {}) =>

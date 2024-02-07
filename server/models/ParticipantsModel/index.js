@@ -3,8 +3,8 @@ import { ASC } from '../../constants'
 
 const $Consent = '$Consent'
 const participant = 'participant'
-const $subject = '$subject'
-const $subjects = '$subjects'
+const $participant = '$participant'
+const $participants = '$participants'
 const $synced = '$synced'
 const timeUnit = 'day'
 
@@ -20,15 +20,15 @@ const allParticipantsQuery = (user, queryParams) => {
   const { star, complete } = user.preferences
   const starred = star ? Object.values(star).flat() : []
   const completed = complete ? Object.values(complete).flat() : []
-  const { status, sortBy, sortDirection, searchSubjects, studies } = queryParams
+  const { status, sortBy, sortDirection, searchParticipants, studies } =
+    queryParams
   const direction = sortDirection === ASC ? 1 : -1
   const sort = { $sort: { star: -1, [sortBy]: direction } }
   const studiesSet = new Set(studies?.length ? studies : user.access)
 
-  searchSubjects?.forEach((participant) =>
+  searchParticipants?.forEach((participant) =>
     studiesSet.add(`${participant[0]}${participant[1]}`)
   )
-
   const studiesQuery = Array.from(studiesSet)
 
   const query = [
@@ -44,18 +44,18 @@ const allParticipantsQuery = (user, queryParams) => {
       },
     },
 
-    { $unwind: $subjects },
-    { $replaceRoot: { newRoot: $subjects } },
+    { $unwind: $participants },
+    { $replaceRoot: { newRoot: $participants } },
     {
       $project: {
         Active: 1,
         Consent: 1,
         complete: {
-          $in: [$subject, completed],
+          $in: [$participant, completed],
         },
         days: 1,
         star: {
-          $in: [$subject, starred],
+          $in: [$participant, starred],
         },
         study: 1,
         participant: 1,
@@ -83,7 +83,7 @@ const allParticipantsQuery = (user, queryParams) => {
     },
   ]
 
-  if (searchSubjects?.length) {
+  if (searchParticipants?.length) {
     if (studies?.length) {
       query.push({
         $match: {
@@ -94,8 +94,8 @@ const allParticipantsQuery = (user, queryParams) => {
               },
             },
             {
-              subject: {
-                $in: searchSubjects,
+              participant: {
+                $in: searchParticipants,
               },
             },
           ],
@@ -106,8 +106,8 @@ const allParticipantsQuery = (user, queryParams) => {
         $match: {
           $or: [
             {
-              subject: {
-                $in: searchSubjects,
+              participant: {
+                $in: searchParticipants,
               },
             },
           ],
@@ -119,9 +119,9 @@ const allParticipantsQuery = (user, queryParams) => {
   if (status) {
     query.splice(1, 0, {
       $project: {
-        subjects: {
+        participants: {
           $filter: {
-            input: $subjects,
+            input: $participants,
             as: participant,
             cond: { $eq: ['$$participant.Active', +status] },
           },

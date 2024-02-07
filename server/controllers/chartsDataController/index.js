@@ -12,7 +12,7 @@ import UserModel from '../../models/UserModel'
 
 const show = async (req, res, next) => {
   try {
-    const { dataDb, appDb } = req.app.locals
+    const { appDb } = req.app.locals
     const user = await UserModel.findOne(appDb, { uid: req.user.uid })
     const userSites = StudiesModel.sanitizeAndSort(user.access)
     const { chart_id } = req.params
@@ -21,13 +21,15 @@ const show = async (req, res, next) => {
       parsedQueryParams.filters,
       userSites
     )
-    const chart = await dataDb
-      .collection(collections.charts)
-      .findOne({ _id: new ObjectId(chart_id) })
-    const chartService = new BarChartService(dataDb, chart)
+    const chart = await appDb.collection(collections.charts).findOne({
+      _id: {
+        $oid: chart_id,
+      },
+    })
+    const chartService = new BarChartService(chart)
     const filters = filtersService.filters
     const subjects = await SubjectModel.allForAssessment(
-      dataDb,
+      appDb,
       chart.assessment,
       filtersService
     )

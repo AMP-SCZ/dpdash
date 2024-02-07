@@ -33,7 +33,7 @@ describe('chartsShareController', () => {
         const response = createResponse()
         const chart = createChart({ _id: sourceChart.toString(), sharedWith })
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(chart)
+        request.app.locals.appDb.findOneAndUpdate.mockResolvedValueOnce(chart)
 
         await chartsShareController.create(request, response)
 
@@ -52,7 +52,7 @@ describe('chartsShareController', () => {
         const request = createRequestWithUser({ body, params })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOneAndUpdate.mockRejectedValueOnce(
+        request.app.locals.appDb.findOneAndUpdate.mockRejectedValueOnce(
           new Error('update error')
         )
 

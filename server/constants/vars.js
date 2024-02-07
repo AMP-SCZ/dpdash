@@ -24,7 +24,7 @@ export const PASSPORT_FIELDS_ATTRIBUTES = {
 }
 
 export const DEFAULT_PARTICIPANTS_SORT = {
-  sortBy: 'subject',
+  sortBy: 'participant',
   sortDirection: ASC,
 }
 

@@ -12,11 +12,11 @@ describe('chartsDuplicateController', () => {
         const request = createRequestWithUser(body)
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce({
+        request.app.locals.appDb.findOne.mockResolvedValueOnce({
           _id: sourceChart,
         })
 
-        request.app.locals.dataDb.insertOne.mockResolvedValueOnce({
+        request.app.locals.appDb.insertOne.mockResolvedValueOnce({
           insertedId: newChartId,
         })
 
@@ -35,10 +35,10 @@ describe('chartsDuplicateController', () => {
         const request = createRequestWithUser(body)
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce({
+        request.app.locals.appDb.findOne.mockResolvedValueOnce({
           _id: sourceChart,
         })
-        request.app.locals.dataDb.insertOne.mockRejectedValueOnce(
+        request.app.locals.appDb.insertOne.mockRejectedValueOnce(
           new Error('error message')
         )
 

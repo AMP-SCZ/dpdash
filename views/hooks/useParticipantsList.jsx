@@ -14,7 +14,7 @@ export default function useParticipantsList() {
   const [loading, setLoading] = useState(true)
   const [participants, setParticipants] = useState([])
   const [formFilters, setFormFilters] = useState({
-    searchSubjects: [],
+    searchParticipants: [],
     studies: [],
     status: undefined,
   })
@@ -27,9 +27,11 @@ export default function useParticipantsList() {
     const sortParams = {
       ...(sortBy ? { sortBy } : {}),
       ...(sortDirection ? { sortDirection } : {}),
-      ...(formFilters.searchSubjects.length
+      ...(formFilters.searchParticipants.length
         ? {
-            searchSubjects: normalizeSearchSubjects(formFilters.searchSubjects),
+            searchParticipants: normalizeSearchParticipants(
+              formFilters.searchParticipants
+            ),
           }
         : {}),
       ...(formFilters?.status || formFilters?.status === 0
@@ -73,15 +75,15 @@ export default function useParticipantsList() {
     const { studies, participants, status } = formData
 
     setFormFilters({
-      searchSubjects: participants,
+      searchParticipants: participants,
       studies,
       status,
     })
     setLoading(true)
   }
 
-  const normalizeSearchSubjects = (searchSubjects) =>
-    searchSubjects.map(({ value }) => value)
+  const normalizeSearchParticipants = (searchParticipants) =>
+    searchParticipants.map(({ value }) => value)
 
   useEffect(() => {
     fetchParticipants().then((participantsList) => {

@@ -16,7 +16,7 @@ describe('chartsController', () => {
         const request = createRequestWithUser()
         const response = createResponse()
 
-        request.app.locals.dataDb.insertOne.mockResolvedValueOnce({
+        request.app.locals.appDb.insertOne.mockResolvedValueOnce({
           insertedId: 'chart-id',
         })
 
@@ -34,7 +34,7 @@ describe('chartsController', () => {
         const request = createRequestWithUser()
         const response = createResponse()
 
-        request.app.locals.dataDb.insertOne.mockImplementation(() => {
+        request.app.locals.appDb.insertOne.mockImplementation(() => {
           throw new Error('some error')
         })
 
@@ -50,25 +50,23 @@ describe('chartsController', () => {
 
   describe('index', () => {
     describe('When successful', () => {
-      let dataDb
       let appDb
 
       beforeAll(async () => {
         appDb = await global.MONGO_INSTANCE.db()
-        dataDb = await global.MONGO_INSTANCE.db('dpdata')
       })
 
       beforeEach(async () => {
-        await dataDb.createCollection(collections.charts)
+        await appDb.createCollection(collections.charts)
+        await appDb.createCollection(collections.users)
       })
 
       afterEach(async () => {
         await appDb.collection(collections.users).drop()
-        await dataDb.collection(collections.charts).drop()
+        await appDb.collection(collections.charts).drop()
       })
 
       afterAll(async () => {
-        await dataDb.dropDatabase()
         await appDb.dropDatabase()
       })
 
@@ -96,13 +94,13 @@ describe('chartsController', () => {
           favoriteCharts: [chart3._id],
         })
         await appDb.collection(collections.users).insertOne(user)
-        await dataDb
+        await appDb
           .collection(collections.charts)
           .insertMany([chart1, chart2, chart3])
 
         const request = createRequestWithUser(
           {
-            app: { locals: { dataDb: dataDb, appDb: appDb } },
+            app: { locals: { appDb } },
             query: { sortBy: 'title', sortDirection: 'ASC' },
           },
           await UserModel.findOne(appDb, { uid: user.uid })
@@ -161,13 +159,13 @@ describe('chartsController', () => {
         await appDb
           .collection(collections.users)
           .insertMany([user, anotherUser])
-        await dataDb
+        await appDb
           .collection(collections.charts)
           .insertMany([chart1, chart2, chart3])
 
         const request = createRequestWithUser(
           {
-            app: { locals: { dataDb: dataDb, appDb: appDb } },
+            app: { locals: { appDb } },
             query: { search: 'recent', sortBy: 'title', sortDirection: 'ASC' },
           },
           await UserModel.findOne(appDb, { uid: user.uid })
@@ -211,10 +209,10 @@ describe('chartsController', () => {
         const request = createRequestWithUser(params, { uid: 'user-id' })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce({
+        request.app.locals.appDb.findOne.mockResolvedValueOnce({
           owner: 'user-id',
         })
-        request.app.locals.dataDb.deleteOne.mockResolvedValueOnce({
+        request.app.locals.appDb.deleteOne.mockResolvedValueOnce({
           deletedCount: 1,
         })
 
@@ -230,10 +228,10 @@ describe('chartsController', () => {
         const request = createRequestWithUser(params, { uid: 'user-id' })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce({
+        request.app.locals.appDb.findOne.mockResolvedValueOnce({
           owner: 'user-id',
         })
-        request.app.locals.dataDb.deleteOne.mockRejectedValueOnce(
+        request.app.locals.appDb.deleteOne.mockRejectedValueOnce(
           new Error('Some error')
         )
 
@@ -256,7 +254,7 @@ describe('chartsController', () => {
         const response = createResponse()
         const chart = createChart()
 
-        request.app.locals.dataDb.findOne.mockResolvedValueOnce(chart)
+        request.app.locals.appDb.findOne.mockResolvedValueOnce(chart)
 
         await chartsController.show(request, response)
 
@@ -273,7 +271,7 @@ describe('chartsController', () => {
         const request = createRequestWithUser(params)
         const response = createResponse()
 
-        request.app.locals.dataDb.findOne.mockRejectedValueOnce(
+        request.app.locals.appDb.findOne.mockRejectedValueOnce(
           new Error('some error')
         )
 
@@ -305,7 +303,7 @@ describe('chartsController', () => {
         })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(
+        request.app.locals.appDb.findOneAndUpdate.mockResolvedValueOnce(
           updatedChart
         )
 
@@ -334,7 +332,7 @@ describe('chartsController', () => {
         })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOneAndUpdate.mockRejectedValueOnce(
+        request.app.locals.appDb.findOneAndUpdate.mockRejectedValueOnce(
           new Error('Chart not found error')
         )
 

@@ -47,7 +47,7 @@ const UserModel = {
       projection: includeOrExcludeFields,
     })
   },
-  update: async (db, dataDb, uid, userUpdates) => {
+  update: async (db, uid, userUpdates) => {
     const user = await UserModel.findOne(db, { uid })
     const updatedUser = { preferences: {}, ...user, ...userUpdates }
 

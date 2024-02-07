@@ -33,7 +33,6 @@ const ConfigurationsController = {
       const currentConfig = await ConfigModel.findOne(appDb, {
         _id: new ObjectId(config_id),
       })
-
       return res.status(200).json({ data: currentConfig })
     } catch (error) {
       return res.status(400).json({ error: error.message })
