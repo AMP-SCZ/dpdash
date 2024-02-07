@@ -52,9 +52,9 @@ const UserModel = {
     const updatedUser = { preferences: {}, ...user, ...userUpdates }
 
     if (updatedUser.role === admin)
-      updatedUser.access = await StudiesModel.all(dataDb)
+      updatedUser.access = await StudiesModel.all(db)
 
-    const { value } = await db.collection(collections.users).findOneAndUpdate(
+    const value = await db.collection(collections.users).findOneAndUpdate(
       { uid },
       {
         $set: updatedUser,

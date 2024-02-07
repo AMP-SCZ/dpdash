@@ -8,7 +8,7 @@ const chartsShareController = {
         const { chart_id } = req.params
         const { dataDb } = req.app.locals
         const { sharedWith } = req.body
-        const { value } = await ChartsModel.update(
+        const value = await ChartsModel.update(
           dataDb,
           { _id: new ObjectId(chart_id) },
           {
