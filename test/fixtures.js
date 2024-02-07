@@ -368,7 +368,7 @@ export const createToc = (overrides = {}) => ({
 
 export const createNewAssessmentDayData = (overrides = {}) => ({
   metadata: {},
-  subject_assessments: [],
+  participant_assessments: [],
   ...overrides,
 })
 
