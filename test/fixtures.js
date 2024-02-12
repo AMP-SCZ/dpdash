@@ -58,6 +58,7 @@ export const createDb = (overrides = {}) => ({
   }),
   distinct: jest.fn(),
   deleteOne: jest.fn(),
+  drop: jest.fn(),
   insertOne: jest.fn(),
   insertMany: jest.fn(),
   find: jest.fn(function () {
@@ -234,11 +235,11 @@ export const createAssessmentsFromConfig = (overrides = {}) => ({
 })
 
 export const createMetadataParticipant = (overrides = {}) => ({
+  Active: 1,
+  Consent: '',
   subject: '',
   synced: '',
-  days: 1,
   study: '',
-  lastSyncedColor: '',
   ...overrides,
 })
 

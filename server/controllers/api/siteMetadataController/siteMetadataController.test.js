@@ -5,20 +5,22 @@ import {
   createSiteMetadata,
 } from '../../../../test/fixtures'
 
-let dataDb
-
 describe('siteMetadataController', () => {
   describe(SiteMetadataController.create, () => {
     describe('When new data is imported', () => {
+      let dataDb
+
       beforeAll(() => {
         dataDb = global.MONGO_INSTANCE.db('dpdata')
       })
-
       beforeEach(async () => {
         await dataDb.createCollection('metadata')
       })
       afterEach(async () => {
         await dataDb.collection('metadata').drop()
+      })
+      afterAll(async () => {
+        await dataDb.dropDatabase()
       })
 
       it('creates new metadata document', async () => {
@@ -37,8 +39,8 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'CA1', Active: 4, Consent: '-', study: 'CA' },
-            { subject: 'CA2', Active: 3, Consent: '-', study: 'CA' },
+            { subject: 'CA1', Active: 4, Consent: '2022-06-02', study: 'CA' },
+            { subject: 'CA2', Active: 3, Consent: '2022-06-02', study: 'CA' },
           ],
         })
         const request = createRequest({
@@ -71,7 +73,7 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'LA3', Active: 5, Consent: '-', study: 'LA' },
+            { subject: 'LA3', Active: 5, Consent: '2022-06-02', study: 'LA' },
           ],
         })
         const request = createRequest({
@@ -79,24 +81,6 @@ describe('siteMetadataController', () => {
           app: { locals: { dataDb: dataDb } },
         })
         const response = createResponse()
-
-        await dataDb.collection('metadata').insertOne({
-          filetype: 'text/csv',
-          encoding: 'utf-8',
-          dirname: '/path/to/files',
-          mtime: 1234567890.0,
-          size: 1024,
-          uid: 1000,
-          gid: 1000,
-          mode: 420,
-          role: 'metadata',
-          study: 'LA',
-          extension: '.csv',
-          subjects: [
-            { subject: 'LA1', Active: 1, Consent: '-', study: 'LA' },
-            { subject: 'LA2', Active: 1, Consent: '-', study: 'LA' },
-          ],
-        })
 
         await SiteMetadataController.create(request, response)
 
@@ -122,8 +106,8 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 4, Consent: '-', study: 'YA' },
-            { subject: 'YA2', Active: 3, Consent: '-', study: 'YA' },
+            { subject: 'YA1', Active: 4, Consent: '2022-06-02', study: 'YA' },
+            { subject: 'YA2', Active: 3, Consent: '2022-06-02', study: 'YA' },
           ],
         })
         const request = createRequest({
@@ -132,24 +116,6 @@ describe('siteMetadataController', () => {
         })
         const response = createResponse()
 
-        await dataDb.collection('metadata').insertOne({
-          filetype: 'text/csv',
-          encoding: 'utf-8',
-          dirname: '/path/to/files',
-          mtime: 1234567890.0,
-          size: 1024,
-          uid: 1000,
-          gid: 1000,
-          mode: 420,
-          role: 'metadata',
-          study: 'YA',
-          extension: '.csv',
-          subjects: [
-            { subject: 'YA1', Active: 1, Consent: '-', study: 'YA' },
-            { subject: 'YA2', Active: 1, Consent: '-', study: 'YA' },
-          ],
-        })
-
         await SiteMetadataController.create(request, response)
 
         const updatedDocs = await dataDb
@@ -157,8 +123,18 @@ describe('siteMetadataController', () => {
           .findOne({ study: 'YA' })
 
         expect(updatedDocs.subjects).toEqual([
-          { subject: 'YA1', Active: 4, Consent: '-', study: 'YA' },
-          { subject: 'YA2', Active: 3, Consent: '-', study: 'YA' },
+          {
+            subject: 'YA1',
+            Active: 4,
+            Consent: new Date('2022-06-02'),
+            study: 'YA',
+          },
+          {
+            subject: 'YA2',
+            Active: 3,
+            Consent: new Date('2022-06-02'),
+            study: 'YA',
+          },
         ])
       })
     })
@@ -179,8 +155,8 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 1, Consent: '-', study: 'YA' },
-            { subject: 'YA2', Active: 1, Consent: '-', study: 'YA' },
+            { subject: 'YA1', Active: 1, Consent: '2022-06-02', study: 'YA' },
+            { subject: 'YA2', Active: 1, Consent: '2022-06-02', study: 'YA' },
           ],
         })
 
@@ -218,8 +194,8 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 1, Consent: '-', study: 'YA' },
-            { subject: 'YA2', Active: 1, Consent: '-', study: 'YA' },
+            { subject: 'YA1', Active: 1, Consent: '2022-06-02', study: 'YA' },
+            { subject: 'YA2', Active: 1, Consent: '2022-06-02', study: 'YA' },
           ],
         })
 
@@ -233,6 +209,51 @@ describe('siteMetadataController', () => {
         await SiteMetadataController.create(request, response)
 
         expect(response.status).toHaveBeenCalledWith(401)
+        expect(response.json).toHaveBeenCalledWith({
+          message: 'some error',
+        })
+      })
+    })
+  })
+  describe(SiteMetadataController.destroy, () => {
+    describe('When successful', () => {
+      let dataDb
+
+      beforeAll(() => {
+        dataDb = global.MONGO_INSTANCE.db('dpdata')
+      })
+      beforeEach(async () => {
+        await dataDb.createCollection('metadata')
+      })
+      afterAll(async () => {
+        await dataDb.dropDatabase()
+      })
+
+      it('removes the metadata collection', async () => {
+        const request = createRequest()
+        const response = createResponse()
+
+        await SiteMetadataController.destroy(request, response)
+
+        expect(response.status).toHaveBeenCalledWith(200)
+        expect(response.json).toHaveBeenCalledWith({
+          data: 'Metadata collection restarted',
+        })
+      })
+    })
+    describe('When unsuccessful', () => {
+      it('returns a status of 200 and an error', async () => {
+        const request = createRequest()
+        const response = createResponse()
+
+        request.app.locals.dataDb.collection.mockImplementation(() => {
+          return {
+            drop: jest.fn().mockRejectedValueOnce(new Error('some error')),
+          }
+        })
+        await SiteMetadataController.destroy(request, response)
+
+        expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
           message: 'some error',
         })

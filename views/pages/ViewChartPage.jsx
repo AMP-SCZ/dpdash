@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import qs from 'qs'
 import FileSaver from 'file-saver'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import { Typography, Avatar } from '@mui/material'
+import { Typography, Avatar, Box } from '@mui/material'
 
 import BarGraph from '../components/BarGraph'
 import GraphTable from '../components/GraphTable'
@@ -19,7 +19,11 @@ const ViewChartPage = () => {
   const onSubmit = async (formValues) => {
     const filters = {
       ...formValues,
-      sites: formValues.sites.map((option) => option.value),
+      sites: formValues.sites.reduce((siteFilters, option) => {
+        siteFilters[option.label] = option.value
+
+        return siteFilters
+      }, {}),
     }
     const newRoute = routes.viewChart(chart_id, { filters })
 
@@ -27,6 +31,7 @@ const ViewChartPage = () => {
   }
   const fetchGraph = async (chart_id, filters) =>
     await api.charts.chartsData.show(chart_id, { filters })
+
   const fetchGraphTableCSV = async (chart_id, filters, filename) => {
     const res = await fetch(apiRoutes.chartCsv.show(chart_id, { filters }), {
       headers: {
@@ -55,9 +60,11 @@ const ViewChartPage = () => {
   if (!graph) return <div>Loading...</div>
 
   return (
-    <>
+    <Box sx={{ p: '25px' }}>
       {graph.description && (
         <div>
+          <Typography variant="h4">{graph.title}</Typography>
+
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar
               alt={graph.chartOwner.display_name}
@@ -87,7 +94,7 @@ const ViewChartPage = () => {
       {!!graph.dataBySite.length && (
         <GraphTable graph={graph} onGetCsv={fetchGraphTableCSV} />
       )}
-    </>
+    </Box>
   )
 }
 

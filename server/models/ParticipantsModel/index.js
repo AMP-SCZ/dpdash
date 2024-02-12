@@ -1,9 +1,12 @@
 import { collections } from '../../utils/mongoCollections'
 import { ASC } from '../../constants'
 
-const $subjects = '$subjects'
-const $subject = '$subject'
+const $Consent = '$Consent'
 const participant = 'participant'
+const $subject = '$subject'
+const $subjects = '$subjects'
+const $synced = '$synced'
+const timeUnit = 'day'
 
 const ParticipantsModel = {
   index: async (db, user, queryParams) =>
@@ -45,17 +48,37 @@ const allParticipantsQuery = (user, queryParams) => {
     { $replaceRoot: { newRoot: $subjects } },
     {
       $project: {
-        subject: 1,
-        days: 1,
-        study: 1,
-        synced: 1,
-        star: {
-          $in: [$subject, starred],
-        },
+        Active: 1,
+        Consent: 1,
         complete: {
           $in: [$subject, completed],
         },
-        Active: 1,
+        days: 1,
+        star: {
+          $in: [$subject, starred],
+        },
+        study: 1,
+        subject: 1,
+        synced: 1,
+        daysInStudy: {
+          $cond: {
+            if: { $ne: [$synced, null] },
+            then: {
+              $dateDiff: {
+                startDate: { $toDate: $Consent },
+                endDate: { $toDate: $synced },
+                unit: timeUnit,
+              },
+            },
+            else: {
+              $dateDiff: {
+                startDate: { $toDate: $Consent },
+                endDate: new Date(),
+                unit: timeUnit,
+              },
+            },
+          },
+        },
       },
     },
   ]
@@ -107,6 +130,7 @@ const allParticipantsQuery = (user, queryParams) => {
     })
   }
   query.push(sort)
+
   return query
 }
 
