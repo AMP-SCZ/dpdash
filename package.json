@@ -14,6 +14,7 @@
     "test": "concurrently \"npm run test:ui\" \"npm run test:server\"",
     "test:ui": "jest --env=jsdom --config=jestUIConfig.js views/",
     "test:server": "jest --config=jestServerConfig.js server/",
+    "test:cdk": "jest --config=jestCdkConfig.js cdk_lib/",
     "bootstrap": "cdk bootstrap",
     "deploy": "cdk deploy"
   },
