@@ -13,6 +13,7 @@ describe('DPDashCDKStack', () => {
       BASE_DOMAIN: 'dpdash.example.com',
       APP_MEMORY: '2048',
       APP_CPU: '1024',
+      DPDASH_DEV: '1',
       ...overrides
     }
   }
@@ -24,19 +25,28 @@ describe('DPDashCDKStack', () => {
   }
 
   beforeEach(() => {
-    jest.resetModules() // Most important - it clears the cache
-    process.env = { ...OLD_ENV }; // Make a copy
+    jest.resetModules()
+    process.env = { ...OLD_ENV };
   });
 
   afterAll(() => {
-    process.env = OLD_ENV; // Restore old environment
+    process.env = OLD_ENV;
   });
 
-  it('creates a DocumentDB Cluster', async () => {
+  it('creates a DocumentDB Cluster', () => {
     setEnv()
     const template = createTemplate()
 
     template.hasResource('AWS::DocDB::DBCluster', {})
     template.hasResource('AWS::DocDB::DBInstance', {})
+  })
+
+  it('creates an Application Load Balanced Fargate Service', () => {
+    setEnv()
+    const template = createTemplate()
+
+    template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {})
+    template.hasResource('AWS::ECS::Cluster', {})
+    template.hasResource('AWS::ECS::Service', {})
   })
 })

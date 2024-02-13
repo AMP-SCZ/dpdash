@@ -12,8 +12,6 @@ import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as secrets_manager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from 'constructs';
 
-const IS_DEV = process.env.DPDASH_DEV === "1"
-const APP_NAME =  IS_DEV ? "DpDashDev" : "DPDash";
 
 export class DpdashCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -24,6 +22,9 @@ export class DpdashCdkStack extends cdk.Stack {
       },
       ...props,
     });
+    const IS_DEV = process.env.DPDASH_DEV === "1"
+    const APP_NAME =  IS_DEV ? "DpDashDev" : "DPDash";
+
     let certArn
     let sesIdentityArn
     let cert
