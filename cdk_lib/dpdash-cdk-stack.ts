@@ -12,7 +12,8 @@ import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as secrets_manager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from 'constructs';
 
-const APP_NAME = process.env.DEV === "1" ? "DpDashDev" : "DPDash";
+const IS_DEV = process.env.DPDASH_DEV === "1"
+const APP_NAME =  IS_DEV ? "DpDashDev" : "DPDash";
 
 export class DpdashCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -31,10 +32,7 @@ export class DpdashCdkStack extends cdk.Stack {
       throw new Error('Missing required environment variables: BASE_DOMAIN, ADMIN_EMAIL, EMAIL_SENDER');
     }
 
-    if (process.env.DEV_CERT_ARN) {
-      certArn = process.env.DEV_CERT_ARN;
-      sesIdentityArn = `arn:aws:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${process.env.BASE_DOMAIN}`
-    } else {
+    if (IS_DEV) {
       const hostedZone = new route53.PublicHostedZone(this, `${APP_NAME}HostedZone`, {
         zoneName: process.env.BASE_DOMAIN
       });
@@ -50,7 +48,15 @@ export class DpdashCdkStack extends cdk.Stack {
 
       certArn = cert.certificateArn;
       sesIdentityArn = `arn:aws:ses:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:identity/${process.env.BASE_DOMAIN}`
+    } else {
+      if (!process.env.CERT_ARN || !process.env.SES_IDENTITY_ARN) {
+        throw new Error("Missing required environment variables: CERT_ARN, SES_IDENTITY_ARN")
+      }
+      certArn = process.env.CERT_ARN
+      sesIdentityArn = process.env.SES_IDENTITY_ARN
     }
+
+
     const secrets = {
       sessionSecretDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}SessionDevSecret`, {
         parameterName: 'DPDASH_SESSION_SECRET',
@@ -119,7 +125,7 @@ export class DpdashCdkStack extends cdk.Stack {
         MONGODB_USER: 'dpdash',
         ADMIN_EMAIL: process.env.ADMIN_EMAIL,
         EMAIL_SENDER: process.env.EMAIL_SENDER,
-        HOME_URL: `https://staging.${process.env.BASE_DOMAIN}/admin`,
+        HOME_URL: `https://${process.env.BASE_DOMAIN}/admin`,
       },
       secrets: {
         MONGODB_PASSWORD: ecs.Secret.fromSecretsManager(ddbPassSecret, "password"),
@@ -139,11 +145,11 @@ export class DpdashCdkStack extends cdk.Stack {
       }),
       taskDefinition: appTaskDefinition,
       assignPublicIp: true,
-      publicLoadBalancer: false,
+      publicLoadBalancer: IS_DEV,
       redirectHTTP: true,
       certificate: cert || certificate_manager.Certificate.fromCertificateArn(this, `${APP_NAME}Certificate`, certArn),
       taskSubnets: {
-        subnets: vpc.privateSubnets
+        subnets: IS_DEV ? vpc.publicSubnets.concat(vpc.privateSubnets) : vpc.privateSubnets
       },
     });
 
