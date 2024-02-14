@@ -33,6 +33,13 @@ describe('DPDashCDKStack', () => {
     process.env = OLD_ENV;
   });
 
+  it('creates a VPC', () => {
+    setEnv()
+    const template = createTemplate()
+
+    template.hasResource('AWS::EC2::VPC', {})
+  })
+
   it('creates a DocumentDB Cluster', () => {
     setEnv()
     const template = createTemplate()
@@ -48,5 +55,53 @@ describe('DPDashCDKStack', () => {
     template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {})
     template.hasResource('AWS::ECS::Cluster', {})
     template.hasResource('AWS::ECS::Service', {})
+  })
+
+  describe('when the DPDASH_DEV flag is set to "1"', () => {
+    it('creates a Hosted Zone', () => {
+      setEnv()
+      const template = createTemplate()
+      template.hasResource('AWS::Route53::HostedZone', {})
+    })
+
+    it('creates a Certificate', () => {
+      setEnv()
+      const template = createTemplate()
+      template.hasResource('AWS::CertificateManager::Certificate', {})
+    })
+
+    it('creates an SES Email Identity', () => {
+      setEnv()
+      const template = createTemplate()
+      template.hasResource('AWS::SES::EmailIdentity', {})
+    })
+
+    it('creates a public Application Load Balanced Fargate Service', () => {
+      setEnv()
+      const template = createTemplate()
+
+      template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+        'Properties': {
+          'Scheme': 'internet-facing'
+        }
+      })
+    })
+  })
+  describe('when the DPDASH_DEV flag is not set to "1"', () => {
+    it('throws an error if the CERT_ARN and SES_IDENTITY_ARN are missing', () => {
+      setEnv({ DPDASH_DEV: undefined })
+      expect(createTemplate).toThrowError("Missing required environment variables: CERT_ARN, SES_IDENTITY_ARN")
+    })
+
+    it('creates a private Application Load Balanced Fargate Service', () => {
+      setEnv({ DPDASH_DEV: undefined, CERT_ARN: 'foo', SES_IDENTITY_ARN: 'bar' })
+      const template = createTemplate()
+
+      template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+        'Properties': {
+          'Scheme': 'internal'
+        }
+      })
+    })
   })
 })
