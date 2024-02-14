@@ -60,15 +60,15 @@ export class DpdashCdkStack extends cdk.Stack {
 
     const secrets = {
       sessionSecretDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}SessionDevSecret`, {
-        parameterName: 'DPDASH_SESSION_SECRET',
+        parameterName: 'DPDASH_SESSION_SECRET' + IS_DEV ? '_DEV' : '',
         version: 1,
       })),
       importApiUsersDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiUsers`, {
-        parameterName: 'DPDASH_IMPORT_API_USERS',
+        parameterName: 'DPDASH_IMPORT_API_USERS' + IS_DEV ? '_DEV' : '',
         version: 1,
       })),
       importApiKeysDev: ecs.Secret.fromSsmParameter(ssm.StringParameter.fromSecureStringParameterAttributes(this, `${APP_NAME}ImportApiKeysDev`, {
-        parameterName: 'DPDASH_IMPORT_API_KEYS',
+        parameterName: 'DPDASH_IMPORT_API_KEYS' + IS_DEV ? '_DEV' : '',
         version: 1,
       })),
     }
@@ -102,7 +102,7 @@ export class DpdashCdkStack extends cdk.Stack {
     const appTaskDefinition = new ecs.FargateTaskDefinition(this, `${APP_NAME}AppTaskDefinition`, {
       memoryLimitMiB: process.env.DEV_APP_MEMORY ? Number(process.env.DEV_APP_MEMORY) : 2048,
       cpu:  process.env.DEV_APP_CPU ? Number(process.env.DEV_APP_CPU) : 1024,
-      family: 'dpDashTaskDefinition',
+      family: IS_DEV ? 'dpDashDevTaskDefinition' : 'dpDashTaskDefinition',
       taskRole: new iam.Role(this, `${APP_NAME}AppTaskRole`, {
         assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
         inlinePolicies: {
@@ -138,11 +138,11 @@ export class DpdashCdkStack extends cdk.Stack {
     });
 
     const dpDashService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, `${APP_NAME}AppService`, {
-      serviceName: 'dpDashService',
-      loadBalancerName: 'dpDashLoadBalancer',
+      serviceName: IS_DEV ? 'dpDashDevService' : 'dpDashService',
+      loadBalancerName: IS_DEV ? 'dpDashDevService' : 'dpDashLoadBalancer',
       cluster: new ecs.Cluster(this, `${APP_NAME}Cluster`, {
         vpc,
-        clusterName: 'dpDashCluster',
+        clusterName: IS_DEV ? 'dpDashDevCluster' : 'dpDashCluster',
       }),
       taskDefinition: appTaskDefinition,
       assignPublicIp: true,

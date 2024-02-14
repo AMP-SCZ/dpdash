@@ -53,8 +53,21 @@ describe('DPDashCDKStack', () => {
     const template = createTemplate()
 
     template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {})
-    template.hasResource('AWS::ECS::Cluster', {})
-    template.hasResource('AWS::ECS::Service', {})
+    template.hasResource('AWS::ECS::Cluster', {
+      'Properties': {
+        'ClusterName': 'dpDashDevCluster'
+      }
+    })
+    template.hasResource('AWS::ECS::Service', {
+      'Properties': {
+        'ServiceName': 'dpDashDevService'
+      }
+    })
+    template.hasResource('AWS::ECS::TaskDefinition', {
+      'Properties': {
+        'Family': 'dpDashDevTaskDefinition'
+      }
+    })
   })
 
   describe('when the DPDASH_DEV flag is set to "1"', () => {
@@ -98,8 +111,23 @@ describe('DPDashCDKStack', () => {
       const template = createTemplate()
 
       template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+          'Properties': {
+            'Scheme': 'internal'
+          }
+        })
+        template.hasResource('AWS::ECS::Cluster', {
         'Properties': {
-          'Scheme': 'internal'
+          'ClusterName': 'dpDashCluster'
+        }
+      })
+      template.hasResource('AWS::ECS::Service', {
+        'Properties': {
+          'ServiceName': 'dpDashService'
+        }
+      })
+      template.hasResource('AWS::ECS::TaskDefinition', {
+        'Properties': {
+          'Family': 'dpDashTaskDefinition'
         }
       })
     })
