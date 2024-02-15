@@ -2,13 +2,13 @@ import { ObjectId } from 'mongodb'
 import UserModel from '../../models/UserModel'
 import ConfigModel from '../../models/ConfigModel'
 import DashboardService from '../../services/DashboardService'
+import DashboardDataProcessor from '../../data_processors/DashboardDataProcessor'
 
 const DashboardsController = {
   show: async (req, res) => {
     try {
       const { appDb } = req.app.locals
       const { study, subject } = req.params
-
       const user = await UserModel.findOne(appDb, { uid: req.user.uid })
       const userConfigurationQuery = {
         _id: new ObjectId(user.preferences.config),
@@ -16,24 +16,38 @@ const DashboardsController = {
       const config = await ConfigModel.findOne(appDb, userConfigurationQuery)
       const flatConfig = Object.values(config.config).flat()
 
-      const dashboardService = new DashboardService(
+      const { dashboardDataCursor, consentDate } = new DashboardService(
         appDb,
         study,
         subject,
         flatConfig
       )
-      const { matrixData, consentDate } =
-        await dashboardService.createDashboard()
+      const participantConsentDate = await consentDate()
+      const dataStream = await dashboardDataCursor()
+      const participantDataMap = new Map()
 
-      return res.status(200).json({
-        data: {
-          subject: { sid: subject, project: study },
-          graph: {
-            matrixData,
-            configurations: flatConfig,
-            consentDate: consentDate,
+      dataStream.on('data', (doc) => {
+        const dayData = doc?.dayData.length ? doc.dayData : []
+
+        participantDataMap.set(doc.assessment, dayData)
+      })
+      dataStream.on('error', (err) => new Error(err))
+      dataStream.on('end', () => {
+        const dashboardProcessor = new DashboardDataProcessor(
+          flatConfig,
+          participantDataMap
+        )
+
+        return res.status(200).json({
+          data: {
+            subject: { sid: subject, project: study },
+            graph: {
+              matrixData: dashboardProcessor.calculateDashboardData(),
+              configurations: flatConfig,
+              consentDate: participantConsentDate,
+            },
           },
-        },
+        })
       })
     } catch (err) {
       return res.status(500).json({ message: err.message })
