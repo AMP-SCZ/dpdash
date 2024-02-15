@@ -72,7 +72,6 @@ const AssessmentDayDataController = {
         .status(200)
         .json({ data: `${participant} ${assessment} data imported` })
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ message: error.message })
     }
   },
@@ -85,11 +84,9 @@ function sortedDayData(participantAssessmentData, participant_assessments) {
     ({ day }) =>
       !participant_assessments.find((assessment) => day === assessment.day)
   )
-  const a = filteredDays
+  return filteredDays
     .concat(participant_assessments)
     .sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0))
-  console.dir(a, { depth: null })
-  return a
 }
 
 export default AssessmentDayDataController

@@ -31,23 +31,27 @@ const DashboardsController = {
 
         participantDataMap.set(doc.assessment, dayData)
       })
-      dataStream.on('error', (err) => new Error(err))
-      dataStream.on('end', () => {
-        const dashboardProcessor = new DashboardDataProcessor(
-          flatConfig,
-          participantDataMap
-        )
 
-        return res.status(200).json({
-          data: {
-            subject: { sid: subject, project: study },
-            graph: {
-              matrixData: dashboardProcessor.calculateDashboardData(),
-              configurations: flatConfig,
-              consentDate: participantConsentDate,
-            },
+      await new Promise((resolve, reject) => {
+        dataStream.on('end', () => resolve())
+
+        dataStream.on('error', (err) => reject(err))
+      })
+
+      const dashboardProcessor = new DashboardDataProcessor(
+        flatConfig,
+        participantDataMap
+      )
+
+      return res.status(200).json({
+        data: {
+          subject: { sid: subject, project: study },
+          graph: {
+            matrixData: dashboardProcessor.calculateDashboardData(),
+            configurations: flatConfig,
+            consentDate: participantConsentDate,
           },
-        })
+        },
       })
     } catch (err) {
       return res.status(500).json({ message: err.message })

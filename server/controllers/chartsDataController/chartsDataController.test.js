@@ -15,7 +15,7 @@ import {
   chartsDataInitialResponse,
   chartsDataSuccessResponse,
   dayDataAssessments,
-} from '../../../test/chartsTestUtils'
+} from '../../../test/testUtils'
 
 describe('chartsDataController', () => {
   describe(chartsDataController.show, () => {

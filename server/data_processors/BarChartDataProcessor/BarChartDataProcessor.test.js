@@ -1,5 +1,5 @@
 import BarChartDataProcessor from '.'
-import { dayDataAssessments } from '../../../test/chartsTestUtils'
+import { dayDataAssessments } from '../../../test/testUtils'
 import { createChart, createFieldLabelValue } from '../../../test/fixtures'
 import { TOTALS_STUDY } from '../../constants'
 

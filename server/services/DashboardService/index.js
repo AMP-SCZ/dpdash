@@ -1,4 +1,5 @@
 import { collections } from '../../utils/mongoCollections'
+import SiteMetadataModel from '../../models/SiteMetadataModel'
 
 class DashboardService {
   constructor(appDb, study, participant, configuration) {
@@ -25,17 +26,15 @@ class DashboardService {
       study: this.study,
     }
 
-    const studyMetadata = await this.db
-      .collection(collections.metadata)
-      .findOne(query)
+    const studyMetadata = await SiteMetadataModel.findOne(this.db, query)
 
     return studyMetadata.participants.filter(
       ({ participant }) => participant === this.participant
     )[0].Consent
   }
 
-  dashboardDataCursor = async () => {
-    return await this.db
+  dashboardDataCursor = async () =>
+    await this.db
       .collection(collections.assessmentDayData)
       .find(
         {
@@ -46,7 +45,6 @@ class DashboardService {
         { projection: { dayData: 1, assessment: 1 } }
       )
       .stream()
-  }
 }
 
 export default DashboardService
