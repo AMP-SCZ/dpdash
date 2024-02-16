@@ -19,7 +19,6 @@ import adminRouter from './routes/admin'
 import authRouter from './routes/auth'
 import chartsRouter from './routes/charts'
 import configurationsRouter from './routes/configurations'
-import countsRouter from './routes/counts'
 import dashboardsRouter from './routes/dashboards'
 import indexRouter from './routes/index'
 import participantsRouter from './routes/participants'
@@ -73,7 +72,7 @@ logger.stream = {
     logger.info(message)
   },
 }
-app.use(morgan('combined', { stream: logger.stream }))
+app.use(morgan('tiny', { stream: logger.stream }))
 
 /** parsers setup */
 app.use(express.static('public'))
@@ -89,7 +88,6 @@ const mongoURI =
 const client = new MongoClient(mongoURI, { monitorCommands: true })
 
 app.locals.appDb = client.db()
-app.locals.dataDb = client.db('dpdata')
 
 client.on('connectionCreated', async () => {
   await UserModel.createFirstAdmin(app.locals.appDb)
@@ -154,7 +152,6 @@ app.use('/', adminRouter)
 app.use('/', authRouter)
 app.use('/', chartsRouter)
 app.use('/', configurationsRouter)
-app.use('/', countsRouter)
 app.use('/', dashboardsRouter)
 app.use('/', indexRouter)
 app.use('/', participantsRouter)

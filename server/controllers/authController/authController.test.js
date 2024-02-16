@@ -222,7 +222,7 @@ describe('AuthController', () => {
       let appDb
 
       beforeAll(async () => {
-        appDb = await global.MONGO_INSTANCE.db()
+        appDb = await global.MONGO_INSTANCE.db('auth')
       })
 
       beforeEach(async () => {

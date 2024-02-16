@@ -3,7 +3,7 @@ import {
   createChart,
   createDb,
   createFieldLabelValue,
-  createSubject,
+  createAssessmentDayData,
 } from '../../../test/fixtures'
 import { TOTALS_STUDY } from '../../constants'
 import BarChartDataProcessor from '../../data_processors/BarChartDataProcessor'
@@ -28,26 +28,37 @@ const studyTotals = {
   [TOTALS_STUDY]: { count: 13 },
 }
 const db = createDb()
-const chart = createChart({
-  fieldLabelValueMap: [
+const chart = createChart(
+  {
+    _id: '1',
+    title: 'Eeg Measurements',
+    description: 'Participant EEG Measurements',
+    assessment: 'eeg',
+    variable: 'eeg',
+    public: false,
+    owner: 'owl',
+  },
+  [
     createFieldLabelValue({
-      color: 'good-color',
-      label: 'Good',
+      value: 'bar',
+      label: 'Bar',
+      color: 'red',
       targetValues: {
-        Site1: '10',
+        LA: '2',
+        YA: '1',
+        MA: '2',
       },
     }),
-    createFieldLabelValue({
-      color: 'bad-color',
-      label: 'Bad',
-      targetValues: {
-        Site1: '10',
-        Site2: '11',
-      },
-    }),
-  ],
-})
-const subjects = [createSubject()]
+  ]
+)
+const participants = [
+  createAssessmentDayData({
+    assessment: 'eeg',
+    participant: 'LA1',
+    study: 'LA',
+    dayData: [{ eeg: 'foo', var: 'var', baz: 'baz' }],
+  }),
+]
 const userAccess = ['Site 1', 'Site 2']
 
 describe(BarChartService, () => {
@@ -67,7 +78,7 @@ describe(BarChartService, () => {
     })
 
     it('returns data, labels, and study totals', async () => {
-      mockProcessData.mockResolvedValueOnce({
+      mockProcessData.mockReturnValue({
         processedDataBySite: new Map(Object.entries(dataBySite)),
         labelMap: new Map(Object.entries(labels)),
         studyTotals,
@@ -75,7 +86,7 @@ describe(BarChartService, () => {
 
       const service = new BarChartService(db, chart)
 
-      const createdChart = await service.createChart(subjects, userAccess)
+      const createdChart = service.createChart(participants, userAccess)
 
       expect(createdChart).toEqual({
         dataBySite: [1, 2, 4, 6, 3, 10],
@@ -93,8 +104,8 @@ describe(BarChartService, () => {
       const service = new BarChartService(db, chart)
 
       expect(service.legend()).toEqual([
-        { name: 'Good', symbol: { fill: 'good-color', type: 'square' } },
-        { name: 'Bad', symbol: { fill: 'bad-color', type: 'square' } },
+        { name: 'Foo', symbol: { fill: '#e2860a', type: 'square' } },
+        { name: 'Bar', symbol: { fill: 'red', type: 'square' } },
       ])
     })
   })

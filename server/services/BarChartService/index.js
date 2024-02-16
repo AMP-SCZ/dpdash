@@ -18,21 +18,20 @@ class BarChartService {
     }))
   }
 
-  createChart = async (subjects, userAccess) => {
+  createChart = (participants, userAccess) => {
     const allowedStudies = userAccess.filter(
       (study) => !STUDIES_TO_OMIT.includes(study)
     )
     const initialStudyTotals = this._generateStudyTargetTotals(allowedStudies)
     const dataProcessor = new BarChartDataProcessor(
-      this.db,
       this.chart,
       initialStudyTotals
     )
-    const processedData = await dataProcessor.processData(subjects)
+    const processedData = dataProcessor.processData(participants)
     const { processedDataBySite, studyTotals, labelMap } = processedData
 
     const dataBySite =
-      subjects.length > 0 ? Array.from(processedDataBySite.values()) : []
+      participants.length > 0 ? Array.from(processedDataBySite.values()) : []
     const labels = Array.from(labelMap.values())
 
     return {
@@ -49,8 +48,8 @@ class BarChartService {
         targetTotal: 0,
       },
     }
-    this.chart.fieldLabelValueMap.forEach((fieldLabelValueMap) => {
-      const { targetValues } = fieldLabelValueMap
+    this.chart.fieldLabelValueMap.forEach((fieldValue) => {
+      const { targetValues } = fieldValue
 
       allowedStudies.forEach((study) => {
         const siteName = SITE_NAMES[study] || study

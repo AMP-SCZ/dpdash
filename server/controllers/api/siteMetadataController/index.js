@@ -17,25 +17,29 @@ const SiteMetadataController = {
         await SiteMetadataModel.upsert(
           appDb,
           { study },
-          { $set: { ...metadata, subjects: participants } }
+          { $set: { ...metadata, participants } }
         )
       } else {
         Promise.all(
           participants.map(async (participant) => {
             const isParticipantInSiteMetadata = await SiteMetadataModel.findOne(
               appDb,
-              { subjects: { $elemMatch: { subject: participant.subject } } }
+              {
+                participants: {
+                  $elemMatch: { participant: participant.participant },
+                },
+              }
             )
             if (!isParticipantInSiteMetadata) {
               await SiteMetadataModel.upsert(
                 appDb,
                 { study },
-                { $addToSet: { subjects: participant } }
+                { $addToSet: { participants: participant } }
               )
             } else {
               const updatedAttributes = Object.keys(participant).reduce(
                 (attributes, key) => {
-                  attributes[`subjects.$.${key}`] = participant[key]
+                  attributes[`participants.$.${key}`] = participant[key]
 
                   return attributes
                 },
@@ -43,7 +47,11 @@ const SiteMetadataController = {
               )
               await SiteMetadataModel.upsert(
                 appDb,
-                { subjects: { $elemMatch: { subject: participant.subject } } },
+                {
+                  participants: {
+                    $elemMatch: { participant: participant.participant },
+                  },
+                },
                 { $set: updatedAttributes }
               )
             }

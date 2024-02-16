@@ -11,7 +11,7 @@ describe('siteMetadataController', () => {
       let appDb
 
       beforeAll(() => {
-        appDb = global.MONGO_INSTANCE.db()
+        appDb = global.MONGO_INSTANCE.db('siteMetadata')
       })
       beforeEach(async () => {
         await appDb.createCollection('metadata')
@@ -39,13 +39,23 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'CA1', Active: 4, Consent: '2022-06-02', study: 'CA' },
-            { subject: 'CA2', Active: 3, Consent: '2022-06-02', study: 'CA' },
+            {
+              participant: 'CA1',
+              Active: 4,
+              Consent: '2022-06-02',
+              study: 'CA',
+            },
+            {
+              participant: 'CA2',
+              Active: 3,
+              Consent: '2022-06-02',
+              study: 'CA',
+            },
           ],
         })
         const request = createRequest({
           body,
-          app: { locals: { appDb: appDb } },
+          app: { locals: { appDb } },
         })
         const response = createResponse()
 
@@ -73,7 +83,12 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'LA3', Active: 5, Consent: '2022-06-02', study: 'LA' },
+            {
+              participant: 'LA3',
+              Active: 5,
+              Consent: '2022-06-02',
+              study: 'LA',
+            },
           ],
         })
         const request = createRequest({
@@ -86,7 +101,7 @@ describe('siteMetadataController', () => {
 
         const updatedSiteMetadata = await appDb
           .collection('metadata')
-          .findOne({ subjects: { $elemMatch: { subject: 'LA3' } } })
+          .findOne({ participants: { $elemMatch: { participant: 'LA3' } } })
 
         expect(updatedSiteMetadata).toBeDefined()
       })
@@ -106,8 +121,18 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 4, Consent: '2022-06-02', study: 'YA' },
-            { subject: 'YA2', Active: 3, Consent: '2022-06-02', study: 'YA' },
+            {
+              participant: 'YA1',
+              Active: 4,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
+            {
+              participant: 'YA2',
+              Active: 3,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
           ],
         })
         const request = createRequest({
@@ -122,15 +147,15 @@ describe('siteMetadataController', () => {
           .collection('metadata')
           .findOne({ study: 'YA' })
 
-        expect(updatedDocs.subjects).toEqual([
+        expect(updatedDocs.participants).toEqual([
           {
-            subject: 'YA1',
+            participant: 'YA1',
             Active: 4,
             Consent: new Date('2022-06-02'),
             study: 'YA',
           },
           {
-            subject: 'YA2',
+            participant: 'YA2',
             Active: 3,
             Consent: new Date('2022-06-02'),
             study: 'YA',
@@ -155,8 +180,18 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 1, Consent: '2022-06-02', study: 'YA' },
-            { subject: 'YA2', Active: 1, Consent: '2022-06-02', study: 'YA' },
+            {
+              participant: 'YA1',
+              Active: 1,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
+            {
+              participant: 'YA2',
+              Active: 1,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
           ],
         })
 
@@ -194,8 +229,18 @@ describe('siteMetadataController', () => {
             extension: '.csv',
           },
           participants: [
-            { subject: 'YA1', Active: 1, Consent: '2022-06-02', study: 'YA' },
-            { subject: 'YA2', Active: 1, Consent: '2022-06-02', study: 'YA' },
+            {
+              participant: 'YA1',
+              Active: 1,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
+            {
+              participant: 'YA2',
+              Active: 1,
+              Consent: '2022-06-02',
+              study: 'YA',
+            },
           ],
         })
 
