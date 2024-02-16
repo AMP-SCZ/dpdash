@@ -10,7 +10,7 @@ describe('chartsShareController', () => {
   describe('create', () => {
     describe('When successful', () => {
       it('retusna status of 200 and the new chart id', async () => {
-        const sourceChart = ObjectId().toString()
+        const sourceChart = new ObjectId().toString()
         const sharedWith = ['owl', 'eagle']
         const body = { sharedWith }
         const params = { chart_id: sourceChart }
@@ -18,9 +18,7 @@ describe('chartsShareController', () => {
         const response = createResponse()
         const chart = createChart({ _id: sourceChart, sharedWith })
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce({
-          value: chart,
-        })
+        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(chart)
 
         await chartsShareController.create(request, response)
 
@@ -32,7 +30,7 @@ describe('chartsShareController', () => {
     })
     describe('When unsuccessful', () => {
       it('returns a status of 400 and an error message', async () => {
-        const sourceChart = ObjectId().toString()
+        const sourceChart = new ObjectId().toString()
         const sharedWith = ['owl', 'eagle']
         const body = { sharedWith }
         const params = { chart_id: sourceChart }

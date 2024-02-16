@@ -54,8 +54,8 @@ describe('chartsController', () => {
       let appDb
 
       beforeAll(async () => {
+        appDb = await global.MONGO_INSTANCE.db()
         dataDb = await global.MONGO_INSTANCE.db('dpdata')
-        appDb = await global.MONGO_INSTANCE.db('appDb')
       })
 
       beforeEach(async () => {
@@ -290,7 +290,7 @@ describe('chartsController', () => {
   describe('update', () => {
     describe('When successful', () => {
       it('returns a status of 200 and an updated chart', async () => {
-        const params = { chart_id: ObjectId().toString() }
+        const params = { chart_id: new ObjectId().toString() }
         const body = {
           title: 'New title',
           variable: 'Rating',
@@ -305,9 +305,9 @@ describe('chartsController', () => {
         })
         const response = createResponse()
 
-        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce({
-          value: updatedChart,
-        })
+        request.app.locals.dataDb.findOneAndUpdate.mockResolvedValueOnce(
+          updatedChart
+        )
 
         await chartsController.update(request, response)
 
@@ -320,7 +320,7 @@ describe('chartsController', () => {
 
     describe('When unsuccessful', () => {
       it('returns a status of 400 and an error message', async () => {
-        const params = { chart_id: ObjectId().toString() }
+        const params = { chart_id: new ObjectId().toString() }
         const body = {
           title: 'New title',
           variable: 'Rating',

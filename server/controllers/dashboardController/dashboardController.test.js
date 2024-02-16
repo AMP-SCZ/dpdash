@@ -119,7 +119,7 @@ describe('Dashboard Controller', () => {
         const currentUser = createUser({
           uid: 'owl',
           preferences: {
-            config: ObjectId().toString(),
+            config: new ObjectId().toString(),
           },
         })
         const currentConfiguration = createConfiguration({

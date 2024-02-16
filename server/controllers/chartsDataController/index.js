@@ -23,7 +23,7 @@ const show = async (req, res, next) => {
     )
     const chart = await dataDb
       .collection(collections.charts)
-      .findOne({ _id: ObjectId(chart_id) })
+      .findOne({ _id: new ObjectId(chart_id) })
     const chartService = new BarChartService(dataDb, chart)
     const filters = filtersService.filters
     const subjects = await SubjectModel.allForAssessment(

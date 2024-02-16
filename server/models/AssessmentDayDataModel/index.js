@@ -1,13 +1,21 @@
+import { collections } from '../../utils/mongoCollections'
+
 const AssessmentDayDataModel = {
-  all: async (db, assessmentCollection) =>
+  all: async (db, query) =>
+    await db.collection(collections.assessmentDayData).find(query),
+  findOne: async (db, query) =>
+    await db.collection(collections.assessmentDayData).findOne(query),
+  create: async (db, participantData) =>
     await db
-      .collection(assessmentCollection)
-      .find({}, { projection: { _id: 0, path: 0 } }),
-  createMany: async (db, assessmentCollection, assessmentDayData) =>
-    await db.collection(assessmentCollection).insertMany(assessmentDayData),
-  update: async (db, collection, query, assessmentDayDataAttributes) =>
+      .collection(collections.assessmentDayData)
+      .insertOne(participantData),
+  createMany: async (db, assessmentDayData) =>
     await db
-      .collection(collection)
+      .collection(collections.assessmentDayData)
+      .insertMany(assessmentDayData),
+  update: async (db, query, assessmentDayDataAttributes) =>
+    await db
+      .collection(collections.assessmentDayData)
       .updateOne(query, { $set: assessmentDayDataAttributes }),
 }
 
