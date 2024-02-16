@@ -1,5 +1,6 @@
 import { collections } from '../../utils/mongoCollections'
 import SiteMetadataModel from '../../models/SiteMetadataModel'
+import DashboardDataProcessor from '../../data_processors/DashboardDataProcessor'
 
 class DashboardService {
   constructor(appDb, study, participant, configuration) {
@@ -45,6 +46,30 @@ class DashboardService {
         { projection: { dayData: 1, assessment: 1 } }
       )
       .stream()
+
+  createMatrix = async () => {
+    const dataStream = await this.dashboardDataCursor()
+    const participantDataMap = new Map()
+
+    dataStream.on('data', (doc) => {
+      const dayData = doc?.dayData.length ? doc.dayData : []
+
+      participantDataMap.set(doc.assessment, dayData)
+    })
+
+    await new Promise((resolve, reject) => {
+      dataStream.on('end', () => resolve())
+
+      dataStream.on('error', (err) => reject(err))
+    })
+
+    const dashboardProcessor = new DashboardDataProcessor(
+      this.configuration,
+      participantDataMap
+    )
+
+    return dashboardProcessor.calculateDashboardData()
+  }
 }
 
 export default DashboardService

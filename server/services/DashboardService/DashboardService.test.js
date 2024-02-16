@@ -1,19 +1,13 @@
-import dayjs from 'dayjs'
 import DashboardService from '.'
-import DashboardDataProcessor from '../../data_processors/DashboardDataProcessor'
 import {
-  createDb,
   createAnalysisConfig,
-  createMatrixData,
-  createConfiguration,
   createParticipantDayData,
 } from '../../../test/fixtures'
-import { AbstractCursor } from 'mongodb'
 import { collections } from '../../utils/mongoCollections'
 
 describe(DashboardService, () => {
   describe('methods', () => {
-    describe('data methods', () => {
+    describe('createMatrix', () => {
       let appDb
 
       const configAnalysisData = [
@@ -76,31 +70,68 @@ describe(DashboardService, () => {
         })
       })
       afterAll(async () => await appDb.dropDatabase())
-      it('returns a mongodb cursor', async () => {
-        let count = 0
-        const dashboardService = new DashboardService(
-          appDb,
-          'YA',
-          'YA01',
-          configAnalysisData
-        )
-        const mongoCursor = await dashboardService.dashboardDataCursor()
-        mongoCursor.on('data', () => (count = count + 1))
-        mongoCursor.on('end', () => {
-          expect(count).toEqual(2)
-        })
-        mongoCursor.on('error', (_) => {})
-      })
-      it('returns a participants consent date', async () => {
-        const dashboardService = new DashboardService(
-          appDb,
-          'YA',
-          'YA01',
-          configAnalysisData
-        )
-        const consentDate = await dashboardService.consentDate()
 
-        expect(consentDate).toEqual(new Date('2022-02-26T00:00:00.000Z'))
+      it('returns a list of prepared matrix data', async () => {
+        const dashboardService = new DashboardService(
+          appDb,
+          'YA',
+          'YA01',
+          configAnalysisData
+        )
+        const matrixData = await dashboardService.createMatrix()
+
+        expect(matrixData).toEqual([
+          {
+            analysis: 'jump_of',
+            category: 'power',
+            color: [],
+            data: [
+              {
+                day: 10,
+                jumpVariable: 1,
+              },
+              {
+                day: 20,
+                jumpVariable: 30,
+              },
+            ],
+            label: 'Jump',
+            range: [],
+            stat: [
+              {
+                max: 30,
+                mean: 15.5,
+                min: 1,
+              },
+            ],
+            variable: 'jumpVariable',
+          },
+          {
+            analysis: 'size_of',
+            category: 'sizeing',
+            color: [],
+            data: [
+              {
+                day: 1,
+                sizeVariable: 30,
+              },
+              {
+                day: 45,
+                sizeVariable: 2,
+              },
+            ],
+            label: 'Size',
+            range: [],
+            stat: [
+              {
+                max: 30,
+                mean: 16,
+                min: 2,
+              },
+            ],
+            variable: 'sizeVariable',
+          },
+        ])
       })
     })
   })

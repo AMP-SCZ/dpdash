@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb'
 import UserModel from '../../models/UserModel'
 import ConfigModel from '../../models/ConfigModel'
 import DashboardService from '../../services/DashboardService'
-import DashboardDataProcessor from '../../data_processors/DashboardDataProcessor'
 
 const DashboardsController = {
   show: async (req, res) => {
@@ -16,38 +15,20 @@ const DashboardsController = {
       const config = await ConfigModel.findOne(appDb, userConfigurationQuery)
       const flatConfig = Object.values(config.config).flat()
 
-      const { dashboardDataCursor, consentDate } = new DashboardService(
+      const { createMatrix, consentDate } = new DashboardService(
         appDb,
         study,
         subject,
         flatConfig
       )
       const participantConsentDate = await consentDate()
-      const dataStream = await dashboardDataCursor()
-      const participantDataMap = new Map()
-
-      dataStream.on('data', (doc) => {
-        const dayData = doc?.dayData.length ? doc.dayData : []
-
-        participantDataMap.set(doc.assessment, dayData)
-      })
-
-      await new Promise((resolve, reject) => {
-        dataStream.on('end', () => resolve())
-
-        dataStream.on('error', (err) => reject(err))
-      })
-
-      const dashboardProcessor = new DashboardDataProcessor(
-        flatConfig,
-        participantDataMap
-      )
+      const matrixData = await createMatrix()
 
       return res.status(200).json({
         data: {
           subject: { sid: subject, project: study },
           graph: {
-            matrixData: dashboardProcessor.calculateDashboardData(),
+            matrixData,
             configurations: flatConfig,
             consentDate: participantConsentDate,
           },
