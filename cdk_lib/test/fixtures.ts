@@ -6,6 +6,6 @@ type StackConstructor<T extends cdk.Stack> = new (construct: Construct, id: stri
 
 export const createTemplate = <T extends cdk.Stack>(stackConstructor: StackConstructor<T>) => {
   const app = new cdk.App()
-  const stack = new stackConstructor(app, "DPDashCDKStack")
+  const stack = new stackConstructor(app, "StackUnderTest")
   return Template.fromStack(stack)
 }
