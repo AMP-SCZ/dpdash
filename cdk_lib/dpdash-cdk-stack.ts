@@ -22,7 +22,7 @@ export class DpdashCdkStack extends cdk.Stack {
       },
       ...props,
     });
-    const IS_DEV = process.env.DPDASH_DEV === "1"
+    const IS_DEV = process.env.DPDASH_INFRA_STAGING === "1"
     const APP_NAME =  IS_DEV ? "DpDashDev" : "DPDash";
 
     let certArn

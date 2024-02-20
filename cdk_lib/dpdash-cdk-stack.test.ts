@@ -12,7 +12,7 @@ describe('DPDashCDKStack', () => {
       BASE_DOMAIN: 'dpdash.example.com',
       APP_MEMORY: '2048',
       APP_CPU: '1024',
-      DPDASH_DEV: '1',
+      DPDASH_INFRA_STAGING: '1',
       ...overrides
     }
   }
@@ -63,7 +63,7 @@ describe('DPDashCDKStack', () => {
     })
   })
 
-  describe('when the DPDASH_DEV flag is set to "1"', () => {
+  describe('when the DPDASH_INFRA_STAGING flag is set to "1"', () => {
     it('creates a Hosted Zone', () => {
       setEnv()
       const template = createTemplate(DpdashCdkStack)
@@ -93,9 +93,9 @@ describe('DPDashCDKStack', () => {
       })
     })
   })
-  describe('when the DPDASH_DEV flag is not set to "1"', () => {
+  describe('when the DPDASH_INFRA_STAGING flag is not set to "1"', () => {
     it('throws an error if the CERT_ARN and SES_IDENTITY_ARN are missing', () => {
-      setEnv({ DPDASH_DEV: undefined })
+      setEnv({ DPDASH_INFRA_STAGING: undefined })
       expect(() => createTemplate(DpdashCdkStack)).toThrowError("Missing required environment variables: CERT_ARN, SES_IDENTITY_ARN")
     })
 
