@@ -100,7 +100,7 @@ describe('DPDashCDKStack', () => {
     })
 
     it('creates a private Application Load Balanced Fargate Service', () => {
-      setEnv({ DPDASH_DEV: undefined, CERT_ARN: 'foo', SES_IDENTITY_ARN: 'bar' })
+      setEnv({ DPDASH_INFRA_STAGING: undefined, CERT_ARN: 'foo', SES_IDENTITY_ARN: 'bar' })
       const template = createTemplate(DpdashCdkStack)
 
       template.hasResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
