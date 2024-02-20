@@ -213,20 +213,18 @@ const GraphPage = () => {
           View Table
         </Button>
       </Box>
+      <div className="Matrix">
+        <div className="graph" ref={el} />
+      </div>
       <div>
-        <div className="Matrix">
-          <div className="graph" ref={el} />
-        </div>
-        <div>
-          <Button
-            variant="fab"
-            onClick={downloadPng}
-            id="downloadPng"
-            focusRipple={true}
-          >
-            <Save />
-          </Button>
-        </div>
+        <Button
+          variant="fab"
+          onClick={downloadPng}
+          id="downloadPng"
+          focusRipple={true}
+        >
+          <Save />
+        </Button>
       </div>
       <Dialog modal={false} open={openStat} onClose={closeStat}>
         <DialogContent>
