@@ -5,7 +5,6 @@ const AssessmentDayDataController = {
   create: async (req, res) => {
     try {
       const { appDb } = req.app.locals
-
       const { metadata, participant_assessments } = req.body
 
       if (!metadata || !participant_assessments.length)
@@ -72,7 +71,6 @@ const AssessmentDayDataController = {
         .status(200)
         .json({ data: `${participant} ${assessment} data imported` })
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ message: error.message })
     }
   },
@@ -80,16 +78,19 @@ const AssessmentDayDataController = {
 
 function sortedDayData(participantAssessmentData, participant_assessments) {
   const { dayData } = participantAssessmentData
-
   const filteredDays = dayData.filter(
     ({ day }) =>
       !participant_assessments.find((assessment) => day === assessment.day)
   )
-  const a = filteredDays
+  return filteredDays
     .concat(participant_assessments)
-    .sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0))
-  console.dir(a, { depth: null })
-  return a
+    .sort((prevParticipant, nextParticipant) =>
+      prevParticipant.day < nextParticipant.day
+        ? -1
+        : prevParticipant.day > nextParticipant.day
+        ? 1
+        : 0
+    )
 }
 
 export default AssessmentDayDataController

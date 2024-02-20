@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb'
 import qs from 'qs'
 
 import { collections } from '../../utils/mongoCollections'
-import ParticipantsModel from '../../models/ParticipantsModel'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import CsvService from '../../services/CSVService'
@@ -21,21 +20,19 @@ const show = async (req, res, next) => {
       parsedQueryParams.filters,
       userSites
     )
+    const filters = filtersService.filters
     const chart = await appDb.collection(collections.charts).findOne({
       _id: new ObjectId(chart_id),
     })
-    const chartService = new BarChartService(appDb, chart)
-    const filters = filtersService.filters
-    const participants = await ParticipantsModel.allForAssessment(
-      appDb,
-      chart,
-      filtersService
-    )
+    const chartService = new BarChartService(appDb, chart, filtersService)
+    const { processedDataBySite, studyTotals, labelMap } =
+      await chartService.createChart()
 
-    const { dataBySite, labels, studyTotals } = chartService.createChart(
-      participants,
-      filters.sites
-    )
+    const dataBySite =
+      processedDataBySite.size > 0
+        ? Array.from(processedDataBySite.values())
+        : []
+    const labels = Array.from(labelMap.values())
     const chartTableService = new BarChartTableService(dataBySite, labels)
     const websiteTable = chartTableService.websiteTableData()
     const chartOwner = await appDb.collection(collections.users).findOne(
