@@ -166,21 +166,11 @@ const GraphPage = () => {
       // png conversion
       let img = new Image()
       let ctx = kanvas.getContext('2d')
+      img.src = svgUrl
 
       img.onload = () => {
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          kanvas.width,
-          kanvas.height,
-          0,
-          0,
-          kanvas.width,
-          kanvas.height
-        )
+        ctx.drawImage(img, 0, 0)
       }
-      img.src = svgUrl
     }
   }, [graphRendered])
 

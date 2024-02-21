@@ -61,7 +61,7 @@ export default class Matrix {
       .select(this.el)
       .append('svg')
       .attr('width', () => Math.max(this.width, 0))
-      .attr('height', () => Math.max(this.height, 0))
+      .attr('height', () => Number(this.height))
     this.svg = svgElement.append('g')
     this.cards = this.svg
       .append('g')
