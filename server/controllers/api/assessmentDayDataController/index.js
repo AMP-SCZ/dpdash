@@ -73,7 +73,17 @@ const AssessmentDayDataController = {
           await SiteMetadataModel.upsert(
             appDb,
             { study },
-            { $addToSet: { participants: participant } }
+            {
+              $addToSet: {
+                participants: {
+                  Active: 1,
+                  Consent: new Date(),
+                  study,
+                  participant,
+                  synced: new Date(),
+                },
+              },
+            }
           )
         }
       }
