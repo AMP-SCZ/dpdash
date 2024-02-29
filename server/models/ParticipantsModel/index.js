@@ -9,6 +9,7 @@ const $participant = '$participant'
 const $participants = '$participants'
 const $synced = '$synced'
 const mongoCurrentDay = '$$NOW'
+const oneDayInSeconds = 86400000
 
 const ParticipantsModel = {
   index: async (db, user, queryParams) =>
@@ -107,12 +108,15 @@ const allParticipantsQuery = (user, queryParams) => {
             if: { $ne: [$synced, null] },
             then: {
               $floor: {
-                $divide: [{ $subtract: [$synced, $Consent] }, 86400000],
+                $divide: [{ $subtract: [$synced, $Consent] }, oneDayInSeconds],
               },
             },
             else: {
               $floor: {
-                $divide: [{ $subtract: [mongoCurrentDay, $Consent] }, 86400000],
+                $divide: [
+                  { $subtract: [mongoCurrentDay, $Consent] },
+                  oneDayInSeconds,
+                ],
               },
             },
           },
