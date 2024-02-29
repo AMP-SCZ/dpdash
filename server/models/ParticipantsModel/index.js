@@ -106,12 +106,12 @@ const allParticipantsQuery = (user, queryParams) => {
           $cond: {
             if: { $ne: [$synced, null] },
             then: {
-              $round: {
+              $floor: {
                 $divide: [{ $subtract: [$synced, $Consent] }, 86400000],
               },
             },
             else: {
-              $round: {
+              $floor: {
                 $divide: [{ $subtract: [mongoCurrentDay, $Consent] }, 86400000],
               },
             },
