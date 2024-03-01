@@ -76,7 +76,7 @@ class FiltersService {
         case 'included_excluded':
           filterQueries.push({
             $and: [
-              {assessment: INCLUSION_EXCLUSION_CRITERIA_FORM},
+              { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM },
               {'dayData.included_excluded': {$in: includedValues } }
             ]
           })
@@ -84,7 +84,7 @@ class FiltersService {
         case 'chrcrit_part':
           filterQueries.push({
             $and: [
-              {assessment: INCLUSION_EXCLUSION_CRITERIA_FORM},
+              { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM },
               {'dayData.chrcrit_part': {$in: includedValues } }
             ]
           })
@@ -92,7 +92,7 @@ class FiltersService {
         case 'sex_at_birth':
           filterQueries.push({
             $and: [
-              {assessment: SOCIODEMOGRAPHICS_FORM},
+              { assessment: SOCIODEMOGRAPHICS_FORM },
               {'dayData.chrdemo_sexassigned': {$in: includedValues } }
             ]
           })

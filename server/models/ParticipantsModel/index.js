@@ -26,9 +26,9 @@ const ParticipantsModel = {
         study: { $in: filtersService.filters.sites, $nin: STUDIES_TO_OMIT },
       }
       return await db
-      .collection(collections.assessmentDayData)
-      .find(query, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
-      .stream()
+        .collection(collections.assessmentDayData)
+        .find(query, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
+        .stream()
     }
 
     const includedParticipants = await db.collection(collections.assessmentDayData)
