@@ -27,12 +27,11 @@ const ConfigModel = {
 
     return value
   },
-  index: async (db, userId) => {
-    return await db
+  index: async (db, userId) =>
+    await db
       .collection(collections.configs)
       .aggregate(loadAllConfigurationsMongoQuery(userId))
-      .toArray()
-  },
+      .toArray(),
   create: async (db, configAttributes) => {
     const { insertedId } = await db
       .collection(collections.configs)
@@ -53,12 +52,9 @@ const ConfigModel = {
 
 const loadAllConfigurationsMongoQuery = (userId) => {
   const users = 'users'
-  const $owner = '$owner'
-  const $uid = '$uid'
-  const $$owner = '$$owner'
-  const resultPropertyName = 'ownerUser'
-  const $ownerUser = '$ownerUser'
-  const $display_name = '$display_name'
+  const owner = 'owner'
+  const uid = 'uid'
+  const configOwner = 'ownerUser'
 
   return [
     {
@@ -69,26 +65,25 @@ const loadAllConfigurationsMongoQuery = (userId) => {
     {
       $lookup: {
         from: users,
-        let: { owner: $owner },
-        pipeline: [
-          {
-            $match: {
-              $expr: { $eq: [$$owner, $uid] },
-            },
-          },
-          {
-            $project: {
-              icon: 1,
-              uid: 1,
-              name: $display_name,
-              _id: 0,
-            },
-          },
-        ],
-        as: resultPropertyName,
+        localField: uid,
+        foreignField: owner,
+        as: configOwner,
       },
     },
-    { $unwind: $ownerUser },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        type: 1,
+        created: 1,
+        owner: 1,
+        readers: 1,
+        config: 1,
+        'ownerUser.0.uid': 1,
+        'ownerUser.0.display_name': 1,
+        'ownerUser.0.icon': 1,
+      },
+    },
   ]
 }
 
