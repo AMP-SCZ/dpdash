@@ -1,3 +1,4 @@
+import { object } from 'yup'
 import {
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
@@ -42,6 +43,16 @@ export const DEFAULT_FILTERS = {
   sites: {},
 }
 
+const INCLUSION_EXCLUSION_KEY = 'included_excluded'
+const CHRCRIT_KEY = 'chrcrit_part'
+const DAY_DATA_KEY = 'dayData'
+const SEX_AT_BIRTH_FILTER_KEY = 'sex_at_birth'
+const SEX_AT_BIRTH_DOCUMENT_KEY = 'chrdemo_sexassigned'
+
+const filterToMongoValues = (filter) => {
+  return filter.filter(({ _, value}) => value === TRUE_STRING).map(({ name, _ }) => FILTER_TO_MONGO_VALUE_MAP[name])
+}
+
 class FiltersService {
   constructor(filters, allSites) {
     this._filters = filters || DEFAULT_FILTERS
@@ -67,38 +78,52 @@ class FiltersService {
   }
 
   get filterQueries() {
+    const inclusionFormQuery = { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM }
+    const includedExcludedQuery = (includedValues) => ({[ `${DAY_DATA_KEY}.${INCLUSION_EXCLUSION_KEY}`]: { $in: includedValues } })
+    const chrChritQuery = (includedValues) => ({[ `${DAY_DATA_KEY}.${CHRCRIT_KEY}`]: { $in: includedValues } })
+
+    const sociodemoFormQuery = { assessment: SOCIODEMOGRAPHICS_FORM }
+    const sexAtBirthQuery = (includedValues) => ({ [`${DAY_DATA_KEY}.${SEX_AT_BIRTH_DOCUMENT_KEY}`]: {$in: includedValues } })
+
     const filterQueries = []
-    for (let filterKey of Object.keys(this.filters)) {
-      const filter = this.filters[filterKey]
-      const includedFilters = filter.filter(({_, value}) => value === TRUE_STRING)
-      const includedValues = includedFilters.map(({name, _}) => FILTER_TO_MONGO_VALUE_MAP[name])
-      switch (filterKey) {
-        case 'included_excluded':
-          filterQueries.push({
-            $and: [
-              { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM },
-              { 'dayData.included_excluded': {$in: includedValues } }
-            ]
-          })
-          break
-        case 'chrcrit_part':
-          filterQueries.push({
-            $and: [
-              { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM },
-              { 'dayData.chrcrit_part': {$in: includedValues } }
-            ]
-          })
-          break
-        case 'sex_at_birth':
-          filterQueries.push({
-            $and: [
-              { assessment: SOCIODEMOGRAPHICS_FORM },
-              { 'dayData.chrdemo_sexassigned': {$in: includedValues } }
-            ]
-          })
-          break
-      }
+    const filterNames = new Set(Object.keys(this.filters))
+    if (filterNames.has(INCLUSION_EXCLUSION_KEY) && filterNames.has(CHRCRIT_KEY)) {
+      filterQueries.push({
+        $and: [
+          inclusionFormQuery,
+          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
+          chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY]))
+        ]
+      })
     }
+
+    if (filterNames.has(INCLUSION_EXCLUSION_KEY) && !filterNames.has(CHRCRIT_KEY)) {
+      filterQueries.push({
+        $and: [
+          inclusionFormQuery,
+          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
+        ]
+      })
+    }
+
+    if (filterNames.has(CHRCRIT_KEY) && !filterNames.has(INCLUSION_EXCLUSION_KEY)) {
+      filterQueries.push({
+        $and: [
+          inclusionFormQuery,
+          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
+        ]
+      })
+    }
+
+    if (filterNames.has(SEX_AT_BIRTH_FILTER_KEY)) {
+      filterQueries.push({
+        $and: [
+          sociodemoFormQuery,
+          sexAtBirthQuery(filterToMongoValues(this.filters[SEX_AT_BIRTH_FILTER_KEY]))
+        ]
+      })
+    }
+
     return filterQueries
   }
 }
