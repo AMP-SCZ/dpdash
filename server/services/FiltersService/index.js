@@ -50,7 +50,7 @@ const SEX_AT_BIRTH_FILTER_KEY = 'sex_at_birth'
 const SEX_AT_BIRTH_DOCUMENT_KEY = 'chrdemo_sexassigned'
 
 const filterToMongoValues = (filter) => {
-  return filter.filter(({ _, value}) => value === TRUE_STRING).map(({ name, _ }) => FILTER_TO_MONGO_VALUE_MAP[name])
+  return filter.filter(({ value }) => value === TRUE_STRING).map(({ name }) => FILTER_TO_MONGO_VALUE_MAP[name])
 }
 
 class FiltersService {
