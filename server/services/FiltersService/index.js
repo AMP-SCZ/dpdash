@@ -1,4 +1,3 @@
-import { object } from 'yup'
 import {
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
