@@ -77,49 +77,36 @@ class FiltersService {
   }
 
   get filterQueries() {
-    const inclusionFormQuery = { assessment: INCLUSION_EXCLUSION_CRITERIA_FORM }
     const includedExcludedQuery = (includedValues) => ({[ `${DAY_DATA_KEY}.${INCLUSION_EXCLUSION_KEY}`]: { $in: includedValues } })
     const chrChritQuery = (includedValues) => ({[ `${DAY_DATA_KEY}.${CHRCRIT_KEY}`]: { $in: includedValues } })
 
-    const sociodemoFormQuery = { assessment: SOCIODEMOGRAPHICS_FORM }
     const sexAtBirthQuery = (includedValues) => ({ [`${DAY_DATA_KEY}.${SEX_AT_BIRTH_DOCUMENT_KEY}`]: {$in: includedValues } })
 
     const filterQueries = []
-    const filterNames = new Set(Object.keys(this.filters))
+    const filterNames = new Set(Object.keys(this.filters).filter(key => (this.filters[key].map(f => f.value).indexOf(TRUE_STRING) > -1)))
+
     if (filterNames.has(INCLUSION_EXCLUSION_KEY) && filterNames.has(CHRCRIT_KEY)) {
       filterQueries.push({
-        $and: [
-          inclusionFormQuery,
-          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
-          chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY]))
-        ]
+        assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+        ...includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
+        ...chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY]))
       })
-    }
-
-    if (filterNames.has(INCLUSION_EXCLUSION_KEY) && !filterNames.has(CHRCRIT_KEY)) {
+    } else if (filterNames.has(INCLUSION_EXCLUSION_KEY)) {
       filterQueries.push({
-        $and: [
-          inclusionFormQuery,
-          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
-        ]
+        assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+        ...includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
       })
-    }
-
-    if (filterNames.has(CHRCRIT_KEY) && !filterNames.has(INCLUSION_EXCLUSION_KEY)) {
+    } else if (filterNames.has(CHRCRIT_KEY)) {
       filterQueries.push({
-        $and: [
-          inclusionFormQuery,
-          chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY])),
-        ]
+        assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+        ...chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY])),
       })
     }
 
     if (filterNames.has(SEX_AT_BIRTH_FILTER_KEY)) {
       filterQueries.push({
-        $and: [
-          sociodemoFormQuery,
-          sexAtBirthQuery(filterToMongoValues(this.filters[SEX_AT_BIRTH_FILTER_KEY]))
-        ]
+        assessment: SOCIODEMOGRAPHICS_FORM,
+        ...sexAtBirthQuery(filterToMongoValues(this.filters[SEX_AT_BIRTH_FILTER_KEY]))
       })
     }
 

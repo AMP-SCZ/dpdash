@@ -18,30 +18,28 @@ const ParticipantsModel = {
       .aggregate(allParticipantsQuery(user, queryParams))
       .toArray(),
   allForAssessment: async (db, chart, filtersService) => {
-    const { filters } = filtersService
+    const { filters, filterQueries } = filtersService
+    const query = {
+      assessment: chart.assessment,
+      study: { $in: filters.sites, $nin: STUDIES_TO_OMIT },
+    }
 
     if (filtersService.allFiltersInactive()) {
-      const query = {
-        assessment: chart.assessment,
-        study: { $in: filtersService.filters.sites, $nin: STUDIES_TO_OMIT },
-      }
       return await db
         .collection(collections.assessmentDayData)
-        .find(query, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
+        .find(query,  { projection: ALL_SUBJECTS_MONGO_PROJECTION })
         .stream()
     }
 
-    const includedParticipants = await db.collection(collections.assessmentDayData)
-      .distinct('participant', {
-        $or: filtersService.filterQueries
-      })
+    const includedParticipantsByFilter = await Promise.all(filterQueries.map((query) => {
+      return db.collection(collections.assessmentDayData).distinct('participant', query)
+    }))
+
+    const includedParticipants = new Set(includedParticipantsByFilter.flat())
+
     return await db
       .collection(collections.assessmentDayData)
-      .aggregate([
-        { $match: { study: { $in: filters.sites, $nin: STUDIES_TO_OMIT }} },
-        { $match: { participant: { $in: includedParticipants }}},
-        { $match: { assessment: chart.assessment }}
-      ])
+      .find({ ...query, participant: { $in: Array.from(includedParticipants)} })
       .stream()
   },
 }
