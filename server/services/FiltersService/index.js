@@ -109,7 +109,7 @@ class FiltersService {
       filterQueries.push({
         $and: [
           inclusionFormQuery,
-          includedExcludedQuery(filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])),
+          chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY])),
         ]
       })
     }
