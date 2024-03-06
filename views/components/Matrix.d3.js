@@ -53,7 +53,6 @@ export default class Matrix {
   }
 
   validDay = (d) => d.day >= this.startDay && d.day <= this.lastDayForFilter
- 
   create = (data) => {
     this.data = data
 
