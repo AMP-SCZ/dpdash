@@ -21,7 +21,7 @@ const ParticipantsModel = {
         },
         {
           $group: {
-            _id: '$subject',
+            _id: '$participant',
             daysInStudy: {
               $max: '$dayData.day'
             }
