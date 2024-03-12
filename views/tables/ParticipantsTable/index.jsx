@@ -3,12 +3,13 @@ import dayjs from 'dayjs'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import isToday from 'dayjs/plugin/isToday'
 import { Link } from 'react-router-dom'
-import { Checkbox, Chip, Typography } from '@mui/material'
+import { Checkbox, Chip, Typography, Tooltip } from '@mui/material'
 import { Star, StarBorder } from '@mui/icons-material'
 
 import Table from '../Table'
 import { SORT_DIRECTION, fontSize, borderRadius } from '../../../constants'
 import { routes } from '../../routes/routes'
+import { SITE_NAMES } from '../../../server/utils/siteNames'
 
 dayjs.extend(isYesterday)
 dayjs.extend(isToday)
@@ -135,14 +136,21 @@ const ParticipantsTable = (props) => {
           />
         )
       case 'study':
+        let tooltip_title = participant[property]
+        if (participant[property] in SITE_NAMES) {
+          tooltip_title = SITE_NAMES[participant[property]]
+        }
+        
         return (
-          <Typography
-            component={Link}
-            to={routes.studyDashboard(participant.study)}
-            sx={{ textDecoration: 'none', color: 'text.primary' }}
-          >
-            {participant[property]}
-          </Typography>
+          <Tooltip title={tooltip_title} placement="right">
+            <Typography
+              component={Link}
+              to={routes.studyDashboard(participant.study)}
+              sx={{ textDecoration: 'none', color: 'text.primary' }}
+            >
+              {participant[property]}
+            </Typography>
+          </Tooltip>
         )
       default:
         return participant[property]
