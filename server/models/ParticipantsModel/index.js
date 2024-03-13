@@ -120,8 +120,8 @@ const allParticipantsQuery = (user, queryParams) => {
               },
             },
             {
-              $expr: {
-                $in: ['$participant', searchParticipants]
+              participant: {
+                $in: searchParticipants
               }
             },
           ],
@@ -132,8 +132,8 @@ const allParticipantsQuery = (user, queryParams) => {
         $match: {
           $or: [
             {
-              $expr: {
-                $in: ['$participant', searchParticipants]
+              participant: {
+                $in: searchParticipants
               }
             },
           ],
