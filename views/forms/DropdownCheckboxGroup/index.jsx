@@ -25,8 +25,13 @@ const DropdownCheckboxGroup = ({
     const {
       target: { value },
     } = event;
-    setSelectedValue(value)
-    onChange(label, value)
+    if (typeof value === 'string') {
+      setSelectedValue(value.split(','))
+      onChange(label, value.split(','))
+    } else {
+      setSelectedValue(value)
+      onChange(label, value)
+    }
   }
   return (
     <>  
