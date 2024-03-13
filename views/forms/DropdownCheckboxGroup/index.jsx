@@ -60,60 +60,6 @@ const DropdownCheckboxGroup = ({
       </Select>
     </FormControl>
   </>
-    // <>
-    //   <TextField
-    //     label={filterKey}
-    //     id={`${filterKey}`}
-    //     placeholder="Select"
-    //     InputLabelProps={{
-    //       shrink: true,
-    //       sx: {
-    //         color: 'grey.A100',
-    //         '&.Mui-focused': { color: 'grey.A100' },
-    //         '&:hover': { cursor: 'none' },
-    //       },
-    //     }}
-    //     onClick={handleClick}
-    //     onFocus={(e) => e.currentTarget.blur()}
-    //     sx={{
-    //       borderColor: 'grey.A100',
-    //     }}
-    //     InputProps={{
-    //       sx: {
-    //         '&.Mui-focused': { borderColor: 'grey.A100' },
-    //       },
-    //       endAdornment: (
-    //         <InputAdornment position="start">
-    //           <KeyboardArrowDown />
-    //         </InputAdornment>
-    //       ),
-    //     }}
-    //   />
-
-    //   <Menu
-    //     id={`${filterKey}`}
-    //     anchorEl={anchorEl}
-    //     open={open}
-    //     onClose={handleClose}
-    //     disableAutoFocus
-    //     disableAutoFocusItem
-    //   >
-    //     {options.map((filter) => {
-    //       const currentValue = +formValues?.[filter.label].value
-
-    //       return (
-    //         <ListItem>
-    //           <ControlledCheckbox
-    //             control={control}
-    //             name={`${filterKey}.${filter.label}.value`}
-    //             label={filter.label}
-    //             checked={currentValue === 1}
-    //           />
-    //         </ListItem>
-    //       )
-    //     })}
-    //   </Menu>
-    // </>
   )
 }
 
