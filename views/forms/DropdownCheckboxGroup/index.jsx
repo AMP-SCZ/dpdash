@@ -29,34 +29,34 @@ const DropdownCheckboxGroup = ({
     onChange(label, value)
   }
   return (
-    <>      
+    <>  
       <FormControl sx={{ m: 1, width: 300 }}>
-      <InputLabel id={`multi-chip-label-${label}`}>{label}</InputLabel>
-      <Select
-        labelId={`multi-chip-label-${label}`}
-        id={`multi-chip-${label}`}
-        multiple
-        value={selectedValue}
-        onChange={handleChange}
-        input={<OutlinedInput id={`select-multiple-${label}`} label={label} />}
-        renderValue={(selected) => {
-          const EtcChip = selected.length > 5 ? <Chip key={"etc"} label="..." /> : <></>
-          return <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 0.5 }}>
-            {selected.slice(0, 5).map((value) => {
-              return <Chip key={value} label={value} />
-            }).concat([EtcChip])}
-          </Box>
-        }}
-        MenuProps={MenuProps}
-      >
-        {options.map((value) => {
-          return <MenuItem
-            key={value}
-            value={value}
-          >
-            {value}
-          </MenuItem>
-        })}
+        <InputLabel id={`multi-chip-label-${label}`}>{label}</InputLabel>
+        <Select
+          labelId={`multi-chip-label-${label}`}
+          id={`multi-chip-${label}`}
+          multiple
+          value={selectedValue}
+          onChange={handleChange}
+          input={<OutlinedInput id={`select-multiple-${label}`} label={label} />}
+          renderValue={(selected) => {
+            const EtcChip = selected.length > 5 ? <Chip key={"etc"} label="..." /> : <></>
+            return <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 0.5 }}>
+              {selected.slice(0, 5).map((value) => {
+                return <Chip key={value} label={value} />
+              }).concat([EtcChip])}
+            </Box>
+          }}
+          MenuProps={MenuProps}
+        >
+          {options.map((value) => {
+            return <MenuItem
+              key={value}
+              value={value}
+            >
+              {value}
+            </MenuItem>
+          })}
       </Select>
     </FormControl>
   </>
