@@ -139,22 +139,27 @@ class FiltersService {
 
     return filterQueries
   }
-  #requestedFilters = () =>
-    Object.keys(this._filters).reduce((sanitizedFilters, key) => {
-      sanitizedFilters[key] = Object.keys(this._filters[key]).reduce(
+  #requestedFilters = () => {
+    const allFilters = {...DEFAULT_FILTERS, sites: this.allSites.reduce((acc, site) => {
+      acc[site] = 0
+      return acc
+    }, {})}
+    return Object.keys(allFilters).reduce((sanitizedFilters, key) => {
+      sanitizedFilters[key] = Object.keys(allFilters[key]).reduce(
         (sanitizedFilters, reqFilter) => {
-          const { label, value } = this._filters[key][reqFilter]
-
-          sanitizedFilters[reqFilter] = { label, value: Number(value) }
-
+          if (this._filters[key] && this._filters[key][reqFilter]) {
+            const { label, value } = this._filters[key][reqFilter]
+            sanitizedFilters[reqFilter] = { label, value: Number(value) }
+          } else {
+            sanitizedFilters[reqFilter] = { label: allFilters[key][reqFilter].label, value: 0}
+          }
           return sanitizedFilters
         },
         {}
       )
-
       return sanitizedFilters
     }, {})
-
+  }
   get requestedSites() {
     const { sites } = this.filters
 
