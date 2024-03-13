@@ -59,7 +59,6 @@ class FiltersService {
 
   allFiltersInactive = () => {
     const { sites, ...filters } = this.filters
-
     return Object.keys(filters).every((category) => {
       const filterCategory = filters[category]
 
@@ -141,7 +140,7 @@ class FiltersService {
   }
   #requestedFilters = () => {
     const allFilters = {...DEFAULT_FILTERS, sites: this.allSites.reduce((acc, site) => {
-      acc[site] = 0
+      acc[site] = {label: site, value: 0}
       return acc
     }, {})}
     return Object.keys(allFilters).reduce((sanitizedFilters, key) => {
