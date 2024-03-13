@@ -139,7 +139,7 @@ const ParticipantsTable = (props) => {
         const tooltipTitle = participant[property] in SITE_NAMES ? SITE_NAMES[participant[property]] : participant[property]
         
         return (
-          <Tooltip title={tooltip_title} placement="right">
+          <Tooltip title={tooltipTitle} placement="right">
             <Typography
               component={Link}
               to={routes.studyDashboard(participant.study)}
