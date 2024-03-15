@@ -239,7 +239,7 @@ export default class Matrix {
     for (let i = firstDay; i < this.lastDayForFilter; i++) {
       const day = i + 1
 
-      if (startDate && startDate.getDay() == 0 || startDate.getDay() == 6) {
+      if (startDate && (startDate.getDay() == 0 || startDate.getDay() == 6)) {
         xAxisForDatesData.push({ day, marker: 'S' })
       } else if (startDate && startDate.getDay() == 3) {
         const month = startDate.getMonth() + 1
@@ -252,7 +252,9 @@ export default class Matrix {
       } else {
         xAxisForDatesData.push({ day, marker: 'N/A' })
       }
-      startDate.setDate(startDate.getDate() + 1)
+      if (startDate) {
+        startDate.setDate(startDate.getDate() + 1)
+      }
     }
 
     return xAxisForDatesData

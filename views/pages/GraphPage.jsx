@@ -17,7 +17,7 @@ const GraphPage = () => {
   const [participants, setParticipants] = useState([])
   useEffect(() => {
     const asyncEffect = async () => {
-      if (subject && subject !== ':subject') {
+      if (subject) {
         setParticipants([subject])
       } else {
         const participantsRes = await api.participants.all({

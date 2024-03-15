@@ -57,7 +57,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
 
       setGraph(graphData.graph)
       updateMaxDay(graphData.graph)
-      renderMatrix()
+      renderMatrix(graphData.graph)
 
       if (!HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
@@ -77,11 +77,11 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       setNotification({ open: true, message: e.message })
     }
   }
-  const renderMatrix = () => {
-    if (graphRef.current.firstChild) {
+  const renderMatrix = (graph) => {
+    if (graphRef.current && graphRef.current.firstChild) {
       graphRef.current.removeChild(graphRef.current.firstChild)
     }
-    if (!graph.matrixData || Object.keys(graph.matrixData).length == 0) {
+    if (!graph || !graph.matrixData || Object.keys(graph.matrixData).length == 0) {
       return
     }
     const matrixProps = {
@@ -137,7 +137,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
   }, [graphRef])
 
   React.useEffect(() => {
-    renderMatrix()
+    renderMatrix(graph)
   }, [graph.matrixData])
 
   return (
@@ -157,7 +157,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
         View Table
     </Button>
       <div className="Matrix" style={{height: '65vh'}}>
-        <div className="graph" ref={graphRef} style={{height:'65vh', overflow: 'scroll'}} />
+        <div data-testid="graph" className="graph" ref={graphRef} style={{height:'65vh', overflow: 'scroll'}} />
       </div>
       <div>
         <Button
@@ -183,7 +183,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <canvas ref={canvasRef} style={{display: 'none'}}/>
+      <canvas key={`${study}-${subject}`} ref={canvasRef} style={{display: 'none'}}/>
     </Box>
   )
 }
