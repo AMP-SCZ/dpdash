@@ -136,7 +136,8 @@ const ParticipantsTable = (props) => {
           />
         )
       case 'study':
-        const tooltipTitle = participant[property] in SITE_NAMES ? SITE_NAMES[participant[property]] : participant[property]
+        const participantProperty = participant[property]
+        const tooltipTitle = SITE_NAMES[participantProperty] || participantProperty
         
         return (
           <Tooltip title={tooltipTitle} placement="right">
