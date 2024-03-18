@@ -32,10 +32,8 @@ supervisord -c /data/dpdash/configs/supervisord.conf
 
 # mongod is the one that takes most time to start and causes
 # https://github.com/AMP-SCZ/dpdash/issues/407
-# so let's wait for mongod to start
-while [ -z `pgrep -f mongod` ]; do sleep 30; done
-# sleep more for safeguard
-sleep 100
+# so let's wait quite long for mongod to start
+sleep 300
 
 cd /sw/apps/dpdash
 
