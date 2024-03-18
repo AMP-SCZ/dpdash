@@ -15,23 +15,25 @@ const GraphPage = () => {
     useOutletContext()
   const { study, subject } = useParams()
   const [participants, setParticipants] = useState([])
-  useEffect(() => {
-    const asyncEffect = async () => {
-      if (subject) {
-        setParticipants([subject])
-      } else {
-        const participantsRes = await api.participants.all({
-          sortBy: 'participant',
-          sortDirection: 'ASC',
-          studies: [study]
-        })
-        const participants = participantsRes.map((p) => p.participant)
-        setParticipants(participants)
-      }
+  
+  const fetchParticipants = async () => {
+    if (subject) {
+      setParticipants([subject])
+    } else {
+      const participantsRes = await api.participants.all({
+        sortBy: 'participant',
+        sortDirection: 'ASC',
+        studies: [study]
+      })
+      const participants = participantsRes.map((p) => p.participant)
+      setParticipants(participants)
     }
+  }
 
-    asyncEffect()
+  useEffect(() => {
+    fetchParticipants()
   }, [study, subject])
+  
   const updateUserPreferences = async (configurationId) => {
     try {
       const { uid } = user
