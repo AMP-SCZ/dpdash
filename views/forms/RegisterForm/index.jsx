@@ -22,6 +22,7 @@ const RegistrationForm = ({ initialValues, onSubmit }) => {
     formState: { errors },
   } = useForm({
     defaultValues: initialValues,
+    mode: 'onChange',
     resolver: yupResolver(schema),
   })
 
