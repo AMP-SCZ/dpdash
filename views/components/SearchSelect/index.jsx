@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
-import { Card, Checkbox, MenuItem, ListItemText } from '@mui/material/'
-import ControlledSelectInput from '../../forms/ControlledSelect'
+import { Card, Checkbox, Chip, MenuItem, ListItemText } from '@mui/material/'
+import ControlledSelect from '../../forms/ControlledSelect'
 import MenuWithFooterActions from './MenuWithFooterActions'
 import SearchInput from './SearchInput'
 import { fontSize } from '../../../constants'
@@ -23,15 +23,15 @@ const SearchSelect = ({
   const handleClose = () => setSearch('')
 
   return (
-    <ControlledSelectInput
+    <ControlledSelect
       control={control}
       name={name}
       multiple
       label={label}
       defaultValue={[]}
-      sx={{ flexGrow: 1, flexBasis: 0 }}
+      sx={{ flexGrow: 1, flexBasis: 0, width: '100%' }}
       SelectProps={{
-        renderValue: (selected) => selected.join(', '),
+        renderValue: (selected) => <Chip label={selected} />,
         onClose: () => handleClose(),
         multiple: true,
         MenuProps: {
@@ -65,13 +65,13 @@ const SearchSelect = ({
           <MenuItem key={value} value={value}>
             <Checkbox
               sx={{ color: 'black.A100' }}
-              checked={formValues.studies?.includes(value)}
+              checked={formValues[name]?.includes(value)}
             />
             <ListItemText primary={label} sx={{ fontSize: fontSize[16] }} />
           </MenuItem>
         )
       })}
-    </ControlledSelectInput>
+    </ControlledSelect>
   )
 }
 
