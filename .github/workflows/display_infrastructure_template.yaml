@@ -19,7 +19,7 @@ jobs:
         role-to-assume: ${{ vars.ROLE_ARN }}
         aws-region: us-east-1
     - name: Install dependencies
-      run: npm ci --legacy-peer-deps
+      run: npm ci
     - name: Synthesize Cloudformation
       env:
         CDK_DEFAULT_ACCOUNT: ${{ vars.CDK_DEFAULT_ACCOUNT }}
