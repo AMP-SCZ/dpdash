@@ -146,7 +146,7 @@ const ParticipantsTable = (props) => {
               to={routes.studyDashboard(participant.study)}
               sx={{ textDecoration: 'none', color: 'text.primary' }}
             >
-              {participant[property]}
+              {participantProperty}
             </Typography>
           </Tooltip>
         )
