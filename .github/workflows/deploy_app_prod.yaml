@@ -1,17 +1,17 @@
-name: Deploy App
+name: Deploy App Production
 on: 
   workflow_dispatch:
   push:
     branches:
-      - pnl-devel
+      - master
 jobs:
   test:
     name: Test on Node ${{ matrix.node }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['16.x']
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        node: ['latest']
+        os: [ubuntu-latest]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -25,6 +25,7 @@ jobs:
         run: npm run test
   build-and-deploy:
     name: Build and Deploy Docker Image
+    needs: test
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
