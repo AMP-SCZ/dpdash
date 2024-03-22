@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 
 import SearchSelect from '../../components/SearchSelect'
-import useChartsList from '../../hooks/useChartsList'
 
 const ChartShareForm = ({
   chartToShare,
@@ -56,8 +55,8 @@ const ChartShareForm = ({
       />
     </DialogContent>
     <DialogActions>
-      <Button onClick={closeDialog}>Cancel</Button>
-      <Button type="submit">Share</Button>
+      <Button data-testid="cancel" onClick={closeDialog}>Cancel</Button>
+      <Button data-testid="submit" type="submit">Share</Button>
     </DialogActions>
   </Dialog>
   )
