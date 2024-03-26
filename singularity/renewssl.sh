@@ -25,7 +25,7 @@ for certfile in "$dirpath"/*.pem; do
 done
 
 echo 'Generating CAs'
-openssl req -x509 -config openssl.cnf -newkey rsa:4096 -days 365 \
+openssl req -x509 -config openssl.cnf -newkey rsa:4096 \
     -out cacert.pem -outform PEM -subj /CN=DPdashCA/ -nodes
 openssl x509 -in cacert.pem -out cacert.cer -outform DER
 
