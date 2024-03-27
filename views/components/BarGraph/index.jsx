@@ -117,7 +117,7 @@ const BarGraph = ({
                 id={label.name}
                 stackId="a"
                 fill={label.color}
-                barSize={90}
+                barSize={50}
               >
                 <LabelList
                   label={{ fontSize: fontSize[14] }}
