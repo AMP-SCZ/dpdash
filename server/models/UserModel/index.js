@@ -54,7 +54,7 @@ const UserModel = {
     if (updatedUser.role === admin)
       updatedUser.access = await StudiesModel.all(db)
 
-    const { value } = await db.collection(collections.users).findOneAndUpdate(
+    const value = await db.collection(collections.users).findOneAndUpdate(
       { uid },
       {
         $set: updatedUser,
