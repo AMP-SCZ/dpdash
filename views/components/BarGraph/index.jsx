@@ -51,7 +51,7 @@ const BarGraph = ({
       }}
     >
       <ResponsiveContainer
-        width="100%"
+        width="98%"
         height={500}
         ref={(element) => {
           if (element) {
@@ -63,7 +63,6 @@ const BarGraph = ({
       >
         <BarChart
           data={sanitizeSiteData(siteData)}
-          barSize={50}
           margin={{ top: 50 }}
           onMouseMove={(data) => {
             if (data.isTooltipActive) {
@@ -72,7 +71,6 @@ const BarGraph = ({
               handleTooltipPosition({ chartWidth: xAxisWidth, xCoordinate })
             }
           }}
-          barCategoryGap={40}
         >
           <Legend
             margin={{ bottom: 10 }}
@@ -89,6 +87,7 @@ const BarGraph = ({
             dataKey={xAxisKey}
             height={100}
             padding={{ left: 12.5, right: 12.5 }}
+            fontSize={5}
             id="chartWidth"
             interval={0}
             tick={useSiteName ? undefined : <BarGraphXAxisLabel />}
@@ -117,7 +116,6 @@ const BarGraph = ({
                 id={label.name}
                 stackId="a"
                 fill={label.color}
-                barSize={50}
               >
                 <LabelList
                   label={{ fontSize: fontSize[14] }}
