@@ -51,7 +51,7 @@ const BarGraph = ({
       }}
     >
       <ResponsiveContainer
-        width="98%"
+        width="100%"
         height={500}
         ref={(element) => {
           if (element) {
@@ -87,7 +87,6 @@ const BarGraph = ({
             dataKey={xAxisKey}
             height={100}
             padding={{ left: 12.5, right: 12.5 }}
-            fontSize={5}
             id="chartWidth"
             interval={0}
             tick={useSiteName ? undefined : <BarGraphXAxisLabel />}
