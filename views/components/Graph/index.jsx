@@ -57,7 +57,6 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
 
       setGraph(graphData.graph)
       updateMaxDay(graphData.graph)
-      renderMatrix(graphData.graph)
 
       if (!HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
