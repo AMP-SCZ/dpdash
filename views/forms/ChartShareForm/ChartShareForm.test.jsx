@@ -72,15 +72,16 @@ describe(ChartShareForm, () => {
 
       await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
 
+      await userEvent.click(elements.combobox())
+
       await waitFor(async () => {
-        userEvent.click(elements.combobox())
         expect(await elements.checkbox()).toBeInTheDocument()
       })
 
+      await userEvent.click(await elements.checkbox())
+      fireEvent.submit(await elements.submitButton())
 
       await waitFor(async () => {
-        userEvent.click(await elements.checkbox())
-        fireEvent.submit(await elements.submitButton())  
         expect(defaultProps.shareWithUsers).toHaveBeenCalled()
       })
     })
@@ -90,15 +91,15 @@ describe(ChartShareForm, () => {
 
       await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
 
+      await userEvent.click(elements.combobox())
 
       await waitFor(async () => {
-        userEvent.click(elements.combobox())
         expect(await elements.checkbox()).toBeInTheDocument()
       })
 
+      await userEvent.click(await elements.clearButton())
 
       await waitFor(async () => {
-        userEvent.click(await elements.clearButton())
         expect(defaultProps.clearSelectedUsers).toHaveBeenCalled()
       })
     })
@@ -107,16 +108,15 @@ describe(ChartShareForm, () => {
 
       await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
 
+      await userEvent.click(elements.combobox())
 
       await waitFor(async () => {
-        userEvent.click(elements.combobox())
-        return expect(await elements.checkbox()).toBeInTheDocument()
+        expect(await elements.checkbox()).toBeInTheDocument()
       })
 
+      await userEvent.click(await elements.selectAllButton())
 
       await waitFor(async () => {
-        userEvent.click(await elements.selectAllButton())
-
         expect(defaultProps.selectAllUsers).toHaveBeenCalled()
       })
     })
