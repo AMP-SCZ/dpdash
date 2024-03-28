@@ -36,6 +36,8 @@ describe('Graph', () => {
       </MemoryRouter>
     )
     const graphElement = await screen.findByTestId("graph")
-    expect(graphElement.firstChild).toBeInTheDocument()
+    await waitFor(() => {
+      expect(graphElement.firstChild).toBeInTheDocument()
+    })
   })
 })
