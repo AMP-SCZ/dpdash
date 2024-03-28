@@ -31,7 +31,7 @@ const SearchSelect = ({
       defaultValue={[]}
       sx={{ flexGrow: 1, flexBasis: 0, width: '100%' }}
       SelectProps={{
-        renderValue: (selected) => <Chip label={selected} />,
+        renderValue: (selected) => selected.map((l) => <Chip label={l} />),
         onClose: () => handleClose(),
         multiple: true,
         MenuProps: {
