@@ -28,7 +28,7 @@ describe('Search Select', () => {
         <button>Right</button>
       </div>
     ),
-    name: 'search select',
+    name: 'studies',
     formValues: { studies: ['BB'] },
     label: 'search select',
   }

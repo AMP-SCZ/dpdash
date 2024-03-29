@@ -13,3 +13,7 @@ Object.defineProperty(global.SVGElement.prototype, 'getBBox', {
 Object.defineProperty(global.HTMLCanvasElement.prototype, 'getContext', {
   value: jest.fn()
 })
+
+Object.defineProperty(global.HTMLFormElement.prototype, 'requestSubmit', {
+  value: jest.fn()
+})

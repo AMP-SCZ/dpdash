@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import api from '../api'
 import useTableSort from './useTableSort'
+import { useForm } from 'react-hook-form'
 
 const NULL_CHART = {}
 const title = 'title'
@@ -15,11 +16,45 @@ export default function useChartsList() {
 
   const [chartToShare, setChartToShare] = useState(NULL_CHART)
   const [chartList, setChartList] = useState([])
-  const [usernames, setUsernames] = useState([])
+  const [sharedWithOptions, setSharedWithOptions] = useState([])
+
+  const { handleSubmit, control: shareFormControl, reset, watch, getValues } = useForm({
+    defaultValues: {
+      chart_id: chartToShare._id,
+      sharedWith: chartToShare.sharedWith || []
+    }
+  })
+  const [shareFormValues, setShareFormValues] = useState(getValues())
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      setShareFormValues(value)      
+    })
+
+    return () => subscription.unsubscribe()
+  }, [watch, setShareFormValues])
 
   const closeDialog = () => setChartToShare(NULL_CHART)
-  const onShare = (chart) => setChartToShare(chart)
-  const shareWithUsers = async (chart_id, sharedWith, options = {}) => {
+  const onShare = (chart) => {
+    setChartToShare(chart)
+    reset({
+      chart_id: chart._id,
+      sharedWith: chart.sharedWith
+    })
+  }
+  const clearSelectedUsers = () => {
+    reset({
+      chart_id: chartToShare._id,
+      sharedWith: []
+    })
+  }
+  const selectAllUsers = () => {
+    reset({
+      chart_id: chartToShare._id,
+      sharedWith: sharedWithOptions.map(({ value }) => value)
+    })
+  }
+  const shareWithUsers = handleSubmit(async ({ chart_id, sharedWith }) => {
     try {
       await api.charts.chartsShare.create(chart_id, sharedWith)
 
@@ -29,12 +64,12 @@ export default function useChartsList() {
       )
 
       setChartList(updatedChartList)
-      options.closeDialog ? closeDialog() : setChartToShare(updatedChart)
+      setChartToShare(NULL_CHART)
       setNotification({ open: true, message: 'Shared chart with user' })
     } catch (error) {
       setNotification({ open: true, message: error.message })
     }
-  }
+  })
   const onDelete = async (chart) => {
     try {
       await api.charts.chart.destroy(chart._id)
@@ -97,12 +132,12 @@ export default function useChartsList() {
   useEffect(() => {
     const apiUsernames = users
       .filter(({ uid }) => uid !== user.uid)
-      .map(({ uid }) => ({
+      .map(({ uid, display_name }) => ({
         value: uid,
-        label: uid,
+        label: display_name,
       }))
 
-    setUsernames(apiUsernames)
+    setSharedWithOptions(apiUsernames)
   }, [users])
 
   return {
@@ -119,6 +154,10 @@ export default function useChartsList() {
     sortDirection,
     sortBy,
     user,
-    usernames,
+    sharedWithOptions,
+    shareFormControl,
+    shareFormValues,
+    selectAllUsers,
+    clearSelectedUsers
   }
 }
