@@ -5,6 +5,7 @@ import { NETWORK, TOTAL_LABEL } from '../../constants'
 const dataBySite = [
   createSiteData({
     name: 'Site 1',
+    siteCode: 'S1',
     counts: {
       Good: 1,
       Bad: 2,
@@ -24,6 +25,7 @@ const dataBySite = [
   }),
   createSiteData({
     name: 'Site 2',
+    siteCode: 'S2',
     counts: {
       Good: 4,
       Bad: 6,
@@ -60,6 +62,11 @@ describe(BarChartTableService, () => {
             sortable: true,
           },
           {
+            dataProperty: 'siteCode',
+            label: 'Site Id',
+            sortable: false,
+          },
+          {
             dataProperty: 'Good',
             label: 'Good',
             sortable: false,
@@ -76,12 +83,13 @@ describe(BarChartTableService, () => {
           },
         ],
         tableRows: [
-          { Bad: '2', Good: '1', Total: '3', site: 'Site 1' },
+          { Bad: '2', Good: '1', Total: '3', site: 'Site 1', siteCode: 'S1' },
           {
             Bad: '6 / 6 (100%)',
             Good: '4 / 4 (100%)',
             Total: '10',
             site: 'Site 2',
+            siteCode: 'S2',
           },
         ],
       })
@@ -96,10 +104,10 @@ describe(BarChartTableService, () => {
       service.websiteTableData()
 
       expect(service.csvTableData()).toEqual({
-        tableColumns: [NETWORK, 'Good', 'Bad', TOTAL_LABEL],
+        tableColumns: [NETWORK, 'Site Id', 'Good', 'Bad', TOTAL_LABEL],
         tableRows: [
-          ['Site 1', '1', '2', '3'],
-          ['Site 2', '4 / 4 (100%)', '6 / 6 (100%)', '10'],
+          ['Site 1', 'S1', '1', '2', '3'],
+          ['Site 2', 'S2', '4 / 4 (100%)', '6 / 6 (100%)', '10'],
         ],
       })
     })
