@@ -102,8 +102,8 @@ describe(BarChartService, () => {
               siteCode: 'Totals',
               name: 'Totals',
               percentages: {
-                Foo: 14,
-                'N/A': 85,
+                Foo: 14.285714285714285,
+                'N/A': 85.71428571428571,
               },
               targets: {
                 Bar: 3,
