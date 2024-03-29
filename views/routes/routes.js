@@ -3,40 +3,41 @@ import qs from 'qs'
 const apiPath = '/api/v1'
 
 export const routes = {
-  home: `/`,
-  userAccount: '/user-account',
+  admin: '/admin',
+  charts: '/charts',
   configurations: '/configurations',
-  editConfigPage: '/config/:config_id/edit',
-  dashboards: `/dashboard`,
+  contactUs: '/contact-us',
   dashboard: (study = ':study', subject = ':subject') =>
     `${routes.dashboards}/${study}/${subject}`,
-  studyDashboard: (study = ':study') => `${routes.dashboards}/${study}`,
-  charts: '/charts',
-  newChart: '/charts/new',
+  dashboards: `/dashboard`,
   editChart: (chartId) => `/charts/${chartId}/edit`,
   editChartPage: '/charts/:chart_id/edit',
-  viewChartPage: '/charts/:chart_id',
+  editConfigPage: '/config/:config_id/edit',
+  editConfiguration: (configId) => `/config/${configId}/edit`,
+  help: '/help',
+  home: `/`,
+  logout: '/logout',
+  main: '/main',
+  newChart: '/charts/new',
+  newConfiguration: '/configs/new',
+  participants: '/participants',
+  privacyPolicy: '/privacy-policy',
+  previewProfile: '/preview-profile',
+  termsOfUse: '/terms-of-use',
+  resetpw: '/reset-password',
+  register: '/register',
+  signin: '/signin',
+  studyDashboard: (study = ':study') => `${routes.dashboards}/${study}`,
+  studies: '/studies',
+  userAccount: '/user-account',
   viewChart: (chartId, queryParams) =>
     queryParams
       ? `/charts/${chartId}${qs.stringify(queryParams, {
           addQueryPrefix: true,
         })}`
       : `/charts/${chartId}`,
-  admin: '/admin',
-  register: '/register',
-  resetpw: '/reset-password',
-  signin: '/signin',
-  logout: '/logout',
-  main: '/main',
-  help: '/help',
-  contactUs: '/contact-us',
-  privacyPolicy: '/privacy-policy',
-  previewProfile: '/preview-profile',
-  termsOfUse: '/terms-of-use',
-  participants: '/participants',
-  editConfiguration: (configId) => `/config/${configId}/edit`,
+  viewChartPage: '/charts/:chart_id',
   viewConfiguration: (configId) => `/u/configure?s=view&id=${configId}`,
-  newConfiguration: '/configs/new',
 }
 
 export const apiRoutes = {
