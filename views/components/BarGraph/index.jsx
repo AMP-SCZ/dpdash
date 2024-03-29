@@ -71,6 +71,7 @@ const BarGraph = ({
               handleTooltipPosition({ chartWidth: xAxisWidth, xCoordinate })
             }
           }}
+          maxBarSize={100}
         >
           <Legend
             margin={{ bottom: 10 }}
@@ -91,7 +92,7 @@ const BarGraph = ({
             interval={0}
             tick={useSiteName ? undefined : <BarGraphXAxisLabel />}
           />
-          <YAxis width={80} domain={[0, 100]}>
+          <YAxis width={80} domain={([dataMin, dataMax]) => [0, 100]}>
             <Label value="Percent" angle={-90} />
           </YAxis>
           <Tooltip

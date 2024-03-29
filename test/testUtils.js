@@ -167,9 +167,9 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
       siteCode: 'Totals',
       name: 'Totals',
       percentages: {
-        Bar: 14,
-        Foo: 71,
-        'N/A': 14,
+        Bar: 14.285714285714285,
+        Foo: 71.42857142857143,
+        'N/A': 14.285714285714285,
       },
       targets: {
         Bar: 5,
@@ -429,8 +429,8 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       siteCode: 'Totals',
       name: 'Totals',
       percentages: {
-        Foo: 14,
-        'N/A': 85,
+        Foo: 14.285714285714285,
+        'N/A': 85.71428571428571,
       },
       targets: {
         Bar: 3,
@@ -658,8 +658,8 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
       siteCode: 'Totals',
       name: 'Totals',
       percentages: {
-        Foo: 7,
-        'N/A': 92,
+        Foo: 7.142857142857142,
+        'N/A': 92.85714285714286,
       },
       targets: {
         Bar: 2,

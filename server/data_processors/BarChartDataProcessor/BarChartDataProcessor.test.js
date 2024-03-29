@@ -91,8 +91,8 @@ describe(BarChartDataProcessor, () => {
           siteCode: 'Totals',
           name: 'Totals',
           percentages: {
-            Bar: 16,
-            Foo: 83,
+            Bar: 16.666666666666664,
+            Foo: 83.33333333333334,
             'N/A': 0,
           },
           targets: {

@@ -2,11 +2,10 @@ import { EMPTY_VALUE, N_A, TOTALS_STUDY, TOTAL_LABEL } from '../../constants'
 import { SITE_NAMES } from '../../utils/siteNames'
 
 const studyCountsToPercentage = (studyCount, targetTotal) => {
-  if (!targetTotal || Number.isNaN(+studyCount) || Number.isNaN(+targetTotal)) {
+  if (!targetTotal || Number.isNaN(+studyCount) || Number.isNaN(+targetTotal))
     return 0
-  }
 
-  return Math.floor((+studyCount / +targetTotal) * 100)
+  return (+studyCount / +targetTotal) * 100
 }
 
 const calculateTotalsTargetValue = (currentTargetCount, nextTargetCount) =>
