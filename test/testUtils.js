@@ -289,7 +289,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
       },
       {
         dataProperty: 'siteCode',
-        label: 'Site Id',
+        label: 'Site Code',
         sortable: false,
       },
       {
@@ -535,7 +535,7 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       },
       {
         dataProperty: 'siteCode',
-        label: 'Site Id',
+        label: 'Site Code',
         sortable: false,
       },
       {
@@ -748,7 +748,7 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
       },
       {
         dataProperty: 'siteCode',
-        label: 'Site Id',
+        label: 'Site Code',
         sortable: false,
       },
       {

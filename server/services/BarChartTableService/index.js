@@ -1,4 +1,10 @@
-import { NETWORK, N_A, TOTALS_STUDY, TOTAL_LABEL } from '../../constants'
+import {
+  NETWORK,
+  N_A,
+  TOTALS_STUDY,
+  TOTAL_LABEL,
+  SITE_CODE,
+} from '../../constants'
 
 const formatAsPercentage = (value = 0) => value.toFixed(0) + '%'
 
@@ -48,7 +54,7 @@ class BarChartTableService {
     },
     {
       dataProperty: 'siteCode',
-      label: 'Site Id',
+      label: SITE_CODE,
       sortable: false,
     },
     ...this.labels

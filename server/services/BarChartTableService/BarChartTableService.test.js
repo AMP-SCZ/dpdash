@@ -1,6 +1,6 @@
 import BarChartTableService from '.'
 import { createLabel, createSiteData } from '../../../test/fixtures'
-import { NETWORK, TOTAL_LABEL } from '../../constants'
+import { NETWORK, TOTAL_LABEL, SITE_CODE } from '../../constants'
 
 const dataBySite = [
   createSiteData({
@@ -63,7 +63,7 @@ describe(BarChartTableService, () => {
           },
           {
             dataProperty: 'siteCode',
-            label: 'Site Id',
+            label: SITE_CODE,
             sortable: false,
           },
           {
@@ -104,7 +104,7 @@ describe(BarChartTableService, () => {
       service.websiteTableData()
 
       expect(service.csvTableData()).toEqual({
-        tableColumns: [NETWORK, 'Site Id', 'Good', 'Bad', TOTAL_LABEL],
+        tableColumns: [NETWORK, SITE_CODE, 'Good', 'Bad', TOTAL_LABEL],
         tableRows: [
           ['Site 1', 'S1', '1', '2', '3'],
           ['Site 2', 'S2', '4 / 4 (100%)', '6 / 6 (100%)', '10'],
