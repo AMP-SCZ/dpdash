@@ -288,6 +288,11 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         sortable: true,
       },
       {
+        dataProperty: 'siteCode',
+        label: 'Site Code',
+        sortable: false,
+      },
+      {
         dataProperty: 'Foo',
         label: 'Foo',
         sortable: false,
@@ -310,6 +315,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         'N/A': '1',
         Total: '4 / 5 (80%)',
         site: 'Madrid',
+        siteCode: 'MA',
       },
       {
         Bar: '0 / 2 (0%)',
@@ -317,6 +323,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         'N/A': '1',
         Total: '4 / 5 (80%)',
         site: 'UCLA',
+        siteCode: 'LA',
       },
       {
         Bar: '2 / 1 (200%)',
@@ -324,6 +331,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         'N/A': '0',
         Total: '4 / 4 (100%)',
         site: 'Yale',
+        siteCode: 'YA',
       },
       {
         Bar: '2 / 5 (40%)',
@@ -331,6 +339,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         'N/A': '2',
         Total: '12 / 14 (86%)',
         site: 'Totals',
+        siteCode: 'Totals',
       },
     ],
   },
@@ -525,6 +534,11 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
         sortable: true,
       },
       {
+        dataProperty: 'siteCode',
+        label: 'Site Code',
+        sortable: false,
+      },
+      {
         dataProperty: 'Foo',
         label: 'Foo',
         sortable: false,
@@ -547,6 +561,7 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
         'N/A': '4',
         Total: '1 / 5 (20%)',
         site: 'Madrid',
+        siteCode: 'MA',
       },
       {
         Bar: '0 / 1 (0%)',
@@ -554,12 +569,14 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
         'N/A': '3',
         Total: '1 / 4 (25%)',
         site: 'Yale',
+        siteCode: 'YA',
       },
       {
         Foo: '2 / 6 (33%)',
         'N/A': '12',
         Total: '2 / 14 (14%)',
         site: 'Totals',
+        siteCode: 'Totals',
       },
     ],
   },
@@ -730,6 +747,11 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         sortable: true,
       },
       {
+        dataProperty: 'siteCode',
+        label: 'Site Code',
+        sortable: false,
+      },
+      {
         dataProperty: 'Foo',
         label: 'Foo',
         sortable: false,
@@ -752,12 +774,14 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         'N/A': '4',
         Total: '1 / 5 (20%)',
         site: 'Madrid',
+        siteCode: 'MA',
       },
       {
         Foo: '1 / 3 (33%)',
         'N/A': '13',
         Total: '1 / 14 (7%)',
         site: 'Totals',
+        siteCode: 'Totals',
       },
     ],
   },
