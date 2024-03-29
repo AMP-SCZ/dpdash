@@ -18,6 +18,7 @@ import ParticipantsPage from '../pages/ParticipantsPage'
 import RegistrationPage from '../pages/RegistrationPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
 import SignInPage from '../pages/SignInPage'
+import StudiesPage from '../pages/StudiesPage'
 import ViewChartPage from '../pages/ViewChartPage'
 
 const Router = () => {
@@ -57,6 +58,7 @@ const Router = () => {
           <Route path={routes.viewChartPage} element={<ViewChartPage />} />
           <Route path={routes.editConfigPage} element={<EditConfigPage />} />
           <Route path={routes.newConfiguration} element={<NewConfigPage />} />
+          <Route path={routes.studies} element={<StudiesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

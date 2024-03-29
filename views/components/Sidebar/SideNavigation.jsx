@@ -6,6 +6,7 @@ import {
   ShowChart,
   DashboardCustomize,
   AdminPanelSettings,
+  FolderOpen,
 } from '@mui/icons-material'
 import { List, Divider } from '@mui/material'
 
@@ -19,6 +20,7 @@ const SideNavigation = ({ user }) => {
         <NavItem Icon={SpaceDashboard} to={routes.main} label="Dashboard" />
         <NavItem Icon={Group} to={routes.participants} label="Participants" />
         <NavItem Icon={ShowChart} to={routes.charts} label="Charts" />
+        <NavItem Icon={FolderOpen} to={routes.studies} label="Studies" />
         <NavItem
           Icon={DashboardCustomize}
           to={routes.configurations}
