@@ -9,8 +9,8 @@ import { routes } from '../../routes/routes'
 
 import ChartsTable from '../../tables/ChartsTable'
 import useChartsList from '../../hooks/useChartsList'
+import ChartShareForm from '../../forms/ChartShareForm'
 import DashboardPageSectionHeader from './DashboardPageSectionHeader'
-import ShareChart from '../../components/ShareCharts'
 
 import './DashboardPage.css'
 
@@ -20,17 +20,21 @@ const DashboardPage = () => {
     useParticipantsList()
   const {
     charts,
-    chartToShare,
-    closeDialog,
     onDelete,
     onDuplicate,
     onFavorite,
     onShare,
     onSort: onChartSort,
-    shareWithUsers,
     sortDirection: chartSortDirection,
     sortBy: chartSortBy,
-    usernames,
+    chartToShare,
+    closeDialog,
+    shareWithUsers,
+    sharedWithOptions,
+    shareFormControl,
+    shareFormValues,
+    clearSelectedUsers,
+    selectAllUsers
   } = useChartsList()
 
   return (
@@ -67,14 +71,16 @@ const DashboardPage = () => {
           user={user}
         />
       </section>
-      {!!chartToShare._id && (
-        <ShareChart
-          chart={chartToShare}
-          handleChange={shareWithUsers}
-          handleClose={closeDialog}
-          usernames={usernames}
-        />
-      )}
+      <ChartShareForm 
+          chartToShare={chartToShare}
+          closeDialog={closeDialog}
+          shareWithUsers={shareWithUsers}
+          sharedWithOptions={sharedWithOptions}
+          shareFormControl={shareFormControl}
+          shareFormValues={shareFormValues}
+          clearSelectedUsers={clearSelectedUsers}
+          selectAllUsers={selectAllUsers}      
+      />
     </Box>
   )
 }

@@ -3,29 +3,32 @@ import { Box, Button } from '@mui/material'
 import { Link, useOutletContext } from 'react-router-dom'
 
 import ChartsTable from '../tables/ChartsTable'
-import PageHeader from '../components/PageHeader'
-import ShareChart from '../components/ShareCharts'
 import ChartsSearchForm from '../forms/ChartsSearchForm'
+import ChartShareForm from '../forms/ChartShareForm'
+import PageHeader from '../components/PageHeader'
 import { routes } from '../routes/routes'
-
 import useChartsList from '../hooks/useChartsList'
 
 const ChartsPage = () => {
   const { user } = useOutletContext()
   const {
     charts,
-    chartToShare,
-    closeDialog,
     handleSearch,
     onDelete,
     onDuplicate,
     onFavorite,
     onShare,
     onSort,
-    shareWithUsers,
     sortDirection,
     sortBy,
-    usernames,
+    chartToShare,
+    closeDialog,
+    shareWithUsers,
+    sharedWithOptions,
+    shareFormControl,
+    shareFormValues,
+    clearSelectedUsers,
+    selectAllUsers,
   } = useChartsList()
 
   return (
@@ -64,14 +67,16 @@ const ChartsPage = () => {
         sortable
         user={user}
       />
-      {!!chartToShare._id && (
-        <ShareChart
-          chart={chartToShare}
-          handleChange={shareWithUsers}
-          handleClose={closeDialog}
-          usernames={usernames}
-        />
-      )}
+      <ChartShareForm 
+        chartToShare={chartToShare}
+        closeDialog={closeDialog}
+        shareWithUsers={shareWithUsers}
+        sharedWithOptions={sharedWithOptions}
+        shareFormControl={shareFormControl}
+        shareFormValues={shareFormValues}
+        clearSelectedUsers={clearSelectedUsers}
+        selectAllUsers={selectAllUsers}
+      />
     </Box>
   )
 }
