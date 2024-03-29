@@ -92,12 +92,7 @@ const BarGraph = ({
             interval={0}
             tick={useSiteName ? undefined : <BarGraphXAxisLabel />}
           />
-          <YAxis
-            width={80}
-            domain={([dataMin, dataMax]) => [0, 100]}
-            type="number"
-            allowDataOverflow={false}
-          >
+          <YAxis width={80} domain={([dataMin, dataMax]) => [0, 100]}>
             <Label value="Percent" angle={-90} />
           </YAxis>
           <Tooltip
