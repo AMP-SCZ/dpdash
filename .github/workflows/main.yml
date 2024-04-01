@@ -17,5 +17,9 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Install deps
         run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Format
+        run: npm run format
       - name: Test
         run: npm run test
