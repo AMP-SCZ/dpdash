@@ -31,7 +31,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         fullWidth
         name="username"
         label="Username"
-        required={true}
+        required
         margin="normal"
       />
       <TextInput
@@ -42,7 +42,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         name="password"
         label="Password"
         type="password"
-        required={true}
+        required
         margin="normal"
       />
       <TextInput
@@ -53,7 +53,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         name="confirmPassword"
         type="password"
         label="Confirm Password"
-        required={true}
+        required
         margin="normal"
       />
       <TextInput
@@ -63,7 +63,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         label="Reset Key"
         margin="normal"
         name="reset_key"
-        required={true}
+        required
       />
 
       <div>

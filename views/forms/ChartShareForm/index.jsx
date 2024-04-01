@@ -25,7 +25,7 @@ const ChartShareForm = ({
     <Dialog
       open={Boolean(chartToShare._id)}
       onClose={closeDialog}
-      fullWidth={true}
+      fullWidth
       PaperProps={{
         component: 'form',
         onSubmit: shareWithUsers,

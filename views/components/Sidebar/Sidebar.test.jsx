@@ -10,7 +10,7 @@ describe('Sidebar', () => {
   const user = createUser()
 
   beforeEach(() => {
-    render(<Sidebar user={user} sidebarOpen={true} onLogout={jest.fn()} />, {
+    render(<Sidebar user={user} sidebarOpen onLogout={jest.fn()} />, {
       wrapper: BrowserRouter,
     })
   })

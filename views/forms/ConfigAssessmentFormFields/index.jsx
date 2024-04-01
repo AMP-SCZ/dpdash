@@ -60,7 +60,7 @@ const ConfigAssessmentFormFields = ({
                   key={palette}
                   style={{ backgroundColor: palette }}
                   className="ColorPaletteBlock"
-                ></span>
+                />
               ))}
             </div>
           </MenuItem>

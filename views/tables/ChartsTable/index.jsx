@@ -116,7 +116,7 @@ const ChartsTable = ({
         return (
           <Checkbox
             name={chart._id}
-            disableRipple={true}
+            disableRipple
             icon={<StarBorder sx={{ color: 'primary.dark' }} />}
             checked={chart.favorite}
             checkedIcon={<Star sx={{ color: 'primary.dark' }} />}

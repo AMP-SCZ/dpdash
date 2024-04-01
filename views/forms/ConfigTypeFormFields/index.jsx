@@ -24,7 +24,7 @@ const ConfigTypeFormFields = (props) => {
       <TextInput
         name="configType"
         control={control}
-        disabled={true}
+        disabled
         value="matrix"
         label="matrix"
         fullWidth

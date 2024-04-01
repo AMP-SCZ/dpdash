@@ -38,7 +38,7 @@ const ControlledMultiSelect = (props) => {
           fieldState={fieldState}
           onChange={onChange}
           {...props}
-        ></MultiSelect>
+        />
       )}
     />
   )

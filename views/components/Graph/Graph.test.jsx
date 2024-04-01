@@ -22,8 +22,8 @@ describe('Graph', () => {
       <MemoryRouter>
         <Graph
           user={user}
-          study={'study'}
-          subject={'subject'}
+          study="study"
+          subject="subject"
           theme={{}}
           setNotification={jest.fn()}
         />
@@ -41,8 +41,8 @@ describe('Graph', () => {
       <MemoryRouter>
         <Graph
           user={user}
-          study={'study'}
-          subject={'subject'}
+          study="study"
+          subject="subject"
           theme={{}}
           setNotification={jest.fn()}
         />

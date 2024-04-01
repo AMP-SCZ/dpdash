@@ -125,7 +125,7 @@ const ParticipantsTable = (props) => {
         return (
           <Checkbox
             name={`star-${participant.study}`}
-            disableRipple={true}
+            disableRipple
             icon={<StarBorder sx={{ color: 'primary.dark' }} />}
             checked={participant.star}
             checkedIcon={<Star sx={{ color: 'primary.dark' }} />}

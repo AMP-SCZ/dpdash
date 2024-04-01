@@ -17,12 +17,7 @@ const UserPriviligeFields = ({
   onUpdateUser,
 }) => {
   return (
-    <Modal
-      fullScreen={true}
-      title="Edit user privilege"
-      open={open}
-      onClose={onClose}
-    >
+    <Modal fullScreen title="Edit user privilege" open={open} onClose={onClose}>
       <Subheader className="subheader">Membership Level</Subheader>
       <ControlledSelectInput
         control={control}

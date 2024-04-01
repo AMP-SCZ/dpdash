@@ -62,7 +62,11 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       if (!HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
           value(callback, type, quality) {
-            const binStr = atob(this.toDataURL(type, quality).split(',')[1]),
+            const binStr = atob(
+                HTMLCanvasElement.prototype
+                  .toDataURL(type, quality)
+                  .split(',')[1]
+              ),
               len = binStr.length,
               arr = new Uint8Array(len)
 
@@ -179,7 +183,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
           variant="fab"
           onClick={downloadPng}
           id="downloadPng"
-          focusRipple={true}
+          focusRipple
         >
           <Save />
         </Button>

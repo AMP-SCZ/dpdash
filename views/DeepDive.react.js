@@ -50,18 +50,20 @@ class DeepDive extends Component {
       })
   }
   handleResize = () => {
-    this.setState({
-      width: window.innerWidth - this.state.marginWidth,
-      height: window.innerHeight - this.state.marginHeight,
-    })
+    this.setState((prevState) => ({
+      ...prevState,
+      width: window.innerWidth - prevState.marginWidth,
+      height: window.innerHeight - prevState.marginHeight,
+    }))
   }
   sort = ({ sortBy, sortDirection }) => {
     const sortedList = this.sortList({ sortBy, sortDirection })
-    this.setState({
+    this.setState((prevState) => ({
+      ...prevState,
       sortBy,
       sortDirection,
       data: sortedList,
-    })
+    }))
   }
   sortList = ({ sortBy, sortDirection }) => {
     const list = _.map(this.state.data, _.clone)
@@ -90,10 +92,11 @@ class DeepDive extends Component {
     )
   }
   componentDidMount() {
-    this.setState({
-      width: window.innerWidth - this.state.marginWidth,
-      height: window.innerHeight - this.state.marginHeight,
-    })
+    this.setState((prevState) => ({
+      ...prevState,
+      width: window.innerWidth - prevState.marginWidth,
+      height: window.innerHeight - prevState.marginHeight,
+    }))
     /* Resize listener register */
     window.addEventListener('resize', this.handleResize)
   }

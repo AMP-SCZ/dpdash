@@ -27,7 +27,7 @@ const Router = () => {
         <Route element={<HeroLayout />}>
           <Route
             path={routes.home}
-            element={<Navigate to={routes.signin} replace={true} />}
+            element={<Navigate to={routes.signin} replace />}
           />
           <Route path={routes.signin} element={<SignInPage />} />
           <Route path={routes.register} element={<RegistrationPage />} />

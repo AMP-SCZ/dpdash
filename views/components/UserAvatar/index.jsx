@@ -26,7 +26,7 @@ const UserAvatar = ({ user, small }) => {
       <Avatar
         style={small ? SMALLER_AVATAR_STYLE : DEFAULT_AVATAR_STYLE}
         src={icon}
-      ></Avatar>
+      />
     )
   }
 

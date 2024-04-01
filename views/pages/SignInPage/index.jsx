@@ -26,7 +26,7 @@ const SignInPage = () => {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom={true}>
+      <Typography variant="h4" gutterBottom>
         Sign In
       </Typography>
       <Typography variant="body1">

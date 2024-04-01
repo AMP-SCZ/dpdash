@@ -34,7 +34,7 @@ const ShareConfigurationForm = ({
   }, [initialValues])
 
   return (
-    <Dialog open={open} onClose={onClose} fullScreen={true}>
+    <Dialog open={open} onClose={onClose} fullScreen>
       <DialogTitle id="alert-dialog-title">
         <Typography variant="title">{title}</Typography>
       </DialogTitle>

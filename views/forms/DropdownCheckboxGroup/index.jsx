@@ -59,7 +59,8 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
       input={<OutlinedInput id={`select-multiple-${label}`} label={label} />}
       renderValue={(selected) => {
         const EtcChip =
-          selected.length > 5 ? <Chip key={'etc'} label="..." /> : <></>
+          selected.length > 5 ? <Chip key="etc" label="..." /> : <></>
+
         return (
           <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 0.5 }}>
             {selected

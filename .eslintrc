@@ -3,7 +3,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "prettier",
-    "universe"
+    "universe/web",
+    "universe/node"
   ],
   "parser": "@babel/eslint-parser",
   "env": {
@@ -18,7 +19,7 @@
     "ecmaFeatures": {
         "jsx": true
     },
-    "ecmaVersion": 12,
+    "ecmaVersion": 15,
     "sourceType": "module",
     "parserOptions": {
       "project": "./tsconfig.json"
@@ -30,7 +31,8 @@
     "testing-library",
     "no-only-tests",
     "sort-keys-fix",
-    "prettier"
+    "prettier",
+    "promise"
   ],
   "rules": {
     "react/prop-types": "off",

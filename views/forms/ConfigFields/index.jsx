@@ -14,7 +14,7 @@ const ConfigFormFields = ({
   onRemove,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <ConfigTypeFormFields control={control} friendsList={friendsList} />
       <div className="ConfigFields">
         {fields.map((field, index) => {
@@ -34,7 +34,7 @@ const ConfigFormFields = ({
           )
         })}
       </div>
-    </React.Fragment>
+    </>
   )
 }
 
