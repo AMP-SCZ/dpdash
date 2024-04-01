@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Avatar, Checkbox } from '@mui/material'
+
 import {
   Star,
   StarBorder,
@@ -8,14 +8,15 @@ import {
   Delete,
   Share,
 } from '@mui/icons-material'
+import { Typography, Checkbox } from '@mui/material'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 
+import { SORT_DIRECTION, DATE_FORMAT } from '../../../constants'
+import { ChartModel } from '../../models/'
 import { routes } from '../../routes/routes'
 import Table from '../Table'
 import TableMenu from '../Table/TableMenu'
-import { ChartModel, UrlModel } from '../../models/'
-import { SORT_DIRECTION, DATE_FORMAT } from '../../../constants'
 
 import './ChartsTable.css'
 
@@ -68,7 +69,7 @@ const ChartsTable = ({
   }
   const cellRenderer = (chart, property) => {
     switch (property) {
-      case 'info':
+      case 'info': {
         const chartOwnedByUser = ChartModel.isOwnedByUser(chart, user)
 
         return (
@@ -102,6 +103,7 @@ const ChartsTable = ({
             ]}
           />
         )
+      }
       case 'owner':
         return (
           <div className="ChartsTable_Profile">
@@ -126,7 +128,7 @@ const ChartsTable = ({
             }}
           />
         )
-      case 'title':
+      case 'title': {
         const viewChart = routes.viewChart(chart._id)
 
         return (
@@ -136,6 +138,7 @@ const ChartsTable = ({
             </Typography>
           </Link>
         )
+      }
       case 'updatedAt':
         return chart[property] ? dayjs(chart[property]).format(DATE_FORMAT) : ''
       default:

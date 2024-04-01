@@ -1,10 +1,11 @@
-import Modal from '../../components/Modal'
-import Subheader from '@mui/material/ListSubheader'
 import { Button, DialogActions, MenuItem, NoSsr } from '@mui/material'
+import Subheader from '@mui/material/ListSubheader'
+
+import { ROLE_OPTIONS } from '../../../constants'
+import Modal from '../../components/Modal'
+import ControlledReactSelect from '../ControlledReactSelect'
 import { components } from '../ControlledReactSelect/components'
 import ControlledSelectInput from '../ControlledSelect'
-import ControlledReactSelect from '../ControlledReactSelect'
-import { ROLE_OPTIONS } from '../../../constants'
 import './UserPriviligeFields.css'
 
 const UserPriviligeFields = ({

@@ -1,4 +1,5 @@
 import React from 'react'
+
 import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
 

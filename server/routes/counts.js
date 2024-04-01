@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import ensureAuthenticated from '../utils/passport/ensure-authenticated'
+
 import CountsController from '../controllers/countsController'
+import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import { v1Routes } from '../utils/routes'
 
 const router = Router()

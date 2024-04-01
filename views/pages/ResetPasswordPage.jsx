@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Box, Card, CardContent, Typography } from '@mui/material'
+import React, { useContext } from 'react'
 
-import { routes } from '../routes/routes'
+import { Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
 import api from '../api'
-import ResetPasswordForm from '../forms/ResetPasswordForm'
 import { NotificationContext } from '../contexts'
+import ResetPasswordForm from '../forms/ResetPasswordForm'
+import { routes } from '../routes/routes'
 
 const ResetPasswordPage = () => {
   const [, setNotification] = useContext(NotificationContext)

@@ -1,9 +1,10 @@
 import { ObjectId } from 'mongodb'
+
 import BarChartService from '.'
-import FiltersService, { DEFAULT_FILTERS } from '../FiltersService'
-import { collections } from '../../utils/mongoCollections'
 import { createChart, createFieldLabelValue } from '../../../test/fixtures'
 import { dayDataAssessments } from '../../../test/testUtils'
+import { collections } from '../../utils/mongoCollections'
+import FiltersService, { DEFAULT_FILTERS } from '../FiltersService'
 
 describe(BarChartService, () => {
   describe('methods', () => {

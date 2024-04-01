@@ -1,12 +1,13 @@
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { Typography } from '@mui/material'
 
-import RegistrationForm from '../../forms/RegisterForm'
-import { NotificationContext } from '../../contexts'
-import api from '../../api'
-import { routes } from '../../routes/routes'
+import { Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
+
 import { fontSize } from '../../../constants'
+import api from '../../api'
+import { NotificationContext } from '../../contexts'
+import RegistrationForm from '../../forms/RegisterForm'
+import { routes } from '../../routes/routes'
 
 import './RegistrationPage.css'
 

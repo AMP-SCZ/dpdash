@@ -1,5 +1,4 @@
-import UserConfigModel from '.'
-import { findCategoryColor } from '.'
+import UserConfigModel, { findCategoryColor } from '.'
 import { createColorList } from '../../../test/fixtures'
 
 describe('Models - User Config', () => {

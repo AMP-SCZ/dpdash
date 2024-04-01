@@ -1,5 +1,5 @@
-import { collections } from '../../utils/mongoCollections'
 import { STUDIES_TO_OMIT } from '../../constants'
+import { collections } from '../../utils/mongoCollections'
 
 const study = 'study'
 

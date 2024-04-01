@@ -1,5 +1,6 @@
-import { Autocomplete, Chip, TextField } from '@mui/material'
 import React from 'react'
+
+import { Autocomplete, Chip, TextField } from '@mui/material'
 
 export const MultiSelect = (props) => {
   const { field, fieldState } = props
@@ -26,7 +27,7 @@ export const MultiSelect = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          aria-invalid={!!fieldState?.error ? 'true' : 'false'}
+          aria-invalid={fieldState?.error ? 'true' : 'false'}
           label={props.label}
           helperText={fieldState?.error?.message}
           InputProps={{

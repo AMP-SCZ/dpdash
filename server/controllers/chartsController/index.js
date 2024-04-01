@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb'
+
 import ChartsModel from '../../models/ChartsModel'
 import UserModel, { userMongoProjection } from '../../models/UserModel'
 import { defaultTargetValueMap } from '../../utils/defaultTargetValueMap'

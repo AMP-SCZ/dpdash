@@ -1,6 +1,7 @@
 import React from 'react'
-import { IconButton, Menu, MenuItem, MenuList, Typography } from '@mui/material'
+
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { IconButton, Menu, MenuItem, MenuList, Typography } from '@mui/material'
 
 const MENU_ITEM_STYLES = { display: 'flex', gap: '32px' }
 const COLOR_STYLES = { color: 'black.A100' }

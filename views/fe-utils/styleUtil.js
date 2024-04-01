@@ -1,3 +1,5 @@
+import { colors } from '../../constants'
+
 const getDefaultStyles = (theme) => ({
   root: {
     flexGrow: 1,

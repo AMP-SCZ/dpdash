@@ -1,5 +1,6 @@
 import React, { createRef, useRef } from 'react'
-import FileSaver from 'file-saver'
+
+import { Save, Functions } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -8,14 +9,14 @@ import {
   Dialog,
   Typography,
 } from '@mui/material'
-import { Save, Functions } from '@mui/icons-material'
-
-import Matrix from '../Matrix.d3'
-import GraphPageTable from '../GraphPageTable'
-import api from '../../api'
+import FileSaver from 'file-saver'
 import { Link } from 'react-router-dom'
-import { routes } from '../../routes/routes'
+
 import { fontSize } from '../../../constants'
+import api from '../../api'
+import { routes } from '../../routes/routes'
+import GraphPageTable from '../GraphPageTable'
+import Matrix from '../Matrix.d3'
 
 const cardSize = 20
 
@@ -60,12 +61,12 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
 
       if (!HTMLCanvasElement.prototype.toBlob) {
         Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
-          value: function (callback, type, quality) {
-            var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
+          value(callback, type, quality) {
+            const binStr = atob(this.toDataURL(type, quality).split(',')[1]),
               len = binStr.length,
               arr = new Uint8Array(len)
 
-            for (var i = 0; i < len; i++) {
+            for (let i = 0; i < len; i++) {
               arr[i] = binStr.charCodeAt(i)
             }
             callback(new Blob([arr], { type: type || 'image/png' }))
@@ -83,7 +84,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
     if (
       !graph ||
       !graph.matrixData ||
-      Object.keys(graph.matrixData).length == 0
+      Object.keys(graph.matrixData).length === 0
     ) {
       return
     }
@@ -117,15 +118,15 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       return
     }
 
-    let updatedSvgElement = graphRef.current.lastChild
+    const updatedSvgElement = graphRef.current.lastChild
     if (updatedSvgElement) {
-      let svgString = new XMLSerializer().serializeToString(updatedSvgElement)
+      const svgString = new XMLSerializer().serializeToString(updatedSvgElement)
 
       const kanvas = canvasRef.current
       kanvas.width = updatedSvgElement.getBBox().width
       kanvas.height = updatedSvgElement.getBBox().height
 
-      let svgUrl =
+      const svgUrl =
         'data:image/svg+xml; charset=utf8, ' +
         encodeURIComponent(
           svgString.replace(
@@ -135,8 +136,8 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
         )
 
       // png conversion
-      let img = new Image(kanvas.width, kanvas.height)
-      let ctx = kanvas.getContext('2d')
+      const img = new Image(kanvas.width, kanvas.height)
+      const ctx = kanvas.getContext('2d')
       img.src = svgUrl
 
       img.onload = () => {

@@ -1,7 +1,9 @@
 import { useContext } from 'react'
-import Select from 'react-select'
-import { components } from './components'
+
 import { useController } from 'react-hook-form'
+import Select from 'react-select'
+
+import { components } from './components'
 import { NotificationContext } from '../../contexts'
 
 const ControlledReactSelect = (props) => {

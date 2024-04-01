@@ -1,8 +1,9 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+
+import { Graph } from '.'
 import { createGraphDataResponse, createUser } from '../../../test/fixtures'
 import api from '../../api'
-import { Graph } from '.'
-import { MemoryRouter } from 'react-router-dom'
 
 const mockGraphDataResponse = createGraphDataResponse({
   subject: {

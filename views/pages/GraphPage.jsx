@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useOutletContext, useParams } from 'react-router-dom'
-import { Box, Divider } from '@mui/material'
 
+import { Box, Divider } from '@mui/material'
+import { useOutletContext, useParams } from 'react-router-dom'
+
+import api from '../api'
+import { Graph } from '../components/Graph'
 import PageHeader from '../components/PageHeader'
 import SelectConfigurationForm from '../components/SelectConfigurationForm'
-import { Graph } from '../components/Graph'
-import api from '../api'
 
 const GraphPage = () => {
   const { configurations, user, theme, setUser, setNotification } =
@@ -68,7 +69,7 @@ const GraphPage = () => {
       </Box>
       {participants.map((participant) => {
         return (
-          <Box>
+          <Box key={participant}>
             <Graph
               key={`${participant}-graph`}
               study={study}

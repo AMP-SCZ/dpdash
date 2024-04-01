@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useOutletContext } from 'react-router-dom'
-import api from '../api'
-import useTableSort from './useTableSort'
+
 import { useForm } from 'react-hook-form'
+import { useOutletContext } from 'react-router-dom'
+
+import useTableSort from './useTableSort'
+import api from '../api'
 
 const NULL_CHART = {}
 const title = 'title'
@@ -98,9 +100,11 @@ export default function useChartsList() {
     try {
       const isChartInSet = favoriteChartsSet.has(chart._id)
 
-      isChartInSet
-        ? favoriteChartsSet.delete(chart._id)
-        : favoriteChartsSet.add(chart._id)
+      if (isChartInSet) {
+        favoriteChartsSet.delete(chart._id)
+      } else {
+        favoriteChartsSet.add(chart._id)
+      }
 
       const updatedUser = await api.users.update(uid, {
         ...user,

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import {
   OutlinedInput,
   Select,
@@ -39,12 +40,12 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
     }
   }
 
-  const handleClearSelection = (_) => {
+  const handleClearSelection = () => {
     setSelectedValue([])
     onChange(label, [])
   }
 
-  const handleSelectAll = (_) => {
+  const handleSelectAll = () => {
     setSelectedValue(options)
     onChange(label, options)
   }

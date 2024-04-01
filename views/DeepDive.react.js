@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { render } from 'react-dom'
+
+import * as _ from 'lodash'
 import { connect } from 'react-redux'
 import { Column, Table } from 'react-virtualized'
 
-import * as _ from 'lodash'
 import 'whatwg-fetch'
 
 import basePathConfig from '../server/configs/basePathConfig'
@@ -49,7 +49,7 @@ class DeepDive extends Component {
         })
       })
   }
-  handleResize = (event) => {
+  handleResize = () => {
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
       height: window.innerHeight - this.state.marginHeight,
@@ -58,13 +58,13 @@ class DeepDive extends Component {
   sort = ({ sortBy, sortDirection }) => {
     const sortedList = this.sortList({ sortBy, sortDirection })
     this.setState({
-      sortBy: sortBy,
-      sortDirection: sortDirection,
+      sortBy,
+      sortDirection,
       data: sortedList,
     })
   }
   sortList = ({ sortBy, sortDirection }) => {
-    let list = _.map(this.state.data, _.clone)
+    const list = _.map(this.state.data, _.clone)
     return _.orderBy(list, [sortBy], sortDirection.toLowerCase())
   }
   rowClassName = ({ index }) => {
@@ -74,14 +74,14 @@ class DeepDive extends Component {
       return index % 2 === 0 ? 'evenRow' : 'oddRow'
     }
   }
-  getRowHeight = ({ index }) => {
+  getRowHeight = () => {
     return 30
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setState({
       subject: this.props.subject.subject,
       study: this.props.subject.study,
-      day: parseInt(this.props.subject.day),
+      day: parseInt(this.props.subject.day, 10),
     })
     this.fetchData(
       this.props.subject.study,

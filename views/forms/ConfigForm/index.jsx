@@ -1,13 +1,13 @@
 import React from 'react'
-import { Fab } from '@mui/material'
-import { AddCircleOutline, Save } from '@mui/icons-material'
-import { useForm } from 'react-hook-form'
+
 import { yupResolver } from '@hookform/resolvers/yup'
+import { AddCircleOutline, Save } from '@mui/icons-material'
+import { Fab } from '@mui/material'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 import useArrayFormFields from '../../hooks/useArrayFormFields'
 import { UserConfigModel } from '../../models'
-
 import ConfigFormFields from '../ConfigFields'
 import './ConfigForm.css'
 

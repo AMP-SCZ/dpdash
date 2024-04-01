@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import * as yup from 'yup'
 
-import ensureAdmin from '../utils/passport/ensure-admin'
 import AdminUsersController from '../controllers/adminController'
-import { v1Routes } from '../utils/routes'
 import StudiesController from '../controllers/studiesController'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
+import ensureAdmin from '../utils/passport/ensure-admin'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 const uid = yup.string().required()

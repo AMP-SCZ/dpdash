@@ -9,6 +9,7 @@ import {
   presetColors,
   MIN_WIDTH,
 } from './styles'
+import { THEME, borderRadius, fontSize, lineHeight } from './theme'
 import {
   ADMIN_ROLE,
   DATA_URL_PATTERN,
@@ -24,7 +25,6 @@ import {
   TOTAL_LABEL,
   TOTALS,
 } from './vars'
-import { THEME, borderRadius, fontSize, lineHeight } from './theme'
 
 export {
   ADMIN_ROLE,

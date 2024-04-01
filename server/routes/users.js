@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import * as yup from 'yup'
 
-import ensureUser from '../utils/passport/ensure-user'
 import UsersController from '../controllers/usersController'
-import { v1Routes } from '../utils/routes'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
+import ensureUser from '../utils/passport/ensure-user'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 const patchSchema = baseSchema({

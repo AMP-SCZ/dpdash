@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+
 import ChartShareForm from '.'
 import { createChart } from '../../../test/fixtures'
-import userEvent from '@testing-library/user-event'
 
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),

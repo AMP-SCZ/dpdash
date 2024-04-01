@@ -1,9 +1,9 @@
 import crypto from 'crypto'
 
-import { collections } from '../../utils/mongoCollections'
-import StudiesModel from '../StudiesModel'
 import AdminAccountPasswordMailer from '../../mailer/AdminAccountPasswordMailer'
+import { collections } from '../../utils/mongoCollections'
 import ConfigModel from '../ConfigModel'
+import StudiesModel from '../StudiesModel'
 
 export const userMongoProjection = {
   _id: 0,
@@ -81,7 +81,7 @@ const UserModel = {
       .toArray()
 
     if (pseudoAdmins.length > 1) {
-      const [_, ...rest] = pseudoAdmins.map((el) => el._id)
+      const [_first, ...rest] = pseudoAdmins.map((el) => el._id)
 
       await db.collection(collections.users).deleteMany({ _id: { $in: rest } })
     }

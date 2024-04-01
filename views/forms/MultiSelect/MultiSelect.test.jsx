@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { render, screen, waitFor, within } from '@testing-library/react'
+
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { MultiSelect } from '.'
-import { text } from 'body-parser'
 
 describe('Controlled Multi Select', () => {
   const defaultComponentProps = {
@@ -44,7 +44,6 @@ describe('Controlled Multi Select', () => {
   }
 
   test('allows selecting a new option', async () => {
-    const user = userEvent.setup()
     const onChange = jest.fn()
     const props = { ...defaultProps, onChange }
 
@@ -64,7 +63,6 @@ describe('Controlled Multi Select', () => {
   })
 
   test('removing an existing option', async () => {
-    const user = userEvent.setup()
     const onChange = jest.fn()
     const props = {
       ...defaultProps,

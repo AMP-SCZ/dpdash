@@ -1,5 +1,5 @@
 import React from 'react'
-import { Chip } from '@mui/material'
+
 import {
   Share,
   Delete,
@@ -7,9 +7,10 @@ import {
   Edit,
   SettingsApplications,
 } from '@mui/icons-material'
+import { Chip } from '@mui/material'
 
-import Table from '../Table'
 import { borderRadius, fontSize } from '../../../constants'
+import Table from '../Table'
 import TableMenu from '../Table/TableMenu'
 
 const ConfigurationsTable = (props) => {

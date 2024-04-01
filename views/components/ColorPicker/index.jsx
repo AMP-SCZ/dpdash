@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+
 import { Paper, Typography, Dialog } from '@mui/material'
 import { HexColorPicker } from 'react-colorful'
 import { Controller } from 'react-hook-form'
+
 import { borderRadius } from '../../../constants'
 
 import './ColorPicker.css'

@@ -1,9 +1,9 @@
+import ChartModel from './ChartModel'
+import FileModel from './FileModel'
+import StudiesModel from './StudiesModel'
+import UrlModel from './UrlModel'
 import UserConfigModel from './UserConfigModel'
 import UsersModel from './UsersModel'
-import StudiesModel from './StudiesModel'
-import FileModel from './FileModel'
-import ChartModel from './ChartModel'
-import UrlModel from './UrlModel'
 
 export {
   ChartModel,

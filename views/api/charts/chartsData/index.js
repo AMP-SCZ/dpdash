@@ -1,5 +1,5 @@
-import http from '../../http'
 import { apiRoutes } from '../../../routes/routes'
+import http from '../../http'
 
 const chartsData = {
   show: async (chartId, queryParams) =>

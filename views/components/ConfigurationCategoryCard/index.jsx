@@ -1,13 +1,13 @@
 import React from 'react'
-import { Card, CardActions, CardContent, IconButton } from '@mui/material'
+
 import { Delete, ContentCopy } from '@mui/icons-material'
+import { Card, CardActions, CardContent, IconButton } from '@mui/material'
 
 const ConfigurationCategoryCard = ({
   children,
   formIndex,
   onCopy,
   onRemove,
-  rowNum,
 }) => {
   return (
     <Card sx={{ width: '300px' }}>

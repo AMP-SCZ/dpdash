@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
-import { borderRadius } from '../../../constants'
-import UserProfileImage from './UserProfileImage'
 import UserProfileFormFields from './UserProfileFormFields'
+import UserProfileImage from './UserProfileImage'
+import { borderRadius } from '../../../constants'
 import { FileModel } from '../../models'
 
 const schema = yup.object({

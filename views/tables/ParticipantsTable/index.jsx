@@ -1,15 +1,16 @@
 import React from 'react'
-import dayjs from 'dayjs'
-import isYesterday from 'dayjs/plugin/isYesterday'
-import isToday from 'dayjs/plugin/isToday'
-import { Link } from 'react-router-dom'
-import { Checkbox, Chip, Typography, Tooltip } from '@mui/material'
-import { Star, StarBorder } from '@mui/icons-material'
 
-import Table from '../Table'
+import { Star, StarBorder } from '@mui/icons-material'
+import { Checkbox, Chip, Typography, Tooltip } from '@mui/material'
+import dayjs from 'dayjs'
+import isToday from 'dayjs/plugin/isToday'
+import isYesterday from 'dayjs/plugin/isYesterday'
+import { Link } from 'react-router-dom'
+
 import { SORT_DIRECTION, fontSize, borderRadius } from '../../../constants'
-import { routes } from '../../routes/routes'
 import { SITE_NAMES } from '../../../server/utils/siteNames'
+import { routes } from '../../routes/routes'
+import Table from '../Table'
 
 dayjs.extend(isYesterday)
 dayjs.extend(isToday)
@@ -64,7 +65,7 @@ const ParticipantsTable = (props) => {
   ]
   const cellRenderer = (participant, property) => {
     switch (property) {
-      case 'synced':
+      case 'synced': {
         const syncedValue = participant[property]
         const participantSyncedDate = dayjs(syncedValue)
 
@@ -89,8 +90,8 @@ const ParticipantsTable = (props) => {
         }
 
         return ''
-
-      case 'participant':
+      }
+      case 'participant': {
         const { study } = participant
 
         return (
@@ -102,7 +103,8 @@ const ParticipantsTable = (props) => {
             {participant[property]}
           </Typography>
         )
-      case 'Active':
+      }
+      case 'Active': {
         const isActive = participant[property] === 1
 
         return (
@@ -118,6 +120,7 @@ const ParticipantsTable = (props) => {
             label={isActive ? 'Active' : 'Inactive'}
           />
         )
+      }
       case 'star':
         return (
           <Checkbox
@@ -135,7 +138,7 @@ const ParticipantsTable = (props) => {
             }}
           />
         )
-      case 'study':
+      case 'study': {
         const participantProperty = participant[property]
         const tooltipTitle =
           SITE_NAMES[participantProperty] || participantProperty
@@ -151,6 +154,7 @@ const ParticipantsTable = (props) => {
             </Typography>
           </Tooltip>
         )
+      }
       default:
         return participant[property]
     }

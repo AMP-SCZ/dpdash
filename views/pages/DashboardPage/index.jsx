@@ -1,16 +1,16 @@
 import React from 'react'
-import { useOutletContext } from 'react-router-dom'
-import { Box } from '@mui/material'
 
-import ParticipantsTable from '../../tables/ParticipantsTable'
+import { Box } from '@mui/material'
+import { useOutletContext } from 'react-router-dom'
+
+import DashboardPageSectionHeader from './DashboardPageSectionHeader'
 import PageHeader from '../../components/PageHeader'
+import ChartShareForm from '../../forms/ChartShareForm'
+import useChartsList from '../../hooks/useChartsList'
 import useParticipantsList from '../../hooks/useParticipantsList'
 import { routes } from '../../routes/routes'
-
 import ChartsTable from '../../tables/ChartsTable'
-import useChartsList from '../../hooks/useChartsList'
-import ChartShareForm from '../../forms/ChartShareForm'
-import DashboardPageSectionHeader from './DashboardPageSectionHeader'
+import ParticipantsTable from '../../tables/ParticipantsTable'
 
 import './DashboardPage.css'
 

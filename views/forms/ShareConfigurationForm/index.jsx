@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
   Dialog,
@@ -8,7 +9,7 @@ import {
   DialogActions,
   Typography,
 } from '@mui/material'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
 import { object, array } from 'yup'
 
 import ControlledMultiSelect from '../ControlledMultiSelect'

@@ -1,9 +1,11 @@
+import {
+  ASC,
+  ALL_SUBJECTS_MONGO_PROJECTION,
+  STUDIES_TO_OMIT,
+} from '../../constants'
 import { collections } from '../../utils/mongoCollections'
-import { ASC } from '../../constants'
-import { ALL_SUBJECTS_MONGO_PROJECTION, STUDIES_TO_OMIT } from '../../constants'
 
 const participant = 'participant'
-const $participant = '$participant'
 const $participants = '$participants'
 
 const ParticipantsModel = {

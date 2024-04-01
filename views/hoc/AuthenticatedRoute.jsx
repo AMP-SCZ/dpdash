@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from 'react'
+
 import { useNavigate } from 'react-router-dom'
+
+import api from '../api'
 import { AuthContext } from '../contexts/AuthContext'
 import { routes } from '../routes/routes'
-import api from '../api'
 
 const AuthenticatedRoute = ({ children }) => {
   const navigate = useNavigate()
@@ -12,7 +14,7 @@ const AuthenticatedRoute = ({ children }) => {
     try {
       const currentUser = await api.auth.me()
       setUser(currentUser)
-    } catch (error) {
+    } catch {
       navigate(routes.signin)
     }
   }

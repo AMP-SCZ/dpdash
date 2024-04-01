@@ -1,10 +1,10 @@
 const FileModel = {
   fromDataURL: (dateURL, fileName) => {
-    var arr = dateURL.split(','),
+    const arr = dateURL.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[arr.length - 1]),
-      n = bstr.length,
       u8arr = new Uint8Array(n)
+    let n = bstr.length
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n)
     }

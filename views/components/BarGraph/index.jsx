@@ -1,6 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+
 import { Paper } from '@mui/material'
+import { Link } from 'react-router-dom'
 import {
   BarChart,
   Bar,
@@ -13,13 +14,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import BarGraphTooltip from '../BarGraphTooltip'
-import BarGraphXAxisLabel from '../BarGraphXAxisLabel'
 
 import { sortDataBySite, sanitizeSiteData } from './helpers'
-
-import { routes } from '../../routes/routes'
 import { THEME, fontSize } from '../../../constants'
+import { routes } from '../../routes/routes'
+import BarGraphTooltip from '../BarGraphTooltip'
+import BarGraphXAxisLabel from '../BarGraphXAxisLabel'
 
 import './BarGraph.css'
 
@@ -92,7 +92,7 @@ const BarGraph = ({
             interval={0}
             tick={useSiteName ? undefined : <BarGraphXAxisLabel />}
           />
-          <YAxis width={80} domain={([dataMin, dataMax]) => [0, 100]}>
+          <YAxis width={80} domain={() => [0, 100]}>
             <Label value="Percent" angle={-90} />
           </YAxis>
           <Tooltip

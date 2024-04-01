@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { SITE_NAMES } from '../../../server/utils/siteNames'
+
 import { TOTALS_STUDY } from '../../../server/constants'
+import { SITE_NAMES } from '../../../server/utils/siteNames'
 
 const BarGraphXAxisLabel = (props) => {
   const [showPopup, setShowPopup] = useState(false)

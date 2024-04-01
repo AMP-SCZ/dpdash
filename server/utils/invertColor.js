@@ -1,7 +1,7 @@
 /* http://stackoverflow.com/a/35970186 */
 const padZero = (str, len) => {
   len = len || 2
-  let zeros = new Array(len).join('0')
+  const zeros = new Array(len).join('0')
 
   return (zeros + str).slice(-len)
 }

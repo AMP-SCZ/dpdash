@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb'
+
 import defaultUserConfig from '../../constants/defaultUserConfig'
 import { collections } from '../../utils/mongoCollections'
 

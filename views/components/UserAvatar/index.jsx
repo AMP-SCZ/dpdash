@@ -1,6 +1,8 @@
 import React from 'react'
-import Avatar from '@mui/material/Avatar'
+
 import Person from '@mui/icons-material/AccountCircle'
+import Avatar from '@mui/material/Avatar'
+
 import { colors } from '../../../constants'
 
 const DEFAULT_AVATAR_STYLE = { width: 60, height: 60 }
@@ -19,7 +21,7 @@ const SMALLER_AVATAR_WITH_COLOR = {
 const UserAvatar = ({ user, small }) => {
   const { icon, name, uid } = user
 
-  if (!!icon) {
+  if (icon) {
     return (
       <Avatar
         style={small ? SMALLER_AVATAR_STYLE : DEFAULT_AVATAR_STYLE}
@@ -28,7 +30,7 @@ const UserAvatar = ({ user, small }) => {
     )
   }
 
-  if (!!name) {
+  if (name) {
     return (
       <Avatar
         style={small ? SMALLER_AVATAR_WITH_COLOR : AVATAR_STYLE_WITH_COLOR}

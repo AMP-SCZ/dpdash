@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material'
+
 import SidebarLink from './SidebarLink'
 
 const NavItem = ({ to, Icon, label }) => {

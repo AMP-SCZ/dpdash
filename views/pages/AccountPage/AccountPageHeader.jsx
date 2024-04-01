@@ -1,7 +1,9 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Typography, Button } from '@mui/material'
+
 import { ArrowForwardOutlined } from '@mui/icons-material'
+import { Typography, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
 import { borderRadius, fontSize, lineHeight } from '../../../constants'
 import { routes } from '../../routes/routes'
 

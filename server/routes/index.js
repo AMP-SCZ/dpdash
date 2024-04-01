@@ -1,8 +1,8 @@
 import { Router } from 'express'
 
 import ApiUsersController from '../controllers/apiUsersController'
-import { v1Routes } from '../utils/routes'
 import ensureAuthenticated from '../utils/passport/ensure-authenticated'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 

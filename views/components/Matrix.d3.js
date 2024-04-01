@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 
-import { getColor } from '../../server/utils/invertColor'
 import { stringToDate } from '../../server/utils/dateConverter'
+import { getColor } from '../../server/utils/invertColor'
 
 const margin = {
   top: 30,
@@ -67,7 +67,7 @@ export default class Matrix {
       .attr('transform', 'translate(0,0)')
 
     let category = null
-    let yIndices = []
+    const yIndices = []
 
     for (let idx = 0; idx < data.length; idx++) {
       const dataEl = data[idx]
@@ -80,8 +80,8 @@ export default class Matrix {
       //d3.thresholdScale takes in range as (firstIndex, lastIndex]. This is a way around to ensure we get [firstIndex, lastIndex]
       const colors = dataEl.color.slice()
       colors.unshift(dataEl.color[0])
-      let range =
-        dataEl.range.length == 2
+      const range =
+        dataEl.range.length === 2
           ? d3.range(
               dataEl.range[0],
               dataEl.range[1],
@@ -113,7 +113,7 @@ export default class Matrix {
           )
           .style('stroke', (d) => (d[dataVariable] === undefined ? NONE : GREY))
           .style('stroke-width', '2px')
-          .on('click', (d, i) => {
+          .on('click', (d) => {
             const val = d[dataVariable] || 'Not Available'
             const msg = `The value for ${dataEl.label} on day ${d.day} is: ${val}`
 
@@ -136,7 +136,7 @@ export default class Matrix {
             .attr('y', () => idx * this.cardSize + (this.cardSize * 3) / 4)
             .attr('font-size', this.halfCardSize)
             .style('fill', (d) => {
-              const blockColor = !!d[dataVariable]
+              const blockColor = d[dataVariable]
                 ? thresholdScale(d[dataVariable])
                 : WHITE
 
@@ -181,11 +181,11 @@ export default class Matrix {
     this.matrixHeight =
       this.svg.select('.yAxisLinear').node().getBBox().height + this.cardSize
 
-    if (this.initialHeight == -1) {
+    if (this.initialHeight === -1) {
       svgElement
         .attr('width', () => Math.max(this.width, 0))
         .attr('height', this.matrixHeight + this.cardSize * 2)
-    } else if (this.initialHeight == 0 && this.width == 0) {
+    } else if (this.initialHeight === 0 && this.width === 0) {
       svgElement
         .attr('width', () => Math.max(this.width, 0))
         .attr('height', this.matrixHeight + this.cardSize * 2)
@@ -243,9 +243,9 @@ export default class Matrix {
     for (let i = firstDay; i < this.lastDayForFilter; i++) {
       const day = i + 1
 
-      if (startDate && (startDate.getDay() == 0 || startDate.getDay() == 6)) {
+      if (startDate && (startDate.getDay() === 0 || startDate.getDay() === 6)) {
         xAxisForDatesData.push({ day, marker: 'S' })
-      } else if (startDate && startDate.getDay() == 3) {
+      } else if (startDate && startDate.getDay() === 3) {
         const month = startDate.getMonth() + 1
         const localeDate = `${month}/${startDate.getDate()}/${startDate.getFullYear()}`
 
@@ -271,7 +271,7 @@ export default class Matrix {
       .attr('class', 'CategoryMarker')
       .attr('transform', 'translate(-' + maxYAxisWidth + ',0)')
 
-    for (var i = 0; i < indices.length; i++) {
+    for (let i = 0; i < indices.length; i++) {
       const yPosition = i === 0 ? 1 : indices[i] * this.cardSize
 
       categoryMarker
@@ -295,11 +295,7 @@ export default class Matrix {
   }
 
   generateXAxis = () => {
-    const { height, matrixHeight, xAxisForDatesData, startDay } = this
-    const xAxisBottomYCoordinate =
-      height > 0 && height < matrixHeight
-        ? height - this.cardSize * 2 + 1
-        : matrixHeight - this.halfCardSize + 1
+    const { xAxisForDatesData, startDay } = this
     const xAxisRange = []
     const xAxisValuesTop = []
     const xAxisValuesBottom = []

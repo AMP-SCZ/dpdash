@@ -1,11 +1,8 @@
-import React from 'react'
-
 import { screen } from '@testing-library/react'
-
-import renderPage from '../../../test/PageRenderer'
 
 import AdminPage from '.'
 import { createUser } from '../../../test/fixtures'
+import renderPage from '../../../test/PageRenderer'
 
 const mockUser = createUser()
 const mockUsers = [createUser(), createUser()]

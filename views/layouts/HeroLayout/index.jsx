@@ -1,6 +1,7 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+
 import { Box, Grid } from '@mui/material'
+import { Outlet } from 'react-router-dom'
 
 import HeroCard from '../../components/HeroCard'
 import HeroFooter from '../../components/HeroFooter'

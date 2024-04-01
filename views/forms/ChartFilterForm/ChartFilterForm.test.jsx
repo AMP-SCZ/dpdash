@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   render,
   screen,
@@ -6,13 +7,12 @@ import {
   fireEvent,
   queryByAttribute,
 } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 
 import ChartFilterForm from '.'
 
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),
-  useWatch: ({ control: {}, name }) => {
+  useWatch: ({ name }) => {
     if (name === 'chrcrit_part')
       return {
         HC: { label: 'HC', value: 0 },

@@ -18,7 +18,7 @@ const AssessmentDayDataController = {
         if (Consent) {
           parsedConsent = new Date(Consent)
         }
-      } catch (e) {
+      } catch {
         // Missing consent dates could come in a number of formats,
         // so we attempt to parse the date and leave it as null if there's
         // an error

@@ -1,6 +1,6 @@
-import UserModel from '../../models/UserModel'
 import { isAccountExpired } from './helpers'
 import { logout } from './logout'
+import UserModel from '../../models/UserModel'
 
 export default async function ensureAuthenticated(req, res, next) {
   if (!req.isAuthenticated())

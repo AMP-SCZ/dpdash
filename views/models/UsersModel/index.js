@@ -23,7 +23,7 @@ const UsersModel = {
     role: user.role.value,
     access: user.access.map(({ value }) => value),
   }),
-  formValuesFromUser: function (user) {
+  formValuesFromUser(user) {
     return {
       ...user,
       role: { value: user.role },

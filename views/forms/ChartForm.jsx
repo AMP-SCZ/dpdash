@@ -1,14 +1,14 @@
 import React from 'react'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-import useArrayFormFields from '../hooks/useArrayFormFields'
-import { targetValuesFields } from '../fe-utils/targetValuesUtil'
-import { colors } from '../../constants'
 import * as yup from 'yup'
 
 import BarChartFields from './BarChartFields'
+import { colors } from '../../constants'
+import { targetValuesFields } from '../fe-utils/targetValuesUtil'
+import useArrayFormFields from '../hooks/useArrayFormFields'
 
 const schema = yup.object({
   title: yup.string().required(),

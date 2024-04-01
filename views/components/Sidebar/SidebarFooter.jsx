@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   Typography,
   Card,
@@ -9,8 +10,9 @@ import {
   Button,
 } from '@mui/material'
 import { Link } from 'react-router-dom'
-import { routes } from '../../routes/routes'
+
 import { fontSize } from '../../../constants'
+import { routes } from '../../routes/routes'
 import './SidebarFooter.css'
 
 const SidebarFooter = ({ user, onLogout }) => {

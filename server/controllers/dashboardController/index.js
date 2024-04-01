@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
-import UserModel from '../../models/UserModel'
+
 import ConfigModel from '../../models/ConfigModel'
+import UserModel from '../../models/UserModel'
 import DashboardService from '../../services/DashboardService'
 
 const DashboardsController = {
