@@ -51,39 +51,4 @@ const ConfigModel = {
   }),
 }
 
-const loadAllConfigurationsMongoQuery = (userId) => {
-  const users = 'users'
-  const owner = 'owner'
-  const uid = 'uid'
-  const configOwner = 'ownerUser'
-
-  return [
-    {
-      $match: {
-        $or: [{ readers: userId }, { public: true }],
-      },
-    },
-    {
-      $lookup: {
-        from: users,
-        localField: uid,
-        foreignField: owner,
-        as: configOwner,
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        name: 1,
-        type: 1,
-        created: 1,
-        owner: 1,
-        readers: 1,
-        config: 1,
-        owner_display_name: '$ownerUser.display_name',
-      },
-    },
-  ]
-}
-
 export default ConfigModel
