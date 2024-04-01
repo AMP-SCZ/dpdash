@@ -103,54 +103,54 @@ describe('ParticipantsController', () => {
             participant: 'CA00063',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'CA',
             participant: 'CA00064',
             dayData: [
               {
-                day: 15
-              }
-            ]
+                day: 15,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA00037',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA29023',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA00015',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA01508',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
         ])
 
@@ -173,11 +173,9 @@ describe('ParticipantsController', () => {
             star: true,
           }),
           createMetadataParticipant({
-            Consent: new Date('2022-06-09'),
             participant: 'CA00063',
             synced: new Date('07/28/2022'),
             study: 'CA',
-            daysInStudy: 49,
             star: false,
             Consent: new Date('2022-06-09'),
             complete: true,
@@ -296,54 +294,54 @@ describe('ParticipantsController', () => {
             participant: 'CA00063',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'CA',
             participant: 'CA00064',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA00037',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA29023',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA00015',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
           createAssessmentDayData({
             study: 'YA',
             participant: 'YA01508',
             dayData: [
               {
-                day: 49
-              }
-            ]
+                day: 49,
+              },
+            ],
           }),
         ])
         const request = createRequestWithUser(

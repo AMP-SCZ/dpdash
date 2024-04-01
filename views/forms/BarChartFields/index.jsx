@@ -1,11 +1,12 @@
 import React from 'react'
+
 import Delete from '@mui/icons-material/Delete'
 import { Button, Typography } from '@mui/material'
-import ColorPicker from '../../components/ColorPicker/'
-import TextInput from '../TextInput'
-import ControlledCheckbox from '../ControlledCheckbox'
 
 import { presetColors } from '../../../constants'
+import ColorPicker from '../../components/ColorPicker/'
+import ControlledCheckbox from '../ControlledCheckbox'
+import TextInput from '../TextInput'
 
 import './BarChartFields.css'
 

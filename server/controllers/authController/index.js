@@ -1,19 +1,19 @@
-import passport from 'passport'
 import dayjs from 'dayjs'
+import passport from 'passport'
 
-import UserModel from '../../models/UserModel'
-import ConfigModel from '../../models/ConfigModel'
 import RegistrationMailer from '../../mailer/RegistrationMailer'
+import ConfigModel from '../../models/ConfigModel'
+import UserModel from '../../models/UserModel'
 import { hash } from '../../utils/crypto/hash'
-import { logout } from '../../utils/passport/logout'
 import { isAccountExpired } from '../../utils/passport/helpers'
+import { logout } from '../../utils/passport/logout'
 
 const AuthController = {
   authenticate: async (req, res, next) => {
     passport.authenticate(
       'local',
       { session: true },
-      async function (err, user, info) {
+      async function (err, user) {
         if (err) return next(err)
 
         const { uid } = user
@@ -41,7 +41,7 @@ const AuthController = {
       }
     )(req, res, next)
   },
-  create: async (req, res, next) => {
+  create: async (req, res) => {
     try {
       const { appDb } = req.app.locals
       const info = req.body

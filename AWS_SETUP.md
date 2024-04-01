@@ -37,7 +37,7 @@ Copy the ARN of the issued certificate and save it locally. We will use it when 
 
 AWS Documentation: https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html#just-verify-domain-proc
 
-On the AWS Simple Email Service dashboard, navigate to "Verified Identities" and select "Create Identity". 
+On the AWS Simple Email Service dashboard, navigate to "Verified Identities" and select "Create Identity".
 
 ![Screenshot of the SES Verified Identities page](/doc/assets/aws_setup/02_verify_email_domain/verify_email_domain_01.png)
 
@@ -115,6 +115,7 @@ Navigate to your Github repository and select the Settings tab. Open the "Secret
 ![Screenshot of Github Actions Variables](/doc/assets/aws_setup/06_set_github_variables/set_github_variables_02.png)
 
 Create 2 variables:
+
 1. Create the variable ROLE_ARN with a value of the ARN of your Role from Step 3.
 2. Create the variable BASE_DOMAIN with the root domain you will use to host the app (e.g. `dpdash.com`). If you use an outside DNS rather than Route53, this will be the domain used in Step 2.
 

@@ -1,6 +1,6 @@
 import BarChartDataProcessor from '.'
-import { dayDataAssessments } from '../../../test/testUtils'
 import { createChart, createFieldLabelValue } from '../../../test/fixtures'
+import { dayDataAssessments } from '../../../test/testUtils'
 import { TOTALS_STUDY } from '../../constants'
 
 describe(BarChartDataProcessor, () => {

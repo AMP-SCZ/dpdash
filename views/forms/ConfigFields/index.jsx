@@ -1,4 +1,5 @@
 import React from 'react'
+
 import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
 
@@ -13,7 +14,7 @@ const ConfigFormFields = ({
   onRemove,
 }) => {
   return (
-    <React.Fragment>
+    <>
       <ConfigTypeFormFields control={control} friendsList={friendsList} />
       <div className="ConfigFields">
         {fields.map((field, index) => {
@@ -33,7 +34,7 @@ const ConfigFormFields = ({
           )
         })}
       </div>
-    </React.Fragment>
+    </>
   )
 }
 

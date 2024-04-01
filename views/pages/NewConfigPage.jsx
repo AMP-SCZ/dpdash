@@ -1,11 +1,12 @@
 import React from 'react'
+
+import { Typography, Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
 
 import api from '../api'
+import { colorList } from '../fe-utils/colorList'
 import ConfigForm from '../forms/ConfigForm'
 import { UserConfigModel, UsersModel } from '../models'
-import { colorList } from '../fe-utils/colorList'
-import { Typography, Box } from '@mui/material'
 
 const colors = colorList()
 

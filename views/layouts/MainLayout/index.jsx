@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
-import { IconButton, useMediaQuery } from '@mui/material'
-import { Menu } from '@mui/icons-material'
 
+import { Menu } from '@mui/icons-material'
+import { IconButton, useMediaQuery } from '@mui/material'
+import { Outlet, useNavigate } from 'react-router-dom'
+
+import api from '../../api'
 import Sidebar from '../../components/Sidebar'
 import {
   AuthContext,
   ConfigurationsContext,
   NotificationContext,
 } from '../../contexts'
-import api from '../../api'
 import { routes } from '../../routes/routes'
 import './MainLayout.css'
 

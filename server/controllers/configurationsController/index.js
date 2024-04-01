@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb'
+
 import ConfigModel from '../../models/ConfigModel'
 
 const ConfigurationsController = {

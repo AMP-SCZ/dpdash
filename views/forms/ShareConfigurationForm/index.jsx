@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
   Dialog,
@@ -8,7 +9,7 @@ import {
   DialogActions,
   Typography,
 } from '@mui/material'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
 import { object, array } from 'yup'
 
 import ControlledMultiSelect from '../ControlledMultiSelect'
@@ -33,7 +34,7 @@ const ShareConfigurationForm = ({
   }, [initialValues])
 
   return (
-    <Dialog open={open} onClose={onClose} fullScreen={true}>
+    <Dialog open={open} onClose={onClose} fullScreen>
       <DialogTitle id="alert-dialog-title">
         <Typography variant="title">{title}</Typography>
       </DialogTitle>

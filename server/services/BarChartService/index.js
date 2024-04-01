@@ -1,7 +1,7 @@
 import { STUDIES_TO_OMIT, TOTALS_STUDY } from '../../constants'
-import { SITE_NAMES } from '../../utils/siteNames'
 import BarChartDataProcessor from '../../data_processors/BarChartDataProcessor'
 import ParticipantsModel from '../../models/ParticipantsModel'
+import { SITE_NAMES } from '../../utils/siteNames'
 
 class BarChartService {
   constructor(appDb, chart, filtersService) {
@@ -37,7 +37,7 @@ class BarChartService {
       allowedStudies.forEach((study) => {
         const siteName = SITE_NAMES[study] || study
         const rawNewTargetValue = targetValues[study]
-        const newTargetValue = !!rawNewTargetValue
+        const newTargetValue = rawNewTargetValue
           ? +rawNewTargetValue
           : undefined
 
@@ -46,7 +46,7 @@ class BarChartService {
           newTargetValue
         )
 
-        if (targetValues.hasOwnProperty(study)) {
+        if (Object.prototype.hasOwnProperty.call(targetValues, study)) {
           studyTotals[TOTALS_STUDY].targetTotal = this._totalStudyTargetValue(
             studyTotals[TOTALS_STUDY].targetTotal,
             newTargetValue
@@ -66,7 +66,7 @@ class BarChartService {
 
       return {
         ...studyTotals,
-        targetTotal: !!newTargetValue
+        targetTotal: newTargetValue
           ? studyTotals.targetTotal + newTargetValue
           : undefined,
       }
@@ -83,7 +83,7 @@ class BarChartService {
       return totalsStudyTargetTotal
     }
 
-    return !!siteTargetValue
+    return siteTargetValue
       ? totalsStudyTargetTotal + siteTargetValue
       : undefined
   }

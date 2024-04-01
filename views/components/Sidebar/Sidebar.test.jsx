@@ -1,6 +1,8 @@
 import React from 'react'
+
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom' // Use MemoryRouter for testing routes
+
 import Sidebar from '.'
 import { createUser } from '../../../test/fixtures'
 
@@ -8,7 +10,7 @@ describe('Sidebar', () => {
   const user = createUser()
 
   beforeEach(() => {
-    render(<Sidebar user={user} sidebarOpen={true} onLogout={jest.fn()} />, {
+    render(<Sidebar user={user} sidebarOpen onLogout={jest.fn()} />, {
       wrapper: BrowserRouter,
     })
   })

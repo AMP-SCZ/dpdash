@@ -1,8 +1,10 @@
 import React from 'react'
-import { useForm } from 'react-hook-form'
+
 import { Button, FormControl, InputLabel } from '@mui/material'
-import DropdownCheckboxGroup from '../DropdownCheckboxGroup'
+import { useForm } from 'react-hook-form'
+
 import { FILTER_CATEGORIES } from '../../../constants/vars'
+import DropdownCheckboxGroup from '../DropdownCheckboxGroup'
 
 import './ChartFilterForm.css'
 
@@ -29,6 +31,7 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
         {Object.keys(initialValues).map((filterKey, i) => {
           return (
             <FormControl
+              key={filterKey}
               sx={{
                 gridColumnStart: i,
                 gridColumnEnd: i + 1,

@@ -1,5 +1,7 @@
-import { renderFile } from 'ejs'
 import path from 'path'
+
+import { renderFile } from 'ejs'
+
 import BaseMailer from './BaseMailer'
 
 export default class RegistrationMailer extends BaseMailer {

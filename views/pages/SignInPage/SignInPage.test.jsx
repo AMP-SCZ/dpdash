@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { render, screen } from '@testing-library/react'
-import { AuthContext, NotificationContext } from '../../contexts'
 import { MemoryRouter } from 'react-router-dom'
+
 import SignInPage from '.'
+import { AuthContext, NotificationContext } from '../../contexts'
 
 jest.mock('../../forms/SignInForm')
 jest.mock('react-hook-form', () => ({

@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb'
 
-import { collections } from '../../utils/mongoCollections'
+import StudiesModel from '../../models/StudiesModel'
+import UserModel from '../../models/UserModel'
 import BarChartService from '../../services/BarChartService'
 import BarChartTableService from '../../services/BarChartTableService'
 import CsvService from '../../services/CSVService'
-import StudiesModel from '../../models/StudiesModel'
 import FiltersService from '../../services/FiltersService'
-import UserModel from '../../models/UserModel'
+import { collections } from '../../utils/mongoCollections'
 
 const show = async (req, res, next) => {
   try {

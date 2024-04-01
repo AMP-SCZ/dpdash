@@ -1,6 +1,6 @@
-import { collections } from '../../utils/mongoCollections'
-import SiteMetadataModel from '../../models/SiteMetadataModel'
 import DashboardDataProcessor from '../../data_processors/DashboardDataProcessor'
+import SiteMetadataModel from '../../models/SiteMetadataModel'
+import { collections } from '../../utils/mongoCollections'
 
 class DashboardService {
   constructor(appDb, study, participant, configuration) {

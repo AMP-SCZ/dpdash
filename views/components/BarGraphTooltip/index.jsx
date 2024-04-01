@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+
 import { SITE_NAMES } from '../../../server/utils/siteNames'
 
 import './BarGraphTooltip.css'

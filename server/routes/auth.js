@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import * as yup from 'yup'
 
-import { v1Routes } from '../utils/routes'
-import ensureAuthenticated from '../utils/passport/ensure-authenticated'
 import AuthController from '../controllers/authController'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
+import ensureAuthenticated from '../utils/passport/ensure-authenticated'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 

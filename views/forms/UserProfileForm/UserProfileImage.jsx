@@ -1,7 +1,8 @@
 import React from 'react'
-import { Controller } from 'react-hook-form'
-import { Avatar, Typography, Alert, IconButton } from '@mui/material'
+
 import { Delete, Image } from '@mui/icons-material'
+import { Avatar, Typography, Alert, IconButton } from '@mui/material'
+import { Controller } from 'react-hook-form'
 
 import { fontSize } from '../../../constants'
 
@@ -36,7 +37,7 @@ const UserProfileImage = ({
           control={control}
           name="iconFile"
           id="iconFile"
-          render={({ field: { value, ...field } }) => {
+          render={({ field: { value: _value, ...field } }) => {
             return (
               <input
                 hidden

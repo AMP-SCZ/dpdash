@@ -93,7 +93,7 @@ describe('siteMetadataController', () => {
         })
         const request = createRequest({
           body,
-          app: { locals: { appDb: appDb } },
+          app: { locals: { appDb } },
         })
         const response = createResponse()
 
@@ -137,7 +137,7 @@ describe('siteMetadataController', () => {
         })
         const request = createRequest({
           body,
-          app: { locals: { appDb: appDb } },
+          app: { locals: { appDb } },
         })
         const response = createResponse()
 

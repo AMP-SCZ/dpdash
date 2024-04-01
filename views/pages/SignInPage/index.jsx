@@ -1,11 +1,12 @@
 import React, { useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Typography } from '@mui/material'
 
-import { routes } from '../../routes/routes'
+import { Typography } from '@mui/material'
+import { useNavigate, Link } from 'react-router-dom'
+
 import api from '../../api'
 import { AuthContext, NotificationContext } from '../../contexts'
 import SignInForm from '../../forms/SignInForm'
+import { routes } from '../../routes/routes'
 import './SignInPage.css'
 
 const SignInPage = () => {
@@ -25,7 +26,7 @@ const SignInPage = () => {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom={true}>
+      <Typography variant="h4" gutterBottom>
         Sign In
       </Typography>
       <Typography variant="body1">

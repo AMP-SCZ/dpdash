@@ -18,7 +18,7 @@ const AssessmentDayDataController = {
         if (Consent) {
           parsedConsent = new Date(Consent)
         }
-      } catch(e) {
+      } catch {
         // Missing consent dates could come in a number of formats,
         // so we attempt to parse the date and leave it as null if there's
         // an error
@@ -32,16 +32,20 @@ const AssessmentDayDataController = {
         appDb,
         query
       )
-      
+
       let sortedDayData = participant_assessments
-      let maxDayInDayData = Math.max(...participant_assessments.map(pa => pa.day))
+      let maxDayInDayData = Math.max(
+        ...participant_assessments.map((pa) => pa.day)
+      )
 
       if (participantAssessmentData) {
         sortedDayData = sortDayData(
           participantAssessmentData,
           participant_assessments
         )
-        maxDayInDayData = Math.max(...sortedDayData.map(dayData => dayData.day))
+        maxDayInDayData = Math.max(
+          ...sortedDayData.map((dayData) => dayData.day)
+        )
 
         await AssessmentDayDataModel.update(appDb, query, {
           ...participantAssessmentData,
@@ -90,10 +94,12 @@ const AssessmentDayDataController = {
           await SiteMetadataModel.upsert(
             appDb,
             { participants: { $elemMatch: { participant } } },
-            { $set: { 
-              'participants.$.daysInStudy': maxDayInDayData,
-              'participants.$.synced': new Date()
-            } }
+            {
+              $set: {
+                'participants.$.daysInStudy': maxDayInDayData,
+                'participants.$.synced': new Date(),
+              },
+            }
           )
         } else {
           await SiteMetadataModel.upsert(
@@ -108,8 +114,8 @@ const AssessmentDayDataController = {
                   study,
                   participant,
                   synced: new Date(),
-                }
-              }
+                },
+              },
             }
           )
         }
@@ -129,9 +135,9 @@ const AssessmentDayDataController = {
 
       return res.status(200)
     } catch (error) {
-      return res.status(400).json({ message: error.message})
+      return res.status(400).json({ message: error.message })
     }
-  }
+  },
 }
 
 function sortDayData(participantAssessmentData, participant_assessments) {
@@ -146,8 +152,8 @@ function sortDayData(participantAssessmentData, participant_assessments) {
       prevParticipant.day < nextParticipant.day
         ? -1
         : prevParticipant.day > nextParticipant.day
-        ? 1
-        : 0
+          ? 1
+          : 0
     )
 }
 

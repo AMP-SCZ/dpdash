@@ -1,7 +1,7 @@
 /* http://stackoverflow.com/a/35970186 */
 const padZero = (str, len) => {
   len = len || 2
-  let zeros = new Array(len).join('0')
+  const zeros = new Array(len).join('0')
 
   return (zeros + str).slice(-len)
 }
@@ -15,16 +15,14 @@ const getColor = (hex, bw) => {
   let b = parseInt(hex.slice(4, 6), 16)
 
   if (bw) {
-    return (r * 0.299 + g * 0.587 + b * 0.114) > 186
-      ? '#000000'
-      : '#FFFFFF'
+    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000000' : '#FFFFFF'
   }
 
   r = (255 - r).toString(16)
   g = (255 - g).toString(16)
   b = (255 - b).toString(16)
 
-  return "#" + padZero(r) + padZero(g) + padZero(b)
+  return '#' + padZero(r) + padZero(g) + padZero(b)
 }
 
-export { getColor };
+export { getColor }

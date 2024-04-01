@@ -1,13 +1,14 @@
 import React from 'react'
+
 import { Box, Button } from '@mui/material'
 import { Link, useOutletContext } from 'react-router-dom'
 
-import ChartsTable from '../tables/ChartsTable'
-import ChartsSearchForm from '../forms/ChartsSearchForm'
-import ChartShareForm from '../forms/ChartShareForm'
 import PageHeader from '../components/PageHeader'
-import { routes } from '../routes/routes'
+import ChartShareForm from '../forms/ChartShareForm'
+import ChartsSearchForm from '../forms/ChartsSearchForm'
 import useChartsList from '../hooks/useChartsList'
+import { routes } from '../routes/routes'
+import ChartsTable from '../tables/ChartsTable'
 
 const ChartsPage = () => {
   const { user } = useOutletContext()
@@ -67,7 +68,7 @@ const ChartsPage = () => {
         sortable
         user={user}
       />
-      <ChartShareForm 
+      <ChartShareForm
         chartToShare={chartToShare}
         closeDialog={closeDialog}
         shareWithUsers={shareWithUsers}

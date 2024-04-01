@@ -61,7 +61,7 @@ const AdminUsersTable = (props) => {
       case 'access':
         return (
           <div className="IconStyles">
-            <Settings onClick={() => props.onAccess(rowIndex)}></Settings>
+            <Settings onClick={() => props.onAccess(rowIndex)} />
           </div>
         )
       case 'account_expires':

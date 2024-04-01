@@ -1,6 +1,8 @@
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
+
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+
 import HeroLayout from '.'
 
 describe('HeroLayout', () => {
@@ -25,6 +27,6 @@ describe('HeroLayout', () => {
     const learnMoreLink = screen.getByText('Learn More')
 
     expect(heroContent).toBeInTheDocument()
-    expect(learnMoreLink).toBeInTheDocument
+    expect(learnMoreLink).toBeInTheDocument()
   })
 })

@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useOutletContext, useParams } from 'react-router-dom'
-import {
-  Box,
-  Divider
-} from '@mui/material'
 
+import { Box, Divider } from '@mui/material'
+import { useOutletContext, useParams } from 'react-router-dom'
+
+import api from '../api'
+import { Graph } from '../components/Graph'
 import PageHeader from '../components/PageHeader'
 import SelectConfigurationForm from '../components/SelectConfigurationForm'
-import { Graph } from '../components/Graph'
-import api from '../api'
 
 const GraphPage = () => {
   const { configurations, user, theme, setUser, setNotification } =
     useOutletContext()
   const { study, subject } = useParams()
   const [participants, setParticipants] = useState([])
-  
+
   const fetchParticipants = async () => {
     if (subject) {
       setParticipants([subject])
@@ -23,7 +21,7 @@ const GraphPage = () => {
       const participantsRes = await api.participants.all({
         sortBy: 'participant',
         sortDirection: 'ASC',
-        studies: [study]
+        studies: [study],
       })
       const participants = participantsRes.map((p) => p.participant)
       setParticipants(participants)
@@ -33,7 +31,7 @@ const GraphPage = () => {
   useEffect(() => {
     fetchParticipants()
   }, [study, subject])
-  
+
   const updateUserPreferences = async (configurationId) => {
     try {
       const { uid } = user
@@ -69,14 +67,21 @@ const GraphPage = () => {
           currentPreference={user.preferences}
         />
       </Box>
-        {
-          participants.map((participant) => {
-            return <Box>
-              <Graph key={`${participant}-graph`} study={study} subject={participant} user={user} theme={theme} setNotification={setNotification}/>
-              <Divider/>
-            </Box>
-          })
-        }
+      {participants.map((participant) => {
+        return (
+          <Box key={participant}>
+            <Graph
+              key={`${participant}-graph`}
+              study={study}
+              subject={participant}
+              user={user}
+              theme={theme}
+              setNotification={setNotification}
+            />
+            <Divider />
+          </Box>
+        )
+      })}
     </Box>
   )
 }

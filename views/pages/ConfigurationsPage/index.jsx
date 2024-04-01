@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { Box, Button, useMediaQuery } from '@mui/material'
+
 import { Add, UploadFile } from '@mui/icons-material'
+import { Box, Button, useMediaQuery } from '@mui/material'
 import { useOutletContext, Link } from 'react-router-dom'
 
-import ConfigurationsTable from '../../tables/ConfigurationsTable'
-import PageHeader from '../../components/PageHeader'
-import { UsersModel } from '../../models'
-import api from '../../api'
-import ShareConfigurationForm from '../../forms/ShareConfigurationForm'
-import { routes } from '../../routes/routes'
 import { fontSize } from '../../../constants'
+import api from '../../api'
+import PageHeader from '../../components/PageHeader'
+import ShareConfigurationForm from '../../forms/ShareConfigurationForm'
+import { UsersModel } from '../../models'
+import { routes } from '../../routes/routes'
+import ConfigurationsTable from '../../tables/ConfigurationsTable'
 
 import './ConfigurationsPage.css'
 

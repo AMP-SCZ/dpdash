@@ -1,4 +1,5 @@
 import React from 'react'
+
 import TextField from '@mui/material/TextField'
 import { useController } from 'react-hook-form'
 
@@ -8,7 +9,7 @@ const TextInput = (props) => {
 
   return (
     <TextField
-      aria-invalid={!!errors ? 'true' : 'false'}
+      aria-invalid={errors ? 'true' : 'false'}
       aria-label={props.label}
       fullWidth={props.fullWidth}
       helperText={errors?.message}

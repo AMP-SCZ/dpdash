@@ -1,12 +1,13 @@
 import React from 'react'
-import { MenuItem } from '@mui/material'
-import { VisibilityOffOutlined, Visibility } from '@mui/icons-material'
-import ConfigurationCategoryCard from '../../components/ConfigurationCategoryCard'
-import TextInput from '../TextInput'
-import ControlledSelectInput from '../ControlledSelect'
 
-import './ConfigAssessmentFormFields.css'
+import { VisibilityOffOutlined, Visibility } from '@mui/icons-material'
+import { MenuItem } from '@mui/material'
+
+import ConfigurationCategoryCard from '../../components/ConfigurationCategoryCard'
 import ControlledCheckbox from '../ControlledCheckbox'
+import ControlledSelectInput from '../ControlledSelect'
+import TextInput from '../TextInput'
+import './ConfigAssessmentFormFields.css'
 
 const ConfigAssessmentFormFields = ({
   control,
@@ -59,7 +60,7 @@ const ConfigAssessmentFormFields = ({
                   key={palette}
                   style={{ backgroundColor: palette }}
                   className="ColorPaletteBlock"
-                ></span>
+                />
               ))}
             </div>
           </MenuItem>

@@ -1,7 +1,8 @@
 import React from 'react'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
+
 import { TextField } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import MenuItem from '@mui/material/MenuItem'
 
 const SelectConfigurationForm = ({
   configurations,

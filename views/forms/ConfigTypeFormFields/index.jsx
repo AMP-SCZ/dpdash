@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { Typography } from '@mui/material'
-import TextInput from '../TextInput'
-import ControlledMultiSelect from '../ControlledMultiSelect'
+
 import ControlledCheckbox from '../ControlledCheckbox'
+import ControlledMultiSelect from '../ControlledMultiSelect'
+import TextInput from '../TextInput'
 
 import './ConfigTypeFormFields.css'
 
@@ -22,7 +24,7 @@ const ConfigTypeFormFields = (props) => {
       <TextInput
         name="configType"
         control={control}
-        disabled={true}
+        disabled
         value="matrix"
         label="matrix"
         fullWidth

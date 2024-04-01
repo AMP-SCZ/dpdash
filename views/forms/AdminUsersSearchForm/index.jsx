@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import SearchIcon from '@mui/icons-material/Search'
 import { InputAdornment } from '@mui/material'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 import ControlledMultiSelect from '../ControlledMultiSelect'
 
 const schema = yup.object({
-  users: yup.array()
+  users: yup.array(),
 })
 
-export const AdminUsersSearchForm = ({ onSubmit, allOptions}) => {
+export const AdminUsersSearchForm = ({ onSubmit, allOptions }) => {
   const { handleSubmit, control, formState, watch } = useForm({
     defaultValues: {
-      users: []
+      users: [],
     },
     mode: 'onChange',
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   })
 
   const data = watch()

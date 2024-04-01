@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import * as yup from 'yup'
 
-import ensureUser from '../utils/passport/ensure-user'
 import ConfigurationsController from '../controllers/configurationsController'
-import { v1Routes } from '../utils/routes'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
+import ensureUser from '../utils/passport/ensure-user'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 
@@ -15,7 +15,7 @@ const body = yup.object({
   public: yup.boolean(),
   owner: yup.string().required(),
   config: yup.object({
-    ['0']: yup.array().of(
+    0: yup.array().of(
       yup.object({
         category: yup.string(),
         analysis: yup.string(),

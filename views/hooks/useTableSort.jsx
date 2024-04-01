@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+
 import { SORT_DIRECTION } from '../../constants'
 
 export default function useTableSort(initialSortBy) {

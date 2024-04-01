@@ -1,13 +1,12 @@
 import { screen, within, waitFor } from '@testing-library/react'
 
+import DashboardPage from '.'
 import {
   createParticipantList,
   createUser,
   createChart,
 } from '../../../test/fixtures'
 import renderPage from '../../../test/PageRenderer'
-
-import DashboardPage from '.'
 
 const mockUser = createUser({ access: ['AA', 'BB', 'CC'] })
 const mockParticipants = createParticipantList()

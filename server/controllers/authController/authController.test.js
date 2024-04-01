@@ -1,4 +1,3 @@
-import passport from 'passport'
 import AuthController from '.'
 import {
   createRequest,
@@ -158,11 +157,6 @@ describe('AuthController', () => {
           },
         })
         const response = createResponse()
-        const user = createUser({
-          password: 'oldpass',
-          reset_key: 'reset_key',
-        })
-
         const mockFindOne = jest.fn().mockResolvedValueOnce(null)
         request.app.locals.appDb.collection = jest
           .fn()
