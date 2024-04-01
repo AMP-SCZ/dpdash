@@ -8,16 +8,16 @@ import * as yup from 'yup'
 import ControlledMultiSelect from '../ControlledMultiSelect'
 
 const schema = yup.object({
-  users: yup.array()
+  users: yup.array(),
 })
 
-export const AdminUsersSearchForm = ({ onSubmit, allOptions}) => {
+export const AdminUsersSearchForm = ({ onSubmit, allOptions }) => {
   const { handleSubmit, control, formState, watch } = useForm({
     defaultValues: {
-      users: []
+      users: [],
     },
     mode: 'onChange',
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   })
 
   const data = watch()

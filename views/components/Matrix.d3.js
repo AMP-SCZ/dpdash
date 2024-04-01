@@ -52,7 +52,8 @@ export default class Matrix {
   validDay = (d) => d.day >= this.startDay && d.day <= this.lastDayForFilter
   create = (data) => {
     this.data = data
-    const calculatedHeight = data.length * this.cardSize + margin.top + margin.bottom
+    const calculatedHeight =
+      data.length * this.cardSize + margin.top + margin.bottom
 
     const svgElement = d3
       .select(this.el)
@@ -235,7 +236,9 @@ export default class Matrix {
 
   generateXAxisForDatesData = () => {
     const xAxisForDatesData = []
-    const startDate = this.consentDate ? stringToDate(this.consentDate, 'yyyy-mm-dd', '-') : null
+    const startDate = this.consentDate
+      ? stringToDate(this.consentDate, 'yyyy-mm-dd', '-')
+      : null
     const firstDay = this.startDay - 1 //Consent date is 1
     for (let i = firstDay; i < this.lastDayForFilter; i++) {
       const day = i + 1

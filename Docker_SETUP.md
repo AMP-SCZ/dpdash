@@ -27,6 +27,7 @@ docker volume create dpdash-mongodb
 ```
 
 Create a container to hold the volume
+
 ```sh
  docker run -v dpdash-mongodb:/dpdash-mongodb --name mongo_restore ubuntu /bin/bash
 ```
@@ -37,10 +38,10 @@ Unpack the `backup.tar` file into the volume.
  docker run --rm --volumes-from mongo_restore -v $(pwd):/backup ubuntu bash -c "cd /dpdash-mongodb   && tar xvf /backup/backup.tar --strip 1"
 
 ```
+
 ## Start the project
 
 - Once Set up, use the command `docker compose up`
-
 
 ## For Onboarding: Export Data
 
@@ -55,5 +56,3 @@ Copy the volume contents to `./backup.tar`
 ```sh
 docker run --rm --volumes-from mongo_backup -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /dpdash-mongodb
 ```
-
-

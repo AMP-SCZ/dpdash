@@ -6,12 +6,12 @@ import { MemoryRouter } from 'react-router-dom'
 
 const mockGraphDataResponse = createGraphDataResponse({
   subject: {
-    sid: "subject",
-    project: "study"
-  } 
+    sid: 'subject',
+    project: 'study',
+  },
 })
 describe('Graph', () => {
-  const user = createUser({preferences: { config: "config" } })
+  const user = createUser({ preferences: { config: 'config' } })
 
   it('calls the graph data API endpoint for the given participant', async () => {
     const mockApi = jest.spyOn(api.dashboard, 'load')
@@ -19,23 +19,35 @@ describe('Graph', () => {
 
     render(
       <MemoryRouter>
-        <Graph user={user} study={"study"} subject={"subject"} theme={{}} setNotification={jest.fn()} />
+        <Graph
+          user={user}
+          study={'study'}
+          subject={'subject'}
+          theme={{}}
+          setNotification={jest.fn()}
+        />
       </MemoryRouter>
     )
     await waitFor(() => {
-      expect(api.dashboard.load).toHaveBeenCalledWith("study", "subject")
+      expect(api.dashboard.load).toHaveBeenCalledWith('study', 'subject')
     })
   })
   it('renders the graph', async () => {
     const mockApi = jest.spyOn(api.dashboard, 'load')
     mockApi.mockResolvedValue(mockGraphDataResponse)
-    
+
     render(
       <MemoryRouter>
-        <Graph user={user} study={"study"} subject={"subject"} theme={{}} setNotification={jest.fn()} />
+        <Graph
+          user={user}
+          study={'study'}
+          subject={'subject'}
+          theme={{}}
+          setNotification={jest.fn()}
+        />
       </MemoryRouter>
     )
-    const graphElement = await screen.findByTestId("graph")
+    const graphElement = await screen.findByTestId('graph')
     await waitFor(() => {
       expect(graphElement.firstChild).toBeInTheDocument()
     })

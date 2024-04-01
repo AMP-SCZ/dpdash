@@ -82,8 +82,8 @@ const ParticipantsTable = (props) => {
               {isToday
                 ? 'Today'
                 : isYesterday
-                ? 'Yesterday'
-                : participantSyncedDate.format('MMM-D-YYYY')}
+                  ? 'Yesterday'
+                  : participantSyncedDate.format('MMM-D-YYYY')}
             </Typography>
           )
         }
@@ -137,8 +137,9 @@ const ParticipantsTable = (props) => {
         )
       case 'study':
         const participantProperty = participant[property]
-        const tooltipTitle = SITE_NAMES[participantProperty] || participantProperty
-        
+        const tooltipTitle =
+          SITE_NAMES[participantProperty] || participantProperty
+
         return (
           <Tooltip title={tooltipTitle} placement="right">
             <Typography

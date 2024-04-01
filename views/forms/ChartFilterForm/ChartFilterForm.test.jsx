@@ -1,5 +1,11 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent, queryByAttribute } from '@testing-library/react'
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  queryByAttribute,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import ChartFilterForm from '.'
@@ -62,9 +68,9 @@ describe('Chart Filter Form', () => {
     },
     onSubmit: () => {},
   }
-  const getById = queryByAttribute.bind(null, 'id');
+  const getById = queryByAttribute.bind(null, 'id')
   const elements = {
-    form: () => screen.getByTestId('filter_form')
+    form: () => screen.getByTestId('filter_form'),
   }
 
   const renderForm = (props = defaultProps) => {
@@ -75,11 +81,18 @@ describe('Chart Filter Form', () => {
     const onSubmit = jest.fn()
     const props = { ...defaultProps, onSubmit }
 
-    const {container} = renderForm(props)
+    const { container } = renderForm(props)
 
-    await fireEvent.change(getById(container, 'select-multiple-chrcrit_part'),{ target: { value: "HC"}})
-    await fireEvent.change(getById(container, 'select-multiple-included_excluded'), { target: { value: "Missing"}})
-    await fireEvent.change(getById(container, 'select-multiple-sites'), { target: { value: "MA"}})
+    await fireEvent.change(getById(container, 'select-multiple-chrcrit_part'), {
+      target: { value: 'HC' },
+    })
+    await fireEvent.change(
+      getById(container, 'select-multiple-included_excluded'),
+      { target: { value: 'Missing' } }
+    )
+    await fireEvent.change(getById(container, 'select-multiple-sites'), {
+      target: { value: 'MA' },
+    })
     fireEvent.submit(elements.form())
 
     await waitFor(() =>

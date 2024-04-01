@@ -79,7 +79,7 @@ const loadAllConfigurationsMongoQuery = (userId) => {
         owner: 1,
         readers: 1,
         config: 1,
-        owner_display_name: '$ownerUser.display_name'
+        owner_display_name: '$ownerUser.display_name',
       },
     },
   ]

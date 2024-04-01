@@ -7,8 +7,9 @@ export default async function ensureAdmin(req, res, next) {
 
     const { appDb } = req.app.locals
     req.user = await UserModel.findOne(appDb, { uid: req.user.uid })
-    
-    if (req.user.role !== 'admin') return res.status(401).json({ error: 'Incorrect access level.' })
+
+    if (req.user.role !== 'admin')
+      return res.status(401).json({ error: 'Incorrect access level.' })
 
     return next()
   } catch (error) {

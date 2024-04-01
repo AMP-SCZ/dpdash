@@ -75,7 +75,9 @@ describe('ConfigurationsTable', () => {
       within(elements.tableRow(0)).getByText(configurations[0].name)
     ).toBeInTheDocument()
     expect(
-      within(elements.tableRow(0)).getByText(configurations[0].owner_display_name[0])
+      within(elements.tableRow(0)).getByText(
+        configurations[0].owner_display_name[0]
+      )
     ).toBeInTheDocument()
     expect(
       within(elements.tableRow(0)).getByText('Default')
@@ -85,14 +87,18 @@ describe('ConfigurationsTable', () => {
       within(elements.tableRow(1)).getByText(configurations[1].name)
     ).toBeInTheDocument()
     expect(
-      within(elements.tableRow(1)).getByText(configurations[1].owner_display_name[0])
+      within(elements.tableRow(1)).getByText(
+        configurations[1].owner_display_name[0]
+      )
     ).toBeInTheDocument()
 
     expect(
       within(elements.tableRow(2)).getByText(configurations[2].name)
     ).toBeInTheDocument()
     expect(
-      within(elements.tableRow(2)).getByText(configurations[2].owner_display_name[0])
+      within(elements.tableRow(2)).getByText(
+        configurations[2].owner_display_name[0]
+      )
     ).toBeInTheDocument()
   })
 

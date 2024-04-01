@@ -134,7 +134,7 @@ describe(FiltersService, () => {
         {
           chrcrit_part: {
             CHR: { name: 'CHR', value: 1 },
-            Missing:  { name: 'Missing', value: 0 },
+            Missing: { name: 'Missing', value: 0 },
           },
           sites: {},
         },

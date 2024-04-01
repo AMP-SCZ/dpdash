@@ -6,9 +6,9 @@ import { Column, Table } from 'react-virtualized'
 import * as _ from 'lodash'
 import 'whatwg-fetch'
 
-import basePathConfig from '../server/configs/basePathConfig';
+import basePathConfig from '../server/configs/basePathConfig'
 
-const basePath = basePathConfig || '';
+const basePath = basePathConfig || ''
 
 class DeepDive extends Component {
   constructor(props) {
@@ -23,31 +23,36 @@ class DeepDive extends Component {
       sortBy: '',
       sortDirection: 'ASC',
       marginHeight: 15,
-      marginWidth: 5
+      marginWidth: 5,
     }
   }
   fetchData = (study, subject, day) => {
-    return fetch(`${basePath}/api/v1/studies/${study}/subjects/${subject}/deepdive/${day}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'same-origin'
-    }).then((response) => {
-      if (response.status !== 201) {
-        return
+    return fetch(
+      `${basePath}/api/v1/studies/${study}/subjects/${subject}/deepdive/${day}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
       }
-      return response.json()
-    }).then((response) => {
-      this.setState({
-        data: response
+    )
+      .then((response) => {
+        if (response.status !== 201) {
+          return
+        }
+        return response.json()
       })
-    })
+      .then((response) => {
+        this.setState({
+          data: response,
+        })
+      })
   }
   handleResize = (event) => {
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
-      height: window.innerHeight - this.state.marginHeight
+      height: window.innerHeight - this.state.marginHeight,
     })
   }
   sort = ({ sortBy, sortDirection }) => {
@@ -55,7 +60,7 @@ class DeepDive extends Component {
     this.setState({
       sortBy: sortBy,
       sortDirection: sortDirection,
-      data: sortedList
+      data: sortedList,
     })
   }
   sortList = ({ sortBy, sortDirection }) => {
@@ -76,20 +81,24 @@ class DeepDive extends Component {
     this.setState({
       subject: this.props.subject.subject,
       study: this.props.subject.study,
-      day: parseInt(this.props.subject.day)
+      day: parseInt(this.props.subject.day),
     })
-    this.fetchData(this.props.subject.study, this.props.subject.subject, this.props.subject.day)
+    this.fetchData(
+      this.props.subject.study,
+      this.props.subject.subject,
+      this.props.subject.day
+    )
   }
   componentDidMount() {
     this.setState({
       width: window.innerWidth - this.state.marginWidth,
-      height: window.innerHeight - this.state.marginHeight
+      height: window.innerHeight - this.state.marginHeight,
     })
     /* Resize listener register */
     window.addEventListener('resize', this.handleResize)
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
   }
   render() {
     return (
@@ -97,7 +106,7 @@ class DeepDive extends Component {
         width={this.state.width}
         height={this.state.height}
         headerHeight={20}
-        headerClassName='headerColumn'
+        headerClassName="headerColumn"
         rowHeight={this.getRowHeight}
         rowCount={this.state.data.length}
         rowGetter={({ index }) => this.state.data[index]}
@@ -107,41 +116,41 @@ class DeepDive extends Component {
         sortDirection={this.state.sortDirection}
       >
         <Column
-          label='Data Type'
-          dataKey='data_type'
+          label="Data Type"
+          dataKey="data_type"
           width={this.state.width / 8}
         />
         <Column
           width={this.state.width / 8}
-          label='Category'
-          dataKey='category'
+          label="Category"
+          dataKey="category"
         />
         <Column
-          label='Time of Day'
-          dataKey='timeofday'
+          label="Time of Day"
+          dataKey="timeofday"
           width={this.state.width / 8}
         />
         <Column
-          label='File Name'
-          dataKey='file_name'
+          label="File Name"
+          dataKey="file_name"
           width={this.state.width / 8}
         />
         <Column
-          label='File Size'
-          dataKey='file_size'
+          label="File Size"
+          dataKey="file_size"
           width={this.state.width / 8}
         />
         <Column
-          label='Path'
-          dataKey='file_path'
-          width={this.state.width / 8 * 3}
+          label="Path"
+          dataKey="file_path"
+          width={(this.state.width / 8) * 3}
         />
       </Table>
     )
   }
 }
 const mapStateToProps = (state) => ({
-  subject: state.subject
+  subject: state.subject,
 })
 
 export default connect(mapStateToProps)(DeepDive)

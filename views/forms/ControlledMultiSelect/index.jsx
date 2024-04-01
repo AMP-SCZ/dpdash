@@ -30,7 +30,12 @@ const ControlledMultiSelect = (props) => {
       name={props.name}
       control={props.control}
       render={({ field, fieldState }) => (
-        <MultiSelect field={field} fieldState={fieldState} onChange={onChange} {...props}></MultiSelect> 
+        <MultiSelect
+          field={field}
+          fieldState={fieldState}
+          onChange={onChange}
+          {...props}
+        ></MultiSelect>
       )}
     />
   )

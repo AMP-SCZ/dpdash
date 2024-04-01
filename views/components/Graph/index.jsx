@@ -6,7 +6,7 @@ import {
   DialogActions,
   DialogContent,
   Dialog,
-  Typography
+  Typography,
 } from '@mui/material'
 import { Save, Functions } from '@mui/icons-material'
 
@@ -80,7 +80,11 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
     if (graphRef.current && graphRef.current.firstChild) {
       graphRef.current.removeChild(graphRef.current.firstChild)
     }
-    if (!graph || !graph.matrixData || Object.keys(graph.matrixData).length == 0) {
+    if (
+      !graph ||
+      !graph.matrixData ||
+      Object.keys(graph.matrixData).length == 0
+    ) {
       return
     }
     const matrixProps = {
@@ -122,7 +126,13 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       kanvas.height = updatedSvgElement.getBBox().height
 
       let svgUrl =
-        'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgString.replace('<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">', `<svg xmlns="http://www.w3.org/2000/svg" width="${kanvas.width}" height="${kanvas.height}">`))
+        'data:image/svg+xml; charset=utf8, ' +
+        encodeURIComponent(
+          svgString.replace(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">',
+            `<svg xmlns="http://www.w3.org/2000/svg" width="${kanvas.width}" height="${kanvas.height}">`
+          )
+        )
 
       // png conversion
       let img = new Image(kanvas.width, kanvas.height)
@@ -154,9 +164,14 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
         endIcon={<Functions />}
       >
         View Table
-    </Button>
-      <div className="Matrix" style={{height: '65vh'}}>
-        <div data-testid="graph" className="graph" ref={graphRef} style={{height:'65vh', overflow: 'scroll'}} />
+      </Button>
+      <div className="Matrix" style={{ height: '65vh' }}>
+        <div
+          data-testid="graph"
+          className="graph"
+          ref={graphRef}
+          style={{ height: '65vh', overflow: 'scroll' }}
+        />
       </div>
       <div>
         <Button
@@ -182,7 +197,11 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <canvas key={`${study}-${subject}`} ref={canvasRef} style={{display: 'none'}}/>
+      <canvas
+        key={`${study}-${subject}`}
+        ref={canvasRef}
+        style={{ display: 'none' }}
+      />
     </Box>
   )
 }

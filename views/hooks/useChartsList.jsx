@@ -18,17 +18,23 @@ export default function useChartsList() {
   const [chartList, setChartList] = useState([])
   const [sharedWithOptions, setSharedWithOptions] = useState([])
 
-  const { handleSubmit, control: shareFormControl, reset, watch, getValues } = useForm({
+  const {
+    handleSubmit,
+    control: shareFormControl,
+    reset,
+    watch,
+    getValues,
+  } = useForm({
     defaultValues: {
       chart_id: chartToShare._id,
-      sharedWith: chartToShare.sharedWith || []
-    }
+      sharedWith: chartToShare.sharedWith || [],
+    },
   })
   const [shareFormValues, setShareFormValues] = useState(getValues())
 
   useEffect(() => {
     const subscription = watch((value) => {
-      setShareFormValues(value)      
+      setShareFormValues(value)
     })
 
     return () => subscription.unsubscribe()
@@ -39,19 +45,19 @@ export default function useChartsList() {
     setChartToShare(chart)
     reset({
       chart_id: chart._id,
-      sharedWith: chart.sharedWith
+      sharedWith: chart.sharedWith,
     })
   }
   const clearSelectedUsers = () => {
     reset({
       chart_id: chartToShare._id,
-      sharedWith: []
+      sharedWith: [],
     })
   }
   const selectAllUsers = () => {
     reset({
       chart_id: chartToShare._id,
-      sharedWith: sharedWithOptions.map(({ value }) => value)
+      sharedWith: sharedWithOptions.map(({ value }) => value),
     })
   }
   const shareWithUsers = handleSubmit(async ({ chart_id, sharedWith }) => {
@@ -158,6 +164,6 @@ export default function useChartsList() {
     shareFormControl,
     shareFormValues,
     selectAllUsers,
-    clearSelectedUsers
+    clearSelectedUsers,
   }
 }

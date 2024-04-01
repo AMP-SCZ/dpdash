@@ -67,7 +67,7 @@ const ChartsPage = () => {
         sortable
         user={user}
       />
-      <ChartShareForm 
+      <ChartShareForm
         chartToShare={chartToShare}
         closeDialog={closeDialog}
         shareWithUsers={shareWithUsers}

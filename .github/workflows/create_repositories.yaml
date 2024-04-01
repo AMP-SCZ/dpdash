@@ -29,10 +29,10 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: dpdash
-        run:  aws ecr create-repository --repository-name ${REPOSITORY}
+        run: aws ecr create-repository --repository-name ${REPOSITORY}
 
       - name: Create mongo docker repository in Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: mongo
-        run:  aws ecr create-repository --repository-name ${REPOSITORY}
+        run: aws ecr create-repository --repository-name ${REPOSITORY}

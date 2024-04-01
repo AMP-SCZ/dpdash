@@ -34,7 +34,7 @@ const DashboardPage = () => {
     shareFormControl,
     shareFormValues,
     clearSelectedUsers,
-    selectAllUsers
+    selectAllUsers,
   } = useChartsList()
 
   return (
@@ -71,15 +71,15 @@ const DashboardPage = () => {
           user={user}
         />
       </section>
-      <ChartShareForm 
-          chartToShare={chartToShare}
-          closeDialog={closeDialog}
-          shareWithUsers={shareWithUsers}
-          sharedWithOptions={sharedWithOptions}
-          shareFormControl={shareFormControl}
-          shareFormValues={shareFormValues}
-          clearSelectedUsers={clearSelectedUsers}
-          selectAllUsers={selectAllUsers}      
+      <ChartShareForm
+        chartToShare={chartToShare}
+        closeDialog={closeDialog}
+        shareWithUsers={shareWithUsers}
+        sharedWithOptions={sharedWithOptions}
+        shareFormControl={shareFormControl}
+        shareFormValues={shareFormValues}
+        clearSelectedUsers={clearSelectedUsers}
+        selectAllUsers={selectAllUsers}
       />
     </Box>
   )

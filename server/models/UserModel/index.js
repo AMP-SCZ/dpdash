@@ -93,16 +93,18 @@ const UserModel = {
     return userCt > 0
   },
   adminPasswordIsNotReset: async (db) => {
-    const adminUser = await db.collection(collections.users).findOne({ uid: admin })
+    const adminUser = await db
+      .collection(collections.users)
+      .findOne({ uid: admin })
 
     return adminUser.password === adminUser.reset_key
   },
   createFirstAdmin: async (db) => {
-    if (await UserModel.hasAdmin(db)){
-       if (await UserModel.adminPasswordIsNotReset(db)) {
+    if (await UserModel.hasAdmin(db)) {
+      if (await UserModel.adminPasswordIsNotReset(db)) {
         const adminUser = await UserModel.findOne(db, { uid: admin })
         await UserModel.sendResetPasswordKey(adminUser.reset_key)
-       }
+      }
       return
     }
 

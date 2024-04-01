@@ -7,7 +7,8 @@ const $participant = '$participant'
 const $participants = '$participants'
 
 const ParticipantsModel = {
-  index: async (db, user, queryParams) => await db
+  index: async (db, user, queryParams) =>
+    await db
       .collection(collections.metadata)
       .aggregate(allParticipantsQuery(user, queryParams))
       .toArray(),
@@ -71,7 +72,9 @@ const allParticipantsQuery = (user, queryParams) => {
   const direction = sortDirection === ASC ? 1 : -1
   const sortByParams = { [sortBy]: direction }
   const baseSort = { star: -1 }
-  const sort = sortBy ? { $sort: {...baseSort, ...sortByParams } } : { $sort: baseSort } 
+  const sort = sortBy
+    ? { $sort: { ...baseSort, ...sortByParams } }
+    : { $sort: baseSort }
   const studiesSet = new Set(studies?.length ? studies : user.access)
 
   searchParticipants?.forEach((participant) =>
@@ -121,8 +124,8 @@ const allParticipantsQuery = (user, queryParams) => {
             },
             {
               participant: {
-                $in: searchParticipants
-              }
+                $in: searchParticipants,
+              },
             },
           ],
         },
@@ -133,8 +136,8 @@ const allParticipantsQuery = (user, queryParams) => {
           $or: [
             {
               participant: {
-                $in: searchParticipants
-              }
+                $in: searchParticipants,
+              },
             },
           ],
         },

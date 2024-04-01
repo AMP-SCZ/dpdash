@@ -3,7 +3,6 @@ import { isAccountExpired } from './helpers'
 import { logout } from './logout'
 
 export default async function ensureAuthenticated(req, res, next) {
-
   if (!req.isAuthenticated())
     return res.status(401).json({ error: 'Please login' })
 
