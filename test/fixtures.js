@@ -152,7 +152,7 @@ export const createConfiguration = (overrides = {}) => ({
   config: {},
   type: 'matrix',
   created: 'Mon, 12 June 2023',
-  readers: [],
+  readers: ['owl'],
   ...overrides,
 })
 

@@ -31,8 +31,8 @@ const ConfigModel = {
   index: async (db, userId) =>
     await db
       .collection(collections.configs)
-      .aggregate(loadAllConfigurationsMongoQuery(userId))
-      .toArray(),
+      .find({ $or: [{ readers: userId }, { public: true }] })
+      .stream(),
   create: async (db, configAttributes) => {
     const { insertedId } = await db
       .collection(collections.configs)
