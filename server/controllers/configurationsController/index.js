@@ -3,6 +3,8 @@ import { ObjectId } from 'mongodb'
 import ConfigModel from '../../models/ConfigModel'
 import UserModel from '../../models/UserModel'
 
+const cachedUsers = new Map()
+
 const ConfigurationsController = {
   create: async (req, res) => {
     try {
@@ -62,18 +64,28 @@ const ConfigurationsController = {
       const streamConfigurations = await ConfigModel.index(appDb, uid)
 
       streamConfigurations.on('data', async (config) => {
-        //Pause the stream to complete async operations
         streamConfigurations.pause()
 
-        const configOwner = await UserModel.findOne(
-          appDb,
-          { uid: config.owner },
-          { display_name: 1 }
-        )
+        const isUserCached = cachedUsers.has(config.owner)
 
-        dataSet.add({ ...config, owner_display_name: configOwner.display_name })
+        if (isUserCached) {
+          const configOwner = cachedUsers.get(config.owner)
 
-        // resume stream after async operation has completed
+          dataSet.add({ ...config, owner_display_name: configOwner })
+        } else {
+          const configOwner = await UserModel.findOne(
+            appDb,
+            { uid: config.owner },
+            { display_name: 1 }
+          )
+
+          cachedUsers.set(config.owner, configOwner.display_name)
+          dataSet.add({
+            ...config,
+            owner_display_name: configOwner.display_name,
+          })
+        }
+
         streamConfigurations.resume()
       })
 
@@ -83,7 +95,9 @@ const ConfigurationsController = {
         streamConfigurations.on('error', (err) => reject(err))
       })
 
-      return res.status(200).json({ data: Array.from(dataSet) })
+      const data = Array.from(dataSet)
+
+      return res.status(200).json({ data })
     } catch (error) {
       return res.status(400).json({ error: error.message })
     }
