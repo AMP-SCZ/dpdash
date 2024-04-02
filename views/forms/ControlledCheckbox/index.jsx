@@ -1,6 +1,7 @@
 import React from 'react'
-import { Controller } from 'react-hook-form'
+
 import { Checkbox, FormControlLabel } from '@mui/material'
+import { Controller } from 'react-hook-form'
 
 const ControlledCheckbox = ({
   name,

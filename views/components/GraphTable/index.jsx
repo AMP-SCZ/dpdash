@@ -1,8 +1,10 @@
 import React from 'react'
-import { Paper, Button } from '@mui/material'
+
 import { SaveAlt } from '@mui/icons-material'
-import Table from '../../tables/Table'
+import { Paper, Button } from '@mui/material'
+
 import { SORT_DIRECTION } from '../../../constants'
+import Table from '../../tables/Table'
 
 import './GraphTable.css'
 

@@ -1,9 +1,5 @@
 import AdminUsersController from '.'
-import {
-  createRequestWithUser,
-  createResponse,
-  createUser,
-} from '../../../test/fixtures'
+import { createRequestWithUser, createResponse } from '../../../test/fixtures'
 
 describe('AdminUsersController', () => {
   describe(AdminUsersController.update, () => {

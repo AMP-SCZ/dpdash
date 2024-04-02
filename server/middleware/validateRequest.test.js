@@ -1,5 +1,6 @@
-import validateMiddleware, { baseSchema } from './validateRequest'
 import * as yup from 'yup'
+
+import validateMiddleware, { baseSchema } from './validateRequest'
 import { createRequest, createResponse } from '../../test/fixtures'
 
 describe(validateMiddleware, () => {

@@ -1,4 +1,6 @@
 import React from 'react'
+
+import { ArrowForwardOutlined } from '@mui/icons-material'
 import {
   Button,
   Card,
@@ -7,7 +9,6 @@ import {
   CardActions,
   Typography,
 } from '@mui/material'
-import { ArrowForwardOutlined } from '@mui/icons-material'
 import './HeroCard.css'
 
 const HeroCard = () => {

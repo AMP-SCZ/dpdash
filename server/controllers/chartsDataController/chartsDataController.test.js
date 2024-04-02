@@ -1,3 +1,6 @@
+import { ObjectId } from 'mongodb'
+
+import chartsDataController from '.'
 import {
   createChart,
   createRequestWithUser,
@@ -5,16 +8,13 @@ import {
   createUser,
   createFieldLabelValue,
 } from '../../../test/fixtures'
-import { ObjectId } from 'mongodb'
-import chartsDataController from '.'
-
-import { collections } from '../../utils/mongoCollections'
 import {
   chartsDataFilterResponse,
   chartsDataInitialResponse,
   chartsDataSuccessResponse,
   dayDataAssessments,
 } from '../../../test/testUtils'
+import { collections } from '../../utils/mongoCollections'
 
 describe('chartsDataController', () => {
   describe(chartsDataController.show, () => {

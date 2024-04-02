@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+
 import ChartShareForm from '.'
 import { createChart } from '../../../test/fixtures'
-import userEvent from '@testing-library/user-event'
 
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),
@@ -10,7 +12,7 @@ jest.mock('react-hook-form', () => ({
   control: {},
 }))
 
-beforeEach(()=> {
+beforeEach(() => {
   jest.resetAllMocks()
 })
 describe(ChartShareForm, () => {
@@ -21,15 +23,15 @@ describe(ChartShareForm, () => {
     sharedWithOptions: [],
     shareFormControl: jest.fn().mockReturnValue({ field: {} }),
     shareFormValues: {
-      sharedWith: []
+      sharedWith: [],
     },
     clearSelectedUsers: jest.fn(),
-    selectAllUsers: jest.fn()
+    selectAllUsers: jest.fn(),
   }
 
   const elements = {
     dialogs: () => screen.queryAllByRole('dialog'),
-    dialog: () =>  screen.findByRole('dialog'),
+    dialog: () => screen.findByRole('dialog'),
     combobox: () => screen.getByRole('combobox'),
     checkbox: async () => {
       const checkboxes = await screen.findAllByRole('checkbox')
@@ -52,25 +54,40 @@ describe(ChartShareForm, () => {
   describe('when the chart to share is populated', () => {
     const chartToShare = createChart()
     const selectedUser = {
-      value: 'alice', label: 'Alice'
+      value: 'alice',
+      label: 'Alice',
     }
 
     const sharedWithOptions = [
       selectedUser,
       { value: 'bob', label: 'Bob' },
-      { value: 'cody', label: 'Cody' }
+      { value: 'cody', label: 'Cody' },
     ]
     it('shows the dialog', async () => {
-      render(<ChartShareForm {...defaultProps} chartToShare={chartToShare} sharedWithOptions={sharedWithOptions}/>)
+      render(
+        <ChartShareForm
+          {...defaultProps}
+          chartToShare={chartToShare}
+          sharedWithOptions={sharedWithOptions}
+        />
+      )
 
       await waitFor(async () => {
         expect(await elements.dialog()).toBeInTheDocument()
       })
     })
     it('allows the user to select other users to share the chart with', async () => {
-      render(<ChartShareForm {...defaultProps} chartToShare={chartToShare} sharedWithOptions={sharedWithOptions}/>)
+      render(
+        <ChartShareForm
+          {...defaultProps}
+          chartToShare={chartToShare}
+          sharedWithOptions={sharedWithOptions}
+        />
+      )
 
-      await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
+      await waitFor(async () =>
+        expect(await elements.dialog()).toBeInTheDocument()
+      )
 
       await userEvent.click(elements.combobox())
 
@@ -87,9 +104,17 @@ describe(ChartShareForm, () => {
     })
 
     it('allows the user to clear all selected users', async () => {
-      render(<ChartShareForm {...defaultProps} chartToShare={chartToShare} sharedWithOptions={sharedWithOptions}/>)
+      render(
+        <ChartShareForm
+          {...defaultProps}
+          chartToShare={chartToShare}
+          sharedWithOptions={sharedWithOptions}
+        />
+      )
 
-      await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
+      await waitFor(async () =>
+        expect(await elements.dialog()).toBeInTheDocument()
+      )
 
       await userEvent.click(elements.combobox())
 
@@ -104,9 +129,17 @@ describe(ChartShareForm, () => {
       })
     })
     it('allows the user to select all users', async () => {
-      render(<ChartShareForm {...defaultProps} chartToShare={chartToShare} sharedWithOptions={sharedWithOptions}/>)
+      render(
+        <ChartShareForm
+          {...defaultProps}
+          chartToShare={chartToShare}
+          sharedWithOptions={sharedWithOptions}
+        />
+      )
 
-      await waitFor(async () => expect(await elements.dialog()).toBeInTheDocument())
+      await waitFor(async () =>
+        expect(await elements.dialog()).toBeInTheDocument()
+      )
 
       await userEvent.click(elements.combobox())
 

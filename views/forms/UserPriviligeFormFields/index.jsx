@@ -1,10 +1,11 @@
-import Modal from '../../components/Modal'
-import Subheader from '@mui/material/ListSubheader'
 import { Button, DialogActions, MenuItem, NoSsr } from '@mui/material'
+import Subheader from '@mui/material/ListSubheader'
+
+import { ROLE_OPTIONS } from '../../../constants'
+import Modal from '../../components/Modal'
+import ControlledReactSelect from '../ControlledReactSelect'
 import { components } from '../ControlledReactSelect/components'
 import ControlledSelectInput from '../ControlledSelect'
-import ControlledReactSelect from '../ControlledReactSelect'
-import { ROLE_OPTIONS } from '../../../constants'
 import './UserPriviligeFields.css'
 
 const UserPriviligeFields = ({
@@ -16,12 +17,7 @@ const UserPriviligeFields = ({
   onUpdateUser,
 }) => {
   return (
-    <Modal
-      fullScreen={true}
-      title="Edit user privilege"
-      open={open}
-      onClose={onClose}
-    >
+    <Modal fullScreen title="Edit user privilege" open={open} onClose={onClose}>
       <Subheader className="subheader">Membership Level</Subheader>
       <ControlledSelectInput
         control={control}

@@ -1,10 +1,11 @@
 import React from 'react'
+
 import { Box, Typography } from '@mui/material'
 
-import ParticipantsTable from '../tables/ParticipantsTable'
-import ParticipantsSearchForm from '../forms/ParticipantsSearchForm'
 import PageHeader from '../components/PageHeader'
+import ParticipantsSearchForm from '../forms/ParticipantsSearchForm'
 import useParticipantsList from '../hooks/useParticipantsList'
+import ParticipantsTable from '../tables/ParticipantsTable'
 
 const ParticipantsPage = () => {
   const {

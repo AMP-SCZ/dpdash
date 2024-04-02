@@ -1,21 +1,24 @@
-import express from 'express'
 import path from 'path'
-import morgan from 'morgan'
-import winston from 'winston'
-import favicon from 'serve-favicon'
-import cookieParser from 'cookie-parser'
-import expressSession from 'express-session'
+
+import bodyParser from 'body-parser'
+import connectLiveReload from 'connect-livereload'
 import MongoStore from 'connect-mongo'
+import cookieParser from 'cookie-parser'
+import express from 'express'
+import expressSession from 'express-session'
+import helmet from 'helmet'
+import livereload from 'livereload'
 import { MongoClient } from 'mongodb'
+import morgan from 'morgan'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import bodyParser from 'body-parser'
-import livereload from 'livereload'
-import connectLiveReload from 'connect-livereload'
-import helmet from 'helmet'
+import favicon from 'serve-favicon'
+import winston from 'winston'
 
-import assessmentData from './routes/assessmentData'
+import { PASSPORT_FIELDS_ATTRIBUTES } from './constants'
+import UserModel from './models/UserModel'
 import adminRouter from './routes/admin'
+import assessmentData from './routes/assessmentData'
 import authRouter from './routes/auth'
 import chartsRouter from './routes/charts'
 import configurationsRouter from './routes/configurations'
@@ -24,8 +27,6 @@ import indexRouter from './routes/index'
 import participantsRouter from './routes/participants'
 import siteMetadata from './routes/siteMetadata'
 import usersRouter from './routes/users'
-import { FALSE_STRING, PASSPORT_FIELDS_ATTRIBUTES } from './constants'
-import UserModel from './models/UserModel'
 import { verifyHash } from './utils/crypto/hash'
 
 const localStrategy = Strategy
@@ -53,7 +54,7 @@ app.use(favicon(path.join(__dirname, '../public/img/favicon.ico')))
 app.use(helmet({ noSniff: true, contentSecurityPolicy: isProduction }))
 
 /** logger setup */
-morgan.token('remote-user', function (req, res) {
+morgan.token('remote-user', function (req) {
   return req.user ? req.user.uid : 'unidentified'
 })
 const logger = winston.createLogger({
@@ -68,7 +69,7 @@ const logger = winston.createLogger({
   exitOnError: false,
 })
 logger.stream = {
-  write: function (message, encoding) {
+  write(message) {
     logger.info(message)
   },
 }
@@ -174,7 +175,7 @@ app.get('/*', async (req, res) => {
 })
 
 //catch any other error
-app.use(function (err, req, res, next) {
+app.use(function (err, _req, res) {
   if (err) {
     console.error(err)
     return res.status(err.status).json({ error: err.message })

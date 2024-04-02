@@ -1,7 +1,8 @@
 import { Router } from 'express'
-import { v1Routes } from '../utils/routes'
-import ensureStudyPermission from '../utils/passport/ensureStudyPermission'
+
 import DashboardsController from '../controllers/dashboardController'
+import ensureStudyPermission from '../utils/passport/ensureStudyPermission'
+import { v1Routes } from '../utils/routes'
 
 const router = Router()
 

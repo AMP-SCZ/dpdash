@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import TableCell from '@mui/material/TableCell'
 
 const GraphPageTableCell = (props) => {

@@ -1,5 +1,13 @@
 import React from 'react'
-import { Button, CardActions, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
+
+import {
+  Button,
+  CardActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material'
 
 import SearchSelect from '../../components/SearchSelect'
 
@@ -11,16 +19,16 @@ const ChartShareForm = ({
   shareFormControl,
   shareFormValues,
   clearSelectedUsers,
-  selectAllUsers
+  selectAllUsers,
 }) => {
   return (
     <Dialog
       open={Boolean(chartToShare._id)}
       onClose={closeDialog}
-      fullWidth={true}
+      fullWidth
       PaperProps={{
         component: 'form',
-        onSubmit: shareWithUsers
+        onSubmit: shareWithUsers,
       }}
     >
       <DialogTitle>Share Chart {chartToShare.title}?</DialogTitle>
@@ -55,8 +63,12 @@ const ChartShareForm = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button data-testid="cancel" onClick={closeDialog}>Cancel</Button>
-        <Button data-testid="submit" type="submit">Share</Button>
+        <Button data-testid="cancel" onClick={closeDialog}>
+          Cancel
+        </Button>
+        <Button data-testid="submit" type="submit">
+          Share
+        </Button>
       </DialogActions>
     </Dialog>
   )

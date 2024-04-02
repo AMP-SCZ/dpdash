@@ -1,18 +1,15 @@
-import { EMPTY_VALUE, N_A, TOTALS_STUDY, TOTAL_LABEL } from '../../constants'
+import { EMPTY_VALUE, N_A, TOTALS_STUDY } from '../../constants'
 import { SITE_NAMES } from '../../utils/siteNames'
 
 const studyCountsToPercentage = (studyCount, targetTotal) => {
-  if (!targetTotal || Number.isNaN(+studyCount) || Number.isNaN(+targetTotal)) {
+  if (!targetTotal || Number.isNaN(+studyCount) || Number.isNaN(+targetTotal))
     return 0
-  }
 
-  return Math.floor((+studyCount / +targetTotal) * 100)
+  return (+studyCount / +targetTotal) * 100
 }
 
 const calculateTotalsTargetValue = (currentTargetCount, nextTargetCount) =>
-  !!currentTargetCount
-    ? +currentTargetCount + +nextTargetCount
-    : +nextTargetCount
+  currentTargetCount ? +currentTargetCount + +nextTargetCount : +nextTargetCount
 
 const calculateStudySectionTargetValue = (
   studySectionTotalTarget,
@@ -70,7 +67,7 @@ class BarChartDataProcessor {
     const shouldCountParticipant = isVariableValueEmpty
       ? participantDayData.every((day) => day[this.chart.variable] === value)
       : participantDayData.some(
-          (dayData) => dayData[this.chart.variable] == value
+          (dayData) => dayData[this.chart.variable] === value
         )
     const participantVariableDayCount =
       isVariableValueEmpty && shouldCountParticipant

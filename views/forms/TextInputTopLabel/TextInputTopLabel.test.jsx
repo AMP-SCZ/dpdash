@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { render, screen } from '@testing-library/react'
+
 import TextInputTopLabel from '.'
 
 jest.mock('react-hook-form', () => ({
@@ -7,7 +9,7 @@ jest.mock('react-hook-form', () => ({
   useController: jest.fn().mockReturnValue({
     field: { value: 'testValue', onChange: jest.fn() },
     formState: {
-      errors: { ['text-field']: { message: 'This field is required' } },
+      errors: { 'text-field': { message: 'This field is required' } },
     },
   }),
 }))

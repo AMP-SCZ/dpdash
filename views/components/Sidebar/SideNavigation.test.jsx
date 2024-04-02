@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { render, screen } from '@testing-library/react'
-import SideNavigation from './SideNavigation'
 import { MemoryRouter } from 'react-router-dom'
+
+import SideNavigation from './SideNavigation'
 import { createUser } from '../../../test/fixtures'
 
 jest.mock('./SidebarLink')

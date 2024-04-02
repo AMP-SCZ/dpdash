@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -32,9 +33,9 @@ describe('Admin User Search Form', () => {
     userEvent.click(await screen.findByText('dpdash'))
 
     await waitFor(() =>
-      expect(onSubmit).toHaveBeenCalledWith(
-        [{label: 'dpdash', value: 'dpdash'}]
-      )
+      expect(onSubmit).toHaveBeenCalledWith([
+        { label: 'dpdash', value: 'dpdash' },
+      ])
     )
   })
 })

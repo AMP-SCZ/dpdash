@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb'
+
 import chartsController from '.'
 import {
   createRequestWithUser,
@@ -7,8 +8,8 @@ import {
   createUser,
   createFieldLabelValue,
 } from '../../../test/fixtures'
-import { collections } from '../../utils/mongoCollections'
 import UserModel from '../../models/UserModel'
+import { collections } from '../../utils/mongoCollections'
 
 describe('chartsController', () => {
   describe('create', () => {
@@ -208,7 +209,6 @@ describe('chartsController', () => {
           }),
           createChart({
             _id: new ObjectId(),
-            title: 'EEG',
             assessment: 'EEG Drive',
             variable: 'drtive',
             owner: 'owl',

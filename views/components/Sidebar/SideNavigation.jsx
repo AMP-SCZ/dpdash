@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, Divider } from '@mui/material'
+
 import {
   SpaceDashboard,
   Group,
@@ -7,6 +7,8 @@ import {
   DashboardCustomize,
   AdminPanelSettings,
 } from '@mui/icons-material'
+import { List, Divider } from '@mui/material'
+
 import NavItem from './NavItem'
 import { routes } from '../../routes/routes'
 

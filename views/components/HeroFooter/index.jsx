@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { Box, Typography } from '@mui/material'
+
 import HeroFooterLink from './HeroFooterLink'
-import { routes } from '../../routes/routes'
 import { fontSize } from '../../../constants'
+import { routes } from '../../routes/routes'
 
 import './HeroFooter.css'
 

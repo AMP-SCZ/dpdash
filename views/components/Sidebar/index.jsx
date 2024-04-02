@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { Drawer } from '@mui/material'
+
+import SidebarFooter from './SidebarFooter'
 import SidebarLogo from './SidebarLogo'
 import SideNavigation from './SideNavigation'
-import SidebarFooter from './SidebarFooter'
 
 const Sidebar = ({ user, sidebarOpen, onLogout, isMobile, onClose }) => {
   const status = isMobile ? 'temporary' : 'permanent'

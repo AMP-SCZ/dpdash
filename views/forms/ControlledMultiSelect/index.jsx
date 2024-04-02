@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Controller } from 'react-hook-form'
+
 import { MultiSelect } from '../MultiSelect'
 
 const ControlledMultiSelect = (props) => {
@@ -9,7 +11,7 @@ const ControlledMultiSelect = (props) => {
         value = field.value.filter(({ isFixed }) => isFixed)
 
         return field.onChange(value)
-      case 'removeOption':
+      case 'removeOption': {
         const optionToRemove = field.value.filter(
           (prevOption) =>
             !value.find(
@@ -20,6 +22,7 @@ const ControlledMultiSelect = (props) => {
           field.onChange(value)
         }
         break
+      }
       default:
         return field.onChange(value)
     }
@@ -30,7 +33,12 @@ const ControlledMultiSelect = (props) => {
       name={props.name}
       control={props.control}
       render={({ field, fieldState }) => (
-        <MultiSelect field={field} fieldState={fieldState} onChange={onChange} {...props}></MultiSelect> 
+        <MultiSelect
+          field={field}
+          fieldState={fieldState}
+          onChange={onChange}
+          {...props}
+        />
       )}
     />
   )

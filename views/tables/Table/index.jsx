@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   Table as MuiTable,
   TableBody,
@@ -77,7 +78,7 @@ const Table = (props) => {
           />
           <TableBody>
             {rows.map((rowData, rowIndex) => (
-              <TableRow data-testid={`row-${rowIndex}`}>
+              <TableRow data-testid={`row-${rowIndex}`} key={rowIndex}>
                 {headers.map((header, cellIndex) => (
                   <TableCell
                     align={header.dataAlign}

@@ -1,9 +1,10 @@
 import { ObjectId } from 'mongodb'
+
 import BarChartService from '.'
-import FiltersService, { DEFAULT_FILTERS } from '../FiltersService'
-import { collections } from '../../utils/mongoCollections'
 import { createChart, createFieldLabelValue } from '../../../test/fixtures'
 import { dayDataAssessments } from '../../../test/testUtils'
+import { collections } from '../../utils/mongoCollections'
+import FiltersService, { DEFAULT_FILTERS } from '../FiltersService'
 
 describe(BarChartService, () => {
   describe('methods', () => {
@@ -102,8 +103,8 @@ describe(BarChartService, () => {
               siteCode: 'Totals',
               name: 'Totals',
               percentages: {
-                Foo: 14,
-                'N/A': 85,
+                Foo: 14.285714285714285,
+                'N/A': 85.71428571428571,
               },
               targets: {
                 Bar: 3,

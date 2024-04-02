@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useOutletContext } from 'react-router-dom'
-import { UserConfigModel, UsersModel } from '../models'
+
 import { Box, Typography } from '@mui/material'
+import { useParams, useOutletContext } from 'react-router-dom'
 
 import api from '../api'
-import ConfigForm from '../forms/ConfigForm'
 import { colorList } from '../fe-utils/colorList'
+import ConfigForm from '../forms/ConfigForm'
+import { UserConfigModel, UsersModel } from '../models'
 
 const colors = colorList()
 

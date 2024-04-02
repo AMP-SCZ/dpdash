@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+
 import {
   Box,
   Button,
@@ -9,15 +9,16 @@ import {
   Divider,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import { useOutletContext } from 'react-router-dom'
 
-import { UsersModel, StudiesModel } from '../../models'
+import { ROLE_OPTIONS } from '../../../constants'
 import api from '../../api'
 import PageHeader from '../../components/PageHeader'
-import AdminUsersTable from '../../tables/AdminUsersTable'
 import { AdminUsersSearchForm } from '../../forms/AdminUsersSearchForm'
-import ControlledSelectInput from '../../forms/ControlledSelect'
 import ControlledMultiSelect from '../../forms/ControlledMultiSelect'
-import { ROLE_OPTIONS } from '../../../constants'
+import ControlledSelectInput from '../../forms/ControlledSelect'
+import { UsersModel, StudiesModel } from '../../models'
+import AdminUsersTable from '../../tables/AdminUsersTable'
 
 const modalStyle = {
   position: 'absolute',

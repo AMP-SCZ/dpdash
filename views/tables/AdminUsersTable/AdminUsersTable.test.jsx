@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { screen } from '@testing-library/react'
 
 import AdminUsersTable from '.'
@@ -20,7 +18,14 @@ describe('AdminUsersTable', () => {
     }),
   ]
   it('renders the table', () => {
-    renderPage(AdminUsersTable, {users, onAccess: jest.fn(), onUserBlock: jest.fn(), onResetPassword: jest.fn(), onDeleteUser: jest.fn(), onChangeAccountExpiration: jest.fn()})
+    renderPage(AdminUsersTable, {
+      users,
+      onAccess: jest.fn(),
+      onUserBlock: jest.fn(),
+      onResetPassword: jest.fn(),
+      onDeleteUser: jest.fn(),
+      onChangeAccountExpiration: jest.fn(),
+    })
 
     expect(screen.getByRole('table')).toBeInTheDocument()
     expect(screen.getByText('test@example.com')).toBeInTheDocument()

@@ -1,5 +1,6 @@
-import Modal from '../../components/Modal'
 import Subheader from '@mui/material/ListSubheader'
+
+import Modal from '../../components/Modal'
 import './UserResetKeyFields.css'
 
 const UserResetKeyFields = ({ open, onClose, resetKey }) => {

@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+
 import { yupResolver } from '@hookform/resolvers/yup'
-import { InputAdornment, MenuItem, Button, CardActions } from '@mui/material'
 import { Search } from '@mui/icons-material'
+import { InputAdornment, MenuItem, Button, CardActions } from '@mui/material'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
+import SearchSelect from '../../components/SearchSelect'
 import ControlledMultiSelect from '../ControlledMultiSelect'
 import ControlledSelectInput from '../ControlledSelect'
-import SearchSelect from '../../components/SearchSelect'
 
 import './ParticipantsSearchForm.css'
 

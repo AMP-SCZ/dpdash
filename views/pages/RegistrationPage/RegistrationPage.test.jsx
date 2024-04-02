@@ -1,6 +1,8 @@
 import React from 'react'
+
 import { screen, render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+
 import RegistrationPage from '.'
 import { NotificationContext } from '../../contexts'
 import { routes } from '../../routes/routes'

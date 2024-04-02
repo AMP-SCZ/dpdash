@@ -1,10 +1,11 @@
 import React from 'react'
-import { useOutletContext } from 'react-router-dom'
-import { Box } from '@mui/material'
 
+import { Box } from '@mui/material'
+import { useOutletContext } from 'react-router-dom'
+
+import api from '../api'
 import ChartForm from '../forms/ChartForm'
 import { routes } from '../routes/routes'
-import api from '../api'
 
 const NewChartPage = () => {
   const { user, navigate, setNotification } = useOutletContext()

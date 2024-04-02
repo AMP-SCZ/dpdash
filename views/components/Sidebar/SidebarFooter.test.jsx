@@ -1,6 +1,8 @@
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
+
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+
 import SidebarFooter from './SidebarFooter'
 import { createUser } from '../../../test/fixtures'
 
@@ -10,10 +12,8 @@ describe('SidebarFooter', () => {
 
   process.env.DPDASH_VERSION = '1.0.0'
 
-  let wrapper
-
   beforeEach(() => {
-    wrapper = render(
+    render(
       <MemoryRouter>
         <SidebarFooter user={user} />
       </MemoryRouter>

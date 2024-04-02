@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react'
+
 import { Card, Checkbox, Chip, MenuItem, ListItemText } from '@mui/material/'
-import ControlledSelect from '../../forms/ControlledSelect'
+
 import MenuWithFooterActions from './MenuWithFooterActions'
 import SearchInput from './SearchInput'
 import { fontSize } from '../../../constants'
+import ControlledSelect from '../../forms/ControlledSelect'
 
 const SearchSelect = ({
   control,
@@ -31,7 +33,8 @@ const SearchSelect = ({
       defaultValue={[]}
       sx={{ flexGrow: 1, flexBasis: 0, width: '100%' }}
       SelectProps={{
-        renderValue: (selected) => selected.map((l) => <Chip label={l} />),
+        renderValue: (selected) =>
+          selected.map((l) => <Chip key={1} label={l} />),
         onClose: () => handleClose(),
         multiple: true,
         MenuProps: {

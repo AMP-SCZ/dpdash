@@ -1,7 +1,8 @@
 import React from 'react'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import TextInput from '../TextInput'
@@ -30,14 +31,14 @@ const SignInForm = ({ initialValues, onSubmit }) => {
         name="username"
         label="Username"
         required
-        fullWidth={true}
+        fullWidth
         margin="normal"
         type="text"
       />
       <TextInput
         control={control}
         errors={errors.password}
-        fullWidth={true}
+        fullWidth
         inputProps={{ 'data-testid': 'pw' }}
         label="Password"
         margin="normal"
@@ -53,7 +54,7 @@ const SignInForm = ({ initialValues, onSubmit }) => {
           }}
           variant="contained"
           type="submit"
-          fullWidth={true}
+          fullWidth
         >
           Sign in
         </Button>

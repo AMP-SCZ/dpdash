@@ -1,4 +1,10 @@
-import { NETWORK, N_A, TOTALS_STUDY, TOTAL_LABEL } from '../../constants'
+import {
+  NETWORK,
+  N_A,
+  TOTALS_STUDY,
+  TOTAL_LABEL,
+  SITE_CODE,
+} from '../../constants'
 
 const formatAsPercentage = (value = 0) => value.toFixed(0) + '%'
 
@@ -46,6 +52,11 @@ class BarChartTableService {
       label: NETWORK,
       sortable: true,
     },
+    {
+      dataProperty: 'siteCode',
+      label: SITE_CODE,
+      sortable: false,
+    },
     ...this.labels
       .filter((column) => column.name !== N_A)
       .concat({ name: TOTAL_LABEL })
@@ -60,6 +71,7 @@ class BarChartTableService {
     return sortedGraphTableData.map((siteData) => {
       return {
         site: siteData.name,
+        siteCode: siteData.siteCode,
         ...Object.keys(siteData.counts).reduce((varData, nextVar) => {
           varData[nextVar] = this._formatGraphTableCellData(
             siteData.targets?.[nextVar],

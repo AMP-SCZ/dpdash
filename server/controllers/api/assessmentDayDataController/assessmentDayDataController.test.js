@@ -20,7 +20,7 @@ describe('assessmentDayDataController', () => {
 
   afterEach(async () => {
     const existingCollections = await appDb.listCollections().toArray()
-    const collectionNames = existingCollections.map(c => c.name)
+    const collectionNames = existingCollections.map((c) => c.name)
     if (collectionNames.includes(collections.metadata)) {
       await appDb.collection(collections.metadata).drop()
     }
@@ -429,9 +429,9 @@ describe('assessmentDayDataController', () => {
             }
           )
 
-          expect(newDocument.participants[0]).toHaveProperty('synced')
-          expect(newDocument.participants[0].daysInStudy).toEqual(8)
-        })
+        expect(newDocument.participants[0]).toHaveProperty('synced')
+        expect(newDocument.participants[0].daysInStudy).toEqual(8)
+      })
     })
     describe('When unsuccessful', () => {
       it('returns a status of 400 and an error message when payload is missing', async () => {
@@ -471,10 +471,9 @@ describe('assessmentDayDataController', () => {
   describe(AssessmentDayDataController.destroy, () => {
     describe('when successful', () => {
       it('deletes all documents in the assessmentDayData collection', async () => {
-        await appDb.collection(collections.assessmentDayData).insertMany([
-          createAssessmentDayData(),
-          createAssessmentDayData()
-        ])
+        await appDb
+          .collection(collections.assessmentDayData)
+          .insertMany([createAssessmentDayData(), createAssessmentDayData()])
 
         const request = createRequest({
           app: { locals: { appDb } },
@@ -486,7 +485,11 @@ describe('assessmentDayDataController', () => {
 
         const remainingCollections = await appDb.listCollections().toArray()
         expect(response.status).toHaveBeenCalledWith(200)
-        expect(remainingCollections.map(c => c.name).includes(collections.assessmentDayData)).toBe(false)
+        expect(
+          remainingCollections
+            .map((c) => c.name)
+            .includes(collections.assessmentDayData)
+        ).toBe(false)
       })
     })
   })

@@ -1,13 +1,14 @@
 import React from 'react'
-import { useOutletContext, Link } from 'react-router-dom'
-import { Button } from '@mui/material'
 
-import api from '../../api'
-import { routes } from '../../routes/routes'
-import UserProfileForm from '../../forms/UserProfileForm'
+import { Button } from '@mui/material'
+import { useOutletContext, Link } from 'react-router-dom'
+
 import AccountPageHeader from './AccountPageHeader'
 import { borderRadius, fontSize } from '../../../constants'
+import api from '../../api'
+import UserProfileForm from '../../forms/UserProfileForm'
 import FileModel from '../../models/FileModel'
+import { routes } from '../../routes/routes'
 
 import './AccountPage.css'
 

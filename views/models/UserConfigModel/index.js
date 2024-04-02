@@ -68,7 +68,7 @@ const UserConfigModel = {
     return {
       configName: name,
       configType: type,
-      owner: owner,
+      owner,
       readers: readers.map((reader) => ({
         value: reader,
         label: reader,

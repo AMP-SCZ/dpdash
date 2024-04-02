@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import {
   OutlinedInput,
   Select,
@@ -39,12 +40,12 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
     }
   }
 
-  const handleClearSelection = (_) => {
+  const handleClearSelection = () => {
     setSelectedValue([])
     onChange(label, [])
   }
 
-  const handleSelectAll = (_) => {
+  const handleSelectAll = () => {
     setSelectedValue(options)
     onChange(label, options)
   }
@@ -58,7 +59,8 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
       input={<OutlinedInput id={`select-multiple-${label}`} label={label} />}
       renderValue={(selected) => {
         const EtcChip =
-          selected.length > 5 ? <Chip key={'etc'} label="..." /> : <></>
+          selected.length > 5 ? <Chip key="etc" label="..." /> : <></>
+
         return (
           <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 0.5 }}>
             {selected

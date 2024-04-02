@@ -1,23 +1,24 @@
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom'
+
 import { routes } from './routes'
+import AuthenticatedRoute from '../hoc/AuthenticatedRoute'
+import HeroLayout from '../layouts/HeroLayout'
+import MainLayout from '../layouts/MainLayout'
 import AccountPage from '../pages/AccountPage'
 import AdminPage from '../pages/AdminPage'
-import AuthenticatedRoute from '../hoc/AuthenticatedRoute'
 import ChartsPage from '../pages/ChartsPage'
+import ConfigurationsPage from '../pages/ConfigurationsPage'
+import DashboardPage from '../pages/DashboardPage'
 import EditChartPage from '../pages/EditChartPage'
 import EditConfigPage from '../pages/EditConfigPage'
 import GraphPage from '../pages/GraphPage'
-import HeroLayout from '../layouts/HeroLayout'
-import MainLayout from '../layouts/MainLayout'
 import NewChartPage from '../pages/NewChartPage'
 import NewConfigPage from '../pages/NewConfigPage'
 import ParticipantsPage from '../pages/ParticipantsPage'
-import ResetPasswordPage from '../pages/ResetPasswordPage'
 import RegistrationPage from '../pages/RegistrationPage'
-import ViewChartPage from '../pages/ViewChartPage'
+import ResetPasswordPage from '../pages/ResetPasswordPage'
 import SignInPage from '../pages/SignInPage'
-import ConfigurationsPage from '../pages/ConfigurationsPage'
-import DashboardPage from '../pages/DashboardPage'
+import ViewChartPage from '../pages/ViewChartPage'
 
 const Router = () => {
   return (
@@ -26,7 +27,7 @@ const Router = () => {
         <Route element={<HeroLayout />}>
           <Route
             path={routes.home}
-            element={<Navigate to={routes.signin} replace={true} />}
+            element={<Navigate to={routes.signin} replace />}
           />
           <Route path={routes.signin} element={<SignInPage />} />
           <Route path={routes.register} element={<RegistrationPage />} />

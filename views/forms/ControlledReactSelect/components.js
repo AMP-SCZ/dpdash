@@ -1,14 +1,5 @@
-import { Chip, MenuItem, Typography, TextField } from '@mui/material'
 import CancelIcon from '@mui/icons-material/Cancel'
-import classNames from 'classnames'
-
-function inputComponent({ inputRef, ...props }) {
-  return (
-    <div ref={inputRef} {...props}>
-      {props.children}
-    </div>
-  )
-}
+import { Chip, MenuItem, Typography, TextField } from '@mui/material'
 
 export const components = {
   MultiValue: (props) => (
