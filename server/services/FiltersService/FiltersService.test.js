@@ -22,7 +22,7 @@ describe(FiltersService, () => {
       networks: {
         PRESCIENT: { label: 'PRESCIENT', value: 0 },
         ProNET: { label: 'ProNET', value: 0 },
-      }
+      },
     }
     const initialSites = ['one', 'two', 'three']
 

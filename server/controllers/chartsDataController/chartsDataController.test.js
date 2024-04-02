@@ -96,8 +96,8 @@ describe('chartsDataController', () => {
                 },
                 networks: {
                   PRESCIENT: { label: 'PRESCIENT', value: '0' },
-                  ProNET: { label: 'ProNET', value: '0' }
-                }
+                  ProNET: { label: 'ProNET', value: '0' },
+                },
               },
             },
           },
@@ -163,8 +163,8 @@ describe('chartsDataController', () => {
                 },
                 networks: {
                   PRESCIENT: { label: 'PRESCIENT', value: '0' },
-                  ProNET: { label: 'ProNET', value: '0' }
-                }
+                  ProNET: { label: 'ProNET', value: '0' },
+                },
               },
             },
           },

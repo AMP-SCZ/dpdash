@@ -281,8 +281,8 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
     },
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
-      ProNET: { label: 'ProNET', value: 0 }
-    }
+      ProNET: { label: 'ProNET', value: 0 },
+    },
   },
   graphTable: {
     tableColumns: [
@@ -531,8 +531,8 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
     },
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
-      ProNET: { label: 'ProNET', value: 0 }
-    }
+      ProNET: { label: 'ProNET', value: 0 },
+    },
   },
   graphTable: {
     tableColumns: [
@@ -748,8 +748,8 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
     },
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
-      ProNET: { label: 'ProNET', value: 0 }
-    }
+      ProNET: { label: 'ProNET', value: 0 },
+    },
   },
   graphTable: {
     tableColumns: [

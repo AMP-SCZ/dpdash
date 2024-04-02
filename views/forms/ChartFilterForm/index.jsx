@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
+
 import { Button, FormControl, InputLabel } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
+import { SITES_BY_NETWORK } from '../../../constants'
 import { FILTER_CATEGORIES } from '../../../constants/vars'
 import DropdownCheckboxGroup from '../DropdownCheckboxGroup'
-
 import './ChartFilterForm.css'
-import { SITES_BY_NETWORK } from '../../../constants'
 
 const ChartFilterForm = ({ initialValues, onSubmit }) => {
   const { handleSubmit, setValue, getValues } = useForm({
@@ -29,7 +29,7 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
       const allowedSiteOptions = { ...initialValues.sites }
       const allowedSites = value.flatMap((network) => SITES_BY_NETWORK[network])
       const selectableSites = Object.keys(initialValues.sites)
-      for (let site of selectableSites) {
+      for (const site of selectableSites) {
         if (allowedSites.length && !allowedSites.includes(site)) {
           delete allowedSiteOptions[site]
         }

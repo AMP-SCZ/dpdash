@@ -1,3 +1,4 @@
+import { SITES_BY_NETWORK } from './networks'
 import {
   ADMIN_TABLE_COLUMN_NUMBER,
   ADMIN_TABLE_MAX_WIDTH,
@@ -9,6 +10,7 @@ import {
   presetColors,
   MIN_WIDTH,
 } from './styles'
+import { THEME, borderRadius, fontSize, lineHeight } from './theme'
 import {
   ADMIN_ROLE,
   DATA_URL_PATTERN,
@@ -24,8 +26,6 @@ import {
   TOTAL_LABEL,
   TOTALS,
 } from './vars'
-import { THEME, borderRadius, fontSize, lineHeight } from './theme'
-import { SITES_BY_NETWORK } from './networks'
 
 export {
   ADMIN_ROLE,

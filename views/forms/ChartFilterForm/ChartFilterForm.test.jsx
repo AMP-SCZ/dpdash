@@ -7,9 +7,9 @@ import {
   fireEvent,
   queryByAttribute,
 } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import ChartFilterForm from '.'
-import userEvent from '@testing-library/user-event'
 
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),
