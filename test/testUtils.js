@@ -279,6 +279,10 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
       LA: { label: 'LA', value: 1 },
       MA: { label: 'MA', value: 1 },
     },
+    networks: {
+      PRESCIENT: { label: 'PRESCIENT', value: 0 },
+      ProNET: { label: 'ProNET', value: 0 }
+    }
   },
   graphTable: {
     tableColumns: [
@@ -525,6 +529,10 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       LA: { label: 'LA', value: 1 },
       MA: { label: 'MA', value: 1 },
     },
+    networks: {
+      PRESCIENT: { label: 'PRESCIENT', value: 0 },
+      ProNET: { label: 'ProNET', value: 0 }
+    }
   },
   graphTable: {
     tableColumns: [
@@ -738,6 +746,10 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
       LA: { label: 'LA', value: 1 },
       MA: { label: 'MA', value: 1 },
     },
+    networks: {
+      PRESCIENT: { label: 'PRESCIENT', value: 0 },
+      ProNET: { label: 'ProNET', value: 0 }
+    }
   },
   graphTable: {
     tableColumns: [

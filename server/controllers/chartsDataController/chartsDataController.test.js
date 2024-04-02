@@ -94,6 +94,10 @@ describe('chartsDataController', () => {
                   LA: { label: 'LA', value: '1' },
                   MA: { label: 'MA', value: '1' },
                 },
+                networks: {
+                  PRESCIENT: { label: 'PRESCIENT', value: '0' },
+                  ProNET: { label: 'ProNET', value: '0' }
+                }
               },
             },
           },
@@ -157,6 +161,10 @@ describe('chartsDataController', () => {
                   LA: { label: 'LA', value: '1' },
                   MA: { label: 'MA', value: '1' },
                 },
+                networks: {
+                  PRESCIENT: { label: 'PRESCIENT', value: '0' },
+                  ProNET: { label: 'ProNET', value: '0' }
+                }
               },
             },
           },
