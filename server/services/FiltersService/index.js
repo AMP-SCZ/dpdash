@@ -37,6 +37,10 @@ export const DEFAULT_FILTERS = {
     Missing: { label: 'Missing', value: 1 },
   },
   sites: {},
+  networks: {
+    PRESCIENT: { label: 'PRESCIENT', value: 0 },
+    ProNET: { label: 'ProNET', value: 0 },
+  },
 }
 
 const INCLUSION_EXCLUSION_KEY = 'included_excluded'

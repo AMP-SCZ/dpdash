@@ -3,7 +3,7 @@
   width: 100%;
   gap: 10px;
   padding-bottom: 20px;
-  grid-template-columns: repeat(1fr, 4);
+  grid-template-columns: repeat(1fr, 5);
 }
 .ChartFilterForm_container {
   display: flex;
