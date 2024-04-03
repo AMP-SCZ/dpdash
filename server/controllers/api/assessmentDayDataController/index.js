@@ -81,7 +81,7 @@ const AssessmentDayDataController = {
           appDb,
           { study },
           {
-            $set: {
+            setAttributes: {
               study,
               participants: [
                 {
@@ -105,7 +105,7 @@ const AssessmentDayDataController = {
             appDb,
             { participants: { $elemMatch: { participant } } },
             {
-              $set: {
+              setAttributes: {
                 'participants.$.daysInStudy': maxDayInDayData,
                 'participants.$.synced': new Date(),
               },
@@ -116,7 +116,7 @@ const AssessmentDayDataController = {
             appDb,
             { study },
             {
-              $addToSet: {
+              addToSetAttributes: {
                 participants: {
                   Active,
                   Consent: parsedConsent,

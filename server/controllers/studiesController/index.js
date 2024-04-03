@@ -1,6 +1,6 @@
 import StudiesModel from '../../models/StudiesModel'
 
-const StudiesController = {
+const studiesController = {
   index: async (req, res) => {
     try {
       const { appDb } = req.app.locals
@@ -13,4 +13,4 @@ const StudiesController = {
   },
 }
 
-export default StudiesController
+export default studiesController

@@ -384,3 +384,27 @@ export const createAsessmentVariable = (overrides = {}) => ({
   assessment: '',
   ...overrides,
 })
+
+export const createStudy = (overrides = {}) => ({
+  study: '',
+  updatedAt: '',
+  participants: [],
+  ...overrides,
+})
+
+export const createStudyTableRowData = (overrides = {}) => ({
+  daysInStudy: 0,
+  numOfParticipants: 0,
+  study: '',
+  updatedAt: '',
+  ...overrides,
+})
+
+export const createSiteParticipant = (overrides = {}) => ({
+  participant: ' ',
+  Active: 1,
+  Consent: '',
+  study: '',
+  daysInStudy: 0,
+  ...overrides,
+})

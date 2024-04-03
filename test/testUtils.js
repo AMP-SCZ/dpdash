@@ -1,4 +1,8 @@
-import { createAssessmentDayData } from './fixtures'
+import {
+  createAssessmentDayData,
+  createSiteParticipant,
+  createStudy,
+} from './fixtures'
 import {
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
@@ -850,3 +854,66 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
   lastModified: '',
   ...overrides,
 })
+
+export const createStudies = () => [
+  createStudy({
+    study: 'YA',
+    updatedAt: new Date('01-05-2024'),
+    participants: [
+      createSiteParticipant({
+        participant: 'YA1',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'YA',
+        daysInStudy: 55,
+      }),
+      createSiteParticipant({
+        participant: 'YA2',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'YA',
+        daysInStudy: 105,
+      }),
+    ],
+  }),
+  createStudy({
+    study: 'MA',
+    updatedAt: new Date('01-05-2024'),
+    participants: [
+      createSiteParticipant({
+        participant: 'MA1',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'MA',
+        daysInStudy: 55,
+      }),
+      createSiteParticipant({
+        participant: 'MA2',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'MA',
+        daysInStudy: 1005,
+      }),
+    ],
+  }),
+  createStudy({
+    study: 'LA',
+    updatedAt: new Date('01-05-2024'),
+    participants: [
+      createSiteParticipant({
+        participant: 'LA1',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'LA',
+        daysInStudy: 655,
+      }),
+      createSiteParticipant({
+        participant: 'LA2',
+        Active: 1,
+        Consent: '2022-06-02',
+        study: 'LA',
+        daysInStudy: 5,
+      }),
+    ],
+  }),
+]

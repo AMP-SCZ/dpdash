@@ -4,26 +4,26 @@
     "plugin:react/recommended",
     "prettier",
     "universe/web",
-    "universe/node"
+    "universe/node",
   ],
   "parser": "@babel/eslint-parser",
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
   },
   "parserOptions": {
     "requireConfigFile": false,
     "babelOptions": {
-      "presets": ["@babel/preset-react"]
+      "presets": ["@babel/preset-react"],
     },
     "ecmaFeatures": {
-        "jsx": true
+      "jsx": true,
     },
     "ecmaVersion": 15,
     "sourceType": "module",
     "parserOptions": {
-      "project": "./tsconfig.json"
-    }
+      "project": "./tsconfig.json",
+    },
   },
   "plugins": [
     "react",
@@ -32,17 +32,20 @@
     "no-only-tests",
     "sort-keys-fix",
     "prettier",
-    "promise"
+    "promise",
   ],
   "rules": {
     "react/prop-types": "off",
-    "no-unused-vars": ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" },
+    ],
     "import/order": [
       "error",
       {
         "alphabetize": {
           "caseInsensitive": true,
-          "order": "asc"
+          "order": "asc",
         },
         "groups": ["builtin", "external", "internal"],
         "newlines-between": "always",
@@ -50,13 +53,13 @@
           {
             "group": "external",
             "pattern": "react",
-            "position": "before"
-          }
+            "position": "before",
+          },
         ],
-        "pathGroupsExcludedImportTypes": ["react"]
-      }
+        "pathGroupsExcludedImportTypes": ["react"],
+      },
     ],
     "no-only-tests/no-only-tests": "error",
-    "react/react-in-jsx-scope": "off"
-  }
+    "react/react-in-jsx-scope": "off",
+  },
 }

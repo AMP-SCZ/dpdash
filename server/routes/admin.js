@@ -2,7 +2,7 @@ import { Router } from 'express'
 import * as yup from 'yup'
 
 import AdminUsersController from '../controllers/adminController'
-import StudiesController from '../controllers/studiesController'
+import studiesController from '../controllers/studiesController'
 import validateRequest, { baseSchema } from '../middleware/validateRequest'
 import ensureAdmin from '../utils/passport/ensure-admin'
 import { v1Routes } from '../utils/routes'
@@ -40,6 +40,6 @@ router
 
 router
   .route(v1Routes.admin.studies.index)
-  .get(ensureAdmin, StudiesController.index)
+  .get(ensureAdmin, studiesController.index)
 
 export default router

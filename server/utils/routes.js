@@ -56,6 +56,9 @@ export const v1Routes = {
   siteMetadata: {
     index: `${v1Root}/import/data/metadata`,
   },
+  userStudies: {
+    index: `${v1Root}/user-studies`,
+  },
   users: {
     index: `${v1Root}/users`,
     show: userRoot,

@@ -227,6 +227,7 @@ describe('siteMetadataController', () => {
             role: 'metadata',
             study: 'site',
             extension: '.csv',
+            updatedAt: new Date(),
           },
           participants: [
             {
@@ -234,12 +235,14 @@ describe('siteMetadataController', () => {
               Active: 1,
               Consent: '2022-06-02',
               study: 'YA',
+              daysInStudy: 55,
             },
             {
               participant: 'YA2',
               Active: 1,
               Consent: '2022-06-02',
               study: 'YA',
+              daysInStudy: 105,
             },
           ],
         })
