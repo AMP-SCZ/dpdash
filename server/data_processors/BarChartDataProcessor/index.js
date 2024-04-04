@@ -67,7 +67,7 @@ class BarChartDataProcessor {
     const shouldCountParticipant = isVariableValueEmpty
       ? participantDayData.every((day) => day[this.chart.variable] === value)
       : participantDayData.some(
-          (dayData) => dayData[this.chart.variable] === value
+          (dayData) => dayData[this.chart.variable] === +value
         )
     const participantVariableDayCount =
       isVariableValueEmpty && shouldCountParticipant
