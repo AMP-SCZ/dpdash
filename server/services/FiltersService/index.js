@@ -62,7 +62,7 @@ class FiltersService {
   }
 
   allFiltersInactive = () => {
-    const { sites: _sites, ...filters } = this.filters
+    const { sites: _sites, networks: _networks, ...filters } = this.filters
     return Object.keys(filters).every((category) => {
       const filterCategory = filters[category]
 
