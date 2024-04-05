@@ -8,6 +8,9 @@ import { FILTER_CATEGORIES } from '../../../constants/vars'
 import DropdownCheckboxGroup from '../DropdownCheckboxGroup'
 import './ChartFilterForm.css'
 
+const NETWORKS_FILTER_KEY = 'networks'
+const SITES_FILTER_KEY = 'sites'
+
 const ChartFilterForm = ({ initialValues, onSubmit }) => {
   const { handleSubmit, setValue, getValues } = useForm({
     defaultValues: initialValues,
@@ -25,7 +28,7 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
       },
       {}
     )
-    if (label === 'networks') {
+    if (label === NETWORKS_FILTER_KEY) {
       const allowedSiteOptions = { ...initialValues.sites }
       const allowedSites = value.flatMap((network) => SITES_BY_NETWORK[network])
       const selectableSites = Object.keys(initialValues.sites)
@@ -34,7 +37,7 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
           delete allowedSiteOptions[site]
         }
       }
-      setValue('sites', allowedSiteOptions)
+      setValue(SITES_FILTER_KEY, allowedSiteOptions)
       setResetSiteOptions(true)
     }
     setValue(label, newFilterValues)
@@ -56,7 +59,7 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
               <InputLabel id={`multi-chip-label-${filterKey}`}>
                 {FILTER_CATEGORIES[filterKey]}
               </InputLabel>
-              {filterKey === 'sites' ? (
+              {filterKey === SITES_FILTER_KEY ? (
                 <DropdownCheckboxGroup
                   label={filterKey}
                   initialValues={formValues[filterKey]}
