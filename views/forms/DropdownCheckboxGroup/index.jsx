@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   OutlinedInput,
@@ -20,7 +20,13 @@ const MenuProps = {
   },
 }
 
-const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
+const DropdownCheckboxGroup = ({
+  label,
+  initialValues,
+  onChange,
+  resetOptions,
+  onReset,
+}) => {
   const options = Object.keys(initialValues)
   const selectedValues = Object.keys(initialValues).filter(
     (k) => initialValues[k].value === 1
@@ -49,6 +55,17 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
     setSelectedValue(options)
     onChange(label, options)
   }
+
+  useEffect(() => {
+    if (resetOptions) {
+      const selectedValues = Object.keys(initialValues).filter(
+        (key) => initialValues[key].value === 1
+      )
+      setSelectedValue(selectedValues)
+      onReset()
+    }
+  }, [resetOptions])
+
   return (
     <Select
       labelId={`multi-chip-label-${label}`}
@@ -76,7 +93,11 @@ const DropdownCheckboxGroup = ({ label, initialValues, onChange }) => {
     >
       {options.map((value) => {
         return (
-          <MenuItem key={value} value={value}>
+          <MenuItem
+            data-testid={`menu_item_option_${value}`}
+            key={value}
+            value={value}
+          >
             {value}
           </MenuItem>
         )

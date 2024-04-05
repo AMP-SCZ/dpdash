@@ -37,6 +37,10 @@ export const DEFAULT_FILTERS = {
     Missing: { label: 'Missing', value: 1 },
   },
   sites: {},
+  networks: {
+    PRESCIENT: { label: 'PRESCIENT', value: 0 },
+    ProNET: { label: 'ProNET', value: 0 },
+  },
 }
 
 const INCLUSION_EXCLUSION_KEY = 'included_excluded'
@@ -58,7 +62,7 @@ class FiltersService {
   }
 
   allFiltersInactive = () => {
-    const { sites: _sites, ...filters } = this.filters
+    const { sites: _sites, networks: _networks, ...filters } = this.filters
     return Object.keys(filters).every((category) => {
       const filterCategory = filters[category]
 
