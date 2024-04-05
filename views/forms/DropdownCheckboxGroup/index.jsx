@@ -59,7 +59,7 @@ const DropdownCheckboxGroup = ({
   useEffect(() => {
     if (resetOptions) {
       const selectedValues = Object.keys(initialValues).filter(
-        (k) => initialValues[k].value === 1
+        (key) => initialValues[key].value === 1
       )
       setSelectedValue(selectedValues)
       onReset()
