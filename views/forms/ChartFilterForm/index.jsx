@@ -53,7 +53,6 @@ const ChartFilterForm = ({ initialValues, onSubmit }) => {
               sx={{
                 gridColumnStart: i,
                 gridColumnEnd: i + 1,
-                width: '275px',
               }}
             >
               <InputLabel id={`multi-chip-label-${filterKey}`}>
