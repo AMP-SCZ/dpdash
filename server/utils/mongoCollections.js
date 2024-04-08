@@ -5,4 +5,6 @@ export const collections = {
   toc: 'toc',
   users: 'users',
   assessmentDayData: 'assessmentDayData',
+  assessments: 'assessments',
+  assessmentVariables: 'assessmentVariables',
 }
