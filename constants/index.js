@@ -1,3 +1,4 @@
+import { SITES_BY_NETWORK } from './networks'
 import {
   ADMIN_TABLE_COLUMN_NUMBER,
   ADMIN_TABLE_MAX_WIDTH,
@@ -48,6 +49,7 @@ export {
   presetColors,
   ROLE_OPTIONS,
   SAFE_URL_PATTERN,
+  SITES_BY_NETWORK,
   SORT_DIRECTION,
   TABLE_ROW_HEIGHT,
   TOTAL_LABEL,

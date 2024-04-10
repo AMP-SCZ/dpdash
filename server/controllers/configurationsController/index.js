@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb'
 
 import ConfigModel from '../../models/ConfigModel'
+import UserModel from '../../models/UserModel'
+
+const cachedUsers = new Map()
 
 const ConfigurationsController = {
   create: async (req, res) => {
@@ -55,9 +58,44 @@ const ConfigurationsController = {
   },
   index: async (req, res) => {
     try {
+      const dataSet = new Set()
       const { appDb } = req.app.locals
       const { uid } = req.params
-      const data = await ConfigModel.index(appDb, uid)
+      const streamConfigurations = await ConfigModel.index(appDb, uid)
+
+      streamConfigurations.on('data', async (config) => {
+        streamConfigurations.pause()
+
+        const isUserCached = cachedUsers.has(config.owner)
+
+        if (isUserCached) {
+          const configOwner = cachedUsers.get(config.owner)
+
+          dataSet.add({ ...config, owner_display_name: configOwner })
+        } else {
+          const configOwner = await UserModel.findOne(
+            appDb,
+            { uid: config.owner },
+            { display_name: 1 }
+          )
+
+          cachedUsers.set(config.owner, configOwner.display_name)
+          dataSet.add({
+            ...config,
+            owner_display_name: configOwner.display_name,
+          })
+        }
+
+        streamConfigurations.resume()
+      })
+
+      await new Promise((resolve, reject) => {
+        streamConfigurations.on('end', () => resolve())
+
+        streamConfigurations.on('error', (err) => reject(err))
+      })
+
+      const data = Array.from(dataSet)
 
       return res.status(200).json({ data })
     } catch (error) {

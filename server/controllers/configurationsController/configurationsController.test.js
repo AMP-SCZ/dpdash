@@ -3,7 +3,9 @@ import {
   createRequestWithUser,
   createResponse,
   createConfiguration,
+  createUser,
 } from '../../../test/fixtures'
+import { collections } from '../../utils/mongoCollections'
 
 describe('ConfigurationsController', () => {
   describe(ConfigurationsController.create, () => {
@@ -100,23 +102,63 @@ describe('ConfigurationsController', () => {
     const params = { uid: 'owl' }
 
     describe('When successful', () => {
-      it('returns a status of 200 and an array of configurations', async () => {
-        const request = createRequestWithUser(params)
-        const response = createResponse()
-        const configurationList = [
+      let appDb
+      let user
+
+      beforeAll(async () => {
+        user = createUser({
+          uid: 'owl',
+          preferences: {},
+          access: ['YA', 'LA', 'MA'],
+          display_name: 'Owl Owlson',
+        })
+        const secondUser = createUser({
+          uid: 'eagle',
+          preferences: {},
+          access: ['YA', 'LA', 'MA'],
+          display_name: 'Eagle Eagleson',
+        })
+        const configurations = [
           createConfiguration(),
-          createConfiguration({ _id: '2', owner: 'eagle' }),
+          createConfiguration({
+            _id: '2',
+            owner: 'eagle',
+            readers: ['eagle', 'owl'],
+          }),
         ]
 
-        request.app.locals.appDb.aggregate.mockImplementationOnce(() => ({
-          toArray: () => configurationList,
-        }))
+        appDb = await global.MONGO_INSTANCE.db('configData')
+
+        await appDb.collection(collections.configs).insertMany(configurations)
+        await appDb.collection(collections.users).insertMany([user, secondUser])
+      })
+
+      afterAll(async () => {
+        await appDb.dropDatabase()
+      })
+
+      it('returns a status of 200 and an array of configurations', async () => {
+        const result = [
+          createConfiguration({ owner_display_name: 'Owl Owlson' }),
+          createConfiguration({
+            _id: '2',
+            owner: 'eagle',
+            owner_display_name: 'Eagle Eagleson',
+            readers: ['eagle', 'owl'],
+          }),
+        ]
+        const request = createRequestWithUser({
+          app: { locals: { appDb } },
+          params,
+          user,
+        })
+        const response = createResponse()
 
         await ConfigurationsController.index(request, response)
 
         expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
-          data: configurationList,
+          data: result,
         })
       })
     })
@@ -126,15 +168,15 @@ describe('ConfigurationsController', () => {
         const request = createRequestWithUser(params)
         const response = createResponse()
 
-        request.app.locals.appDb.toArray.mockRejectedValueOnce(
-          new Error('aggregation result error')
+        request.app.locals.appDb.stream.mockRejectedValueOnce(
+          new Error('result error')
         )
 
         await ConfigurationsController.index(request, response)
 
         expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({
-          error: 'aggregation result error',
+          error: 'result error',
         })
       })
     })
