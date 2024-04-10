@@ -17,6 +17,5 @@ docker push $ECR_IMAGE
 
 TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_NAME" --region="us-east-1")
 NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$ECR_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
-NEW_REVISION=$(aws ecs register-task-definition --region "us-east-1" --cli-input-json "${NEW_TASK_DEFINITION}")
-NEW_REVISION_DATA=$(echo $NEW_REVISION | jq '.taskDefinition.revision')
+aws ecs register-task-definition --region "us-east-1" --cli-input-json "${NEW_TASK_DEFINITION}"
 aws ecs update-service --cluster "$CLUSTER_NAME" --service "$SERVICE_NAME" --task-definition "$TASK_NAME" --force-new-deployment
