@@ -290,6 +290,7 @@ export const createFilters = (overrides = {}) => ({
 export const createNewAssessmentDayData = (overrides = {}) => ({
   metadata: {},
   participant_assessments: [],
+  assessment_variables: [],
   ...overrides,
 })
 
@@ -363,5 +364,23 @@ export const createGraphDataResponse = (overrides = {}) => ({
     ],
     consentDate: '2022-06-02T00:00:00.000Z',
   },
+  ...overrides,
+})
+export const createAssessmentDayDataMetadata = (overrides = {}) => ({
+  study: ' ',
+  participant: ' ',
+  assessment: ' ',
+  units: ' ',
+  start: ' ',
+  end: ' ',
+  time_end: ' ',
+  Consent: ' ',
+  Active: 1,
+  ...overrides,
+})
+
+export const createAsessmentVariable = (overrides = {}) => ({
+  name: '',
+  assessment: '',
   ...overrides,
 })

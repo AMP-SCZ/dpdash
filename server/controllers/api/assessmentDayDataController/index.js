@@ -1,4 +1,6 @@
 import AssessmentDayDataModel from '../../../models/AssessmentDayDataModel'
+import AssessmentModel from '../../../models/AssessmentModel'
+import AssessmentVariablesModel from '../../../models/AssessmentVariablesModel'
 import SiteMetadataModel from '../../../models/SiteMetadataModel'
 import { collections } from '../../../utils/mongoCollections'
 
@@ -6,7 +8,8 @@ const AssessmentDayDataController = {
   create: async (req, res) => {
     try {
       const { appDb } = req.app.locals
-      const { metadata, participant_assessments } = req.body
+      const { metadata, participant_assessments, assessment_variables } =
+        req.body
 
       if (!metadata || !participant_assessments.length)
         return res.status(400).json({ message: 'Nothing to import' })
@@ -28,6 +31,13 @@ const AssessmentDayDataController = {
         assessment,
         participant,
       }
+      const assessmentQuery = {
+        name: assessment,
+      }
+      const newAssessmentProperties = AssessmentModel.withDefaults({
+        name: assessment,
+      })
+
       const participantAssessmentData = await AssessmentDayDataModel.findOne(
         appDb,
         query
@@ -119,6 +129,25 @@ const AssessmentDayDataController = {
             }
           )
         }
+      }
+
+      await AssessmentModel.upsert(
+        appDb,
+        assessmentQuery,
+        newAssessmentProperties
+      )
+
+      if (assessment_variables.length) {
+        await Promise.all(
+          assessment_variables.map(
+            async (variableMetadata) =>
+              await AssessmentVariablesModel.upsert(
+                appDb,
+                variableMetadata,
+                variableMetadata
+              )
+          )
+        )
       }
 
       return res

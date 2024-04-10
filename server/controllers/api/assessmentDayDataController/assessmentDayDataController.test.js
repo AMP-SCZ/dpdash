@@ -1,9 +1,12 @@
 import AssessmentDayDataController from '.'
 import {
   createAssessmentDayData,
+  createAssessmentDayDataMetadata,
   createNewAssessmentDayData,
   createRequest,
   createResponse,
+  createAsessmentVariable,
+  createParticipantDayData,
 } from '../../../../test/fixtures'
 import { collections } from '../../../utils/mongoCollections'
 
@@ -16,6 +19,8 @@ describe('assessmentDayDataController', () => {
   beforeEach(async () => {
     await appDb.createCollection(collections.metadata)
     await appDb.createCollection(collections.assessmentDayData)
+    await appDb.createCollection(collections.assessments)
+    await appDb.createCollection(collections.assessmentVariables)
   })
 
   afterEach(async () => {
@@ -27,6 +32,12 @@ describe('assessmentDayDataController', () => {
     if (collectionNames.includes(collections.assessmentDayData)) {
       await appDb.collection(collections.assessmentDayData).drop()
     }
+    if (collectionNames.includes(collections.assessments)) {
+      await appDb.collection(collections.assessments).drop()
+    }
+    if (collectionNames.includes(collections.assessmentVariables)) {
+      await appDb.collection(collections.assessmentVariables).drop()
+    }
   })
   afterAll(async () => {
     await appDb.dropDatabase()
@@ -34,50 +45,97 @@ describe('assessmentDayDataController', () => {
 
   describe(AssessmentDayDataController.create, () => {
     describe('When successful', () => {
-      const metadata = {
-        path: 'study-participant-assessment-day1to4.csv',
-        filetype: 'text/csv',
-        encoding: 'utf-8',
-        basename: 'study-participant-assessment-day1to4.csv',
-        dirname: '/path/to/files',
-        mtime: 1234567890.0,
-        size: 1024,
-        uid: 1000,
-        gid: 1000,
-        mode: 420,
-        role: 'data',
-        study: 'study',
-        participant: 'participant',
-        assessment: 'assessment',
-        units: 'day',
-        start: '1',
-        end: '4',
-        extension: '.csv',
-        time_end: '4',
-        Consent: '2020-01-02',
-        Active: 1,
-      }
+      const initialAssessmentVariables = (assessment) => [
+        createAsessmentVariable({
+          name: 'var1',
+          assessment,
+        }),
+        createAsessmentVariable({
+          name: 'var2',
+          assessment,
+        }),
+        createAsessmentVariable({
+          name: 'var3',
+          assessment,
+        }),
+        createAsessmentVariable({
+          name: 'var4',
+          assessment,
+        }),
+        createAsessmentVariable({
+          name: 'var6',
+          assessment,
+        }),
+        createAsessmentVariable({
+          name: 'var7',
+          assessment,
+        }),
+      ]
+      const assessmentDayDataControllerMetadata =
+        createAssessmentDayDataMetadata({
+          study: 'study',
+          participant: 'participant',
+          assessment: 'assessment',
+          units: 'day',
+          start: '1',
+          end: '4',
+          time_end: '4',
+          Consent: new Date('2020-01-02'),
+        })
+      const updatedParticipantDayData = [
+        createParticipantDayData({
+          day: 1,
+          var1: 9,
+          var2: 4,
+          var3: 'str',
+        }),
+        createParticipantDayData({
+          day: 4,
+          var1: 9,
+          var2: 4,
+          var3: 'str',
+        }),
+        createParticipantDayData({
+          day: 8,
+          var1: 2,
+          var2: 2,
+          var3: 'str',
+          var4: 5,
+          var6: 6,
+          var7: 'str2',
+        }),
+        createParticipantDayData({
+          day: 12,
+          var1: 2,
+          var2: 2,
+          var3: 'str',
+          var4: 5,
+          var6: 6,
+          var7: 'str2',
+        }),
+      ]
+      const initialParticipantDayData = [
+        createParticipantDayData({
+          day: 1,
+          var1: 1,
+          var2: 2,
+          var3: 'str',
+        }),
+        createParticipantDayData({
+          day: 8,
+          var1: 2,
+          var2: 2,
+          var3: 'str',
+          var4: 5,
+          var6: 6,
+          var7: 'str2',
+        }),
+      ]
 
       it('creates a participants assessment day data', async () => {
         const data = createNewAssessmentDayData({
-          metadata,
-          participant_assessments: [
-            {
-              day: 1,
-              var1: 1,
-              var2: 2,
-              var3: 'str',
-            },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          metadata: assessmentDayDataControllerMetadata,
+          participant_assessments: initialParticipantDayData,
         })
         const request = createRequest({
           body: data,
@@ -102,131 +160,24 @@ describe('assessmentDayDataController', () => {
           )
 
         expect(newDocument).toEqual({
-          path: 'study-participant-assessment-day1to4.csv',
-          filetype: 'text/csv',
-          encoding: 'utf-8',
-          basename: 'study-participant-assessment-day1to4.csv',
-          dirname: '/path/to/files',
-          mtime: 1234567890,
-          size: 1024,
-          uid: 1000,
-          gid: 1000,
-          mode: 420,
-          role: 'data',
-          study: 'study',
-          participant: 'participant',
-          assessment: 'assessment',
-          units: 'day',
-          start: '1',
-          end: '4',
-          extension: '.csv',
-          time_end: '4',
-          Active: 1,
-          Consent: new Date('2020-01-02'),
-          dayData: [
-            { day: 1, var1: 1, var2: 2, var3: 'str' },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          ...assessmentDayDataControllerMetadata,
+          dayData: initialParticipantDayData,
         })
       })
 
       it('updates existing day data records or adds new ones', async () => {
         await appDb.collection(collections.assessmentDayData).insertOne({
-          path: 'study-participant-assessment-day1to4.csv',
-          filetype: 'text/csv',
-          encoding: 'utf-8',
-          basename: 'study-participant-assessment-day1to4.csv',
-          dirname: '/path/to/files',
-          mtime: 1234567890,
-          size: 1024,
-          uid: 1000,
-          gid: 1000,
-          mode: 420,
-          role: 'data',
-          study: 'study',
-          participant: 'participant',
-          assessment: 'assessment',
-          units: 'day',
-          start: '1',
-          end: '4',
-          extension: '.csv',
-          time_end: '4',
-          dayData: [
-            { day: 1, var1: 1, var2: 2, var3: 'str' },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          ...assessmentDayDataControllerMetadata,
+          dayData: initialParticipantDayData,
         })
 
         const data = createNewAssessmentDayData({
-          metadata: {
-            path: 'study-participant-assessment-day1to4.csv',
-            filetype: 'text/csv',
-            encoding: 'utf-8',
-            basename: 'study-participant-assessment-day1to4.csv',
-            dirname: '/path/to/files',
-            mtime: 1234567890.0,
-            size: 1524,
-            uid: 1000,
-            gid: 1000,
-            mode: 420,
-            role: 'data',
-            study: 'study',
-            participant: 'participant',
-            assessment: 'assessment',
-            units: 'day',
-            start: '1',
+          metadata: createAssessmentDayDataMetadata({
+            ...assessmentDayDataControllerMetadata,
             end: '12',
-            extension: '.csv',
             time_end: '12',
-          },
-          participant_assessments: [
-            {
-              day: 1,
-              var1: 9,
-              var2: 4,
-              var3: 'str',
-            },
-            {
-              day: 4,
-              var1: 9,
-              var2: 4,
-              var3: 'str',
-            },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-            {
-              day: 12,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          }),
+          participant_assessments: updatedParticipantDayData,
         })
         const request = createRequest({
           body: data,
@@ -246,81 +197,22 @@ describe('assessmentDayDataController', () => {
           )
 
         expect(newDocument).toEqual({
-          path: 'study-participant-assessment-day1to4.csv',
-          filetype: 'text/csv',
-          encoding: 'utf-8',
-          basename: 'study-participant-assessment-day1to4.csv',
-          dirname: '/path/to/files',
-          mtime: 1234567890.0,
-          size: 1524,
-          uid: 1000,
-          gid: 1000,
-          mode: 420,
-          role: 'data',
-          study: 'study',
-          participant: 'participant',
-          assessment: 'assessment',
-          units: 'day',
-          start: '1',
-          end: '12',
-          extension: '.csv',
-          time_end: '12',
-          Consent: null,
-          daysInStudy: 12,
-          dayData: [
-            {
-              day: 1,
-              var1: 9,
-              var2: 4,
-              var3: 'str',
-            },
-            {
-              day: 4,
-              var1: 9,
-              var2: 4,
-              var3: 'str',
-            },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-            {
-              day: 12,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          ...createAssessmentDayDataMetadata({
+            ...assessmentDayDataControllerMetadata,
+            end: '12',
+            time_end: '12',
+            daysInStudy: 12,
+            Active: 1,
+            Consent: new Date('2020-01-02'),
+            assessment: 'assessment',
+          }),
+          dayData: updatedParticipantDayData,
         })
       })
       it('creates a metadata document', async () => {
         const data = createNewAssessmentDayData({
-          metadata,
-          participant_assessments: [
-            {
-              day: 1,
-              var1: 1,
-              var2: 2,
-              var3: 'str',
-            },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          metadata: assessmentDayDataControllerMetadata,
+          participant_assessments: initialParticipantDayData,
         })
         const request = createRequest({
           body: data,
@@ -371,44 +263,8 @@ describe('assessmentDayDataController', () => {
         })
 
         const data = createNewAssessmentDayData({
-          metadata: {
-            path: 'study-participant-assessment-day1to4.csv',
-            filetype: 'text/csv',
-            encoding: 'utf-8',
-            basename: 'study-participant-assessment-day1to4.csv',
-            dirname: '/path/to/files',
-            mtime: 1234567890.0,
-            size: 1024,
-            uid: 1000,
-            gid: 1000,
-            mode: 420,
-            role: 'data',
-            study: 'study',
-            participant: 'participant',
-            assessment: 'assessment',
-            units: 'day',
-            start: '1',
-            end: '4',
-            extension: '.csv',
-            time_end: '4',
-          },
-          participant_assessments: [
-            {
-              day: 1,
-              var1: 1,
-              var2: 2,
-              var3: 'str',
-            },
-            {
-              day: 8,
-              var1: 2,
-              var2: 2,
-              var3: 'str',
-              var4: 5,
-              var6: 6,
-              var7: 'str2',
-            },
-          ],
+          metadata: assessmentDayDataControllerMetadata,
+          participant_assessments: initialParticipantDayData,
         })
         const request = createRequest({
           body: data,
@@ -432,6 +288,147 @@ describe('assessmentDayDataController', () => {
         expect(newDocument.participants[0]).toHaveProperty('synced')
         expect(newDocument.participants[0].daysInStudy).toEqual(8)
       })
+      it('creates new assessment and assessment variables documents', async () => {
+        const newAssessment = 'initialAssessment'
+        const assessment_variables = initialAssessmentVariables(newAssessment)
+        const data = createNewAssessmentDayData({
+          metadata: createAssessmentDayDataMetadata({
+            ...assessmentDayDataControllerMetadata,
+            assessment: newAssessment,
+          }),
+          participant_assessments: initialParticipantDayData,
+          assessment_variables,
+        })
+        const request = createRequest({
+          body: data,
+          app: { locals: { appDb } },
+        })
+        const response = createResponse()
+
+        await AssessmentDayDataController.create(request, response)
+
+        const assessmentVariables = await appDb
+          .collection(collections.assessmentVariables)
+          .find({ assessment: newAssessment }, { projection: { _id: 0 } })
+          .sort({ name: 1 })
+          .toArray()
+        const assessmentDocument = await appDb
+          .collection(collections.assessments)
+          .findOne({
+            name: newAssessment,
+          })
+
+        expect(assessmentVariables).toEqual(assessment_variables)
+        expect(assessmentDocument.name).toEqual(newAssessment)
+      })
+      it('Updates the assessment variables when there are new variables', async () => {
+        const newAssessment = 'update-vars-assessment'
+        const intialVariables = initialAssessmentVariables(newAssessment)
+        const newAssessmentVariables = [
+          createAsessmentVariable({
+            name: 'var1',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var2',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var3',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var4',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var6',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var7',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'var5',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'new-var1',
+            assessment: newAssessment,
+          }),
+          createAsessmentVariable({
+            name: 'newvar2',
+            assessment: newAssessment,
+          }),
+        ]
+
+        const data = createNewAssessmentDayData({
+          metadata: createAssessmentDayDataMetadata({
+            ...assessmentDayDataControllerMetadata,
+            assessment: newAssessment,
+          }),
+          participant_assessments: initialParticipantDayData,
+          assessment_variables: newAssessmentVariables,
+        })
+        const request = createRequest({
+          body: data,
+          app: { locals: { appDb } },
+        })
+        const response = createResponse()
+
+        await appDb
+          .collection(collections.assessmentVariables)
+          .insertMany(intialVariables)
+
+        await AssessmentDayDataController.create(request, response)
+
+        const assessmentVariables = await appDb
+          .collection(collections.assessmentVariables)
+          .find({ assessment: newAssessment }, { projection: { _id: 0 } })
+          .toArray()
+
+        expect(assessmentVariables).toEqual(
+          newAssessmentVariables.map(({ name, assessment }) => ({
+            name,
+            assessment,
+          }))
+        )
+      })
+      it("will not make any updates if the assessment variables from the importer are the same as what's in the database", async () => {
+        const noActionAssessment = 'no-action'
+        const variables = initialAssessmentVariables(noActionAssessment)
+        const data = createNewAssessmentDayData({
+          metadata: createAssessmentDayDataMetadata({
+            ...assessmentDayDataControllerMetadata,
+            assessment: noActionAssessment,
+          }),
+          participant_assessments: initialParticipantDayData,
+          assessment_variables: variables,
+        })
+
+        await appDb
+          .collection(collections.assessmentVariables)
+          .insertMany(variables)
+
+        const request = createRequest({
+          body: data,
+          app: { locals: { appDb } },
+        })
+        const response = createResponse()
+
+        await AssessmentDayDataController.create(request, response)
+
+        const assessmentVariables = await appDb
+          .collection(collections.assessmentVariables)
+          .find({ assessment: noActionAssessment })
+          .project({ _id: 0, name: 1, assessment: 1 })
+          .toArray()
+
+        expect(assessmentVariables).toEqual(
+          initialAssessmentVariables(noActionAssessment)
+        )
+      })
     })
     describe('When unsuccessful', () => {
       it('returns a status of 400 and an error message when payload is missing', async () => {
@@ -449,7 +446,7 @@ describe('assessmentDayDataController', () => {
       it('returns a status of 400 and an error message', async () => {
         const request = createRequest({
           body: {
-            metadata: { assessment: 'assessment' },
+            metadata: createAssessmentDayDataMetadata(),
             participant_assessments: [{}],
           },
         })
