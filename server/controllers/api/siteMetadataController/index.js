@@ -10,16 +10,20 @@ const SiteMetadataController = {
 
       participants.forEach((participant, i) => {
         participants[i].Consent = new Date(participant.Consent)
-        if (participants[i]?.synced)
-          participants[i].synced = new Date(participant.synced)
       })
-
       const studyMetadata = await SiteMetadataModel.findOne(appDb, { study })
+
       if (!studyMetadata) {
         await SiteMetadataModel.upsert(
           appDb,
           { study },
-          { $set: { ...metadata, participants } }
+          {
+            setAttributes: {
+              ...metadata,
+              participants,
+              createdAt: new Date(),
+            },
+          }
         )
       } else {
         Promise.all(
@@ -36,7 +40,7 @@ const SiteMetadataController = {
               await SiteMetadataModel.upsert(
                 appDb,
                 { study },
-                { $addToSet: { participants: participant } }
+                { addToSetAttributes: { participants: participant } }
               )
             } else {
               const updatedAttributes = Object.keys(participant).reduce(
@@ -54,7 +58,7 @@ const SiteMetadataController = {
                     $elemMatch: { participant: participant.participant },
                   },
                 },
-                { $set: updatedAttributes }
+                { setAttributes: updatedAttributes }
               )
             }
           })

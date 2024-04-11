@@ -1,14 +1,15 @@
 import React from 'react'
 
 import { Star, StarBorder } from '@mui/icons-material'
-import { Checkbox, Chip, Typography, Tooltip } from '@mui/material'
+import { Checkbox, Typography, Tooltip } from '@mui/material'
 import dayjs from 'dayjs'
 import isToday from 'dayjs/plugin/isToday'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { Link } from 'react-router-dom'
 
-import { SORT_DIRECTION, fontSize, borderRadius } from '../../../constants'
+import { SORT_DIRECTION } from '../../../constants'
 import { SITE_NAMES } from '../../../server/utils/siteNames'
+import StatusChip from '../../components/StatusChip'
 import { routes } from '../../routes/routes'
 import Table from '../Table'
 
@@ -107,19 +108,7 @@ const ParticipantsTable = (props) => {
       case 'Active': {
         const isActive = participant[property] === 1
 
-        return (
-          <Chip
-            sx={{
-              backgroundColor: isActive ? 'primary.light' : 'grey.A300',
-              color: isActive ? 'text.secondary' : 'text.primary',
-              fontSize: fontSize[14],
-              fontWeight: 500,
-              p: isActive ? '0 19px 0 15px' : '0 10px',
-              borderRadius: borderRadius[24],
-            }}
-            label={isActive ? 'Active' : 'Inactive'}
-          />
-        )
+        return <StatusChip isActive={isActive} />
       }
       case 'star':
         return (
