@@ -1,5 +1,5 @@
 import {
-  NETWORK,
+  SITE_NAME,
   N_A,
   TOTALS_STUDY,
   TOTAL_LABEL,
@@ -49,7 +49,7 @@ class BarChartTableService {
   _graphTableColumns = () => [
     {
       dataProperty: 'site',
-      label: NETWORK,
+      label: SITE_NAME,
       sortable: true,
     },
     {

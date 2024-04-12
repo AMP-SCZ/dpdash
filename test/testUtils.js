@@ -288,7 +288,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
     tableColumns: [
       {
         dataProperty: 'site',
-        label: 'Network',
+        label: 'Site Name',
         sortable: true,
       },
       {
@@ -538,7 +538,7 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
     tableColumns: [
       {
         dataProperty: 'site',
-        label: 'Network',
+        label: 'Site Name',
         sortable: true,
       },
       {
@@ -755,7 +755,7 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
     tableColumns: [
       {
         dataProperty: 'site',
-        label: 'Network',
+        label: 'Site Name',
         sortable: true,
       },
       {
