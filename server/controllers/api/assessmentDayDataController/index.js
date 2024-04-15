@@ -131,7 +131,7 @@ const AssessmentDayDataController = {
         }
       }
 
-      await AssessmentModel.upsert(
+      const currentAssessment = await AssessmentModel.upsert(
         appDb,
         assessmentQuery,
         newAssessmentProperties
@@ -139,14 +139,18 @@ const AssessmentDayDataController = {
 
       if (assessment_variables.length) {
         await Promise.all(
-          assessment_variables.map(
-            async (variableMetadata) =>
-              await AssessmentVariablesModel.upsert(
-                appDb,
-                variableMetadata,
-                variableMetadata
-              )
-          )
+          assessment_variables.map(async ({ name }) => {
+            const variableAttributes = {
+              name,
+              assessment_id: currentAssessment._id,
+            }
+
+            return await AssessmentVariablesModel.upsert(
+              appDb,
+              variableAttributes,
+              variableAttributes
+            )
+          })
         )
       }
 

@@ -8,6 +8,7 @@ import {
   createAsessmentVariable,
   createParticipantDayData,
 } from '../../../../test/fixtures'
+import AssessmentVariablesModel from '../../../models/AssessmentVariablesModel'
 import { collections } from '../../../utils/mongoCollections'
 
 describe('assessmentDayDataController', () => {
@@ -45,30 +46,24 @@ describe('assessmentDayDataController', () => {
 
   describe(AssessmentDayDataController.create, () => {
     describe('When successful', () => {
-      const initialAssessmentVariables = (assessment) => [
+      const initialAssessmentVariables = [
         createAsessmentVariable({
           name: 'var1',
-          assessment,
         }),
         createAsessmentVariable({
           name: 'var2',
-          assessment,
         }),
         createAsessmentVariable({
           name: 'var3',
-          assessment,
         }),
         createAsessmentVariable({
           name: 'var4',
-          assessment,
         }),
         createAsessmentVariable({
           name: 'var6',
-          assessment,
         }),
         createAsessmentVariable({
           name: 'var7',
-          assessment,
         }),
       ]
       const assessmentDayDataControllerMetadata =
@@ -290,7 +285,7 @@ describe('assessmentDayDataController', () => {
       })
       it('creates new assessment and assessment variables documents', async () => {
         const newAssessment = 'initialAssessment'
-        const assessment_variables = initialAssessmentVariables(newAssessment)
+        const assessment_variables = initialAssessmentVariables
         const data = createNewAssessmentDayData({
           metadata: createAssessmentDayDataMetadata({
             ...assessmentDayDataControllerMetadata,
@@ -307,59 +302,56 @@ describe('assessmentDayDataController', () => {
 
         await AssessmentDayDataController.create(request, response)
 
-        const assessmentVariables = await appDb
-          .collection(collections.assessmentVariables)
-          .find({ assessment: newAssessment }, { projection: { _id: 0 } })
-          .sort({ name: 1 })
-          .toArray()
         const assessmentDocument = await appDb
           .collection(collections.assessments)
           .findOne({
             name: newAssessment,
           })
+        const assessmentVariables = await appDb
+          .collection(collections.assessmentVariables)
+          .find(
+            { assessment_id: assessmentDocument._id },
+            { projection: { _id: 0, assessment_id: 0 } }
+          )
+          .sort({ name: 1 })
+          .toArray()
 
         expect(assessmentVariables).toEqual(assessment_variables)
         expect(assessmentDocument.name).toEqual(newAssessment)
       })
       it('Updates the assessment variables when there are new variables', async () => {
+        const assessmentVariableSpy = jest.spyOn(
+          AssessmentVariablesModel,
+          'upsert'
+        )
         const newAssessment = 'update-vars-assessment'
-        const intialVariables = initialAssessmentVariables(newAssessment)
         const newAssessmentVariables = [
           createAsessmentVariable({
             name: 'var1',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var2',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var3',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var4',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var6',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var7',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'var5',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'new-var1',
-            assessment: newAssessment,
           }),
           createAsessmentVariable({
             name: 'newvar2',
-            assessment: newAssessment,
           }),
         ]
 
@@ -377,57 +369,28 @@ describe('assessmentDayDataController', () => {
         })
         const response = createResponse()
 
-        await appDb
-          .collection(collections.assessmentVariables)
-          .insertMany(intialVariables)
-
         await AssessmentDayDataController.create(request, response)
+        const assessment = await appDb
+          .collection(collections.assessments)
+          .findOne({ name: newAssessment })
 
-        const assessmentVariables = await appDb
-          .collection(collections.assessmentVariables)
-          .find({ assessment: newAssessment }, { projection: { _id: 0 } })
-          .toArray()
-
-        expect(assessmentVariables).toEqual(
-          newAssessmentVariables.map(({ name, assessment }) => ({
-            name,
-            assessment,
-          }))
-        )
-      })
-      it("will not make any updates if the assessment variables from the importer are the same as what's in the database", async () => {
-        const noActionAssessment = 'no-action'
-        const variables = initialAssessmentVariables(noActionAssessment)
-        const data = createNewAssessmentDayData({
-          metadata: createAssessmentDayDataMetadata({
-            ...assessmentDayDataControllerMetadata,
-            assessment: noActionAssessment,
-          }),
-          participant_assessments: initialParticipantDayData,
-          assessment_variables: variables,
+        newAssessmentVariables.forEach((variable, i) => {
+          expect(assessmentVariableSpy.mock.calls[i]).toEqual([
+            appDb,
+            {
+              name: variable.name,
+              assessment_id: assessment._id,
+            },
+            {
+              name: variable.name,
+              assessment_id: assessment._id,
+            },
+          ])
         })
-
-        await appDb
-          .collection(collections.assessmentVariables)
-          .insertMany(variables)
-
-        const request = createRequest({
-          body: data,
-          app: { locals: { appDb } },
-        })
-        const response = createResponse()
-
-        await AssessmentDayDataController.create(request, response)
-
-        const assessmentVariables = await appDb
-          .collection(collections.assessmentVariables)
-          .find({ assessment: noActionAssessment })
-          .project({ _id: 0, name: 1, assessment: 1 })
-          .toArray()
-
-        expect(assessmentVariables).toEqual(
-          initialAssessmentVariables(noActionAssessment)
+        expect(assessmentVariableSpy).toBeCalledTimes(
+          newAssessmentVariables.length
         )
+        assessmentVariableSpy.mockClear()
       })
     })
     describe('When unsuccessful', () => {

@@ -37,7 +37,15 @@ const schema = yup.object({
   ),
 })
 
-const ConfigForm = ({ colors, friendsList, initialValues, onSubmit }) => {
+const ConfigForm = ({
+  colors,
+  friendsList,
+  initialValues,
+  onSubmit,
+  assessmentOptions,
+  handleClearAssessments,
+  handleAssessmentSearch,
+}) => {
   const defaultFieldValue = UserConfigModel.defaultConfigValues
 
   const { handleSubmit, control, getValues } = useForm({
@@ -62,6 +70,9 @@ const ConfigForm = ({ colors, friendsList, initialValues, onSubmit }) => {
         onCopy={onCopy}
         colors={colors}
         friendsList={friendsList}
+        assessmentOptions={assessmentOptions}
+        handleAssessmentSearch={handleAssessmentSearch}
+        handleClearAssessments={handleClearAssessments}
       />
       <div className="ConfigFormActions">
         <Fab color="primary" onClick={() => addNewField()} sx={{ p: '5px' }}>

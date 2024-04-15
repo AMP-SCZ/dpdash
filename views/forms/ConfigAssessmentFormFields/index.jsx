@@ -6,6 +6,7 @@ import { MenuItem } from '@mui/material'
 import ConfigurationCategoryCard from '../../components/ConfigurationCategoryCard'
 import ControlledCheckbox from '../ControlledCheckbox'
 import ControlledSelectInput from '../ControlledSelect'
+import PredictiveInputSelect from '../PredictiveInputSelect'
 import TextInput from '../TextInput'
 import './ConfigAssessmentFormFields.css'
 
@@ -16,6 +17,9 @@ const ConfigAssessmentFormFields = ({
   id,
   onCopy,
   onRemove,
+  assessmentOptions,
+  handleAssessmentSearch,
+  handleClearAssessments,
 }) => {
   return (
     <ConfigurationCategoryCard
@@ -30,11 +34,13 @@ const ConfigAssessmentFormFields = ({
         label="Category"
         fullWidth
       />
-      <TextInput
+      <PredictiveInputSelect
         control={control}
         name={`config.${index}.analysis`}
+        onChange={handleAssessmentSearch}
+        onBlur={handleClearAssessments}
+        options={assessmentOptions}
         label="Assessment"
-        fullWidth
       />
       <TextInput
         control={control}

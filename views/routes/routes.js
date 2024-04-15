@@ -55,6 +55,9 @@ export const apiRoutes = {
       all: `${apiPath}/admin/search/studies`,
     },
   },
+  assessments: {
+    index: `${apiPath}/assessments`,
+  },
   chartData: {
     show: (chartId) => `${apiPath}/charts/${chartId}/data`,
   },

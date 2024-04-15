@@ -381,6 +381,9 @@ export const createAssessmentDayDataMetadata = (overrides = {}) => ({
 
 export const createAsessmentVariable = (overrides = {}) => ({
   name: '',
-  assessment: '',
+  ...overrides,
+})
+export const createAssessment = (overrides = {}) => ({
+  name: '',
   ...overrides,
 })

@@ -12,6 +12,9 @@ export const routes = {
 }
 
 export const v1Routes = {
+  assessments: {
+    index: `${v1Root}/assessments`,
+  },
   assessmentData: {
     index: `${v1Root}/import/data/day`,
   },
