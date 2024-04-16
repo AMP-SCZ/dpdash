@@ -12,6 +12,7 @@ const colors = colorList()
 
 const EditConfigPage = () => {
   const { user, setNotification, users } = useOutletContext()
+  const [assessmentOptions, setAssessmentOptions] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [loading, setLoading] = useState(true)
   const { config_id } = useParams()
@@ -47,7 +48,16 @@ const EditConfigPage = () => {
       })
     }
   }
+  const handleAssessmentSearch = async (e) => {
+    const assessments = await api.assessments.loadAll({
+      search: e.target.value,
+    })
+    const assessmentMenuOptions = assessments.map(({ name }) => name)
 
+    setAssessmentOptions(assessmentMenuOptions)
+  }
+
+  const handleClearAssessments = async () => setAssessmentOptions([])
   useEffect(() => {
     fetchCurrentConfig().then((values) => {
       setInitialValues(values)
@@ -65,6 +75,9 @@ const EditConfigPage = () => {
         friendsList={friendsList}
         onSubmit={handleSubmit}
         initialValues={initialValues}
+        assessmentOptions={assessmentOptions}
+        handleClearAssessments={handleClearAssessments}
+        handleAssessmentSearch={handleAssessmentSearch}
       />
     </Box>
   )

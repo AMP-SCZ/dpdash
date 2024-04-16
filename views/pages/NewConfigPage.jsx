@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Typography, Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
@@ -12,6 +12,7 @@ const colors = colorList()
 
 const NewConfigPage = () => {
   const { user, users, setNotification } = useOutletContext()
+  const [assessmentOptions, setAssessmentOptions] = useState([])
   const { uid } = user
   const defaultValues = UserConfigModel.defaultFormValues({
     readers: [{ value: uid, label: uid, isFixed: true }],
@@ -38,6 +39,17 @@ const NewConfigPage = () => {
     }
   }
 
+  const handleAssessmentSearch = async (e) => {
+    const assessments = await api.assessments.loadAll({
+      search: e.target.value,
+    })
+    const assessmentMenuOptions = assessments.map(({ name }) => name)
+
+    setAssessmentOptions(assessmentMenuOptions)
+  }
+
+  const handleClear = async () => setAssessmentOptions([])
+
   return (
     <Box sx={{ p: '30px' }}>
       <Typography variant="h6">New Configuration</Typography>
@@ -46,6 +58,9 @@ const NewConfigPage = () => {
         friendsList={friendsList}
         onSubmit={handleFormData}
         initialValues={defaultValues}
+        assessmentOptions={assessmentOptions}
+        handleClear={handleClear}
+        handleAssessmentSearch={handleAssessmentSearch}
       />
     </Box>
   )

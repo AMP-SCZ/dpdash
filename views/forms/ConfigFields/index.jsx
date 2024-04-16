@@ -12,6 +12,9 @@ const ConfigFormFields = ({
   friendsList,
   onCopy,
   onRemove,
+  assessmentOptions,
+  handleClearAssessments,
+  handleAssessmentSearch,
 }) => {
   return (
     <>
@@ -29,6 +32,9 @@ const ConfigFormFields = ({
               key={id}
               onCopy={onCopy}
               onRemove={onRemove}
+              assessmentOptions={assessmentOptions}
+              handleClearAssessments={handleClearAssessments}
+              handleAssessmentSearch={handleAssessmentSearch}
               {...rest}
             />
           )

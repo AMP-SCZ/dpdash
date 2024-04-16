@@ -19,6 +19,7 @@ import { PASSPORT_FIELDS_ATTRIBUTES } from './constants'
 import UserModel from './models/UserModel'
 import adminRouter from './routes/admin'
 import assessmentData from './routes/assessmentData'
+import assessmentsRouter from './routes/assessments'
 import authRouter from './routes/auth'
 import chartsRouter from './routes/charts'
 import configurationsRouter from './routes/configurations'
@@ -151,6 +152,7 @@ passport.deserializeUser(async function (user, done) {
   done(null, user)
 })
 
+app.use('/', assessmentsRouter)
 app.use('/', assessmentData)
 app.use('/', adminRouter)
 app.use('/', authRouter)
