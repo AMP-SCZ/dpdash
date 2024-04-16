@@ -6,6 +6,7 @@ import HeroLayout from '../layouts/HeroLayout'
 import MainLayout from '../layouts/MainLayout'
 import AccountPage from '../pages/AccountPage'
 import AdminPage from '../pages/AdminPage'
+import AdminCheck from '../pages/AdminPage/AdminCheck'
 import ChartsPage from '../pages/ChartsPage'
 import ConfigurationsPage from '../pages/ConfigurationsPage'
 import DashboardPage from '../pages/DashboardPage'
@@ -50,7 +51,14 @@ const Router = () => {
           <Route path={routes.userAccount} element={<AccountPage />} />
           <Route path={routes.main} element={<DashboardPage />} />
           <Route path={routes.participants} element={<ParticipantsPage />} />
-          <Route path={routes.admin} element={<AdminPage />} />
+          <Route
+            path={routes.admin}
+            element={
+              <AdminCheck>
+                <AdminPage />
+              </AdminCheck>
+            }
+          />
           <Route path={routes.charts} element={<ChartsPage />} />
           <Route path={routes.newChart} element={<NewChartPage />} />
           <Route path={routes.editChartPage} element={<EditChartPage />} />
