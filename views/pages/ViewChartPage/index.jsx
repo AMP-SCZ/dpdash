@@ -9,7 +9,7 @@ import FileSaver from 'file-saver'
 import qs from 'qs'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 
-import { SORT_DIRECTION, fontSize } from '../../../constants'
+import { SORT_DIRECTION, fontSize, TOTALS } from '../../../constants'
 import api from '../../api'
 import BarGraph from '../../components/BarGraph'
 import ChartDescription from '../../components/ChartDescription'
@@ -119,6 +119,7 @@ const ViewChartPage = () => {
     setPage(0)
   }
   const graphTablePredicate = (a, b) => {
+    if (a[sortBy] === TOTALS || b[sortBy] === TOTALS) return 1
     if (b[sortBy] < a[sortBy]) {
       return sortDirection === SORT_DIRECTION.ASC ? 1 : -1
     }
