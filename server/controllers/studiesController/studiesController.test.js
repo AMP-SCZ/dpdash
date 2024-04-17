@@ -1,8 +1,8 @@
-import StudiesController from '.'
+import studiesController from '.'
 import { createRequest, createResponse } from '../../../test/fixtures'
 
-describe('StudiesController', () => {
-  describe(StudiesController.index, () => {
+describe('studiesController', () => {
+  describe(studiesController.index, () => {
     describe('When successful', () => {
       it('returns a status of 200 with a list of distinct studies', async () => {
         const request = createRequest()
@@ -11,7 +11,7 @@ describe('StudiesController', () => {
 
         request.app.locals.appDb.distinct.mockResolvedValueOnce(listOfStudies)
 
-        await StudiesController.index(request, response)
+        await studiesController.index(request, response)
 
         expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
@@ -28,7 +28,7 @@ describe('StudiesController', () => {
           new Error('some error')
         )
 
-        await StudiesController.index(request, response)
+        await studiesController.index(request, response)
 
         expect(response.status).toHaveBeenCalledWith(400)
         expect(response.json).toHaveBeenCalledWith({

@@ -28,6 +28,7 @@ import indexRouter from './routes/index'
 import participantsRouter from './routes/participants'
 import siteMetadata from './routes/siteMetadata'
 import usersRouter from './routes/users'
+import userStudiesRouter from './routes/userStudies'
 import { verifyHash } from './utils/crypto/hash'
 
 const localStrategy = Strategy
@@ -152,9 +153,9 @@ passport.deserializeUser(async function (user, done) {
   done(null, user)
 })
 
+app.use('/', adminRouter)
 app.use('/', assessmentsRouter)
 app.use('/', assessmentData)
-app.use('/', adminRouter)
 app.use('/', authRouter)
 app.use('/', chartsRouter)
 app.use('/', configurationsRouter)
@@ -163,6 +164,7 @@ app.use('/', indexRouter)
 app.use('/', participantsRouter)
 app.use('/', siteMetadata)
 app.use('/', usersRouter)
+app.use('/', userStudiesRouter)
 app.use('./img', express.static(path.join(__dirname, '../public/img')))
 
 app.get('/*', async (req, res) => {

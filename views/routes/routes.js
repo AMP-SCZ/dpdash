@@ -3,50 +3,44 @@ import qs from 'qs'
 const apiPath = '/api/v1'
 
 export const routes = {
-  home: `/`,
-  userAccount: '/user-account',
+  admin: '/admin',
+  charts: '/charts',
   configurations: '/configurations',
-  editConfigPage: '/config/:config_id/edit',
-  dashboards: `/dashboard`,
+  contactUs: '/contact-us',
   dashboard: (study = ':study', subject = ':subject') =>
     `${routes.dashboards}/${study}/${subject}`,
-  studyDashboard: (study = ':study') => `${routes.dashboards}/${study}`,
-  charts: '/charts',
-  newChart: '/charts/new',
+  dashboards: `/dashboard`,
   editChart: (chartId) => `/charts/${chartId}/edit`,
   editChartPage: '/charts/:chart_id/edit',
-  viewChartPage: '/charts/:chart_id',
+  editConfigPage: '/config/:config_id/edit',
+  editConfiguration: (configId) => `/config/${configId}/edit`,
+  help: '/help',
+  home: `/`,
+  logout: '/logout',
+  main: '/main',
+  newChart: '/charts/new',
+  newConfiguration: '/configs/new',
+  participants: '/participants',
+  privacyPolicy: '/privacy-policy',
+  previewProfile: '/preview-profile',
+  termsOfUse: '/terms-of-use',
+  resetpw: '/reset-password',
+  register: '/register',
+  signin: '/signin',
+  studyDashboard: (study = ':study') => `${routes.dashboards}/${study}`,
+  studies: '/studies',
+  userAccount: '/user-account',
   viewChart: (chartId, queryParams) =>
     queryParams
       ? `/charts/${chartId}${qs.stringify(queryParams, {
           addQueryPrefix: true,
         })}`
       : `/charts/${chartId}`,
-  admin: '/admin',
-  register: '/register',
-  resetpw: '/reset-password',
-  signin: '/signin',
-  logout: '/logout',
-  main: '/main',
-  help: '/help',
-  contactUs: '/contact-us',
-  privacyPolicy: '/privacy-policy',
-  previewProfile: '/preview-profile',
-  termsOfUse: '/terms-of-use',
-  participants: '/participants',
-  editConfiguration: (configId) => `/config/${configId}/edit`,
+  viewChartPage: '/charts/:chart_id',
   viewConfiguration: (configId) => `/u/configure?s=view&id=${configId}`,
-  newConfiguration: '/configs/new',
 }
 
 export const apiRoutes = {
-  auth: {
-    login: `${apiPath}/login`,
-    logout: `${apiPath}/logout`,
-    me: `${apiPath}/me`,
-    resetPassword: `${apiPath}/resetpw`,
-    signup: `${apiPath}/signup`,
-  },
   admin: {
     users: {
       show: (uid) => `${apiPath}/admin/users/${uid}`,
@@ -57,6 +51,17 @@ export const apiRoutes = {
   },
   assessments: {
     index: `${apiPath}/assessments`,
+  },
+  auth: {
+    login: `${apiPath}/login`,
+    logout: `${apiPath}/logout`,
+    me: `${apiPath}/me`,
+    resetPassword: `${apiPath}/resetpw`,
+    signup: `${apiPath}/signup`,
+  },
+  chart: {
+    show: (chart_id) => `${apiPath}/charts/${chart_id}`,
+    index: `${apiPath}/charts`,
   },
   chartData: {
     show: (chartId) => `${apiPath}/charts/${chartId}/data`,
@@ -78,24 +83,23 @@ export const apiRoutes = {
     show: (study = ':study', subject = ':subject') =>
       `${apiPath}/dashboards/${study}/${subject}`,
   },
+  duplicateChart: {
+    show: `${apiPath}/charts/duplicate`,
+  },
   participants: {
     index: `${apiPath}/participants`,
   },
+  preferences: (uid) => `${apiPath}/users/${uid}/preferences`,
+  shareChart: {
+    show: (chart_id) => `${apiPath}/charts/${chart_id}/share`,
+  },
+  userStudies: {
+    index: `${apiPath}/user-studies`,
+  },
+  subjects: (studies) => `${apiPath}/subjects?q=${JSON.stringify(studies)}`,
+  subject: `${apiPath}/subjects`,
   users: {
     index: `${apiPath}/users`,
     show: (uid) => `${apiPath}/users/${uid}`,
   },
-  chart: {
-    show: (chart_id) => `${apiPath}/charts/${chart_id}`,
-    index: `${apiPath}/charts`,
-  },
-  shareChart: {
-    show: (chart_id) => `${apiPath}/charts/${chart_id}/share`,
-  },
-  duplicateChart: {
-    show: `${apiPath}/charts/duplicate`,
-  },
-  subjects: (studies) => `${apiPath}/subjects?q=${JSON.stringify(studies)}`,
-  preferences: (uid) => `${apiPath}/users/${uid}/preferences`,
-  subject: `${apiPath}/subjects`,
 }

@@ -225,6 +225,7 @@ describe('assessmentDayDataController', () => {
               projection: {
                 _id: 0,
                 'participants.synced': 0,
+                updatedAt: 0,
               },
             }
           )
