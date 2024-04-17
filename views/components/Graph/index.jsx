@@ -120,11 +120,9 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
   }, [user.preferences.config])
 
   React.useEffect(() => {
-    if (isGraphLoaded) setIsGraphLoaded(false)
+    if (isGraphLoaded) {
+      const updatedSvgElement = graphRef.current.lastChild
 
-    const updatedSvgElement = graphRef.current.lastChild
-
-    if (updatedSvgElement) {
       const svgString = new XMLSerializer().serializeToString(updatedSvgElement)
 
       const kanvas = canvasRef.current
@@ -148,6 +146,8 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       img.onload = () => {
         ctx.drawImage(img, 0, 0)
       }
+
+      setIsGraphLoaded(false)
     }
   }, [isGraphLoaded])
 
