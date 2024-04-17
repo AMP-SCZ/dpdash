@@ -25,7 +25,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(advanced)
 
-const tooltipWidth = 190
+const tooltipWidth = 235
 const staticYPosition = 75
 
 const ViewChartPage = () => {

@@ -14,10 +14,10 @@ const BarGraphTooltip = ({
 }) => {
   if (!active || !payload?.length) return null
 
-  const siteName = useSiteName ? label : SITE_NAMES[label]
+  const siteName = useSiteName ? label : SITE_NAMES[label] || label
   const countsTotal = useSiteName
     ? studyTotals[label].count
-    : studyTotals[SITE_NAMES[label]].count
+    : studyTotals[SITE_NAMES[label] || label].count
   const variableCounts = payload[0].payload.counts
 
   return (
