@@ -21,7 +21,7 @@ import Matrix from '../Matrix.d3'
 const cardSize = 20
 
 export const Graph = ({ study, subject, user, theme, setNotification }) => {
-  const [isGraphLoaded, setIsGraphLoaded] = useState(false)
+  const [shoulDrawPng, setShouldDrawPng] = useState(false)
   const canvasRef = useRef()
   const graphRef = createRef()
   const [openStat, setOpenStat] = React.useState(false)
@@ -112,7 +112,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
     graphRef.current = new Matrix(graphRef.current, matrixProps)
     graphRef.current.create(graph.matrixData)
 
-    setIsGraphLoaded(true)
+    setShouldDrawPng(true)
   }
 
   React.useEffect(() => {
@@ -120,7 +120,7 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
   }, [user.preferences.config])
 
   React.useEffect(() => {
-    if (isGraphLoaded) {
+    if (shoulDrawPng) {
       const updatedSvgElement = graphRef.current.lastChild
 
       const svgString = new XMLSerializer().serializeToString(updatedSvgElement)
@@ -147,9 +147,9 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
         ctx.drawImage(img, 0, 0)
       }
 
-      setIsGraphLoaded(false)
+      setShouldDrawPng(false)
     }
-  }, [isGraphLoaded])
+  }, [shoulDrawPng])
 
   React.useEffect(() => {
     renderMatrix(graph)
