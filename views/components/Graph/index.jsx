@@ -1,4 +1,4 @@
-import React, { createRef, useRef } from 'react'
+import React, { createRef, useRef, useState } from 'react'
 
 import { Save, Functions } from '@mui/icons-material'
 import {
@@ -21,6 +21,7 @@ import Matrix from '../Matrix.d3'
 const cardSize = 20
 
 export const Graph = ({ study, subject, user, theme, setNotification }) => {
+  const [shoulDrawPng, setShouldDrawPng] = useState(false)
   const canvasRef = useRef()
   const graphRef = createRef()
   const [openStat, setOpenStat] = React.useState(false)
@@ -109,8 +110,9 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
     }
 
     graphRef.current = new Matrix(graphRef.current, matrixProps)
-
     graphRef.current.create(graph.matrixData)
+
+    setShouldDrawPng(true)
   }
 
   React.useEffect(() => {
@@ -118,12 +120,9 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
   }, [user.preferences.config])
 
   React.useEffect(() => {
-    if (!graphRef.current) {
-      return
-    }
+    if (shoulDrawPng) {
+      const updatedSvgElement = graphRef.current.lastChild
 
-    const updatedSvgElement = graphRef.current.lastChild
-    if (updatedSvgElement) {
       const svgString = new XMLSerializer().serializeToString(updatedSvgElement)
 
       const kanvas = canvasRef.current
@@ -147,8 +146,10 @@ export const Graph = ({ study, subject, user, theme, setNotification }) => {
       img.onload = () => {
         ctx.drawImage(img, 0, 0)
       }
+
+      setShouldDrawPng(false)
     }
-  }, [graphRef])
+  }, [shoulDrawPng])
 
   React.useEffect(() => {
     renderMatrix(graph)
