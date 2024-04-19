@@ -34,3 +34,6 @@ export const DATA_URL_PATTERN =
   /^data:(?:image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)|video\/(?:mpeg|mp4|ogg|webm)|audio\/(?:mp3|oga|ogg|opus));base64,[a-z0-9+/]+=*$/i
 
 export const DATE_FORMAT = 'MM/DD/YYYY'
+
+export const NETWORKS_FILTER_KEY = 'networks'
+export const SITES_FILTER_KEY = 'sites'

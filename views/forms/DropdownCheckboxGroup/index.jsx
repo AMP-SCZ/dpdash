@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import {
   OutlinedInput,
@@ -8,6 +8,7 @@ import {
   Chip,
   Button,
 } from '@mui/material'
+import { useController } from 'react-hook-form'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -23,88 +24,53 @@ const MenuProps = {
 const DropdownCheckboxGroup = ({
   label,
   initialValues,
-  onChange,
-  resetOptions,
-  onReset,
+  name,
+  control,
+  onClear,
+  onClose,
+  onSelectAll,
 }) => {
-  const options = Object.keys(initialValues)
-  const selectedValues = Object.keys(initialValues).filter(
-    (k) => initialValues[k].value === 1
-  )
-  const [selectedValue, setSelectedValue] = useState(selectedValues)
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event
-    if (typeof value === 'string') {
-      setSelectedValue(value.split(','))
-      onChange(label, value.split(','))
-    } else {
-      setSelectedValue(value)
-      onChange(label, value)
-    }
-  }
-
-  const handleClearSelection = () => {
-    setSelectedValue([])
-    onChange(label, [])
-  }
-
-  const handleSelectAll = () => {
-    setSelectedValue(options)
-    onChange(label, options)
-  }
-
-  useEffect(() => {
-    if (resetOptions) {
-      const selectedValues = Object.keys(initialValues).filter(
-        (key) => initialValues[key].value === 1
-      )
-      setSelectedValue(selectedValues)
-      onReset()
-    }
-  }, [resetOptions])
+  const { field } = useController({ name, control })
+  const options = Object.values(initialValues)
 
   return (
     <Select
       labelId={`multi-chip-label-${label}`}
+      key={`multi-chip-label-${label}`}
       id={`multi-chip-${label}`}
+      data-testid={`multi-chip-${label}`}
       multiple
-      value={selectedValue}
-      onChange={handleChange}
-      input={<OutlinedInput id={`select-multiple-${label}`} label={label} />}
+      {...field}
+      input={
+        <OutlinedInput data-testid={`select-multiple-${label}`} label={label} />
+      }
       renderValue={(selected) => {
         const EtcChip =
           selected.length > 5 ? <Chip key="etc" label="..." /> : <></>
 
-        return (
-          <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 0.5 }}>
-            {selected
-              .slice(0, 5)
-              .map((value) => {
-                return <Chip key={value} label={value} />
-              })
-              .concat([EtcChip])}
-          </Box>
-        )
+        return selected
+          .slice(0, 5)
+          .map((value) => <Chip key={`${value}`} label={value} />)
+          .concat([EtcChip])
       }}
+      onClose={onClose}
       MenuProps={MenuProps}
+      fullWidth={false}
     >
-      {options.map((value) => {
+      {options.map(({ label }) => {
         return (
           <MenuItem
-            data-testid={`menu_item_option_${value}`}
-            key={value}
-            value={value}
+            data-testid={`menu_item_option_${name}_${label}`}
+            key={`${name}_${label}`}
+            value={label}
           >
-            {value}
+            {label}
           </MenuItem>
         )
       })}
       <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-        <Button onClick={handleClearSelection}>Clear</Button>
-        <Button onClick={handleSelectAll}>Select All</Button>
+        <Button onClick={() => onClear(name)}>Clear</Button>
+        <Button onClick={() => onSelectAll(name)}>Select All</Button>
       </Box>
     </Select>
   )

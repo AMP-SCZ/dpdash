@@ -17,6 +17,7 @@ import GraphTable from '../../components/GraphTable'
 import PageHeader from '../../components/PageHeader'
 import ChartFilterForm from '../../forms/ChartFilterForm'
 import useTableSort from '../../hooks/useTableSort'
+import { ChartFiltersModel } from '../../models'
 import { apiRoutes, routes } from '../../routes/routes'
 
 import './ViewChartPage.css'
@@ -43,29 +44,14 @@ const ViewChartPage = () => {
   const navigate = useNavigate()
   const { onSort, sortDirection, sortBy } = useTableSort('site')
   const onSubmit = async (formValues) => {
-    const filters = formValuesTofilters(formValues)
+    const filters = ChartFiltersModel.formValuesToRequestFilters(
+      formValues,
+      graph.filters
+    )
+
     const newRoute = routes.viewChart(chart_id, { filters })
 
     navigate(newRoute)
-  }
-  const formValuesTofilters = (formValues) => {
-    return Object.keys(formValues).reduce((filterObj, key) => {
-      filterObj[key] = Object.keys(formValues[key]).reduce(
-        (filterValues, filterKey) => {
-          const filter = formValues[key][filterKey]
-
-          filterValues[filter.label] = {
-            ...filter,
-            value: Number(filter.value),
-          }
-
-          return filterValues
-        },
-        {}
-      )
-
-      return filterObj
-    }, {})
   }
   const fetchGraph = async (chart_id, filters) =>
     await api.charts.chartsData.show(chart_id, { filters })
