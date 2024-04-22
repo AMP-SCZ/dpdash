@@ -12,6 +12,7 @@ import { Chip } from '@mui/material'
 import { borderRadius, fontSize } from '../../../constants'
 import Table from '../Table'
 import TableMenu from '../Table/TableMenu'
+import { UserConfigModel } from '../../models'
 
 const ConfigurationsTable = (props) => {
   const {
@@ -29,6 +30,11 @@ const ConfigurationsTable = (props) => {
     {
       dataProperty: 'owner_display_name',
       label: 'Created By',
+      sortable: false,
+    },
+    {
+      dataProperty: 'status',
+      label: 'Status',
       sortable: false,
     },
     {
@@ -102,7 +108,32 @@ const ConfigurationsTable = (props) => {
             ]}
           />
         )
-
+      case 'status':
+        return UserConfigModel.isActive(configuration, property) ? (
+          <Chip
+            sx={{
+              backgroundColor: 'primary.light',
+              color: 'text.secondary',
+              fontSize: fontSize[14],
+              fontWeight: 500,
+              p: '0 19px 0 15px',
+              borderRadius: borderRadius[24],
+            }}
+            label="Active"
+          />
+        ) : (
+          <Chip
+            sx={{
+              backgroundColor: 'grey.A300',
+              color: 'text.primary',
+              fontSize: fontSize[14],
+              fontWeight: 500,
+              p: '0 19px 0 15px',
+              borderRadius: borderRadius[24],
+            }}
+            label="Draft"
+          />
+        )
       default:
         return configuration[property]
     }

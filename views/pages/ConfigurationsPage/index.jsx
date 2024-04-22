@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Add, UploadFile } from '@mui/icons-material'
 import { Box, Button, useMediaQuery } from '@mui/material'
@@ -16,16 +16,9 @@ import './ConfigurationsPage.css'
 
 const ConfigurationsPage = () => {
   const isMobile = useMediaQuery('(max-width:900px)')
-  const {
-    configurations,
-    navigate,
-    setNotification,
-    setConfigurations,
-    setUser,
-    user,
-    users,
-  } = useOutletContext()
+  const { navigate, setNotification, setUser, user, users } = useOutletContext()
   const { uid, preferences } = user
+  const [configurations, setConfigurations] = useState([])
   const [configuration, setConfiguration] = useState(null)
   const open = !!configuration?._id
   const options =
@@ -71,6 +64,7 @@ const ConfigurationsPage = () => {
       handleNotification(error.message)
     }
   }
+
   const closeForm = () => setConfiguration(null)
 
   const handleFormModal = async (config) => setConfiguration(config)
@@ -112,6 +106,7 @@ const ConfigurationsPage = () => {
         ...configAttributes,
         owner: uid,
         readers: [uid],
+        status: 1,
       }
 
       await api.userConfigurations.create(uid, newConfig)
@@ -134,6 +129,7 @@ const ConfigurationsPage = () => {
           owner: user.uid,
           readers: [user.uid],
           type: 'matrix',
+          status: 1,
         }
 
         await api.userConfigurations.create(
@@ -149,6 +145,9 @@ const ConfigurationsPage = () => {
     }
   }
 
+  useEffect(() => {
+    loadAllConfigurations(uid)
+  }, [])
   return (
     <Box sx={{ p: '20px' }}>
       <PageHeader

@@ -18,26 +18,14 @@ const UserConfigModel = {
     public: false,
     ...overrides,
   }),
-  processNewConfig: (formValues, colors, owner) => {
-    const config = {
-      0: formValues.config.map(({ min, max, color, ...rest }) => {
-        return {
-          color: colors.find(({ value }) => value === color).label,
-          range: [min, max],
-          ...rest,
-        }
-      }),
-    }
-
-    return {
-      config,
-      name: formValues.configName,
-      owner,
-      type: formValues.configType,
-      readers: formValues.readers.map(({ value }) => value),
-      public: formValues.public,
-    }
-  },
+  publishConfig: (formValues, colors, owner) => ({
+    ...processConfigAssessment(formValues, colors, owner),
+    status: 1,
+  }),
+  saveAsDraft: (formValues, colors, owner) => ({
+    ...processConfigAssessment(formValues, colors, owner),
+    status: 0,
+  }),
   processConfigToFormFields: (currentConfig, colors) => {
     const {
       config,
@@ -78,9 +66,30 @@ const UserConfigModel = {
       public: publicConfig,
     }
   },
+  isActive: (configuration, property) =>
+    configuration[property] === 1 || !Object.hasOwn(configuration, property),
 }
 
 export const findCategoryColor = (categoryColors, colors) =>
   colors.find(({ label }) => categoryColors.every((el, i) => el === label[i]))
+
+const processConfigAssessment = (formValues, colors, owner) => {
+  return {
+    config: {
+      0: formValues.config.map(({ min, max, color, ...rest }) => {
+        return {
+          color: colors.find(({ value }) => value === color).label,
+          range: [min, max],
+          ...rest,
+        }
+      }),
+    },
+    name: formValues.configName,
+    owner,
+    type: formValues.configType,
+    readers: formValues.readers.map(({ value }) => value),
+    public: formValues.public,
+  }
+}
 
 export default UserConfigModel

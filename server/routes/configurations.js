@@ -27,6 +27,7 @@ const body = yup.object({
       })
     ),
   }),
+  status: yup.number(),
 })
 const params = yup.object({
   config_id: yup.string().required(),
@@ -35,6 +36,9 @@ const allSchema = baseSchema({
   params: yup.object({
     uid: yup.string().required(),
   }),
+  query: yup.object({
+    status: yup.string(),
+  }),
 })
 const configurationSchema = baseSchema({ body })
 const paramsSchema = baseSchema({ params })
@@ -42,6 +46,7 @@ const updateSchema = baseSchema({
   params,
   body,
 })
+
 router
   .route(v1Routes.config.index)
   .get(validateRequest(allSchema), ensureUser, ConfigurationsController.index)

@@ -4,6 +4,21 @@ import defaultUserConfig from '../../constants/defaultUserConfig'
 import { collections } from '../../utils/mongoCollections'
 
 const ConfigModel = {
+  active: async (db, userId) =>
+    await db
+      .collection(collections.configs)
+      .aggregate([
+        { $match: { $or: [{ readers: userId }, { public: true }] } },
+        {
+          $match: { $or: [{ status: { $exists: false } }, { status: 1 }] },
+        },
+      ])
+      .stream(),
+  all: async (db, userId) =>
+    await db
+      .collection(collections.configs)
+      .find({ $or: [{ readers: userId }, { public: true }] })
+      .stream(),
   destroy: async (db, configId) => {
     const { deletedCount } = await db
       .collection(collections.configs)
@@ -28,11 +43,7 @@ const ConfigModel = {
 
     return value
   },
-  index: async (db, userId) =>
-    await db
-      .collection(collections.configs)
-      .find({ $or: [{ readers: userId }, { public: true }] })
-      .stream(),
+
   create: async (db, configAttributes) => {
     const { insertedId } = await db
       .collection(collections.configs)

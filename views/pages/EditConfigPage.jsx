@@ -19,9 +19,9 @@ const EditConfigPage = () => {
   const friendsList = UsersModel.createUserFriendList(users, user)
   const { uid } = user
 
-  const handleSubmit = async (formValues) => {
+  const handleSubmitPublish = async (formValues) => {
     try {
-      const updatedConfiguration = UserConfigModel.processNewConfig(
+      const updatedConfiguration = UserConfigModel.publishConfig(
         formValues,
         colors,
         uid
@@ -64,20 +64,37 @@ const EditConfigPage = () => {
       setLoading(false)
     })
   }, [])
+  const handleSubmitDraft = async (formValues) => {
+    const newConfigurationAttributes = UserConfigModel.saveAsDraft(
+      formValues,
+      colors,
+      uid
+    )
+    await api.userConfigurations.update(
+      uid,
+      config_id,
+      newConfigurationAttributes
+    )
 
+    setNotification({
+      open: true,
+      message: 'Draft saved',
+    })
+  }
   if (loading) return <div>Depending on the size, this may take a while...</div>
 
   return (
     <Box sx={{ p: '30px' }}>
       <Typography variant="h6">Edit Configuration</Typography>
       <ConfigForm
+        assessmentOptions={assessmentOptions}
         colors={colors}
         friendsList={friendsList}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitPublish}
         initialValues={initialValues}
-        assessmentOptions={assessmentOptions}
         handleClearAssessments={handleClearAssessments}
         handleAssessmentSearch={handleAssessmentSearch}
+        handleSubmitDraft={handleSubmitDraft}
       />
     </Box>
   )

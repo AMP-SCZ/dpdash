@@ -73,6 +73,7 @@ export const apiRoutes = {
         : `${apiPath}/charts/${chartId}/data`,
   },
   configurations: {
+    activeUserConfigurations: (uid) => `${apiPath}/users/${uid}/active-configs`,
     userConfigurations: (uid) => `${apiPath}/users/${uid}/configs`,
     userConfiguration: (uid, config_id) =>
       `${apiRoutes.configurations.userConfigurations(uid)}/${config_id}`,

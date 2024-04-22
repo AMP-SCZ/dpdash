@@ -6,17 +6,12 @@ import { Outlet, useNavigate } from 'react-router-dom'
 
 import api from '../../api'
 import Sidebar from '../../components/Sidebar'
-import {
-  AuthContext,
-  ConfigurationsContext,
-  NotificationContext,
-} from '../../contexts'
+import { AuthContext, NotificationContext } from '../../contexts'
 import { routes } from '../../routes/routes'
 import './MainLayout.css'
 
 const MainLayout = () => {
   const isMobile = useMediaQuery('(max-width:900px)')
-  const [configurations, setConfigurations] = useContext(ConfigurationsContext)
   const [, setNotification] = useContext(NotificationContext)
   const [user, setUser] = useContext(AuthContext)
   const [users, setUsers] = useState([])
@@ -26,15 +21,6 @@ const MainLayout = () => {
     try {
       const usersList = await api.users.loadAll()
       setUsers(usersList)
-    } catch (error) {
-      setNotification({ open: true, message: error.message })
-    }
-  }
-  const loadAllConfigurations = async () => {
-    try {
-      const configurations = await api.userConfigurations.all(user.uid)
-
-      setConfigurations(configurations)
     } catch (error) {
       setNotification({ open: true, message: error.message })
     }
@@ -49,12 +35,13 @@ const MainLayout = () => {
       alert(error.message)
     }
   }
-  useEffect(() => {
-    fetchUsers()
-    loadAllConfigurations()
-  }, [])
   const handleDrawerOpen = () => setDrawerOpen(!drawerOpen)
   const handleClose = () => setDrawerOpen(false)
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   return (
     <div className="MainLayout_container">
       {isMobile && (
@@ -80,9 +67,7 @@ const MainLayout = () => {
       <main className="MainLayout_main">
         <Outlet
           context={{
-            configurations,
             navigate,
-            setConfigurations,
             setNotification,
             setUser,
             setUsers,

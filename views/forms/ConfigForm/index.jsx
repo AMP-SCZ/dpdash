@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import { AddCircleOutline, Save } from '@mui/icons-material'
-import { Fab } from '@mui/material'
+import { Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
@@ -35,6 +34,7 @@ const schema = yup.object({
       text: yup.boolean(),
     })
   ),
+  status: yup.number(),
 })
 
 const ConfigForm = ({
@@ -45,6 +45,7 @@ const ConfigForm = ({
   assessmentOptions,
   handleClearAssessments,
   handleAssessmentSearch,
+  handleSubmitDraft,
 }) => {
   const defaultFieldValue = UserConfigModel.defaultConfigValues
 
@@ -75,12 +76,51 @@ const ConfigForm = ({
         handleClearAssessments={handleClearAssessments}
       />
       <div className="ConfigFormActions">
-        <Fab color="primary" onClick={() => addNewField()} sx={{ p: '5px' }}>
-          <AddCircleOutline />
-        </Fab>
-        <Fab type="submit" sx={{ p: '5px' }}>
-          <Save />
-        </Fab>
+        <Button
+          color="secondary"
+          size="small"
+          disableElevation
+          variant="contained"
+          onClick={() => addNewField()}
+          sx={{ gridColumnStart: 1, gridColumnEnd: 1 }}
+        >
+          Add a field
+        </Button>
+        <Button
+          disableElevation
+          onClick={handleSubmit(handleSubmitDraft)}
+          sx={{
+            backgroundColor: 'grey.A400',
+            gridColumnStart: 2,
+            gridColumnEnd: 2,
+            '&:active': {
+              backgroundColor: 'grey.A400',
+            },
+            '&:hover': {
+              backgroundColor: 'grey.A200',
+            },
+          }}
+          variant="contained"
+          size="small"
+        >
+          Save as draft
+        </Button>
+        <Button
+          type="submit"
+          size="small"
+          disableElevation
+          sx={{
+            backgroundColor: 'primary.dark',
+            '&:active': {
+              backgroundColor: 'primary.dark',
+            },
+            gridColumnStart: 3,
+            gridColumnEnd: 3,
+          }}
+          variant="contained"
+        >
+          Publish
+        </Button>
       </div>
     </form>
   )

@@ -2,8 +2,8 @@ import { apiRoutes } from '../../routes/routes'
 import http from '../http'
 
 const userConfigurations = {
-  all: async (userId) =>
-    http.get(apiRoutes.configurations.userConfigurations(userId)),
+  all: async (userId, queryParams) =>
+    http.get(apiRoutes.configurations.userConfigurations(userId), queryParams),
   create: async (userId, configAttributes) =>
     http.post(
       apiRoutes.configurations.userConfigurations(userId),

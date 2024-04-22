@@ -24,7 +24,7 @@ describe('Models - User Config', () => {
     })
 
     it('returns config form values as user config object', () => {
-      const newUserConfig = UserConfigModel.processNewConfig(
+      const newUserConfig = UserConfigModel.publishConfig(
         formValues,
         colors,
         'owl'
@@ -58,6 +58,7 @@ describe('Models - User Config', () => {
         readers: ['fang', 'talon', 'mabel'],
         type: 'matrix',
         public: false,
+        status: 1,
       })
     })
   })
