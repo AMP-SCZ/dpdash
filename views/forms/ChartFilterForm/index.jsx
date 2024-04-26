@@ -1,83 +1,83 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 
-import { Button, FormControl, InputLabel } from '@mui/material'
+import { FormControl, InputLabel } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
-import { SITES_BY_NETWORK } from '../../../constants'
-import { FILTER_CATEGORIES } from '../../../constants/vars'
+import {
+  SITES_BY_NETWORK,
+  NETWORKS_FILTER_KEY,
+  SITES_FILTER_KEY,
+  FILTER_CATEGORIES,
+} from '../../../constants'
+import { ChartFiltersModel } from '../../models'
 import DropdownCheckboxGroup from '../DropdownCheckboxGroup'
+
 import './ChartFilterForm.css'
 
-const NETWORKS_FILTER_KEY = 'networks'
-const SITES_FILTER_KEY = 'sites'
-
 const ChartFilterForm = ({ initialValues, onSubmit }) => {
-  const { handleSubmit, setValue, getValues } = useForm({
-    defaultValues: initialValues,
+  const { handleSubmit, setValue, watch, control } = useForm({
+    defaultValues: ChartFiltersModel.filtersToFormValues(initialValues),
   })
-  const formValues = getValues()
-  const [resetSiteOptions, setResetSiteOptions] = useState(false)
-
-  const handleChange = (label, value) => {
-    const newFilterValues = Object.keys(initialValues[label]).reduce(
-      (acc, key) => {
-        acc[key] = value.includes(key)
-          ? { label: key, value: 1 }
-          : { label: key, value: 0 }
-        return acc
-      },
-      {}
+  const handleClear = (filterField) => setValue(filterField, [])
+  const handleSelectAll = (filterField) => {
+    const allFilterValues = Object.values(initialValues[filterField]).map(
+      ({ label }) => label
     )
-    if (label === NETWORKS_FILTER_KEY) {
-      const allowedSiteOptions = { ...initialValues.sites }
-      const allowedSites = value.flatMap((network) => SITES_BY_NETWORK[network])
-      const selectableSites = Object.keys(initialValues.sites)
-      for (const site of selectableSites) {
-        if (allowedSites.length && !allowedSites.includes(site)) {
-          delete allowedSiteOptions[site]
-        }
-      }
-      setValue(SITES_FILTER_KEY, allowedSiteOptions)
-      setResetSiteOptions(true)
-    }
-    setValue(label, newFilterValues)
+    return setValue(filterField, allFilterValues)
   }
+
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === NETWORKS_FILTER_KEY) {
+        const sitesUnion = [
+          ...new Set(
+            value[NETWORKS_FILTER_KEY].reduce((siteList, network) => {
+              return siteList.concat(SITES_BY_NETWORK[network])
+            }, [])
+          ),
+        ]
+
+        setValue(SITES_FILTER_KEY, sitesUnion)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="filter_form">
       <div className="ChartFilterForm">
         {Object.keys(initialValues).map((filterKey, i) => {
+          const columnStart = (i % 4) + 1
+          const row = Math.trunc(i / 4) + 1
+
           return (
             <FormControl
               key={filterKey}
               sx={{
-                gridColumnStart: i,
-                gridColumnEnd: i + 1,
+                gridColumnStart: columnStart,
+                gridColumnEnd: columnStart,
+                gridRowStart: row,
               }}
             >
-              <InputLabel id={`multi-chip-label-${filterKey}`}>
+              <InputLabel
+                id={`multi-chip-label-${filterKey}`}
+                data-testid={`multi-chip-label-${filterKey}`}
+              >
                 {FILTER_CATEGORIES[filterKey]}
               </InputLabel>
-              {filterKey === SITES_FILTER_KEY ? (
-                <DropdownCheckboxGroup
-                  label={filterKey}
-                  initialValues={formValues[filterKey]}
-                  resetOptions={resetSiteOptions}
-                  onReset={() => setResetSiteOptions(false)}
-                  onChange={handleChange}
-                />
-              ) : (
-                <DropdownCheckboxGroup
-                  label={filterKey}
-                  initialValues={formValues[filterKey]}
-                  onChange={handleChange}
-                />
-              )}
+              <DropdownCheckboxGroup
+                control={control}
+                label={filterKey}
+                name={filterKey}
+                initialValues={initialValues[filterKey]}
+                onClear={handleClear}
+                onSelectAll={handleSelectAll}
+                onClose={handleSubmit(onSubmit)}
+              />
             </FormControl>
           )
         })}
       </div>
-      <Button type="submit">Set Filters</Button>
     </form>
   )
 }
