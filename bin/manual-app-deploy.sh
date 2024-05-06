@@ -10,7 +10,7 @@ AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account")
 docker build -t dpdash:latest .
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
 
-ECR_IMAGE="$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest"
+ECR_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/dpdash:latest
 
 docker tag dpdash:latest $ECR_IMAGE
 docker push $ECR_IMAGE
