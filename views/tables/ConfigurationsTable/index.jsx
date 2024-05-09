@@ -10,9 +10,9 @@ import {
 import { Chip } from '@mui/material'
 
 import { borderRadius, fontSize } from '../../../constants'
+import { UserConfigModel } from '../../models'
 import Table from '../Table'
 import TableMenu from '../Table/TableMenu'
-import { UserConfigModel } from '../../models'
 
 const ConfigurationsTable = (props) => {
   const {
