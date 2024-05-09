@@ -1,7 +1,11 @@
 .ConfigFormActions {
   position: fixed;
-  top: 0;
+  bottom: 0;
   right: 0;
   border: 0;
   padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(1fr, 3);
+  gap: 10px;
+  font-size: 12px;
 }

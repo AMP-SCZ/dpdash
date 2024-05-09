@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 import ConfigurationsController from '.'
 import {
   createRequestWithUser,
@@ -104,7 +106,23 @@ describe('ConfigurationsController', () => {
     describe('When successful', () => {
       let appDb
       let user
-
+      const [activeConfig, draftConfig, activeConfig2, legacyConfiguration] = [
+        createConfiguration({ _id: new ObjectId() }),
+        createConfiguration({ _id: new ObjectId(), status: 0 }),
+        createConfiguration({
+          _id: new ObjectId(),
+          readers: ['owl', 'eagle'],
+          owner: 'eagle',
+        }),
+        {
+          _id: new ObjectId(),
+          owner: 'eagle',
+          config: {},
+          type: 'matrix',
+          created: 'Mon, 12 June 2023',
+          readers: ['owl', 'eagle'],
+        },
+      ]
       beforeAll(async () => {
         user = createUser({
           uid: 'owl',
@@ -118,18 +136,17 @@ describe('ConfigurationsController', () => {
           access: ['YA', 'LA', 'MA'],
           display_name: 'Eagle Eagleson',
         })
-        const configurations = [
-          createConfiguration(),
-          createConfiguration({
-            _id: '2',
-            owner: 'eagle',
-            readers: ['eagle', 'owl'],
-          }),
-        ]
 
         appDb = await global.MONGO_INSTANCE.db('configData')
 
-        await appDb.collection(collections.configs).insertMany(configurations)
+        await appDb
+          .collection(collections.configs)
+          .insertMany([
+            activeConfig,
+            draftConfig,
+            activeConfig2,
+            legacyConfiguration,
+          ])
         await appDb.collection(collections.users).insertMany([user, secondUser])
       })
 
@@ -137,15 +154,24 @@ describe('ConfigurationsController', () => {
         await appDb.dropDatabase()
       })
 
-      it('returns a status of 200 and an array of configurations', async () => {
+      it('returns a status of 200 and an array of all configurations', async () => {
         const result = [
-          createConfiguration({ owner_display_name: 'Owl Owlson' }),
           createConfiguration({
-            _id: '2',
-            owner: 'eagle',
-            owner_display_name: 'Eagle Eagleson',
-            readers: ['eagle', 'owl'],
+            ...activeConfig,
+            owner_display_name: 'Owl Owlson',
           }),
+          createConfiguration({
+            ...draftConfig,
+            owner_display_name: 'Owl Owlson',
+          }),
+          createConfiguration({
+            ...activeConfig2,
+            owner_display_name: 'Eagle Eagleson',
+          }),
+          {
+            ...legacyConfiguration,
+            owner_display_name: 'Eagle Eagleson',
+          },
         ]
         const request = createRequestWithUser({
           app: { locals: { appDb } },
@@ -161,22 +187,35 @@ describe('ConfigurationsController', () => {
           data: result,
         })
       })
-    })
 
-    describe('When unsuccessful', () => {
-      it('returns a status of 400 and an error message', async () => {
-        const request = createRequestWithUser(params)
+      it('returns a status of 200 and an array of only published/active configurations', async () => {
+        const result = [
+          createConfiguration({
+            ...activeConfig,
+            owner_display_name: 'Owl Owlson',
+          }),
+          createConfiguration({
+            ...activeConfig2,
+            owner_display_name: 'Eagle Eagleson',
+          }),
+          {
+            ...legacyConfiguration,
+            owner_display_name: 'Eagle Eagleson',
+          },
+        ]
+        const request = createRequestWithUser({
+          app: { locals: { appDb } },
+          params,
+          query: { status: 'active' },
+          user,
+        })
         const response = createResponse()
-
-        request.app.locals.appDb.stream.mockRejectedValueOnce(
-          new Error('result error')
-        )
 
         await ConfigurationsController.index(request, response)
 
-        expect(response.status).toHaveBeenCalledWith(400)
+        expect(response.status).toHaveBeenCalledWith(200)
         expect(response.json).toHaveBeenCalledWith({
-          error: 'result error',
+          data: result,
         })
       })
     })

@@ -153,6 +153,7 @@ export const createConfiguration = (overrides = {}) => ({
   type: 'matrix',
   created: 'Mon, 12 June 2023',
   readers: ['owl'],
+  status: 1,
   ...overrides,
 })
 

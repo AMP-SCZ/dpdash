@@ -9,8 +9,8 @@ import PageHeader from '../components/PageHeader'
 import SelectConfigurationForm from '../components/SelectConfigurationForm'
 
 const GraphPage = () => {
-  const { configurations, user, theme, setUser, setNotification } =
-    useOutletContext()
+  const { user, theme, setUser, setNotification } = useOutletContext()
+  const [configurations, setConfigurations] = useState([])
   const { study, subject } = useParams()
   const [participants, setParticipants] = useState([])
 
@@ -28,10 +28,15 @@ const GraphPage = () => {
     }
   }
 
-  useEffect(() => {
-    fetchParticipants()
-  }, [study, subject])
+  const loadActiveConfigurations = async () => {
+    const queryParams = { status: 'active' }
+    const configurations = await api.userConfigurations.all(
+      user.uid,
+      queryParams
+    )
 
+    setConfigurations(configurations)
+  }
   const updateUserPreferences = async (configurationId) => {
     try {
       const { uid } = user
@@ -48,6 +53,14 @@ const GraphPage = () => {
       setNotification({ open: true, message: error.message })
     }
   }
+
+  useEffect(() => {
+    loadActiveConfigurations()
+  }, [])
+
+  useEffect(() => {
+    fetchParticipants()
+  }, [study, subject])
 
   return (
     <Box sx={{ p: '20px' }}>

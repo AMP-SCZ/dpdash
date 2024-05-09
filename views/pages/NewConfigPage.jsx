@@ -20,9 +20,9 @@ const NewConfigPage = () => {
   })
   const friendsList = UsersModel.createUserFriendList(users, user)
 
-  const handleFormData = async (formValues) => {
+  const handleSubmitPublish = async (formValues) => {
     try {
-      const newConfigurationAttributes = UserConfigModel.processNewConfig(
+      const newConfigurationAttributes = UserConfigModel.publishConfig(
         formValues,
         colors,
         uid
@@ -50,17 +50,32 @@ const NewConfigPage = () => {
 
   const handleClear = async () => setAssessmentOptions([])
 
+  const handleSubmitDraft = async (formValues) => {
+    const newConfigurationAttributes = UserConfigModel.saveAsDraft(
+      formValues,
+      colors,
+      uid
+    )
+    await api.userConfigurations.create(uid, newConfigurationAttributes)
+
+    setNotification({
+      open: true,
+      message: 'Draft saved',
+    })
+  }
+
   return (
     <Box sx={{ p: '30px' }}>
       <Typography variant="h6">New Configuration</Typography>
       <ConfigForm
         colors={colors}
         friendsList={friendsList}
-        onSubmit={handleFormData}
+        onSubmit={handleSubmitPublish}
         initialValues={defaultValues}
         assessmentOptions={assessmentOptions}
         handleClear={handleClear}
         handleAssessmentSearch={handleAssessmentSearch}
+        handleSubmitDraft={handleSubmitDraft}
       />
     </Box>
   )
