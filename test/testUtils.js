@@ -4,6 +4,7 @@ import {
   createStudy,
 } from './fixtures'
 import {
+  FILTERS_FORM,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
 } from '../server/constants'
@@ -16,10 +17,10 @@ export const dayDataAssessments = [
     dayData: [{ chrcrit_part: 1, day: 4 }],
   }),
   createAssessmentDayData({
-    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    assessment: FILTERS_FORM,
     participant: 'YA1',
     study: 'YA',
-    dayData: [{ included_excluded: 1, day: 4 }],
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
   }),
   createAssessmentDayData({
     assessment: SOCIODEMOGRAPHICS_FORM,
@@ -82,10 +83,10 @@ export const dayDataAssessments = [
     ],
   }),
   createAssessmentDayData({
-    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    assessment: FILTERS_FORM,
     participant: 'MA3',
     study: 'MA',
-    dayData: [{ included_excluded: 1, day: 4 }],
+    dayData: [{ recruitment_status: 'consented', day: 4 }],
   }),
   createAssessmentDayData({
     assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
@@ -250,20 +251,7 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
         value: 0,
       },
     },
-    included_excluded: {
-      Included: {
-        label: 'Included',
-        value: 0,
-      },
-      Excluded: {
-        label: 'Excluded',
-        value: 0,
-      },
-      Missing: {
-        label: 'Missing',
-        value: 0,
-      },
-    },
+
     sex_at_birth: {
       Male: {
         label: 'Male',
@@ -286,6 +274,17 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
       ProNET: { label: 'ProNET', value: 0 },
+    },
+    recruitment_status: {
+      'Not recruited': {
+        label: 'Not Recruited',
+        value: 0,
+      },
+
+      Recruited: {
+        label: 'Recruited',
+        value: 0,
+      },
     },
   },
   graphTable: {
@@ -500,20 +499,6 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
         value: 1,
       },
     },
-    included_excluded: {
-      Included: {
-        label: 'Included',
-        value: 1,
-      },
-      Excluded: {
-        label: 'Excluded',
-        value: 0,
-      },
-      Missing: {
-        label: 'Missing',
-        value: 0,
-      },
-    },
     sex_at_birth: {
       Male: {
         label: 'Male',
@@ -536,6 +521,17 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
       ProNET: { label: 'ProNET', value: 0 },
+    },
+    recruitment_status: {
+      'Not recruited': {
+        label: 'Not Recruited',
+        value: 0,
+      },
+
+      Recruited: {
+        label: 'Recruited',
+        value: 1,
+      },
     },
   },
   graphTable: {
@@ -717,20 +713,6 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         value: 0,
       },
     },
-    included_excluded: {
-      Included: {
-        label: 'Included',
-        value: 0,
-      },
-      Excluded: {
-        label: 'Excluded',
-        value: 0,
-      },
-      Missing: {
-        label: 'Missing',
-        value: 0,
-      },
-    },
     sex_at_birth: {
       Male: {
         label: 'Male',
@@ -753,6 +735,17 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
     networks: {
       PRESCIENT: { label: 'PRESCIENT', value: 0 },
       ProNET: { label: 'ProNET', value: 0 },
+    },
+    recruitment_status: {
+      'Not recruited': {
+        label: 'Not Recruited',
+        value: 1,
+      },
+
+      Recruited: {
+        label: 'Recruited',
+        value: 0,
+      },
     },
   },
   graphTable: {

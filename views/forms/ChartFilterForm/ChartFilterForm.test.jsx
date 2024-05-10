@@ -13,10 +13,9 @@ describe('Chart Filter Form', () => {
       CHR: { label: 'CHR', value: 0 },
       Missing: { label: 'Missing', value: 0 },
     },
-    included_excluded: {
-      Included: { label: 'Included', value: 0 },
-      Excluded: { label: 'Excluded', value: 0 },
-      Missing: { label: 'Missing', value: 0 },
+    recruitment_status: {
+      Recruited: { label: 'Recruited', value: 0 },
+      'Not recruited': { label: 'Not Recruited', value: 0 },
     },
     sex_at_birth: {
       Male: { label: 'Male', value: 0 },
@@ -45,7 +44,7 @@ describe('Chart Filter Form', () => {
     clearButton: () => screen.getByRole('button', { name: 'Clear' }),
     sitesFilters: () => screen.getByRole('textbox', { name: 'sites' }),
     cohortFilters: () => screen.getByLabelText('Cohort'),
-    includedFilters: () => screen.getByLabelText('Included Criteria'),
+    recruitmentFilters: () => screen.getByLabelText('Recruitment Status'),
     networkFilters: () => screen.getByLabelText('Networks'),
     getFilterElement: (name) => screen.getByText(name),
   }
@@ -60,18 +59,19 @@ describe('Chart Filter Form', () => {
     renderForm({ ...defaultProps, onSubmit })
 
     const cohortElement = elements.cohortFilters()
-    const includedElement = elements.includedFilters()
+    const recruitmentFilterElement = elements.recruitmentFilters()
+
     await userEvent.click(cohortElement)
     await userEvent.click(elements.getFilterElement('HC'))
-    await userEvent.click(includedElement)
-    await userEvent.click(elements.getFilterElement('Excluded'))
+    await userEvent.click(recruitmentFilterElement)
+    await userEvent.click(elements.getFilterElement('Recruited'))
     await userEvent.keyboard('{Escape}')
 
     await waitFor(() =>
       expect(onSubmit).toHaveBeenCalledWith(
         {
           chrcrit_part: ['HC'],
-          included_excluded: ['Excluded'],
+          recruitment_status: ['Recruited'],
           networks: [],
           sex_at_birth: [],
           sites: ['CA', 'LA'],
@@ -108,7 +108,7 @@ describe('Chart Filter Form', () => {
       expect(onSubmit).toHaveBeenCalledWith(
         {
           chrcrit_part: [],
-          included_excluded: [],
+          recruitment_status: [],
           networks: [prescient],
           sex_at_birth: [],
           sites: SITES_BY_NETWORK[prescient],

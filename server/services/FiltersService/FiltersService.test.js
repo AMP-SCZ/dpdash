@@ -8,10 +8,9 @@ describe(FiltersService, () => {
         CHR: { label: 'CHR', value: 0 },
         Missing: { label: 'Missing', value: 0 },
       },
-      included_excluded: {
-        Included: { label: 'Included', value: 1 },
-        Excluded: { label: 'Excluded', value: 0 },
-        Missing: { label: 'Missing', value: 0 },
+      recruitment_status: {
+        Recruited: { label: 'Recruited', value: 0 },
+        'Not recruited': { label: 'Not Recruited', value: 0 },
       },
       sex_at_birth: {
         Male: { label: 'Male', value: 0 },

@@ -6,6 +6,8 @@ export const STUDIES_TO_OMIT = ['files', 'combined']
 export const INCLUSION_EXCLUSION_CRITERIA_FORM =
   'form_inclusionexclusion_criteria_review'
 export const SOCIODEMOGRAPHICS_FORM = 'form_sociodemographics'
+// form_filters_status has all of the filters for participants
+export const FILTERS_FORM = 'form_filters_status'
 export const TOTAL_LABEL = 'Total'
 export const SITE = 'Site'
 export const SITE_NAME = 'Site Name'

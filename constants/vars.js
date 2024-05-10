@@ -8,6 +8,7 @@ export const FILTER_CATEGORIES = {
   sex_at_birth: 'Sex At Birth',
   sites: 'Sites',
   networks: 'Networks',
+  recruitment_status: 'Recruitment Status',
 }
 export const EMAIL_REGEX = '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$'
 export const NOTIFICATION_DEFAULT = {
