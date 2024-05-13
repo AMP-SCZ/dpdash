@@ -79,11 +79,6 @@ describe('chartsDataController', () => {
                   CHR: { label: 'CHR', value: '0' },
                   Missing: { label: 'Missing', value: '0' },
                 },
-                included_excluded: {
-                  Included: { label: 'Included', value: '0' },
-                  Excluded: { label: 'Excluded', value: '0' },
-                  Missing: { label: 'Missing', value: '0' },
-                },
                 sex_at_birth: {
                   Male: { label: 'Male', value: '0' },
                   Female: { label: 'Female', value: '0' },
@@ -93,6 +88,16 @@ describe('chartsDataController', () => {
                   YA: { label: 'YA', value: '1' },
                   LA: { label: 'LA', value: '1' },
                   MA: { label: 'MA', value: '1' },
+                },
+                recruitment_status: {
+                  'Not recruited': {
+                    label: 'Not Recruited',
+                    value: '0',
+                  },
+                  Recruited: {
+                    label: 'Recruited',
+                    value: '0',
+                  },
                 },
                 networks: {
                   PRESCIENT: { label: 'PRESCIENT', value: '0' },
@@ -146,10 +151,15 @@ describe('chartsDataController', () => {
                   CHR: { label: 'CHR', value: '0' },
                   Missing: { label: 'Missing', value: '0' },
                 },
-                included_excluded: {
-                  Included: { label: 'Included', value: '0' },
-                  Excluded: { label: 'Excluded', value: '0' },
-                  Missing: { label: 'Missing', value: '0' },
+                recruitment_status: {
+                  'Not recruited': {
+                    label: 'Not Recruited',
+                    value: '1',
+                  },
+                  Recruited: {
+                    label: 'Recruited',
+                    value: '0',
+                  },
                 },
                 sex_at_birth: {
                   Male: { label: 'Male', value: '1' },

@@ -1,4 +1,5 @@
 import {
+  FILTERS_FORM,
   INCLUSION_EXCLUSION_CRITERIA_FORM,
   SOCIODEMOGRAPHICS_FORM,
 } from '../../constants'
@@ -7,7 +8,8 @@ export const FILTER_TO_MONGO_VALUE_MAP = {
   HC: 2,
   CHR: 1,
   Missing: null,
-  Included: 1,
+  Recruited: 'recruited',
+  'Not recruited': 'not recruited',
   Excluded: 0,
   Male: 1,
   Female: 2,
@@ -26,10 +28,9 @@ export const DEFAULT_FILTERS = {
     CHR: { label: 'CHR', value: 1 },
     Missing: { label: 'Missing', value: 1 },
   },
-  included_excluded: {
-    Included: { label: 'Included', value: 1 },
-    Excluded: { label: 'Excluded', value: 0 },
-    Missing: { label: 'Missing', value: 0 },
+  recruitment_status: {
+    Recruited: { label: 'Recruited', value: 1 },
+    'Not recruited': { label: 'Not Recruited', value: 0 },
   },
   sex_at_birth: {
     Male: { label: 'Male', value: 1 },
@@ -43,11 +44,11 @@ export const DEFAULT_FILTERS = {
   },
 }
 
-const INCLUSION_EXCLUSION_KEY = 'included_excluded'
 const CHRCRIT_KEY = 'chrcrit_part'
 const DAY_DATA_KEY = 'dayData'
 const SEX_AT_BIRTH_FILTER_KEY = 'sex_at_birth'
 const SEX_AT_BIRTH_DOCUMENT_KEY = 'chrdemo_sexassigned'
+const RECRUITMENT_STATUS_KEY = 'recruitment_status'
 
 const filterToMongoValues = (filter) => {
   return Object.values(filter)
@@ -86,13 +87,34 @@ class FiltersService {
   }
 
   get filterQueries() {
-    const includedExcludedQuery = (includedValues) => ({
-      [`${DAY_DATA_KEY}.${INCLUSION_EXCLUSION_KEY}`]: { $in: includedValues },
-    })
     const chrChritQuery = (includedValues) => ({
       [`${DAY_DATA_KEY}.${CHRCRIT_KEY}`]: { $in: includedValues },
     })
+    const recruitmentQuery = (includedValues) => {
+      const includeAllCategories = includedValues.length > 1
 
+      if (includeAllCategories) {
+        return {
+          [`${DAY_DATA_KEY}.${RECRUITMENT_STATUS_KEY}`]: { $exists: true },
+        }
+      } else {
+        const isRecruited = includedValues.includes(
+          FILTER_TO_MONGO_VALUE_MAP.Recruited
+        )
+
+        if (!isRecruited)
+          return {
+            [`${DAY_DATA_KEY}.${RECRUITMENT_STATUS_KEY}`]: {
+              $ne: FILTER_TO_MONGO_VALUE_MAP.Recruited,
+            },
+          }
+
+        return {
+          [`${DAY_DATA_KEY}.${RECRUITMENT_STATUS_KEY}`]:
+            FILTER_TO_MONGO_VALUE_MAP.Recruited,
+        }
+      }
+    }
     const sexAtBirthQuery = (includedValues) => ({
       [`${DAY_DATA_KEY}.${SEX_AT_BIRTH_DOCUMENT_KEY}`]: { $in: includedValues },
     })
@@ -106,25 +128,7 @@ class FiltersService {
       )
     )
 
-    if (
-      filterNames.has(INCLUSION_EXCLUSION_KEY) &&
-      filterNames.has(CHRCRIT_KEY)
-    ) {
-      filterQueries.push({
-        assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
-        ...includedExcludedQuery(
-          filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])
-        ),
-        ...chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY])),
-      })
-    } else if (filterNames.has(INCLUSION_EXCLUSION_KEY)) {
-      filterQueries.push({
-        assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
-        ...includedExcludedQuery(
-          filterToMongoValues(this.filters[INCLUSION_EXCLUSION_KEY])
-        ),
-      })
-    } else if (filterNames.has(CHRCRIT_KEY)) {
+    if (filterNames.has(CHRCRIT_KEY)) {
       filterQueries.push({
         assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
         ...chrChritQuery(filterToMongoValues(this.filters[CHRCRIT_KEY])),
@@ -139,6 +143,14 @@ class FiltersService {
         ),
       })
     }
+
+    if (filterNames.has(RECRUITMENT_STATUS_KEY))
+      filterQueries.push({
+        assessment: FILTERS_FORM,
+        ...recruitmentQuery(
+          filterToMongoValues(this.filters[RECRUITMENT_STATUS_KEY])
+        ),
+      })
 
     return filterQueries
   }
