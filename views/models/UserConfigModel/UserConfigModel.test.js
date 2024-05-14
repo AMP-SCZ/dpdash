@@ -45,6 +45,7 @@ describe('Models - User Config', () => {
             {
               analysis: '',
               category: '',
+
               color: ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99'],
               label: '',
               range: ['0', '1'],
@@ -53,6 +54,7 @@ describe('Models - User Config', () => {
             },
           ],
         },
+        description: '',
         name: '',
         owner: 'owl',
         readers: ['fang', 'talon', 'mabel'],
@@ -103,9 +105,8 @@ describe('Models - User Config', () => {
         UserConfigModel.defaultFormValues({
           owner: 'owl',
           readers: [
-            { label: 'fang', value: 'fang', isFixed: false },
-            { label: 'talon', value: 'talon', isFixed: false },
-            { label: 'owl', value: 'owl', isFixed: true },
+            { label: 'fang', value: 'fang' },
+            { label: 'talon', value: 'talon' },
           ],
           config: [
             UserConfigModel.defaultConfigValues,

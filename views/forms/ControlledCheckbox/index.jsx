@@ -36,7 +36,8 @@ const ControlledCheckbox = ({
         />
       }
       label={label}
-      labelPlacement={props.labelPlacement || 'start'}
+      labelPlacement={props.labelplacement || 'start'}
+      sx={props.labelprops.sx || {}}
     />
   ) : (
     <Controller

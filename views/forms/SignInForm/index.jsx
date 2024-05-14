@@ -39,7 +39,7 @@ const SignInForm = ({ initialValues, onSubmit }) => {
         control={control}
         errors={errors.password}
         fullWidth
-        inputProps={{ 'data-testid': 'pw' }}
+        InputProps={{ 'data-testid': 'pw' }}
         label="Password"
         margin="normal"
         name="password"

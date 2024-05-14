@@ -1,50 +1,108 @@
 import React from 'react'
 
-import { Typography } from '@mui/material'
+import { FormHelperText, InputLabel } from '@mui/material'
 
+import { fontSize, lineHeight } from '../../../constants'
 import ControlledCheckbox from '../ControlledCheckbox'
 import ControlledMultiSelect from '../ControlledMultiSelect'
 import TextInput from '../TextInput'
 
 import './ConfigTypeFormFields.css'
 
+const textInputStyles = {
+  color: 'text.primary',
+  fontWeight: 500,
+  lineHeight: lineHeight[21],
+  fontSize: fontSize[18],
+  mt: '-10px',
+}
+const textInputProps = { notched: false }
+const inputLabelProps = { shrink: true, sx: textInputStyles }
+
 const ConfigTypeFormFields = (props) => {
-  const { control, friendsList } = props
+  const { control, friendsList, handleClearUsers, handleSelectAllUsers } = props
 
   return (
     <div className="ConfigTypeFormFields">
       <TextInput
-        name="configName"
-        label="Configuration Name"
-        margin="normal"
         control={control}
-        required
-        fullWidth
+        name="configName"
+        sx={{
+          gridArea: 'name',
+        }}
+        label="Configuration name"
+        InputLabelProps={inputLabelProps}
+        InputProps={textInputProps}
       />
       <TextInput
+        control={control}
         name="configType"
-        control={control}
+        sx={{
+          gridArea: 'type',
+        }}
+        label="Type"
+        InputLabelProps={inputLabelProps}
+        InputProps={textInputProps}
         disabled
-        value="matrix"
-        label="matrix"
-        fullWidth
       />
-      <Typography variant="subtitle2">Shared with:</Typography>
-      <ControlledMultiSelect
-        name="readers"
+      <TextInput
         control={control}
-        options={friendsList}
-        isMulti
+        name="description"
+        sx={{
+          gridArea: 'description',
+        }}
+        label="Description (Optional)"
+        InputLabelProps={inputLabelProps}
+        InputProps={textInputProps}
       />
-      <div style={{ paddingTop: '15px' }}>
-        <ControlledCheckbox
+      <div className="ConfigTypeShareContainer">
+        <div className="ConfigTypeShareHeader">
+          <InputLabel
+            aria-label="readers"
+            shrink
+            sx={{
+              color: 'text.primary',
+              fontWeight: 500,
+              lineHeight: lineHeight[21],
+              fontSize: fontSize[18],
+              gridColumnStart: 1,
+              gridColumnEnd: 1,
+              gridArea: 'share_label',
+            }}
+          >
+            Share with
+          </InputLabel>
+          <ControlledCheckbox
+            control={control}
+            name="public"
+            id="public_checkbox"
+            aria-label
+            label="Make configuration public"
+            labelplacement="end"
+            sx={{
+              gridColumnStart: 2,
+              gridColumnEnd: 2,
+              color: 'primary.light',
+              '&.Mui-checked': {
+                color: 'primary.light',
+              },
+              gridArea: 'make_public',
+            }}
+            labelprops={{ sx: { height: '20px', mt: '-5px' } }}
+          />
+        </div>
+        <ControlledMultiSelect
+          name="readers"
           control={control}
-          name="public"
-          color="default"
-          id="public_checkbox"
-          label="Public"
-          aria-label
+          options={friendsList}
+          onClear={handleClearUsers}
+          onSelectAll={handleSelectAllUsers}
+          displayActions
+          isMulti
         />
+        <FormHelperText sx={{ color: 'black.A100' }}>
+          Added users will have view only access to this configuration.
+        </FormHelperText>
       </div>
     </div>
   )

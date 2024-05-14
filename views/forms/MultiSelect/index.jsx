@@ -2,12 +2,15 @@ import React from 'react'
 
 import { Autocomplete, Chip, TextField } from '@mui/material'
 
+import MultiSelectFooterActions from './MultiSelectActions'
+
 export const MultiSelect = (props) => {
   const { field, fieldState } = props
 
   return (
     <Autocomplete
       id={props.name}
+      data-testid={props.name}
       fullWidth={props.fullWidth}
       getOptionDisabled={(option) => option.isFixed}
       isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -44,6 +47,13 @@ export const MultiSelect = (props) => {
       )}
       value={props.value || field.value}
       sx={props.sx || {}}
+      componentsProps={{
+        paper: {
+          onClear: props.onClear || {},
+          onSelectAll: props.onSelectAll || {},
+        },
+      }}
+      PaperComponent={props.displayActions ? MultiSelectFooterActions : null}
     />
   )
 }

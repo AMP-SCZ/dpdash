@@ -9,7 +9,6 @@ import {
   Button,
 } from '@mui/material'
 import { useController } from 'react-hook-form'
-
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -75,5 +74,4 @@ const DropdownCheckboxGroup = ({
     </Select>
   )
 }
-
 export default DropdownCheckboxGroup

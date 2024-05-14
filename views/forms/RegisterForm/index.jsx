@@ -39,7 +39,7 @@ const RegistrationForm = ({ initialValues, onSubmit }) => {
         control={control}
         errors={errors.password}
         fullWidth
-        inputProps={{ 'data-testid': 'pw' }}
+        InputProps={{ 'data-testid': 'pw' }}
         label="Password"
         name="password"
         required
@@ -49,7 +49,7 @@ const RegistrationForm = ({ initialValues, onSubmit }) => {
         control={control}
         errors={errors.confirmPassword}
         fullWidth
-        inputProps={{ 'data-testid': 'confirm-pw' }}
+        InputProps={{ 'data-testid': 'confirm-pw' }}
         label="Confirm Password"
         name="confirmPassword"
         required

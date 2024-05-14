@@ -13,15 +13,15 @@ const TextInput = (props) => {
       aria-label={props.label}
       fullWidth={props.fullWidth}
       helperText={errors?.message}
-      InputLabelProps={{ shrink: true }}
-      inputProps={{ ...props.inputProps, autoComplete: 'off' }}
+      InputLabelProps={{ shrink: true, ...props.InputLabelProps }}
+      InputProps={{ ...props.InputProps, autoComplete: 'off' }}
       label={props.label}
       margin={props.margin || 'normal'}
       required={props.required}
       type={props.type || 'text'}
       placeholder={props.placeholder}
       sx={props.sx}
-      size={props.size}
+      size={props.size || 'medium'}
       disabled={props.disabled}
       {...field}
       onChange={(e) => {

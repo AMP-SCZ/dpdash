@@ -9,3 +9,9 @@
   gap: 10px;
   font-size: 12px;
 }
+
+@media screen and (min-width: 1000px) {
+  .ConfigForm {
+    padding-top: 40px;
+  }
+}

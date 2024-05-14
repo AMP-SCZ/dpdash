@@ -38,7 +38,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         control={control}
         errors={errors.password}
         fullWidth
-        inputProps={{ 'data-testid': 'pw' }}
+        InputProps={{ 'data-testid': 'pw' }}
         name="password"
         label="Password"
         type="password"
@@ -49,7 +49,7 @@ const ResetPasswordForm = ({ initialValues, onCancel, onSubmit }) => {
         control={control}
         errors={errors.confirmPassword}
         fullWidth
-        inputProps={{ 'data-testid': 'confirm-pw' }}
+        InputProps={{ 'data-testid': 'confirm-pw' }}
         name="confirmPassword"
         type="password"
         label="Confirm Password"

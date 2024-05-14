@@ -13,6 +13,7 @@ import './ConfigForm.css'
 const schema = yup.object({
   configName: yup.string().required(),
   configType: yup.string().required(),
+  description: yup.string(),
   readers: yup.array().of(
     yup.object({
       value: yup.string(),
@@ -49,7 +50,7 @@ const ConfigForm = ({
 }) => {
   const defaultFieldValue = UserConfigModel.defaultConfigValues
 
-  const { handleSubmit, control, getValues } = useForm({
+  const { handleSubmit, control, getValues, setValue } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   })
@@ -58,12 +59,13 @@ const ConfigForm = ({
     name: 'config',
     defaultFieldValue,
   })
-
   const onCopy = (configCategoryIndex) =>
     addNewField(getValues(`config[${configCategoryIndex}]`))
+  const handleClearUsers = () => setValue('readers', [])
+  const handleSelectAllUsers = () => setValue('readers', friendsList)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="ConfigForm">
       <ConfigFormFields
         control={control}
         fields={fields}
@@ -74,6 +76,8 @@ const ConfigForm = ({
         assessmentOptions={assessmentOptions}
         handleAssessmentSearch={handleAssessmentSearch}
         handleClearAssessments={handleClearAssessments}
+        handleClearUsers={handleClearUsers}
+        handleSelectAllUsers={handleSelectAllUsers}
       />
       <div className="ConfigFormActions">
         <Button

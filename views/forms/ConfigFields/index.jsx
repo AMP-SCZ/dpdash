@@ -13,12 +13,19 @@ const ConfigFormFields = ({
   onCopy,
   onRemove,
   assessmentOptions,
-  handleClearAssessments,
   handleAssessmentSearch,
+  handleClearAssessments,
+  handleClearUsers,
+  handleSelectAllUsers,
 }) => {
   return (
     <>
-      <ConfigTypeFormFields control={control} friendsList={friendsList} />
+      <ConfigTypeFormFields
+        control={control}
+        friendsList={friendsList}
+        handleClearUsers={handleClearUsers}
+        handleSelectAllUsers={handleSelectAllUsers}
+      />
       <div className="ConfigFields">
         {fields.map((field, index) => {
           const { id, ...rest } = field
