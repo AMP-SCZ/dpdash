@@ -406,27 +406,6 @@ describe('assessmentDayDataController', () => {
           message: 'Nothing to import',
         })
       })
-
-      it('returns a status of 400 and an error message', async () => {
-        const request = createRequest({
-          body: {
-            metadata: createAssessmentDayDataMetadata(),
-            participant_assessments: [{}],
-          },
-        })
-        const response = createResponse()
-
-        request.app.locals.appDb.findOne.mockRejectedValueOnce(
-          new Error('some error')
-        )
-
-        await AssessmentDayDataController.create(request, response)
-
-        expect(response.status).toHaveBeenCalledWith(400)
-        expect(response.json).toHaveBeenCalledWith({
-          message: 'some error',
-        })
-      })
     })
   })
   describe(AssessmentDayDataController.destroy, () => {

@@ -172,6 +172,8 @@ app.get('/*', async (req, res) => {
     path.join(__dirname, '..', 'public', 'index.html'),
     (err) => {
       if (err) {
+        console.error(err)
+
         res.status(500).send(err)
       }
     }
