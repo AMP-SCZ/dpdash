@@ -183,7 +183,7 @@ app.get('/*', async (req, res) => {
 //catch any other error
 app.use(function (err, _req, res) {
   if (err) {
-    console.error(err)
+    console.error('=====Error====== \n' + err)
     return res.status(err.status).json({ error: err.message })
   }
 })
