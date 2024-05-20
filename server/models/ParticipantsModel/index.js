@@ -20,11 +20,48 @@ const ParticipantsModel = {
       assessment: chart.assessment,
       study: { $in: filtersService.requestedSites, $nin: STUDIES_TO_OMIT },
     }
+
+    // console.log('Assesment : ', chart.assessment, 'Variable : ', chart.variable)
+    // // const data = this.allForAssessmentRaw(db, chart.assessment, chart.variable)
+    // // console.log('Data : ', data)
+    // const data = await db
+    //   .collection(collections.assessmentDayData)
+    //   .find(
+    //     {
+    //       assessment: chart.assessment,
+    //       study: { $nin: STUDIES_TO_OMIT },
+    //     },
+    //     {
+    //       projection: ALL_SUBJECTS_MONGO_PROJECTION,
+    //     }
+    //   )
+    //   .toArray()
+
+    // const rawData = {}
+
+    // for (const document of data) {
+    //   const dayData = document.dayData
+    //   const subjectSite = document.study
+
+    //   if (!rawData[subjectSite]) {
+    //     rawData[subjectSite] = []
+    //   }
+
+    //   for (const day of dayData) {
+    //     const rawDayData = day[chart.variable]
+    //     rawData[subjectSite].push(rawDayData)
+    //   }
+    // }
+
+    // console.log('rawData : ', rawData)
+
     if (filtersService.allFiltersInactive()) {
-      return await db
+      const data = await db
         .collection(collections.assessmentDayData)
         .find(query, { projection: ALL_SUBJECTS_MONGO_PROJECTION })
         .stream()
+
+      return data
     }
 
     const groupedParticipants = await Promise.all(
