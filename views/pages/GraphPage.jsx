@@ -6,13 +6,14 @@ import { useOutletContext, useParams } from 'react-router-dom'
 import api from '../api'
 import { Graph } from '../components/Graph'
 import PageHeader from '../components/PageHeader'
-import SelectConfigurationForm from '../components/SelectConfigurationForm'
+import SelectConfigurationForm from '../forms/SelectConfigurationsForm'
 
 const GraphPage = () => {
   const { user, theme, setUser, setNotification } = useOutletContext()
   const [configurations, setConfigurations] = useState([])
   const { study, subject } = useParams()
   const [participants, setParticipants] = useState([])
+  const { preferences } = user
 
   const fetchParticipants = async () => {
     if (subject) {
@@ -27,7 +28,6 @@ const GraphPage = () => {
       setParticipants(participants)
     }
   }
-
   const loadActiveConfigurations = async () => {
     const queryParams = { status: 'active' }
     const configurations = await api.userConfigurations.all(
@@ -37,18 +37,19 @@ const GraphPage = () => {
 
     setConfigurations(configurations)
   }
-  const updateUserPreferences = async (configurationId) => {
+  const handleSubmit = async (formValues) => {
     try {
       const { uid } = user
       const userAttributes = {
         ...user,
         preferences: {
           ...user.preferences,
-          config: configurationId,
+          config: formValues.config,
         },
       }
-      setUser(userAttributes)
-      await api.users.update(uid, userAttributes)
+      const updatedUser = await api.users.update(uid, userAttributes)
+
+      setUser(updatedUser)
     } catch (error) {
       setNotification({ open: true, message: error.message })
     }
@@ -74,11 +75,13 @@ const GraphPage = () => {
           maxWidth: '400px',
         }}
       >
-        <SelectConfigurationForm
-          configurations={configurations}
-          onChange={updateUserPreferences}
-          currentPreference={user.preferences}
-        />
+        {configurations.length ? (
+          <SelectConfigurationForm
+            configurations={configurations}
+            onSubmit={handleSubmit}
+            initialValues={{ config: preferences.config }}
+          />
+        ) : null}
       </Box>
       {participants.map((participant) => {
         return (
