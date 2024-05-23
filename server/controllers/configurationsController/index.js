@@ -9,7 +9,8 @@ const ConfigurationsController = {
       const { appDb } = req.app.locals
       const newConfiguration = await ConfigModel.create(appDb, {
         ...req.body,
-        created: new Date().toUTCString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
 
       return res.status(200).json({ data: newConfiguration })
@@ -46,7 +47,7 @@ const ConfigurationsController = {
       const { config_id } = req.params
       const updatedConfiguration = await ConfigModel.update(appDb, config_id, {
         ...req.body,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(),
       })
 
       return res.status(200).json({ data: updatedConfiguration })

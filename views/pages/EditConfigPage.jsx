@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import dayjs from 'dayjs'
 import { useParams, useOutletContext } from 'react-router-dom'
 
 import api from '../api'
+import PageHeader from '../components/PageHeader'
 import { colorList } from '../fe-utils/colorList'
 import ConfigForm from '../forms/ConfigForm'
-import { UserConfigModel, UsersModel } from '../models'
+import { UserConfigModel } from '../models'
 
 const colors = colorList()
 
@@ -16,7 +18,9 @@ const EditConfigPage = () => {
   const [initialValues, setInitialValues] = useState({})
   const [loading, setLoading] = useState(true)
   const { config_id } = useParams()
-  const friendsList = UsersModel.createUserFriendList(users, user)
+  const friendsList = users
+    .map(({ uid }) => ({ label: uid, value: uid }))
+    .filter(({ label }) => label !== user.uid)
   const { uid } = user
 
   const handleSubmitPublish = async (formValues) => {
@@ -58,12 +62,6 @@ const EditConfigPage = () => {
   }
 
   const handleClearAssessments = async () => setAssessmentOptions([])
-  useEffect(() => {
-    fetchCurrentConfig().then((values) => {
-      setInitialValues(values)
-      setLoading(false)
-    })
-  }, [])
   const handleSubmitDraft = async (formValues) => {
     const newConfigurationAttributes = UserConfigModel.saveAsDraft(
       formValues,
@@ -81,11 +79,29 @@ const EditConfigPage = () => {
       message: 'Draft saved',
     })
   }
+
+  useEffect(() => {
+    fetchCurrentConfig().then((values) => {
+      setInitialValues(values)
+      setLoading(false)
+    })
+  }, [])
+
   if (loading) return <div>Depending on the size, this may take a while...</div>
 
   return (
     <Box sx={{ p: '30px' }}>
-      <Typography variant="h6">Edit Configuration</Typography>
+      <PageHeader
+        title={initialValues.configName}
+        cta={
+          initialValues.status === 0 ? (
+            <Typography variant="body2" sx={{ color: 'grey.A100' }}>
+              Saved as draft: {dayjs(initialValues.updatedAt).format('llll')}
+            </Typography>
+          ) : null
+        }
+        isDescription
+      />
       <ConfigForm
         assessmentOptions={assessmentOptions}
         colors={colors}

@@ -3,18 +3,11 @@ import React from 'react'
 import { ArrowBack } from '@mui/icons-material'
 import { Box, Typography, IconButton } from '@mui/material'
 
-import { fontSize } from '../../../constants'
+import './PageHeader.css'
 
 const PageHeader = (props) => {
   return props.isDescription ? (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(5,1fr)',
-        columnGap: '20px',
-        pb: '20px',
-      }}
-    >
+    <Box className="PageHeader">
       <IconButton
         aria-label="back"
         onClick={props.onNavigate}
@@ -27,22 +20,9 @@ const PageHeader = (props) => {
         <ArrowBack />
       </IconButton>
 
-      <Typography
-        sx={{
-          fontWeight: 600,
-          width: 192,
-          fontSize: fontSize[16],
-          gridColumnStart: 1,
-          gridColumnEnd: 5,
-          pt: '10px',
-        }}
-      >
-        {props.title}
-      </Typography>
-
-      <div style={{ gridColumnStart: 1, gridColumnEnd: 5 }}>
-        {props.description}
-      </div>
+      <Typography className="PageHeaderTitle">{props.title}</Typography>
+      {props.cta && <Box className="PageHeaderCTA">{props.cta}</Box>}
+      <div className="PageHeaderDescription">{props.description}</div>
     </Box>
   ) : (
     <Box
@@ -55,7 +35,7 @@ const PageHeader = (props) => {
         alignItems: { xs: 'left', lg: 'center' },
       }}
     >
-      <Typography sx={{ fontWeight: 600, width: 192 }}>
+      <Typography sx={{ fontWeight: 600, flexGrow: 0.1 }}>
         {props.title}
       </Typography>
 

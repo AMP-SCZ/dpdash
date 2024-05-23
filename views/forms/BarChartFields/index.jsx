@@ -57,6 +57,7 @@ const BarChartFields = ({
           id="public_checkbox"
           aria-label
           label="Public"
+          labelprops={{}}
         />
       </div>
       {fields.map((field, index) => {

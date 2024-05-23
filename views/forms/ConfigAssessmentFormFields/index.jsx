@@ -92,9 +92,10 @@ const ConfigAssessmentFormFields = ({
         control={control}
         name={`config.${index}.text`}
         label="Display value"
-        labelPlacement="end"
+        labelplacement="end"
         icon={<VisibilityOffOutlined />}
         checkedIcon={<Visibility />}
+        labelprops={{}}
       />
     </ConfigurationCategoryCard>
   )

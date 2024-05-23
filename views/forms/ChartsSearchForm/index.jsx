@@ -35,7 +35,7 @@ const ChartsSearchForm = ({ initialValues, onSubmit }) => {
           (e) => onSubmit({ [e.target.name]: e.target.value }),
           500
         )}
-        inputProps={{ autoComplete: 'off' }}
+        InputProps={{ autoComplete: 'off' }}
       />
     </form>
   )

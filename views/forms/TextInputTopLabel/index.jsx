@@ -39,7 +39,7 @@ const TextInputTopLabel = (props) => {
         required={props.required}
         type={props.type}
         sx={{ borderRadius: borderRadius[8], ...props.sx }}
-        size={props.size}
+        size={props.size || 'small'}
         disabled={props.disabled}
       />
       {!!errors[props.name] && (

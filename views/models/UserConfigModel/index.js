@@ -13,6 +13,7 @@ const UserConfigModel = {
   defaultFormValues: (overrides = {}) => ({
     configName: '',
     configType: 'matrix',
+    description: '',
     readers: [],
     config: [],
     public: false,
@@ -29,11 +30,14 @@ const UserConfigModel = {
   processConfigToFormFields: (currentConfig, colors) => {
     const {
       config,
+      description,
       name,
       owner,
       public: publicConfig,
       readers,
       type,
+      updatedAt,
+      status,
     } = currentConfig
     const configKey = Object.keys(config)[0]
     const configCategoryFields = config[configKey].map(
@@ -56,14 +60,18 @@ const UserConfigModel = {
     return {
       configName: name,
       configType: type,
+      description: description || '',
       owner,
-      readers: readers.map((reader) => ({
-        value: reader,
-        label: reader,
-        isFixed: reader === owner,
-      })),
+      readers: readers
+        .map((reader) => ({
+          value: reader,
+          label: reader,
+        }))
+        .filter(({ label }) => label !== owner),
       config: configCategoryFields,
       public: publicConfig,
+      updatedAt,
+      status,
     }
   },
   isActive: (configuration, property) =>
@@ -84,11 +92,12 @@ const processConfigAssessment = (formValues, colors, owner) => {
         }
       }),
     },
+    description: formValues.description,
     name: formValues.configName,
-    owner,
-    type: formValues.configType,
-    readers: formValues.readers.map(({ value }) => value),
     public: formValues.public,
+    owner,
+    readers: formValues.readers.map(({ value }) => value),
+    type: formValues.configType,
   }
 }
 

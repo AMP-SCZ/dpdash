@@ -8,7 +8,11 @@ const ConfigModel = {
     await db
       .collection(collections.configs)
       .aggregate([
-        { $match: { $or: [{ readers: userId }, { public: true }] } },
+        {
+          $match: {
+            $or: [{ readers: userId }, { public: true }, { owner: userId }],
+          },
+        },
         {
           $match: { $or: [{ status: { $exists: false } }, { status: 1 }] },
         },
@@ -17,7 +21,9 @@ const ConfigModel = {
   all: async (db, userId) =>
     await db
       .collection(collections.configs)
-      .find({ $or: [{ readers: userId }, { public: true }] })
+      .find({
+        $or: [{ readers: userId }, { public: true }, { owner: userId }],
+      })
       .stream(),
   destroy: async (db, configId) => {
     const { deletedCount } = await db

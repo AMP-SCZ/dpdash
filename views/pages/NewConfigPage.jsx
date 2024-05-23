@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 
-import { Typography, Box } from '@mui/material'
+import { Box } from '@mui/material'
 import { useOutletContext } from 'react-router-dom'
 
 import api from '../api'
+import PageHeader from '../components/PageHeader'
 import { colorList } from '../fe-utils/colorList'
 import ConfigForm from '../forms/ConfigForm'
-import { UserConfigModel, UsersModel } from '../models'
+import { UserConfigModel } from '../models'
 
 const colors = colorList()
 
@@ -15,10 +16,12 @@ const NewConfigPage = () => {
   const [assessmentOptions, setAssessmentOptions] = useState([])
   const { uid } = user
   const defaultValues = UserConfigModel.defaultFormValues({
-    readers: [{ value: uid, label: uid, isFixed: true }],
+    readers: [],
     owner: uid,
   })
-  const friendsList = UsersModel.createUserFriendList(users, user)
+  const friendsList = users
+    .map(({ uid }) => ({ label: uid, value: uid }))
+    .filter(({ label }) => label !== user.uid)
 
   const handleSubmitPublish = async (formValues) => {
     try {
@@ -56,6 +59,7 @@ const NewConfigPage = () => {
       colors,
       uid
     )
+
     await api.userConfigurations.create(uid, newConfigurationAttributes)
 
     setNotification({
@@ -65,8 +69,8 @@ const NewConfigPage = () => {
   }
 
   return (
-    <Box sx={{ p: '30px' }}>
-      <Typography variant="h6">New Configuration</Typography>
+    <Box sx={{ p: '20px' }}>
+      <PageHeader title="Create new configuration" isDescription />
       <ConfigForm
         colors={colors}
         friendsList={friendsList}
