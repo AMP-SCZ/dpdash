@@ -26,6 +26,7 @@ server/configs/*
 docs/build
 public/js
 public/css
+public/index.html
 dist
 
 app_build
