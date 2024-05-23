@@ -10,7 +10,7 @@ import ControlledSelect from '../ControlledSelect'
 const schema = yup.object({
   config: yup.string().required(),
 })
-const SelectConfigurationForm = ({
+const SelectConfigurationsForm = ({
   configurations,
   onSubmit,
   initialValues,
@@ -38,4 +38,4 @@ const SelectConfigurationForm = ({
   )
 }
 
-export default SelectConfigurationForm
+export default SelectConfigurationsForm
