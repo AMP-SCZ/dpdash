@@ -167,25 +167,22 @@ app.use('/', usersRouter)
 app.use('/', userStudiesRouter)
 app.use('./img', express.static(path.join(__dirname, '../public/img')))
 
-app.get('/*', async (req, res) => {
+app.get('/*', async (req, res, next) => {
   return res.sendFile(
     path.join(__dirname, '..', 'public', 'index.html'),
     (err) => {
       if (err) {
-        console.error(err)
-
-        res.status(500).send(err)
+        return next(err)
       }
     }
   )
 })
 
 //catch any other error
-app.use(function (err, _req, res) {
-  if (err) {
-    console.log('=====Error======', err)
-    return res.status(err.status).json({ error: err.message })
-  }
+app.use(function (err, _req, res, _) {
+  console.error(err)
+
+  return res.send(err)
 })
 
 export default app
