@@ -182,7 +182,7 @@ app.get('/*', async (req, res, next) => {
 app.use(function (err, _req, res, _) {
   console.error(err)
 
-  return res.send(err)
+  return res.send({ error: err.message })
 })
 
 export default app
