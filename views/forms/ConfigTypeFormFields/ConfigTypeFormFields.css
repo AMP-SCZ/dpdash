@@ -5,6 +5,7 @@
     'name type'
     'description share';
   grid-gap: 10%;
+  padding-bottom: 40px;
 }
 .ConfigTypeShareContainer {
   display: flex;

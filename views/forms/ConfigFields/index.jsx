@@ -1,13 +1,15 @@
 import React from 'react'
+import { Typography } from '@mui/material'
 
 import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
 
 import './ConfigFields.css'
+import ConfigurationSection from '../ConfigurationSection'
+import { fontSize } from '../../../constants'
 
 const ConfigFormFields = ({
   control,
-  colors,
   fields,
   friendsList,
   onCopy,
@@ -26,26 +28,14 @@ const ConfigFormFields = ({
         handleClearUsers={handleClearUsers}
         handleSelectAllUsers={handleSelectAllUsers}
       />
-      <div className="ConfigFields">
-        {fields.map((field, index) => {
-          const { id, ...rest } = field
-
-          return (
-            <ConfigAssessmentFormFields
-              colors={colors}
-              control={control}
-              index={index}
-              id={id}
-              key={id}
-              onCopy={onCopy}
-              onRemove={onRemove}
-              assessmentOptions={assessmentOptions}
-              handleClearAssessments={handleClearAssessments}
-              handleAssessmentSearch={handleAssessmentSearch}
-              {...rest}
-            />
-          )
-        })}
+      <div className="ConfigSectionFields">
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: 600, gridColumnStart: 1, gridColumnEnd: 1 }}
+        >
+          Configure rows
+        </Typography>
+        <ConfigurationSection control={control} />
       </div>
     </>
   )

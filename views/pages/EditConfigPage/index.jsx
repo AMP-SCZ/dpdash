@@ -4,13 +4,10 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { useParams, useOutletContext } from 'react-router-dom'
 
-import api from '../api'
-import PageHeader from '../components/PageHeader'
-import { colorList } from '../fe-utils/colorList'
-import ConfigForm from '../forms/ConfigForm'
-import { UserConfigModel } from '../models'
-
-const colors = colorList()
+import api from '../../api'
+import PageHeader from '../../components/PageHeader'
+import ConfigForm from '../../forms/ConfigForm'
+import { UserConfigModel } from '../../models'
 
 const EditConfigPage = () => {
   const { user, setNotification, users } = useOutletContext()
@@ -104,7 +101,6 @@ const EditConfigPage = () => {
       />
       <ConfigForm
         assessmentOptions={assessmentOptions}
-        colors={colors}
         friendsList={friendsList}
         onSubmit={handleSubmitPublish}
         initialValues={initialValues}

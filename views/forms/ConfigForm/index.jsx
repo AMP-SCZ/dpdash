@@ -1,13 +1,15 @@
 import React from 'react'
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button } from '@mui/material'
+import { Button, Divider } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 import useArrayFormFields from '../../hooks/useArrayFormFields'
 import { UserConfigModel } from '../../models'
 import ConfigFormFields from '../ConfigFields'
+import ConfigurationFormActions from '../ConfigFormActions'
+
 import './ConfigForm.css'
 
 const schema = yup.object({
@@ -39,7 +41,6 @@ const schema = yup.object({
 })
 
 const ConfigForm = ({
-  colors,
   friendsList,
   initialValues,
   onSubmit,
@@ -71,7 +72,6 @@ const ConfigForm = ({
         fields={fields}
         onRemove={removeField}
         onCopy={onCopy}
-        colors={colors}
         friendsList={friendsList}
         assessmentOptions={assessmentOptions}
         handleAssessmentSearch={handleAssessmentSearch}
@@ -79,53 +79,18 @@ const ConfigForm = ({
         handleClearUsers={handleClearUsers}
         handleSelectAllUsers={handleSelectAllUsers}
       />
-      <div className="ConfigFormActions">
+      <Divider>
         <Button
-          color="secondary"
-          size="small"
-          disableElevation
-          variant="contained"
+          variant="text"
+          sx={{ color: 'primary.dark', px: '30px' }}
           onClick={() => addNewField()}
-          sx={{ gridColumnStart: 1, gridColumnEnd: 1 }}
         >
-          Add a field
+          + Add new row section
         </Button>
-        <Button
-          disableElevation
-          onClick={handleSubmit(handleSubmitDraft)}
-          sx={{
-            backgroundColor: 'grey.A400',
-            gridColumnStart: 2,
-            gridColumnEnd: 2,
-            '&:active': {
-              backgroundColor: 'grey.A400',
-            },
-            '&:hover': {
-              backgroundColor: 'grey.A200',
-            },
-          }}
-          variant="contained"
-          size="small"
-        >
-          Save as draft
-        </Button>
-        <Button
-          type="submit"
-          size="small"
-          disableElevation
-          sx={{
-            backgroundColor: 'primary.dark',
-            '&:active': {
-              backgroundColor: 'primary.dark',
-            },
-            gridColumnStart: 3,
-            gridColumnEnd: 3,
-          }}
-          variant="contained"
-        >
-          Publish
-        </Button>
-      </div>
+      </Divider>
+      <ConfigurationFormActions
+        onSubmitDraft={() => console.log('submit draft')}
+      />
     </form>
   )
 }

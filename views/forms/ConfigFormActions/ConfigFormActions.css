@@ -1,0 +1,30 @@
+.ConfigFormActions {
+  display: grid;
+  gap: 30px;
+  font-size: 12px;
+  padding-top: 24px;
+}
+
+@media screen and (min-width: 2000px) {
+  .ConfigFormActions {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .ConfigFormActions {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .ConfigFormActions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .ConfigFormActions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
