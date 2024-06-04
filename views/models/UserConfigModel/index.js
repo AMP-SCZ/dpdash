@@ -1,6 +1,6 @@
-const defaultColorValue = 221
+const defaultColorValue = 0
 const UserConfigModel = {
-  defaultConfigValues: {
+  defaultConfigValues: (overrides = {}) => ({
     category: '',
     analysis: '',
     variable: '',
@@ -9,13 +9,16 @@ const UserConfigModel = {
     min: '0',
     max: '1',
     text: true,
-  },
+    ...overrides,
+  }),
   defaultFormValues: (overrides = {}) => ({
     configName: '',
     configType: 'matrix',
     description: '',
     readers: [],
-    config: [],
+    config: {
+      '#f7fcb9-#addd8e-#31a354': [UserConfigModel.defaultConfigValues()],
+    },
     public: false,
     ...overrides,
   }),

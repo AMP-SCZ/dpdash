@@ -11,10 +11,6 @@ import { ExpandMore, Add } from '@mui/icons-material'
 
 import ControlledSelectInput from '../ControlledSelect'
 
-import { colorList } from '../../fe-utils/colorList'
-
-const colors = colorList()
-
 const ConfigurationSection = (props) => {
   const { control } = props
   return (
@@ -47,16 +43,15 @@ const ConfigurationSection = (props) => {
           />
           <ControlledSelectInput
             control={control}
-            name={`config.color`}
-            value={221}
+            name={`config.${props.sectionKey}.${props.section}.color`}
+            value={props.colorValue}
             label="Theme"
             InputLabelProps={{ shrink: true }}
             required
             margin="dense"
             sx={{ gridColumnStart: 3, gridColumnEnd: 6, height: '50%' }}
-            type="number"
           >
-            {colors.map(({ value, label }, colorsIndex) => (
+            {props.colors.map(({ value, label }, colorsIndex) => (
               <MenuItem value={value} key={`${label}-${value}`}>
                 <div className="ColorPaletteDropdown">
                   {label.map((palette) => (

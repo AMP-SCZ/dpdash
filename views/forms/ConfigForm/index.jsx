@@ -5,10 +5,10 @@ import { Button, Divider } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
-import useArrayFormFields from '../../hooks/useArrayFormFields'
 import { UserConfigModel } from '../../models'
 import ConfigFormFields from '../ConfigFields'
 import ConfigurationFormActions from '../ConfigFormActions'
+import { colorList } from '../../fe-utils/colorList'
 
 import './ConfigForm.css'
 
@@ -39,6 +39,7 @@ const schema = yup.object({
   ),
   status: yup.number(),
 })
+const colors = colorList()
 
 const ConfigForm = ({
   friendsList,
@@ -49,41 +50,47 @@ const ConfigForm = ({
   handleAssessmentSearch,
   handleSubmitDraft,
 }) => {
-  const defaultFieldValue = UserConfigModel.defaultConfigValues
-
-  const { handleSubmit, control, getValues, setValue } = useForm({
+  const { handleSubmit, control, getValues, setValue, watch } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(schema),
   })
-  const { fields, addNewField, removeField } = useArrayFormFields({
-    control,
-    name: 'config',
-    defaultFieldValue,
-  })
-  const onCopy = (configCategoryIndex) =>
-    addNewField(getValues(`config[${configCategoryIndex}]`))
   const handleClearUsers = () => setValue('readers', [])
   const handleSelectAllUsers = () => setValue('readers', friendsList)
+  const addNewSection = () => {
+    const currentColors = getValues('config')
+    const unusedThemes = colors.filter(function ({ label }) {
+      return !Object.keys(currentColors).some(function (key) {
+        return label.join('-') === key
+      })
+    })
 
+    setValue('config', {
+      ...currentColors,
+      [unusedThemes[0].label.join('-')]: [
+        UserConfigModel.defaultConfigValues({ color: unusedThemes[0].value }),
+      ],
+    })
+  }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="ConfigForm">
       <ConfigFormFields
+        colors={colors}
         control={control}
-        fields={fields}
-        onRemove={removeField}
-        onCopy={onCopy}
+        onRemove={{}}
+        onCopy={{}}
         friendsList={friendsList}
         assessmentOptions={assessmentOptions}
         handleAssessmentSearch={handleAssessmentSearch}
         handleClearAssessments={handleClearAssessments}
         handleClearUsers={handleClearUsers}
         handleSelectAllUsers={handleSelectAllUsers}
+        initialValues={watch('config')}
       />
       <Divider>
         <Button
           variant="text"
           sx={{ color: 'primary.dark', px: '30px' }}
-          onClick={() => addNewField()}
+          onClick={() => addNewSection()}
         >
           + Add new row section
         </Button>

@@ -10,15 +10,11 @@ import { fontSize } from '../../../constants'
 
 const ConfigFormFields = ({
   control,
-  fields,
+  colors,
   friendsList,
-  onCopy,
-  onRemove,
-  assessmentOptions,
-  handleAssessmentSearch,
-  handleClearAssessments,
   handleClearUsers,
   handleSelectAllUsers,
+  initialValues,
 }) => {
   return (
     <>
@@ -35,7 +31,20 @@ const ConfigFormFields = ({
         >
           Configure rows
         </Typography>
-        <ConfigurationSection control={control} />
+        {Object.keys(initialValues).map((key, section) => {
+          const colorValue = colors.findIndex(
+            ({ label }) => key === label.join('-')
+          )
+          return (
+            <ConfigurationSection
+              control={control}
+              colors={colors}
+              sectionKey={key}
+              colorValue={colorValue}
+              section={section}
+            />
+          )
+        })}
       </div>
     </>
   )
