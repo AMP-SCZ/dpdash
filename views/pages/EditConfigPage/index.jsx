@@ -6,8 +6,11 @@ import { useParams, useOutletContext } from 'react-router-dom'
 
 import api from '../../api'
 import PageHeader from '../../components/PageHeader'
+import { colorList } from '../../fe-utils/colorList'
 import ConfigForm from '../../forms/ConfigForm'
 import { UserConfigModel } from '../../models'
+
+const colors = colorList()
 
 const EditConfigPage = () => {
   const { user, setNotification, users } = useOutletContext()

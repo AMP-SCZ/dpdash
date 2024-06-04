@@ -24,7 +24,6 @@ const NewConfigPage = () => {
     try {
       const newConfigurationAttributes = UserConfigModel.publishConfig(
         formValues,
-        colors,
         uid
       )
 
@@ -53,7 +52,6 @@ const NewConfigPage = () => {
   const handleSubmitDraft = async (formValues) => {
     const newConfigurationAttributes = UserConfigModel.saveAsDraft(
       formValues,
-      colors,
       uid
     )
 

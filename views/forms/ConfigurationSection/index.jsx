@@ -1,13 +1,13 @@
 import React from 'react'
+
+import { ExpandMore, Add } from '@mui/icons-material'
 import {
   Accordion,
   AccordionSummary,
-  AccordionDetails,
   Button,
   MenuItem,
   TextField,
 } from '@mui/material'
-import { ExpandMore, Add } from '@mui/icons-material'
 
 import ControlledSelectInput from '../ControlledSelect'
 
@@ -51,7 +51,7 @@ const ConfigurationSection = (props) => {
             margin="dense"
             sx={{ gridColumnStart: 3, gridColumnEnd: 6, height: '50%' }}
           >
-            {props.colors.map(({ value, label }, colorsIndex) => (
+            {props.colors.map(({ value, label }) => (
               <MenuItem value={value} key={`${label}-${value}`}>
                 <div className="ColorPaletteDropdown">
                   {label.map((palette) => (

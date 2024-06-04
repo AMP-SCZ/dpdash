@@ -5,10 +5,10 @@ import { Button, Divider } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
+import { colorList } from '../../fe-utils/colorList'
 import { UserConfigModel } from '../../models'
 import ConfigFormFields from '../ConfigFields'
 import ConfigurationFormActions from '../ConfigFormActions'
-import { colorList } from '../../fe-utils/colorList'
 
 import './ConfigForm.css'
 
@@ -48,7 +48,6 @@ const ConfigForm = ({
   assessmentOptions,
   handleClearAssessments,
   handleAssessmentSearch,
-  handleSubmitDraft,
 }) => {
   const { handleSubmit, control, getValues, setValue, watch } = useForm({
     defaultValues: initialValues,

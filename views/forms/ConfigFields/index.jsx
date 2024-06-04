@@ -1,12 +1,10 @@
 import React from 'react'
+
 import { Typography } from '@mui/material'
 
-import ConfigAssessmentFormFields from '../ConfigAssessmentFormFields'
 import ConfigTypeFormFields from '../ConfigTypeFormFields'
-
-import './ConfigFields.css'
 import ConfigurationSection from '../ConfigurationSection'
-import { fontSize } from '../../../constants'
+import './ConfigFields.css'
 
 const ConfigFormFields = ({
   control,
@@ -37,6 +35,7 @@ const ConfigFormFields = ({
           )
           return (
             <ConfigurationSection
+              key={key}
               control={control}
               colors={colors}
               sectionKey={key}

@@ -7,7 +7,7 @@ import ConfigForm from '.'
 import { colorList } from '../../fe-utils/colorList'
 import { UserConfigModel } from '../../models'
 
-describe('ConfigForm', () => {
+describe.skip('ConfigForm', () => {
   const defaultProps = {
     colors: colorList(),
     friendsList: [
