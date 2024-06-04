@@ -43,12 +43,21 @@ const AssessmentDayDataController = {
         query
       )
       console.log('PARTICIPANT DATA')
-      console.dir({ participantAssessmentData }, { depth: null })
+      console.dir(
+        {
+          participantAssessmentData,
+          metadata,
+          assessment_variables,
+          Consent,
+          query,
+        },
+        { depth: null }
+      )
       let sortedDayData = participant_assessments
       let maxDayInDayData = Math.max(
         ...participant_assessments.map((pa) => pa.day)
       )
-
+      console.dir(participant_assessments, { depth: null })
       if (participantAssessmentData) {
         sortedDayData = sortDayData(
           participantAssessmentData,
@@ -57,22 +66,22 @@ const AssessmentDayDataController = {
         maxDayInDayData = Math.max(
           ...sortedDayData.map((dayData) => dayData.day)
         )
-
+        console.log('Participant data update')
         await AssessmentDayDataModel.update(appDb, query, {
           ...participantAssessmentData,
           ...metadata,
-          Consent: parsedConsent,
           daysInStudy: maxDayInDayData,
           dayData: sortedDayData,
         })
         console.log('After AssessmentDayDataModel.update')
       } else {
-        await AssessmentDayDataModel.create(appDb, {
+        console.log('NEW PARTICIPANT DATA UPSERT')
+        await AssessmentDayDataModel.upsert(appDb, query, {
           ...metadata,
           Consent: parsedConsent,
           dayData: participant_assessments,
         })
-        console.log('After AssessmentDayDataModel.create')
+        console.log('After AssessmentDayDataModel.upsert')
       }
 
       const studyMetadata = await SiteMetadataModel.findOne(appDb, {
@@ -82,6 +91,7 @@ const AssessmentDayDataController = {
       console.dir({ studyMetadata }, { depth: null })
 
       if (!studyMetadata) {
+        console.log('new site metadata')
         await SiteMetadataModel.upsert(
           appDb,
           { study },
@@ -110,6 +120,7 @@ const AssessmentDayDataController = {
         console.dir({ isParticipantInDocument }, { depth: null })
 
         if (isParticipantInDocument) {
+          console.log('participant update site metadata upsert')
           await SiteMetadataModel.upsert(
             appDb,
             { participants: { $elemMatch: { participant } } },
@@ -123,6 +134,7 @@ const AssessmentDayDataController = {
           console.log('After participant in document')
           console.dir({ isParticipantInDocument }, { depth: null })
         } else {
+          console.log('new participant site metadata upsert')
           await SiteMetadataModel.upsert(
             appDb,
             { study },
@@ -176,14 +188,14 @@ const AssessmentDayDataController = {
       return next(err)
     }
   },
-  destroy: async (req, res) => {
+  destroy: async (req, res, next) => {
     try {
       const { appDb } = req.app.locals
       await appDb.collection(collections.assessmentDayData).drop()
 
       return res.status(200)
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      next(error)
     }
   },
 }

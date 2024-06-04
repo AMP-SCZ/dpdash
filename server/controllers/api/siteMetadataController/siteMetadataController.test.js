@@ -213,7 +213,7 @@ describe('siteMetadataController', () => {
     })
 
     describe('When unsuccessful', () => {
-      it('returns a status of 200 and a success data message', async () => {
+      it('it passess error to next', async () => {
         const body = createSiteMetadata({
           metadata: {
             filetype: 'text/csv',
@@ -249,17 +249,13 @@ describe('siteMetadataController', () => {
 
         const request = createRequest({ body })
         const response = createResponse()
+        const error = new Error('some error')
 
-        request.app.locals.appDb.findOne.mockRejectedValueOnce(
-          new Error('some error')
-        )
+        request.app.locals.appDb.findOne.mockRejectedValueOnce(error)
+        const next = jest.fn()
+        await SiteMetadataController.create(request, response, next)
 
-        await SiteMetadataController.create(request, response)
-
-        expect(response.status).toHaveBeenCalledWith(401)
-        expect(response.json).toHaveBeenCalledWith({
-          message: 'some error',
-        })
+        expect(next).toHaveBeenCalledWith(error)
       })
     })
   })
