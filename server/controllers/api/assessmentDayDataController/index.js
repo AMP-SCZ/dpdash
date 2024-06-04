@@ -71,6 +71,7 @@ const AssessmentDayDataController = {
       } else {
         await AssessmentDayDataModel.upsert(appDb, query, {
           ...metadata,
+          Consent: parsedConsent,
           dayData: participant_assessments,
         })
         console.log('After AssessmentDayDataModel.upsert')
