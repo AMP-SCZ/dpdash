@@ -44,7 +44,13 @@ const AssessmentDayDataController = {
       )
       console.log('PARTICIPANT DATA')
       console.dir(
-        { participantAssessmentData, metadata, assessment_variables },
+        {
+          participantAssessmentData,
+          metadata,
+          assessment_variables,
+          Consent,
+          query,
+        },
         { depth: null }
       )
       let sortedDayData = participant_assessments
@@ -60,7 +66,7 @@ const AssessmentDayDataController = {
         maxDayInDayData = Math.max(
           ...sortedDayData.map((dayData) => dayData.day)
         )
-
+        console.log('Participant data update')
         await AssessmentDayDataModel.update(appDb, query, {
           ...participantAssessmentData,
           ...metadata,
@@ -69,6 +75,7 @@ const AssessmentDayDataController = {
         })
         console.log('After AssessmentDayDataModel.update')
       } else {
+        console.log('NEW PARTICIPANT DATA UPSERT')
         await AssessmentDayDataModel.upsert(appDb, query, {
           ...metadata,
           Consent: parsedConsent,
@@ -84,6 +91,7 @@ const AssessmentDayDataController = {
       console.dir({ studyMetadata }, { depth: null })
 
       if (!studyMetadata) {
+        console.log('new site metadata')
         await SiteMetadataModel.upsert(
           appDb,
           { study },
@@ -112,6 +120,7 @@ const AssessmentDayDataController = {
         console.dir({ isParticipantInDocument }, { depth: null })
 
         if (isParticipantInDocument) {
+          console.log('participant update site metadata upsert')
           await SiteMetadataModel.upsert(
             appDb,
             { participants: { $elemMatch: { participant } } },
@@ -125,6 +134,7 @@ const AssessmentDayDataController = {
           console.log('After participant in document')
           console.dir({ isParticipantInDocument }, { depth: null })
         } else {
+          console.log('new participant site metadata upsert')
           await SiteMetadataModel.upsert(
             appDb,
             { study },
