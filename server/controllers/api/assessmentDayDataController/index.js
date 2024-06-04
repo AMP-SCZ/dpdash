@@ -177,15 +177,14 @@ const AssessmentDayDataController = {
       return next(err)
     }
   },
-  destroy: async (req, res) => {
+  destroy: async (req, res, next) => {
     try {
       const { appDb } = req.app.locals
       await appDb.collection(collections.assessmentDayData).drop()
 
       return res.status(200)
     } catch (error) {
-      console.log(error)
-      return res.status(400).json({ message: error.message })
+      next(error)
     }
   },
 }

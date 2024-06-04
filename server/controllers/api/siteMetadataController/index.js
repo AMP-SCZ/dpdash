@@ -2,7 +2,7 @@ import SiteMetadataModel from '../../../models/SiteMetadataModel'
 import { collections } from '../../../utils/mongoCollections'
 
 const SiteMetadataController = {
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     try {
       const { appDb } = req.app.locals
       const { metadata, participants } = req.body
@@ -67,7 +67,7 @@ const SiteMetadataController = {
 
       return res.status(200).json({ data: 'Metadata imported successfully.' })
     } catch (error) {
-      return res.status(401).json({ message: error.message })
+      next(error)
     }
   },
   destroy: async (req, res) => {
