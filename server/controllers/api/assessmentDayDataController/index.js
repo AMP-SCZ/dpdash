@@ -43,12 +43,15 @@ const AssessmentDayDataController = {
         query
       )
       console.log('PARTICIPANT DATA')
-      console.dir({ participantAssessmentData }, { depth: null })
+      console.dir(
+        { participantAssessmentData, metadata, assessment_variables },
+        { depth: null }
+      )
       let sortedDayData = participant_assessments
       let maxDayInDayData = Math.max(
         ...participant_assessments.map((pa) => pa.day)
       )
-
+      console.dir(participant_assessments, { depth: null })
       if (participantAssessmentData) {
         sortedDayData = sortDayData(
           participantAssessmentData,
@@ -61,18 +64,16 @@ const AssessmentDayDataController = {
         await AssessmentDayDataModel.update(appDb, query, {
           ...participantAssessmentData,
           ...metadata,
-          Consent: parsedConsent,
           daysInStudy: maxDayInDayData,
           dayData: sortedDayData,
         })
         console.log('After AssessmentDayDataModel.update')
       } else {
-        await AssessmentDayDataModel.create(appDb, {
+        await AssessmentDayDataModel.upsert(appDb, query, {
           ...metadata,
-          Consent: parsedConsent,
           dayData: participant_assessments,
         })
-        console.log('After AssessmentDayDataModel.create')
+        console.log('After AssessmentDayDataModel.upsert')
       }
 
       const studyMetadata = await SiteMetadataModel.findOne(appDb, {

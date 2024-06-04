@@ -8,10 +8,15 @@ const AssessmentDayDataModel = {
       .toArray(),
   findOne: async (db, query) =>
     await db.collection(collections.assessmentDayData).findOne(query),
-  create: async (db, participantData) =>
-    await db
-      .collection(collections.assessmentDayData)
-      .insertOne(participantData),
+  upsert: async (db, query, updatedAttributes) =>
+    await db.collection(collections.assessmentDayData).findOneAndUpdate(
+      query,
+      { $set: updatedAttributes },
+      {
+        upsert: true,
+        returnDocument: 'after',
+      }
+    ),
   createMany: async (db, assessmentDayData) =>
     await db
       .collection(collections.assessmentDayData)
