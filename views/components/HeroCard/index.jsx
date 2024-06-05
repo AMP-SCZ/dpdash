@@ -28,6 +28,9 @@ const HeroCard = () => {
           size="small"
           endIcon={<ArrowForwardOutlined />}
           variant="outlined"
+          href="https://sites.google.com/g.harvard.edu/dpdash/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Learn More
         </Button>
