@@ -67,7 +67,7 @@ const AssessmentDayDataController = {
           ...sortedDayData.map((dayData) => dayData.day)
         )
         console.log('Participant data update')
-        await AssessmentDayDataModel.update(appDb, query, {
+        await AssessmentDayDataModel.upsert(appDb, query, {
           ...participantAssessmentData,
           ...metadata,
           daysInStudy: maxDayInDayData,
