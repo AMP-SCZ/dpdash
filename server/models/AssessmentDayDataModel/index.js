@@ -21,10 +21,6 @@ const AssessmentDayDataModel = {
     await db
       .collection(collections.assessmentDayData)
       .insertMany(assessmentDayData),
-  update: async (db, query, assessmentDayDataAttributes) =>
-    await db
-      .collection(collections.assessmentDayData)
-      .updateOne(query, { $set: assessmentDayDataAttributes }),
   index: async (db, query) =>
     await db
       .collection(collections.assessmentDayData)
