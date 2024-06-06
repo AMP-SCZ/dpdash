@@ -33,4 +33,12 @@ describe('Hero Component', () => {
 
     expect(learnMoreButton).toBeDefined()
   })
+  test('Learn More button has href attribuates', () => {
+    const learnMoreButton = screen.getByText('Learn More')
+
+    expect(learnMoreButton).toHaveAttribute(
+      'href',
+      'https://sites.google.com/g.harvard.edu/dpdash/'
+    )
+  })
 })
