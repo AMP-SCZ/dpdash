@@ -14,15 +14,13 @@ const SiteMetadataController = {
       const studyMetadata = await SiteMetadataModel.findOne(appDb, { study })
 
       if (!studyMetadata) {
-        await SiteMetadataModel.upsert(
+        await SiteMetadataModel.upsert$Set(
           appDb,
           { study },
           {
-            setAttributes: {
-              ...metadata,
-              participants,
-              createdAt: new Date(),
-            },
+            ...metadata,
+            participants,
+            createdAt: new Date(),
           }
         )
       } else {
@@ -37,10 +35,10 @@ const SiteMetadataController = {
               }
             )
             if (!isParticipantInSiteMetadata) {
-              await SiteMetadataModel.upsert(
+              await SiteMetadataModel.upsert$addToSet(
                 appDb,
                 { study },
-                { addToSetAttributes: { participants: participant } }
+                { participants: participant }
               )
             } else {
               const updatedAttributes = Object.keys(participant).reduce(
@@ -51,14 +49,14 @@ const SiteMetadataController = {
                 },
                 {}
               )
-              await SiteMetadataModel.upsert(
+              await SiteMetadataModel.upsert$Set(
                 appDb,
                 {
                   participants: {
                     $elemMatch: { participant: participant.participant },
                   },
                 },
-                { setAttributes: updatedAttributes }
+                updatedAttributes
               )
             }
           })

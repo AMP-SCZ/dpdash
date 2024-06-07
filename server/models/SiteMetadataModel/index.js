@@ -7,14 +7,19 @@ const queryOptions = {
 const SiteMetadataModel = {
   findOne: async (db, query) =>
     await db.collection(collections.metadata).findOne(query),
-  upsert: async (db, query, { setAttributes, addToSetAttributes }) =>
+  upsert$Set: async (db, query, setAttributes) =>
     await db.collection(collections.metadata).findOneAndUpdate(
       query,
       {
-        $set: { ...(setAttributes || {}), updatedAt: new Date() },
-        $addToSet: Object.keys(addToSetAttributes || {}).length
-          ? { ...addToSetAttributes, createdAt: new Date() }
-          : {},
+        $set: setAttributes,
+      },
+      queryOptions
+    ),
+  upsert$addToSet: async (db, query, addToSetAttributes) =>
+    await db.collection(collections.metadata).findOneAndUpdate(
+      query,
+      {
+        $addToSet: addToSetAttributes,
       },
       queryOptions
     ),
