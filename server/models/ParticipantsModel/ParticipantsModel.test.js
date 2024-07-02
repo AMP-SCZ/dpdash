@@ -10,7 +10,18 @@ describe('ParticipantsModel', () => {
 
       expect(
         ParticipantsModel.intersectParticipants(groupedParticipants)
-      ).toEqual(['T1', 'T3'])
+      ).toEqual(['T3', 'T1'])
+    })
+
+    it('returns empty if no matching participants', () => {
+      const groupA = ['A1', 'A2', 'A4', 'A5', 'A6']
+      const groupB = ['T1', 'T3', 'T6']
+      const groupC = ['B1', 'B2', 'B3', 'B4', 'B5']
+      const groupedParticipants = [groupA, groupB, groupC]
+
+      expect(
+        ParticipantsModel.intersectParticipants(groupedParticipants)
+      ).toEqual([])
     })
   })
 })
