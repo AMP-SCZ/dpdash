@@ -10,7 +10,7 @@ describe('ParticipantsModel', () => {
 
       expect(
         ParticipantsModel.intersectParticipants(groupedParticipants)
-      ).toEqual(['T3', 'T1'])
+      ).toEqual(['T1', 'T3'])
     })
 
     it('returns empty if no matching participants', () => {
