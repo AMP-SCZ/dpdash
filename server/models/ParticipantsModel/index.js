@@ -51,7 +51,11 @@ const ParticipantsModel = {
   intersectParticipants: (groupedParticipants) => {
     const sortedGroupParticipants = groupedParticipants.sort(
       (groupA, groupB) =>
-        groupA.length < groupB.length || groupB.length < groupA.length ? -1 : 0
+        groupA.length < groupB.length || groupB.length < groupA.length
+          ? -1
+          : groupA.length > groupB.length || groupB.length > groupA.length
+            ? 1
+            : 0
     )
 
     return sortedGroupParticipants.reduce(
