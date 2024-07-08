@@ -48,6 +48,10 @@ describe(BarChartService, () => {
       it('returns data, labels, and study totals', async () => {
         const filters = {
           ...DEFAULT_FILTERS,
+          recruitment_status: {
+            Recruited: { label: 'Recruited', value: 0 },
+            'Not recruited': { label: 'Not Recruited', value: 0 },
+          },
           sites: {
             YA: { label: 'YA', value: 1 },
             LA: { label: 'LA', value: 1 },
@@ -75,75 +79,77 @@ describe(BarChartService, () => {
           processedDataBySite: new Map()
             .set('Yale', {
               counts: {
-                Bar: 0,
-                Foo: 1,
-                'N/A': 3,
+                Bar: 2,
+                Foo: 2,
+                'N/A': 0,
               },
               siteCode: 'YA',
               name: 'Yale',
               percentages: {
-                Bar: 0,
-                Foo: 25,
-                'N/A': 75,
+                Bar: 50,
+                Foo: 50,
+                'N/A': 0,
               },
               targets: {
                 Bar: 1,
                 Foo: 3,
               },
               totalsForStudy: {
-                count: 1,
+                count: 4,
                 targetTotal: 4,
               },
             })
             .set('Totals', {
               counts: {
-                Foo: 2,
-                'N/A': 12,
+                Bar: 2,
+                Foo: 6,
+                'N/A': 6,
               },
               siteCode: 'Totals',
               name: 'Totals',
               percentages: {
-                Foo: 14.285714285714285,
-                'N/A': 85.71428571428571,
+                Bar: 14.285714285714285,
+                Foo: 42.857142857142854,
+                'N/A': 42.857142857142854,
               },
               targets: {
                 Bar: 3,
                 Foo: 6,
               },
               totalsForStudy: {
-                count: 2,
+                count: 8,
                 targetTotal: 14,
               },
             })
             .set('Madrid', {
               counts: {
                 Bar: 0,
-                Foo: 1,
-                'N/A': 4,
+                Foo: 4,
+                'N/A': 1,
               },
               siteCode: 'MA',
               name: 'Madrid',
               percentages: {
                 Bar: 0,
-                Foo: 20,
-                'N/A': 80,
+                Foo: 80,
+                'N/A': 20,
               },
               targets: {
                 Bar: 2,
                 Foo: 3,
               },
               totalsForStudy: {
-                count: 1,
+                count: 4,
                 targetTotal: 5,
               },
             }),
           studyTotals: {
             Madrid: {
-              count: 1,
+              count: 4,
               targetTotal: 5,
             },
             Totals: {
-              count: 2,
+              count: 8,
               targetTotal: 14,
             },
             UCLA: {
@@ -151,7 +157,7 @@ describe(BarChartService, () => {
               targetTotal: 5,
             },
             Yale: {
-              count: 1,
+              count: 4,
               targetTotal: 4,
             },
           },

@@ -42,26 +42,27 @@ const ParticipantsModel = {
         participant: {
           $in:
             groupedParticipants.length > 1
-              ? ParticipantsModel.intersectParticipants(
-                  groupedParticipants[0],
-                  groupedParticipants[1]
-                )
+              ? ParticipantsModel.intersectParticipants(groupedParticipants)
               : groupedParticipants.flat(),
         },
       })
       .stream()
   },
-  intersectParticipants: (listA, listB) => {
-    const smallestList = listA.length < listB.length ? listA : listB
-    const largestList = listA.length > listB.length ? listA : listB
+  intersectParticipants: (groupedParticipants) => {
+    const sortedGroupParticipants = groupedParticipants.sort(
+      (groupA, groupB) => {
+        if (groupA.length === groupB.length) return 0
+        if (groupB.length > groupA.length) return 1
+        if (groupA.length < groupB.length) return -1
+      }
+    )
 
-    return smallestList.reduce((participants, participant) => {
-      const isParticipantInLargeList = largestList.includes(participant)
-
-      if (isParticipantInLargeList) participants.push(participant)
-
-      return participants
-    }, [])
+    return sortedGroupParticipants.reduce(
+      (participantGroupA, participantGroupB) =>
+        participantGroupA.filter((participant) =>
+          participantGroupB.includes(participant)
+        )
+    )
   },
 }
 

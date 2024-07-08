@@ -41,10 +41,46 @@ export const dayDataAssessments = [
     dayData: [{ day: 5, eeg: 'bar', var: 'var', baz: 'baz' }],
   }),
   createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'YA2',
+    study: 'YA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'YA2',
+    study: 'YA',
+    dayData: [{ recruitment_status: 'consented', day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'YA2',
+    study: 'YA',
+    dayData: [{ chrdemo_sexassigned: 2, day: 4 }],
+  }),
+  createAssessmentDayData({
     assessment: 'eeg',
     participant: 'YA3',
     study: 'YA',
     dayData: [{ day: 2, eeg: 'bar', var: 'var', baz: 'baz' }],
+  }),
+  createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'YA3',
+    study: 'YA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'YA3',
+    study: 'YA',
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'YA3',
+    study: 'YA',
+    dayData: [{ chrdemo_sexassigned: 2, day: 4 }],
   }),
   createAssessmentDayData({
     assessment: 'eeg',
@@ -52,14 +88,50 @@ export const dayDataAssessments = [
     study: 'YA',
     dayData: [
       { day: 5, eeg: null, var: 'var', baz: 'baz' },
-      { eeg: 'foo', var: 'var', baz: 'baz' },
+      { eeg: 'foo', var: 'var', baz: 'baz', day: 6 },
     ],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'YA4',
+    study: 'YA',
+    dayData: [{ chrdemo_sexassigned: 2, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'YA4',
+    study: 'YA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'YA4',
+    study: 'YA',
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
   }),
   createAssessmentDayData({
     assessment: 'eeg',
     participant: 'MA1',
     study: 'MA',
-    dayData: [{ eeg: 'foo', var: 'var', baz: 'baz' }],
+    dayData: [{ day: 1, eeg: 'foo', var: 'var', baz: 'baz' }],
+  }),
+  createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'MA1',
+    study: 'MA',
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'MA1',
+    study: 'MA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'MA1',
+    study: 'MA',
+    dayData: [{ chrdemo_sexassigned: 1, day: 4 }],
   }),
   createAssessmentDayData({
     assessment: 'eeg',
@@ -68,25 +140,34 @@ export const dayDataAssessments = [
     dayData: [{ day: 5, eeg: 'foo', var: 'var', baz: 'baz' }],
   }),
   createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'MA2',
+    study: 'MA',
+    dayData: [{ recruitment_status: 'not recruited', day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'MA2',
+    study: 'MA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'MA2',
+    study: 'MA',
+    dayData: [{ chrdemo_sexassigned: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
     assessment: 'eeg',
     participant: 'MA3',
     study: 'MA',
     dayData: [{ day: 2, eeg: 'foo', var: 'var', baz: 'baz' }],
   }),
   createAssessmentDayData({
-    assessment: 'eeg',
-    participant: 'MA4',
-    study: 'MA',
-    dayData: [
-      { day: 5, eeg: null, var: 'var', baz: 'baz' },
-      { eeg: 'foo', var: 'var', baz: 'baz' },
-    ],
-  }),
-  createAssessmentDayData({
     assessment: FILTERS_FORM,
     participant: 'MA3',
     study: 'MA',
-    dayData: [{ recruitment_status: 'consented', day: 4 }],
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
   }),
   createAssessmentDayData({
     assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
@@ -94,10 +175,36 @@ export const dayDataAssessments = [
     study: 'MA',
     dayData: [{ chrcrit_part: 1, day: 4 }],
   }),
-
   createAssessmentDayData({
     assessment: SOCIODEMOGRAPHICS_FORM,
     participant: 'MA3',
+    study: 'MA',
+    dayData: [{ chrdemo_sexassigned: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: 'eeg',
+    participant: 'MA4',
+    study: 'MA',
+    dayData: [
+      { day: 5, eeg: null, var: 'var', baz: 'baz' },
+      { day: 7, eeg: 'foo', var: 'var', baz: 'baz' },
+    ],
+  }),
+  createAssessmentDayData({
+    assessment: FILTERS_FORM,
+    participant: 'MA4',
+    study: 'MA',
+    dayData: [{ recruitment_status: 'recruited', day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: INCLUSION_EXCLUSION_CRITERIA_FORM,
+    participant: 'MA4',
+    study: 'MA',
+    dayData: [{ chrcrit_part: 1, day: 4 }],
+  }),
+  createAssessmentDayData({
+    assessment: SOCIODEMOGRAPHICS_FORM,
+    participant: 'MA4',
     study: 'MA',
     dayData: [{ chrdemo_sexassigned: 1, day: 4 }],
   }),
@@ -405,80 +512,82 @@ export const chartsDataSuccessResponse = (overrides = {}) => ({
 })
 
 export const chartsDataInitialResponse = (overrides = {}) => ({
+  chart_id: '',
   chartOwner: {
     display_name: 'Display Name',
     icon: 'icon',
     uid: 'owl',
   },
-  chart_id: '',
   dataBySite: [
     {
       counts: {
-        Bar: 0,
-        Foo: 1,
-        'N/A': 3,
-        Total: 1,
+        Bar: 1,
+        Foo: 2,
+        'N/A': 1,
+        Total: 3,
       },
-      siteCode: 'YA',
       name: 'Yale',
       percentages: {
-        Bar: 0,
-        Foo: 25,
-        'N/A': 75,
+        Bar: 25,
+        Foo: 50,
+        'N/A': 25,
       },
+      siteCode: 'YA',
       targets: {
         Bar: 1,
         Foo: 3,
         Total: 4,
       },
       totalsForStudy: {
-        count: 1,
+        count: 3,
         targetTotal: 4,
       },
     },
     {
       counts: {
-        Foo: 2,
-        'N/A': 12,
-        Total: 2,
+        Bar: 1,
+        Foo: 5,
+        'N/A': 8,
+        Total: 6,
       },
-      siteCode: 'Totals',
       name: 'Totals',
       percentages: {
-        Foo: 14.285714285714285,
-        'N/A': 85.71428571428571,
+        Bar: 7.142857142857142,
+        Foo: 35.714285714285715,
+        'N/A': 57.14285714285714,
       },
+      siteCode: 'Totals',
       targets: {
         Bar: 3,
         Foo: 6,
         Total: 14,
       },
       totalsForStudy: {
-        count: 2,
+        count: 6,
         targetTotal: 14,
       },
     },
     {
       counts: {
         Bar: 0,
-        Foo: 1,
-        'N/A': 4,
-        Total: 1,
+        Foo: 3,
+        'N/A': 2,
+        Total: 3,
       },
-      siteCode: 'MA',
       name: 'Madrid',
       percentages: {
         Bar: 0,
-        Foo: 20,
-        'N/A': 80,
+        Foo: 60,
+        'N/A': 40,
       },
+      siteCode: 'MA',
       targets: {
         Bar: 2,
         Foo: 3,
         Total: 5,
       },
       totalsForStudy: {
-        count: 1,
+        count: 3,
         targetTotal: 5,
       },
     },
@@ -486,12 +595,12 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
   description: 'Participant EEG Measurements',
   filters: {
     chrcrit_part: {
-      HC: {
-        label: 'HC',
-        value: 1,
-      },
       CHR: {
         label: 'CHR',
+        value: 1,
+      },
+      HC: {
+        label: 'HC',
         value: 1,
       },
       Missing: {
@@ -499,13 +608,33 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
         value: 1,
       },
     },
-    sex_at_birth: {
-      Male: {
-        label: 'Male',
+    networks: {
+      PRESCIENT: {
+        label: 'PRESCIENT',
+        value: 0,
+      },
+      ProNET: {
+        label: 'ProNET',
+        value: 0,
+      },
+    },
+    recruitment_status: {
+      'Not recruited': {
+        label: 'Not Recruited',
+        value: 0,
+      },
+      Recruited: {
+        label: 'Recruited',
         value: 1,
       },
+    },
+    sex_at_birth: {
       Female: {
         label: 'Female',
+        value: 1,
+      },
+      Male: {
+        label: 'Male',
         value: 1,
       },
       Missing: {
@@ -514,22 +643,16 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       },
     },
     sites: {
-      YA: { label: 'YA', value: 1 },
-      LA: { label: 'LA', value: 1 },
-      MA: { label: 'MA', value: 1 },
-    },
-    networks: {
-      PRESCIENT: { label: 'PRESCIENT', value: 0 },
-      ProNET: { label: 'ProNET', value: 0 },
-    },
-    recruitment_status: {
-      'Not recruited': {
-        label: 'Not Recruited',
-        value: 0,
+      LA: {
+        label: 'LA',
+        value: 1,
       },
-
-      Recruited: {
-        label: 'Recruited',
+      MA: {
+        label: 'MA',
+        value: 1,
+      },
+      YA: {
+        label: 'YA',
         value: 1,
       },
     },
@@ -565,24 +688,25 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
     tableRows: [
       {
         Bar: '0 / 2 (0%)',
-        Foo: '1 / 3 (33%)',
-        'N/A': '4',
-        Total: '1 / 5 (20%)',
+        Foo: '3 / 3 (100%)',
+        'N/A': '2',
+        Total: '3 / 5 (60%)',
         site: 'Madrid',
         siteCode: 'MA',
       },
       {
-        Bar: '0 / 1 (0%)',
-        Foo: '1 / 3 (33%)',
-        'N/A': '3',
-        Total: '1 / 4 (25%)',
+        Bar: '1 / 1 (100%)',
+        Foo: '2 / 3 (67%)',
+        'N/A': '1',
+        Total: '3 / 4 (75%)',
         site: 'Yale',
         siteCode: 'YA',
       },
       {
-        Foo: '2 / 6 (33%)',
-        'N/A': '12',
-        Total: '2 / 14 (14%)',
+        Bar: '1 / 3 (33%)',
+        Foo: '5 / 6 (83%)',
+        'N/A': '8',
+        Total: '6 / 14 (43%)',
         site: 'Totals',
         siteCode: 'Totals',
       },
@@ -602,6 +726,7 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       name: 'N/A',
     },
   ],
+  lastModified: '',
   legend: [
     {
       name: 'Foo',
@@ -620,11 +745,11 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
   ],
   studyTotals: {
     Madrid: {
-      count: 1,
+      count: 3,
       targetTotal: 5,
     },
     Totals: {
-      count: 2,
+      count: 6,
       targetTotal: 14,
     },
     UCLA: {
@@ -632,23 +757,22 @@ export const chartsDataInitialResponse = (overrides = {}) => ({
       targetTotal: 5,
     },
     Yale: {
-      count: 1,
+      count: 3,
       targetTotal: 4,
     },
   },
   title: 'Eeg Measurements',
   userSites: ['LA', 'MA', 'YA'],
-  lastModified: '',
   ...overrides,
 })
 
 export const chartsDataFilterResponse = (overrides = {}) => ({
+  chart_id: '',
   chartOwner: {
     display_name: 'Display Name',
     icon: 'icon',
     uid: 'owl',
   },
-  chart_id: '',
   dataBySite: [
     {
       counts: {
@@ -657,13 +781,13 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         'N/A': 4,
         Total: 1,
       },
-      siteCode: 'MA',
       name: 'Madrid',
       percentages: {
         Bar: 0,
         Foo: 20,
         'N/A': 80,
       },
+      siteCode: 'MA',
       targets: {
         Bar: 2,
         Foo: 3,
@@ -680,12 +804,12 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         'N/A': 13,
         Total: 1,
       },
-      siteCode: 'Totals',
       name: 'Totals',
       percentages: {
         Foo: 7.142857142857142,
         'N/A': 92.85714285714286,
       },
+      siteCode: 'Totals',
       targets: {
         Bar: 2,
         Foo: 3,
@@ -700,12 +824,12 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
   description: 'Participant EEG Measurements',
   filters: {
     chrcrit_part: {
-      HC: {
-        label: 'HC',
-        value: 0,
-      },
       CHR: {
         label: 'CHR',
+        value: 0,
+      },
+      HC: {
+        label: 'HC',
         value: 0,
       },
       Missing: {
@@ -713,14 +837,34 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
         value: 0,
       },
     },
-    sex_at_birth: {
-      Male: {
-        label: 'Male',
+    networks: {
+      PRESCIENT: {
+        label: 'PRESCIENT',
+        value: 0,
+      },
+      ProNET: {
+        label: 'ProNET',
+        value: 0,
+      },
+    },
+    recruitment_status: {
+      'Not recruited': {
+        label: 'Not Recruited',
         value: 1,
       },
+      Recruited: {
+        label: 'Recruited',
+        value: 0,
+      },
+    },
+    sex_at_birth: {
       Female: {
         label: 'Female',
         value: 0,
+      },
+      Male: {
+        label: 'Male',
+        value: 1,
       },
       Missing: {
         label: 'Missing',
@@ -728,23 +872,17 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
       },
     },
     sites: {
-      YA: { label: 'YA', value: 1 },
-      LA: { label: 'LA', value: 1 },
-      MA: { label: 'MA', value: 1 },
-    },
-    networks: {
-      PRESCIENT: { label: 'PRESCIENT', value: 0 },
-      ProNET: { label: 'ProNET', value: 0 },
-    },
-    recruitment_status: {
-      'Not recruited': {
-        label: 'Not Recruited',
+      LA: {
+        label: 'LA',
         value: 1,
       },
-
-      Recruited: {
-        label: 'Recruited',
-        value: 0,
+      MA: {
+        label: 'MA',
+        value: 1,
+      },
+      YA: {
+        label: 'YA',
+        value: 1,
       },
     },
   },
@@ -808,6 +946,7 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
       name: 'N/A',
     },
   ],
+  lastModified: '',
   legend: [
     {
       name: 'Foo',
@@ -844,7 +983,6 @@ export const chartsDataFilterResponse = (overrides = {}) => ({
   },
   title: 'Eeg Measurements',
   userSites: ['LA', 'MA', 'YA'],
-  lastModified: '',
   ...overrides,
 })
 
