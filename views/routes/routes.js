@@ -33,8 +33,8 @@ export const routes = {
   viewChart: (chartId, queryParams) =>
     queryParams
       ? `/charts/${chartId}${qs.stringify(queryParams, {
-          addQueryPrefix: true,
-        })}`
+        addQueryPrefix: true,
+      })}`
       : `/charts/${chartId}`,
   viewChartPage: '/charts/:chart_id',
   viewConfiguration: (configId) => `/u/configure?s=view&id=${configId}`,
@@ -51,6 +51,8 @@ export const apiRoutes = {
   },
   assessments: {
     index: `${apiPath}/assessments`,
+    rawData: (assessment, variable) =>
+      `${apiPath}/assessments/${assessment}/data/${variable}`,
   },
   auth: {
     login: `${apiPath}/login`,
