@@ -50,6 +50,7 @@ if (process.env.NODE_ENV === 'development') {
   })
   app.use(connectLiveReload())
 }
+
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.ico')))
 
@@ -89,17 +90,12 @@ const mongoURI =
   `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:27017/?tls=true&tlsCAfile=global-bundle.pem&retryWrites=false`
 
 const client = new MongoClient(mongoURI, { monitorCommands: true })
-
 app.locals.appDb = client.db()
-let firstAdminNotChecked = true
-client.on('connectionCreated', async () => {
-  if (firstAdminNotChecked) {
-    await UserModel.createFirstAdmin(app.locals.appDb)
-    firstAdminNotChecked = false
-  }
-})
+
+UserModel.createFirstAdmin(app.locals.appDb)
+
 /** session store setup */
-app.set('trust proxy', 1)
+app.set('trust proxy', true)
 app.use(
   expressSession({
     secret: process.env.SESSION_SECRET,

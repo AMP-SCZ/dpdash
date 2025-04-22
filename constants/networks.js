@@ -1,34 +1,3 @@
-export const SITES_BY_NETWORK = {
-  PRESCIENT: ['ME', 'CG', 'JE', 'CP', 'BM', 'ST', 'LS', 'GW', 'SG', 'HK'],
-  ProNET: [
-    'LA',
-    'OR',
-    'BI',
-    'NL',
-    'NC',
-    'SD',
-    'CA',
-    'YA',
-    'SF',
-    'PA',
-    'SI',
-    'PI',
-    'NN',
-    'IR',
-    'TE',
-    'GA',
-    'WU',
-    'HA',
-    'MT',
-    'KC',
-    'PV',
-    'MA',
-    'CM',
-    'MU',
-    'SH',
-    'SL',
-    'OH',
-    'UR',
-    'CU',
-  ],
-}
+import networksConfig from '../config/networks.json'
+
+export const SITES_BY_NETWORK = networksConfig.SITES_BY_NETWORK
