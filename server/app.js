@@ -93,7 +93,6 @@ const mongoURI =
 const client = new MongoClient(mongoURI, { monitorCommands: true })
 app.locals.appDb = client.db()
 
-console.log("creating admin")
 UserModel.createFirstAdmin(app.locals.appDb)
 
 
