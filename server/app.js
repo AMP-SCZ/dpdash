@@ -10,7 +10,6 @@ import helmet from 'helmet'
 import livereload from 'livereload'
 import { MongoClient } from 'mongodb'
 import morgan from 'morgan'
-import net from 'net'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
 import favicon from 'serve-favicon'
@@ -94,7 +93,6 @@ const client = new MongoClient(mongoURI, { monitorCommands: true })
 app.locals.appDb = client.db()
 
 UserModel.createFirstAdmin(app.locals.appDb)
-
 
 /** session store setup */
 app.set('trust proxy', true)

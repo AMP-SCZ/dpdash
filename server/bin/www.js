@@ -3,7 +3,9 @@
  */
 
 import { createServer } from 'http'
+
 import { configDotenv } from 'dotenv'
+
 import app from '../app'
 
 configDotenv({ path: '.env' })
