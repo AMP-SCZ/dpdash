@@ -10,6 +10,7 @@ import helmet from 'helmet'
 import livereload from 'livereload'
 import { MongoClient } from 'mongodb'
 import morgan from 'morgan'
+import net from 'net'
 import passport from 'passport'
 import { Strategy } from 'passport-local'
 import favicon from 'serve-favicon'
@@ -50,6 +51,7 @@ if (process.env.NODE_ENV === 'development') {
   })
   app.use(connectLiveReload())
 }
+
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.ico')))
 
@@ -99,7 +101,7 @@ client.on('connectionCreated', async () => {
   }
 })
 /** session store setup */
-app.set('trust proxy', 1)
+app.set('trust proxy', true)
 app.use(
   expressSession({
     secret: process.env.SESSION_SECRET,
