@@ -36,12 +36,16 @@ These files will be mounted to the nginx container to enable HTTPS.
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
 
-### 3. Launch the Application
+### 3. Customize Configuration
+
+If you need to customize the behavior of filters, studies, networks, etc. you can override the default configuration files by creating your own JSON files and mounting them to the container at the path `/app/config`. Available configuration values can be found in the default `/config/vars.json` and `/config/networks.json`.
+
+### 4. Launch the Application
 
 From the application root directory, run:
 
 ```bash
-docker compose up
+docker compose up --volume ./path/to/custom/config:/src/config:ro
 ```
 
 This will start all required services:
@@ -53,7 +57,7 @@ This will start all required services:
 To run in detached mode:
 
 ```bash
-docker compose up -d
+docker compose up -d --volume ./custom/config:/app/config:ro
 ```
 
 To stop the application:
