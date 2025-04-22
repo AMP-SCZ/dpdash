@@ -91,15 +91,12 @@ const mongoURI =
   `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:27017/?tls=true&tlsCAfile=global-bundle.pem&retryWrites=false`
 
 const client = new MongoClient(mongoURI, { monitorCommands: true })
-
 app.locals.appDb = client.db()
-let firstAdminNotChecked = true
-client.on('connectionCreated', async () => {
-  if (firstAdminNotChecked) {
-    await UserModel.createFirstAdmin(app.locals.appDb)
-    firstAdminNotChecked = false
-  }
-})
+
+console.log("creating admin")
+UserModel.createFirstAdmin(app.locals.appDb)
+
+
 /** session store setup */
 app.set('trust proxy', true)
 app.use(

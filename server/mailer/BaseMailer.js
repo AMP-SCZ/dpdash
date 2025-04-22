@@ -1,4 +1,5 @@
 import { SES } from '@aws-sdk/client-ses'
+import { createTransport } from 'nodemailer'
 
 export default class BaseMailer {
   constructor({ to, from }) {
@@ -11,6 +12,27 @@ export default class BaseMailer {
   }
 
   get mailService() {
+    if (process.env.SMTP_HOST) {
+      return {
+        sendEmail: async (params) => {
+          const transporter = createTransport({
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT,
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS,
+            },
+          })
+
+          return await transporter.sendMail({
+            from: params.Source,
+            to: params.Destination.ToAddresses,
+            subject: params.Message.Subject.Data,
+            html: params.Message.Body.Html.Data,
+          })
+        },
+      }
+    }
     return new SES({ apiVersion: '2010-12-01', region: 'us-east-1' })
   }
 

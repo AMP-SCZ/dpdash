@@ -100,6 +100,7 @@ const UserModel = {
     return adminUser.password === adminUser.reset_key
   },
   createFirstAdmin: async (db) => {
+    console.log('has admin: ', await UserModel.hasAdmin(db))
     if (await UserModel.hasAdmin(db)) {
       if (await UserModel.adminPasswordIsNotReset(db)) {
         const adminUser = await UserModel.findOne(db, { uid: admin })
