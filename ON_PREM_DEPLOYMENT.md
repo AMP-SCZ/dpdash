@@ -11,6 +11,7 @@
 ### 1. SSL Certificate Setup
 
 Obtain SSL certificate files from your certificate provider (e.g., Let's Encrypt) and place them in the application root:
+
 - Save the certificate file as `default.crt`
 - Save the private key file as `default.key`
 
@@ -38,24 +39,29 @@ These files will be mounted to the nginx container to enable HTTPS.
 ### 3. Launch the Application
 
 From the application root directory, run:
+
 ```bash
 docker compose up
 ```
 
 This will start all required services:
+
 - nginx (web server)
 - node-app (application server)
 - mongodb (database)
 
 To run in detached mode:
+
 ```bash
 docker compose up -d
 ```
 
 To stop the application:
+
 ```bash
 docker compose down
 ```
+
 ## Maintenance
 
 ### 1. Connecting directly to Mongo
@@ -67,9 +73,9 @@ Find the container ID of the mongo container with `docker ps` and then run `dock
 The `IMPORT_API_USERS` and `IMPORT_API_KEYS` environment variables are used to authenticate API requests to import data. You can use these credentials with the import script at https://github.com/AMP-SCZ/dpimport to import data to the database. The updated script is on the branch `381-update-import-script-to-json-payload` and can be run by creating a config file like so:
 
 ```yaml
- api_url: http://your.app.example.com/api/v1/import/data/
- api_user: importer
- api_key: super_secret
+api_url: http://your.app.example.com/api/v1/import/data/
+api_user: importer
+api_key: super_secret
 ```
 
 And running the script with the following command:
