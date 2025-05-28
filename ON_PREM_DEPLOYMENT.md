@@ -3,21 +3,11 @@
 ## Prerequisites
 
 1. Docker and Docker Compose installed on your system
-2. SSL Certificate files
-3. Environment configuration
+2. Environment configuration
 
 ## Setup Instructions
 
-### 1. SSL Certificate Setup
-
-Obtain SSL certificate files from your certificate provider (e.g., Let's Encrypt) and place them in the application root:
-
-- Save the certificate file as `default.crt`
-- Save the private key file as `default.key`
-
-These files will be mounted to the nginx container to enable HTTPS.
-
-### 2. Environment Configuration
+### 1. Environment Configuration
 
 1. Create a `.env` file in the application root
 2. Copy the contents from `.env.sample`
@@ -31,33 +21,54 @@ These files will be mounted to the nginx container to enable HTTPS.
    SMTP_PASS=<your-smtp-password>
    ADMIN_EMAIL=<admin-email>
    EMAIL_SENDER=<sender-email>
-   HOME_URL=<your-domain>
+   HOME_URL=https://dpdash.local
    IMPORT_API_USERS=<comma-separated-api-users>
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
 
-### 3. Customize Configuration
+### 2. Local Domain Setup
 
-If you need to customize the behavior of filters, studies, networks, etc. you can override the default configuration files by creating your own JSON files and mounting them to the container at the path `/app/config`. Available configuration values can be found in the default `/config/vars.json` and `/config/networks.json`.
+The application is configured to use the hostname `dpdash.local`. Add this to your hosts file:
+
+```
+# On Linux/Mac: Edit /etc/hosts
+# On Windows: Edit C:\Windows\System32\drivers\etc\hosts
+127.0.0.1 dpdash.local
+```
+
+### 3. Generate Self-Signed Certificate
+
+Run the provided script to generate a self-signed certificate:
+
+```bash
+chmod +x generate-cert.sh
+./generate-cert.sh
+```
 
 ### 4. Launch the Application
 
 From the application root directory, run:
 
 ```bash
-docker compose up --volume ./path/to/custom/config:/src/config:ro
+docker compose up
 ```
 
 This will start all required services:
 
-- nginx (web server)
+- nginx-proxy-manager (web server with admin UI)
 - node-app (application server)
 - mongodb (database)
 
 To run in detached mode:
 
 ```bash
-docker compose up -d --volume ./custom/config:/app/config:ro
+docker compose up -d
+```
+
+To include the SMTP testing server:
+
+```bash
+docker compose --profile smtp up
 ```
 
 To stop the application:
@@ -65,6 +76,18 @@ To stop the application:
 ```bash
 docker compose down
 ```
+
+### 5. Access the Application
+
+- Access the application at: https://dpdash.local
+- Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+  - Default login: admin@example.com / changeme
+
+Note: Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+
+#### Security Warning
+
+Nginx Proxy Manager should not be exposed to the internet. It is recommended to run it behind another web server that handles authentication and SSL termination. It also isn't required for production, as you can configure SSL termination and authentication at the load balancer level. It is necessary for local development because the application uses secure cookies AND it is considered a best practice to route all traffic over https.
 
 ## Maintenance
 
