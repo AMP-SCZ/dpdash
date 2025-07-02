@@ -89,6 +89,13 @@ const mongoURI =
   process.env.MONGODB_URI ||
   `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:27017/?tls=true&tlsCAfile=global-bundle.pem&retryWrites=false`
 
+logger.info(`
+  MongoDB URI: ${process.env.MONGODB_URI.replace(
+    /:.*@/g,
+    ':MASKED:MASKED@'
+  )}
+`)
+
 const client = new MongoClient(mongoURI, { monitorCommands: true })
 app.locals.appDb = client.db()
 
