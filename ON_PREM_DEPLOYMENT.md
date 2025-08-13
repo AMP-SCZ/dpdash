@@ -99,13 +99,12 @@ docker compose down
 First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
 
 1. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
-  - Default login: `admin@example.com` / `changeme`
-  - Upload the custom SSL certificate that you created:
+   - Default login: `admin@example.com` / `changeme`
+   - Upload the custom SSL certificate that you created:
+     <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
 
-    <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
-
-  - From Nginx Proxy Manager dashboard, add this proxy:
-    <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+   - From Nginx Proxy Manager dashboard, add this proxy:
+     <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
 2. Access the application at: https://dpdash.local/
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
