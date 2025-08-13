@@ -70,9 +70,9 @@ From the application root directory, run:
 docker compose up
 ```
 
-This will start all required services:
+This will start all required services in background:
 
-- nginx-proxy-manager (web server with admin UI)
+- nginx-proxy-manager (web server that allows configuring SSL certificates and proxy)
 - node-app (application server)
 - mongodb (database)
 
@@ -96,11 +96,22 @@ docker compose down
 
 ### 5. Access the Application
 
-- Access the application at: https://dpdash.local
-- Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
-  - Default login: admin@example.com / changeme
+First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
 
-Note: Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+1. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+  - Default login: `admin@example.com` / `changeme`
+  - Upload the custom SSL certificate that you created:
+
+    <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
+
+  - From Nginx Proxy Manager dashboard, add this proxy:
+    <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+
+2. Access the application at: https://dpdash.local/
+   - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+   - Import data to mongodb and contact the DPdash admin to get access.
+
 
 #### Security Warning
 
