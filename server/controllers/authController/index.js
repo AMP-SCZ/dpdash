@@ -71,6 +71,7 @@ const AuthController = {
         mail,
         account_expires,
         preferences: { config: configuration._id.toString() },
+        access: ["MA"],
       }
       const newUser = await UserModel.create(appDb, newUserAttributes)
       const registrationMailer = new RegistrationMailer(newUser)
