@@ -2,29 +2,39 @@
 
 ## Prerequisites
 
-1. Docker and Docker Compose installed on your system
-2. Environment configuration
+1. Docker and Docker Compose should be installed on your system.
+2. Port `27017/tcp` should be opened through `firewall-cmd` for external mongodb connection.
 
 ## Setup Instructions
 
 ### 1. Environment Configuration
 
-1. Create a `.env` file in the application root
+1. Create a `.env` file in `dpdash/` directory
 2. Copy the contents from `.env.sample`
 3. Set the following required variables:
    ```
    MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
    SMTP_HOST=<your-smtp-server>
-   SMTP_PORT=587
-   SMTP_USER=<your-smtp-username>
-   SMTP_PASS=<your-smtp-password>
+   SMTP_PORT=25
+   SMTP_USER=
+   SMTP_PASS=
    ADMIN_EMAIL=<admin-email>
    EMAIL_SENDER=<sender-email>
    HOME_URL=https://dpdash.local
    IMPORT_API_USERS=<comma-separated-api-users>
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
+
+To find `SMTP_HOST`, send yourself an email. Open the email within Outlook and `View`-->`View message details`.
+Look for something like:
+
+```
+Received: from unknown (HELO pnl-xtreme.partners.org) ([170.123.12.123])
+  by ob1.hc6077-55.iphmx.com
+```
+
+The last one is the `SMTP_HOST`.
 
 ### 2. Local Domain Setup
 
@@ -41,8 +51,15 @@ The application is configured to use the hostname `dpdash.local`. Add this to yo
 Run the provided script to generate a self-signed certificate:
 
 ```bash
-chmod +x generate-cert.sh
-./generate-cert.sh
+chmod +x make-cert.sh
+./make-cert.sh
+```
+
+It will create two files in `certs/` directory:
+
+```
+$ ls certs/
+selfsigned.crt  selfsigned.key
 ```
 
 ### 4. Launch the Application
