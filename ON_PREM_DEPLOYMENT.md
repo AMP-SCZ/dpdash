@@ -9,7 +9,7 @@
 
 ### 1. Environment Configuration
 
-1. Create a `.env` file in `dpdash/` directory
+1. Create a `.env` file in application root directory
 2. Copy the contents from `.env.sample`
 3. Set the following required variables:
    ```
@@ -26,7 +26,7 @@
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
 
-To find `SMTP_HOST`, send yourself an email. Open the email within Outlook and `View`-->`View message details`.
+To find `SMTP_HOST`, send yourself an email from the server. Open the email within Outlook and `View`-->`View message details`.
 Look for something like:
 
 ```
