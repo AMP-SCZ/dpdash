@@ -2,29 +2,39 @@
 
 ## Prerequisites
 
-1. Docker and Docker Compose installed on your system
-2. Environment configuration
+1. Docker and Docker Compose should be installed on your system.
+2. Port `27017/tcp` should be opened through `firewall-cmd` for external mongodb connection.
 
 ## Setup Instructions
 
 ### 1. Environment Configuration
 
-1. Create a `.env` file in the application root
+1. Create a `.env` file in application root directory
 2. Copy the contents from `.env.sample`
 3. Set the following required variables:
    ```
    MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
    SMTP_HOST=<your-smtp-server>
-   SMTP_PORT=587
-   SMTP_USER=<your-smtp-username>
-   SMTP_PASS=<your-smtp-password>
+   SMTP_PORT=25
+   SMTP_USER=
+   SMTP_PASS=
    ADMIN_EMAIL=<admin-email>
    EMAIL_SENDER=<sender-email>
    HOME_URL=https://dpdash.local
    IMPORT_API_USERS=<comma-separated-api-users>
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
+
+To find `SMTP_HOST`, send yourself an email from the server. Open the email within Outlook and `View`-->`View message details`.
+Look for something like:
+
+```
+Received: from unknown (HELO pnl-xtreme.partners.org) ([170.123.12.123])
+  by ob1.hc6077-55.iphmx.com
+```
+
+The last one is the `SMTP_HOST`.
 
 ### 2. Local Domain Setup
 
@@ -41,8 +51,15 @@ The application is configured to use the hostname `dpdash.local`. Add this to yo
 Run the provided script to generate a self-signed certificate:
 
 ```bash
-chmod +x generate-cert.sh
-./generate-cert.sh
+chmod +x make-cert.sh
+./make-cert.sh
+```
+
+It will create two files in `certs/` directory:
+
+```
+$ ls certs/
+selfsigned.crt  selfsigned.key
 ```
 
 ### 4. Launch the Application
@@ -53,9 +70,9 @@ From the application root directory, run:
 docker compose up
 ```
 
-This will start all required services:
+This will start all required services in background:
 
-- nginx-proxy-manager (web server with admin UI)
+- nginx-proxy-manager (web server that allows configuring SSL certificates and proxy)
 - node-app (application server)
 - mongodb (database)
 
@@ -79,11 +96,21 @@ docker compose down
 
 ### 5. Access the Application
 
-- Access the application at: https://dpdash.local
-- Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
-  - Default login: admin@example.com / changeme
+First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
 
-Note: Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+1. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+   - Default login: `admin@example.com` / `changeme`
+   - Upload the custom SSL certificate that you created:
+     <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
+
+   - From Nginx Proxy Manager dashboard, add this proxy:
+     <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+
+2. Access the application at: https://dpdash.local/
+   - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+   - Import data to mongodb and contact the DPdash admin to get access.
+
 
 #### Security Warning
 
