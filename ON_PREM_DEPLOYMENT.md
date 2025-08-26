@@ -122,6 +122,33 @@ Nginx Proxy Manager should not be exposed to the internet. It is recommended to 
 
 Find the container ID of the mongo container with `docker ps` and then run `docker exec -it <container-id> /bin/bash` to get a terminal within the container. From there you can run `mongosh` to connect to the database.
 
+### 2. Importing charts, configs, users
+
+Due to Gnar company's changes in database structure, [this](https://github.com/AMP-SCZ/utility/blob/f84e3d5a211d5e10020c670994dd78e79f07fb17/dpdash_ci_cd/dpdash_ci_cd.sh#L22-L29) method of `mongoimport` no longer works. The new method is:
+
+```
+mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=charts charts_20230728_ci_cd.json
+mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=configs configs_20230728_ci_cd.json
+mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=users users_20230728_ci_cd.json
+```
+
+The trailing JSONs can be obtained from rc-predict.partners.org's `mongoexport`.
+
+<details>
+   <summary>mongoexport</summary>
+   
+   ```
+   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdata?authSource=admin" --collection=charts --out=/tmp/charts_${datestamp}.json
+   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=configs --out=/tmp/configs_${datestamp}.json
+   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=users --out=/tmp/users_${datestamp}.json
+   ```
+   
+</details>
+
+```
+
+```
+
 ### 2. Importing data
 
 The `IMPORT_API_USERS` and `IMPORT_API_KEYS` environment variables are used to authenticate API requests to import data. You can use these credentials with the import script at https://github.com/AMP-SCZ/dpimport to import data to the database. The updated script is on the branch `381-update-import-script-to-json-payload` and can be run by creating a config file like so:
