@@ -69,7 +69,7 @@ const ViewChartPage = () => {
 
     return res
   }
-  const handleNavigateToChartPage = () => navigate('charts')
+  const handleNavigateToChartPage = () => navigate('/charts')
   const handleTooltipPosition = ({ chartWidth, xCoordinate }) => {
     const isXCoordinateGreater = chartWidth - tooltipWidth < xCoordinate
 
