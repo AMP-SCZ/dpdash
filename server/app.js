@@ -90,10 +90,7 @@ const mongoURI =
   `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:27017/?tls=true&tlsCAfile=global-bundle.pem&retryWrites=false`
 
 logger.info(`
-  MongoDB URI: ${mongoURI.replace(
-    /:.*@/g,
-    ':MASKED:MASKED@'
-  )}
+  MongoDB URI: ${mongoURI.replace(/:.*@/g, ':MASKED:MASKED@')}
 `)
 
 const client = new MongoClient(mongoURI, { monitorCommands: true })
