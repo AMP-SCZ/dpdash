@@ -23,7 +23,8 @@ export default class BaseMailer {
               pass: process.env.SMTP_PASS,
             },
             tls: {
-              // do not fail on invalid certs
+              // to not fail on invalid certs:
+              // set SMTP_REJECT_UNAUTHORIZED=false in .env file
               rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED == 'true',
             },
           })
