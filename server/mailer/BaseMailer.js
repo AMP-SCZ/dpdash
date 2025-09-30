@@ -24,7 +24,7 @@ export default class BaseMailer {
             },
             tls: {
               // do not fail on invalid certs
-              rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED,
+              rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED == 'true',
             },
           })
 
