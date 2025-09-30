@@ -30,8 +30,8 @@ services:
     networks:
       - app-tier
     # Expose port for Nginx Proxy Manager to access
-    expose:
-      - 8000
+    ports:
+      - 8000:8000
     environment:
       - HOME_URL=https://dpdash.local
 
