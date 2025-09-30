@@ -107,6 +107,10 @@ First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can 
    - From Nginx Proxy Manager dashboard, add this proxy:
      <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
+   - Attach the SSL certificate:
+     <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
+  
+
 2. Access the application at: https://dpdash.local/
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
