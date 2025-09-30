@@ -22,6 +22,10 @@ export default class BaseMailer {
               user: process.env.SMTP_USER,
               pass: process.env.SMTP_PASS,
             },
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED,
+            },
           })
 
           return await transporter.sendMail({
