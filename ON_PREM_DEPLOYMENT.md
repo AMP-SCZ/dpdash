@@ -122,7 +122,7 @@ Nginx Proxy Manager should not be exposed to the internet. It is recommended to 
 
 Find the container ID of the mongo container with `docker ps` and then run `docker exec -it <container-id> /bin/bash` to get a terminal within the container. From there you can run `mongosh` to connect to the database.
 
-Alternatively, you an download [mongosh](https://www.mongodb.com/try/download/shell) and connect directly as:
+Alternatively, you can download [mongosh](https://www.mongodb.com/try/download/shell) and connect directly as:
 
 ```
 mongosh "mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
