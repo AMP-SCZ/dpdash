@@ -7,11 +7,15 @@
 
 ## Setup Instructions
 
-### 1. Environment Configuration
+### In an MGB provisioned VM
 
-1. Create a `.env` file in application root directory
-2. Copy the contents from `.env.sample`
-3. Set the following required variables:
+### In a private workstation
+
+#### 1. Environment Configuration
+
+i. Create a `.env` file in application root directory
+ii. Copy the contents from `.env.sample`
+iii. Set the following required variables:
    ```
    MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
@@ -36,7 +40,7 @@ Received: from unknown (HELO pnl-xtreme.partners.org) ([170.123.12.123])
 
 The last one is the `SMTP_HOST`.
 
-### 2. Local Domain Setup
+#### 2. Local Domain Setup
 
 The application is configured to use the hostname `dpdash.local`. Add this to your hosts file:
 
@@ -46,7 +50,7 @@ The application is configured to use the hostname `dpdash.local`. Add this to yo
 127.0.0.1 dpdash.local
 ```
 
-### 3. Generate Self-Signed Certificate
+#### 3. Generate Self-Signed Certificate
 
 Run the provided script to generate a self-signed certificate:
 
@@ -62,7 +66,7 @@ $ ls certs/
 selfsigned.crt  selfsigned.key
 ```
 
-### 4. Launch the Application
+#### 4. Launch the Application
 
 From the application root directory, run:
 
@@ -94,11 +98,11 @@ To stop the application:
 docker compose down
 ```
 
-### 5. Access the Application
+#### 5. Access the Application
 
 First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
 
-1. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
    - Default login: `admin@example.com` / `changeme`
    - Upload the custom SSL certificate that you created:
@@ -107,14 +111,15 @@ First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can 
    - From Nginx Proxy Manager dashboard, add this proxy:
      <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
-2. Access the application at: https://dpdash.local/
+ii. Access the application at: https://dpdash.local/
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
    - Import data to mongodb and contact the DPdash admin to get access.
 
-#### Security Warning
+##### Security Warning
 
 Nginx Proxy Manager should not be exposed to the internet. It is recommended to run it behind another web server that handles authentication and SSL termination. It also isn't required for production, as you can configure SSL termination and authentication at the load balancer level. It is necessary for local development because the application uses secure cookies AND it is considered a best practice to route all traffic over https.
+
 
 ## Maintenance
 
