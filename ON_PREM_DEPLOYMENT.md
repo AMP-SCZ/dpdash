@@ -126,6 +126,12 @@ Nginx Proxy Manager should not be exposed to the internet. It is recommended to 
 
 Find the container ID of the mongo container with `docker ps` and then run `docker exec -it <container-id> /bin/bash` to get a terminal within the container. From there you can run `mongosh` to connect to the database.
 
+Alternatively, you can download [mongosh](https://www.mongodb.com/try/download/shell) and connect directly as:
+
+```
+mongosh "mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
+```
+
 ### 2. Importing charts, configs, users
 
 Due to Gnar company's changes in database structure, [this](https://github.com/AMP-SCZ/utility/blob/f84e3d5a211d5e10020c670994dd78e79f07fb17/dpdash_ci_cd/dpdash_ci_cd.sh#L22-L29) method of `mongoimport` no longer works. The new method is:
@@ -149,9 +155,6 @@ The trailing JSONs can be obtained from rc-predict.partners.org's `mongoexport`.
    
 </details>
 
-```
-
-```
 
 ### 2. Importing data
 

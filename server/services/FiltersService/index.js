@@ -10,7 +10,6 @@ export const FILTER_TO_MONGO_VALUE_MAP = {
   Missing: null,
   Recruited: 'recruited',
   'Not recruited': 'not recruited',
-  Excluded: 0,
   Male: 1,
   Female: 2,
 }
