@@ -13,9 +13,9 @@
 
 #### 1. Environment Configuration
 
-i. Create a `.env` file in application root directory
-ii. Copy the contents from `.env.sample`
-iii. Set the following required variables:
+I. Create a `.env` file in application root directory
+II. Copy the contents from `.env.sample`
+III. Set the following required variables:
    ```
    MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
@@ -102,7 +102,7 @@ docker compose down
 
 First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
 
-i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+I. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
    - Default login: `admin@example.com` / `changeme`
    - Upload the custom SSL certificate that you created:
@@ -111,7 +111,7 @@ i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
    - From Nginx Proxy Manager dashboard, add this proxy:
      <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
-ii. Access the application at: https://dpdash.local/
+II. Access the application at: https://dpdash.local/
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
    - Import data to mongodb and contact the DPdash admin to get access.
