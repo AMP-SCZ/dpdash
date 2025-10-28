@@ -72,7 +72,7 @@ i. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
 
    - Default login: `admin@example.com` / `changeme`
    - Upload the official SSL certificate that you downloaded:
-     <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
+     <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
 
    - From Nginx Proxy Manager dashboard, add this proxy:
      <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
