@@ -4,14 +4,103 @@
 
 1. Docker and Docker Compose should be installed on your system.
 2. Port `27017/tcp` should be opened through `firewall-cmd` for external mongodb connection.
+3. MGB mail relay server should be set in postfix configuration and postfix should be running.
 
 ## Setup Instructions
 
-### 1. Environment Configuration
+### In an MGB Provisioned VM
 
-1. Create a `.env` file in application root directory
-2. Copy the contents from `.env.sample`
-3. Set the following required variables:
+#### 1. Environment Configuration
+
+i. Create a `.env` file in application root directory
+
+ii. Copy the contents from `.env.sample`
+
+iii. Set the following required variables:
+   ```
+   MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
+   SESSION_SECRET=<your-secure-session-secret>
+   SMTP_HOST=MGB mail relay server
+   SMTP_PORT=25
+   SMTP_USER=
+   SMTP_PASS=
+   SMTP_REJECT_UNAUTHORIZED=false
+   ADMIN_EMAIL=<admin-email>
+   EMAIL_SENDER=<sender-email>
+   HOME_URL=https://hostname.mgb.org
+   IMPORT_API_USERS=<comma-separated-api-users>
+   IMPORT_API_KEYS=<comma-separated-api-keys>
+   ```
+
+#### 2. Obtain official SSL certificate from rcc[dot]partners[dot]org
+
+Obtain official SSL certificate from rcc[dot]partners[dot]org. You can just
+download the certificate and key in your computer. You will need to upload
+these to Nginx proxy manager using GUI later.
+
+#### 3. Launch the Application
+
+From the application root directory, run:
+
+```bash
+docker compose up
+```
+
+This will start all required services in background:
+
+- nginx-proxy-manager (web server that allows configuring SSL certificates and proxy)
+- node-app (application server)
+- mongodb (database)
+
+To run in detached mode:
+
+```bash
+docker compose up -d
+```
+
+To stop the application:
+
+```bash
+docker compose down
+```
+
+#### 4. Access the Application
+
+First, you will have to set up Nginx proxy via http://hostname.mgb.org:81. Then you can access the application at https://hostname.mgb.org
+
+i. Open up `81/tcp` port through `firewall-cmd` in hostname.mgb.org. Since the VM is head-less, this is the only way you can access
+Nginx Proxy Manager from outside the VM.
+
+ii. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
+
+   - Default login: `admin@example.com` / `changeme`
+   
+   - Upload the official SSL certificate that you downloaded:
+     <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
+
+   - From Nginx Proxy Manager dashboard, add this proxy:
+     
+     <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+
+   - From SSL tab, also attach the uploaded certificate to your domain.
+
+iii. Access the application at: https://hostname.mgb.org
+   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+   - Import data to mongodb and contact the DPdash admin to get access.
+
+
+---
+
+
+### In a Private Workstation
+
+#### 1. Environment Configuration
+
+i. Create a `.env` file in application root directory
+
+ii. Copy the contents from `.env.sample`
+
+iii. Set the following required variables:
    ```
    MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
@@ -36,7 +125,7 @@ Received: from unknown (HELO pnl-xtreme.partners.org) ([170.123.12.123])
 
 The last one is the `SMTP_HOST`.
 
-### 2. Local Domain Setup
+#### 2. Local Domain Setup
 
 The application is configured to use the hostname `dpdash.local`. Add this to your hosts file:
 
@@ -46,7 +135,7 @@ The application is configured to use the hostname `dpdash.local`. Add this to yo
 127.0.0.1 dpdash.local
 ```
 
-### 3. Generate Self-Signed Certificate
+#### 3. Generate Self-Signed Certificate
 
 Run the provided script to generate a self-signed certificate:
 
@@ -62,7 +151,7 @@ $ ls certs/
 selfsigned.crt  selfsigned.key
 ```
 
-### 4. Launch the Application
+#### 4. Launch the Application
 
 From the application root directory, run:
 
@@ -94,11 +183,11 @@ To stop the application:
 docker compose down
 ```
 
-### 5. Access the Application
+#### 5. Access the Application
 
-First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can access the application at: https://dpdash.local
+First, you will have to set up Nginx proxy via http://dpdash.local:81. Then you can access the application at https://dpdash.local
 
-1. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
+i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
    - Default login: `admin@example.com` / `changeme`
    - Upload the custom SSL certificate that you created:
@@ -111,14 +200,16 @@ First, you will have to set up Nginx proxy http://dpdash.local:81. Then you can 
      <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
   
 
-2. Access the application at: https://dpdash.local/
+ii. Access the application at: https://dpdash.local/
+
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
    - Import data to mongodb and contact the DPdash admin to get access.
 
-#### Security Warning
+##### Security Warning
 
 Nginx Proxy Manager should not be exposed to the internet. It is recommended to run it behind another web server that handles authentication and SSL termination. It also isn't required for production, as you can configure SSL termination and authentication at the load balancer level. It is necessary for local development because the application uses secure cookies AND it is considered a best practice to route all traffic over https.
+
 
 ## Maintenance
 
