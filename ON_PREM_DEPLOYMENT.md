@@ -79,6 +79,7 @@ ii. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:8
      <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
 
    - From Nginx Proxy Manager dashboard, add this proxy:
+     
      <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
 
    - From SSL tab, also attach the uploaded certificate to your domain.
