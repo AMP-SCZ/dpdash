@@ -75,7 +75,9 @@ i. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
      <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
 
    - From Nginx Proxy Manager dashboard, add this proxy:
-     <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+     <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+
+   - From SSL tab, also attach the uploaded certificate to your host.
 
 ii. Access the application at: https://hostname.mgb.org
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
@@ -188,6 +190,8 @@ i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
    - From Nginx Proxy Manager dashboard, add this proxy:
      <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+
+   - From SSL tab, also attach the uploaded certificate to your host.
 
 ii. Access the application at: https://dpdash.local/
    - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
