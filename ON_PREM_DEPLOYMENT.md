@@ -68,7 +68,10 @@ docker compose down
 
 First, you will have to set up Nginx proxy via http://hostname.mgb.org:81. Then you can access the application at https://hostname.mgb.org
 
-i. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
+i. Open up `81/tcp` port through `firewall-cmd` in hostname.mgb.org. Since the VM is head-less, this is the only way you can access
+Nginx Proxy Manager from outside the VM.
+
+ii. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
 
    - Default login: `admin@example.com` / `changeme`
    - Upload the official SSL certificate that you downloaded:
@@ -79,7 +82,7 @@ i. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
 
    - From SSL tab, also attach the uploaded certificate to your host.
 
-ii. Access the application at: https://hostname.mgb.org
+iii. Access the application at: https://hostname.mgb.org
    - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
    - Import data to mongodb and contact the DPdash admin to get access.
 
