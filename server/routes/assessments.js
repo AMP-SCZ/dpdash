@@ -20,4 +20,8 @@ router
     assessmentsController.index
   )
 
+router
+  .route(v1Routes.assessments.rawData)
+  .get(ensureAuthenticated, assessmentsController.raw)
+
 export default router
