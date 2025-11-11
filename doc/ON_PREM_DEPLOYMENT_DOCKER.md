@@ -18,7 +18,9 @@ ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
    ```
-   MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
+   MONGODB_ADMIN_USER=admin
+   MONGODB_ADMIN_PASSWORD=<your-secure-mongodb-password>
+   MONGODB_URI=mongodb://admin:<your-secure-mongodb-password>@mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
    SMTP_HOST=MGB mail relay server
    SMTP_PORT=25
@@ -102,7 +104,9 @@ ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
    ```
-   MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
+   MONGODB_ADMIN_USER=admin
+   MONGODB_ADMIN_PASSWORD=<your-secure-mongodb-password>
+   MONGODB_URI=mongodb://admin:<your-secure-mongodb-password>@mongodb:27017/dpdmongo?authSource=admin
    SESSION_SECRET=<your-secure-session-secret>
    SMTP_HOST=<your-smtp-server>
    SMTP_PORT=25
@@ -215,39 +219,29 @@ Nginx Proxy Manager should not be exposed to the internet. It is recommended to 
 
 ### 1. Connecting directly to Mongo
 
-Find the container ID of the mongo container with `docker ps` and then run `docker exec -it <container-id> /bin/bash` to get a terminal within the container. From there you can run `mongosh` to connect to the database.
+Since MongoDB port 27017 is exposed to the host, you can connect directly using [mongosh](https://www.mongodb.com/try/download/shell):
 
-Alternatively, you can download [mongosh](https://www.mongodb.com/try/download/shell) and connect directly as:
+```bash
+mongosh "mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true"
+```
 
-```
-mongosh "mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
-```
+Replace `admin:changeme` with your actual `MONGODB_ADMIN_USER` and `MONGODB_ADMIN_PASSWORD` values from your `.env` file.
 
 ### 2. Importing charts, configs, users
 
-Due to Gnar company's changes in database structure, [this](https://github.com/AMP-SCZ/utility/blob/f84e3d5a211d5e10020c670994dd78e79f07fb17/dpdash_ci_cd/dpdash_ci_cd.sh#L22-L29) method of `mongoimport` no longer works. The new method is:
+You can import MongoDB collections using `mongoimport`:
 
+```bash
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=charts charts_20230728_ci_cd.json
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=configs configs_20230728_ci_cd.json
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=users users_20230728_ci_cd.json
 ```
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=charts charts_20230728_ci_cd.json
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=configs configs_20230728_ci_cd.json
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=users users_20230728_ci_cd.json
-```
 
-The trailing JSONs can be obtained from rc-predict.partners.org's `mongoexport`.
+Replace `admin:changeme` with your actual `MONGODB_ADMIN_USER` and `MONGODB_ADMIN_PASSWORD` values from your `.env` file.
 
-<details>
-   <summary>mongoexport</summary>
-   
-   ```
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdata?authSource=admin" --collection=charts --out=/tmp/charts_${datestamp}.json
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=configs --out=/tmp/configs_${datestamp}.json
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=users --out=/tmp/users_${datestamp}.json
-   ```
-   
-</details>
+The JSON files can be obtained from rc-predict.partners.org using `mongoexport` (contact your DPdash admin for access).
 
-
-### 2. Importing data
+### 3. Importing data
 
 The `IMPORT_API_USERS` and `IMPORT_API_KEYS` environment variables are used to authenticate API requests to import data. You can use these credentials with the import script at https://github.com/AMP-SCZ/dpimport to import data to the database. The updated script is on the branch `381-update-import-script-to-json-payload` and can be run by creating a config file like so:
 
