@@ -7,6 +7,9 @@ node_modules
 # VSCode
 .vscode
 
+# macOS
+.DS_Store
+
 # Logs
 *.log
 *.dump
@@ -19,6 +22,17 @@ config.js
 server/configs/*
 !server/configs/basePathConfig.js
 !server/configs/defaultUserConfig.js
+
+# Certificates and keys
+certs/
+*.key
+*.crt
+*.pem
+!global-bundle.pem
+
+# Local utilities and configs
+check-dist.js
+npm/
 
 # Built code
 *.map
