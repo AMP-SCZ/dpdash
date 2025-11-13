@@ -1,3 +1,6 @@
+// Load environment variables before anything else
+require('dotenv').config({ path: '.env' })
+
 import path from 'path'
 
 import bodyParser from 'body-parser'
