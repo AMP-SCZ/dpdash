@@ -21,6 +21,9 @@ export default async function ensureAuthenticated(req, res, next) {
       return res
         .status(403)
         .json({ error: 'Account is blocked, please contact your admin' })
+    // this next one is the problem line--- by default the user has no access,
+    // but that cuts them off from the entire API, including for things
+    // on their dashboard
     case access.length === 0:
       return res.status(403).json({ error: 'Forbidden.' })
     default:
