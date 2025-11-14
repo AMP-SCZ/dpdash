@@ -18,21 +18,34 @@ ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
    ```
-   MONGODB_ADMIN_USER=admin
-   MONGODB_ADMIN_PASSWORD=<your-secure-mongodb-password>
-   MONGODB_URI=mongodb://admin:<your-secure-mongodb-password>@mongodb:27017/dpdmongo?authSource=admin
+   # MongoDB Configuration (use individual variables for Docker)
+   MONGODB_USER=admin
+   MONGODB_PASSWORD=<your-secure-mongodb-password>
+   MONGODB_HOST=mongodb
+
+   # Session Configuration
    SESSION_SECRET=<your-secure-session-secret>
+
+   # SMTP Configuration
    SMTP_HOST=MGB mail relay server
    SMTP_PORT=25
    SMTP_USER=
    SMTP_PASS=
    SMTP_REJECT_UNAUTHORIZED=false
+
+   # Application Configuration
    ADMIN_EMAIL=<admin-email>
    EMAIL_SENDER=<sender-email>
    HOME_URL=https://hostname.mgb.org
+
+   # API Configuration
    IMPORT_API_USERS=<comma-separated-api-users>
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
+
+iv. **Important Notes:**
+   - `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+   - `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 #### 2. Obtain official SSL certificate from rcc[dot]partners[dot]org
 
@@ -104,20 +117,33 @@ ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
    ```
-   MONGODB_ADMIN_USER=admin
-   MONGODB_ADMIN_PASSWORD=<your-secure-mongodb-password>
-   MONGODB_URI=mongodb://admin:<your-secure-mongodb-password>@mongodb:27017/dpdmongo?authSource=admin
+   # MongoDB Configuration (use individual variables for Docker)
+   MONGODB_USER=admin
+   MONGODB_PASSWORD=<your-secure-mongodb-password>
+   MONGODB_HOST=mongodb
+
+   # Session Configuration
    SESSION_SECRET=<your-secure-session-secret>
+
+   # SMTP Configuration
    SMTP_HOST=<your-smtp-server>
    SMTP_PORT=25
    SMTP_USER=
    SMTP_PASS=
+
+   # Application Configuration
    ADMIN_EMAIL=<admin-email>
    EMAIL_SENDER=<sender-email>
    HOME_URL=https://dpdash.local
+
+   # API Configuration
    IMPORT_API_USERS=<comma-separated-api-users>
    IMPORT_API_KEYS=<comma-separated-api-keys>
    ```
+
+iv. **Important Notes:**
+   - `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+   - `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 To find `SMTP_HOST`, send yourself an email from the server. Open the email within Outlook and `View`-->`View message details`.
 Look for something like:

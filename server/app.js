@@ -36,8 +36,12 @@ import { verifyHash } from './utils/crypto/hash'
 
 const localStrategy = Strategy
 const isProduction = process.env.NODE_ENV === 'production'
+// Only use secure cookies when explicitly enabled or when HOME_URL uses https
+const useSecureCookies =
+  process.env.SECURE_COOKIES === 'true' ||
+  (isProduction && process.env.HOME_URL?.startsWith('https://'))
 const cookieAttributes = {
-  secure: isProduction,
+  secure: useSecureCookies,
   maxAge: 24 * 60 * 60 * 1000,
   sameSite: 'strict',
 }
