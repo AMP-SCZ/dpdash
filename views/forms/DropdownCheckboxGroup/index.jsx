@@ -52,7 +52,11 @@ const DropdownCheckboxGroup = ({
           chips.push(<Chip key="etc" label="..." />)
         }
 
-        return <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>{chips}</Box>
+        return (
+          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+            {chips}
+          </Box>
+        )
       }}
       onClose={onClose}
       MenuProps={MenuProps}

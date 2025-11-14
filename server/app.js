@@ -1,6 +1,4 @@
 // Load environment variables before anything else
-require('dotenv').config({ path: '.env' })
-
 import path from 'path'
 
 import bodyParser from 'body-parser'
@@ -33,6 +31,8 @@ import siteMetadata from './routes/siteMetadata'
 import usersRouter from './routes/users'
 import userStudiesRouter from './routes/userStudies'
 import { verifyHash } from './utils/crypto/hash'
+
+require('dotenv').config({ path: '.env' })
 
 const localStrategy = Strategy
 const isProduction = process.env.NODE_ENV === 'production'
