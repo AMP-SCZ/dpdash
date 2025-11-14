@@ -6,7 +6,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['latest']
+        node: ['22.x']
         os: [ubuntu-latest]
     steps:
       - name: Checkout repo
