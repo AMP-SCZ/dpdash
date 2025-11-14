@@ -1,3 +1,4 @@
+// Load environment variables before anything else
 import path from 'path'
 
 import bodyParser from 'body-parser'
@@ -31,10 +32,16 @@ import usersRouter from './routes/users'
 import userStudiesRouter from './routes/userStudies'
 import { verifyHash } from './utils/crypto/hash'
 
+require('dotenv').config({ path: '.env' })
+
 const localStrategy = Strategy
 const isProduction = process.env.NODE_ENV === 'production'
+// Only use secure cookies when explicitly enabled or when HOME_URL uses https
+const useSecureCookies =
+  process.env.SECURE_COOKIES === 'true' ||
+  (isProduction && process.env.HOME_URL?.startsWith('https://'))
 const cookieAttributes = {
-  secure: isProduction,
+  secure: useSecureCookies,
   maxAge: 24 * 60 * 60 * 1000,
   sameSite: 'strict',
 }
@@ -54,7 +61,13 @@ if (process.env.NODE_ENV === 'development') {
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.ico')))
 
-app.use(helmet({ noSniff: true, contentSecurityPolicy: isProduction }))
+// Configure Helmet security headers
+// Only enable full CSP (including upgrade-insecure-requests) when HOME_URL uses HTTPS
+const helmetConfig = {
+  noSniff: true,
+  contentSecurityPolicy: isProduction && useSecureCookies,
+}
+app.use(helmet(helmetConfig))
 
 /** logger setup */
 morgan.token('remote-user', function (req) {

@@ -17,20 +17,37 @@ i. Create a `.env` file in application root directory
 ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
-   ```
-   MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
-   SESSION_SECRET=<your-secure-session-secret>
-   SMTP_HOST=MGB mail relay server
-   SMTP_PORT=25
-   SMTP_USER=
-   SMTP_PASS=
-   SMTP_REJECT_UNAUTHORIZED=false
-   ADMIN_EMAIL=<admin-email>
-   EMAIL_SENDER=<sender-email>
-   HOME_URL=https://hostname.mgb.org
-   IMPORT_API_USERS=<comma-separated-api-users>
-   IMPORT_API_KEYS=<comma-separated-api-keys>
-   ```
+
+```
+# MongoDB Configuration (use individual variables for Docker)
+MONGODB_USER=admin
+MONGODB_PASSWORD=<your-secure-mongodb-password>
+MONGODB_HOST=mongodb
+
+# Session Configuration
+SESSION_SECRET=<your-secure-session-secret>
+
+# SMTP Configuration
+SMTP_HOST=MGB mail relay server
+SMTP_PORT=25
+SMTP_USER=
+SMTP_PASS=
+SMTP_REJECT_UNAUTHORIZED=false
+
+# Application Configuration
+ADMIN_EMAIL=<admin-email>
+EMAIL_SENDER=<sender-email>
+HOME_URL=https://hostname.mgb.org
+
+# API Configuration
+IMPORT_API_USERS=<comma-separated-api-users>
+IMPORT_API_KEYS=<comma-separated-api-keys>
+```
+
+iv. **Important Notes:**
+
+- `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 #### 2. Obtain official SSL certificate from rcc[dot]partners[dot]org
 
@@ -73,24 +90,23 @@ Nginx Proxy Manager from outside the VM.
 
 ii. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
 
-   - Default login: `admin@example.com` / `changeme`
-   
-   - Upload the official SSL certificate that you downloaded:
-     <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
+- Default login: `admin@example.com` / `changeme`
 
-   - From Nginx Proxy Manager dashboard, add this proxy:
-     
-     <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+- Upload the official SSL certificate that you downloaded:
+  <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
 
-   - From SSL tab, also attach the uploaded certificate to your domain.
+- From Nginx Proxy Manager dashboard, add this proxy:
+
+  <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+
+- From SSL tab, also attach the uploaded certificate to your domain.
 
 iii. Access the application at: https://hostname.mgb.org
-   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
-   - Import data to mongodb and contact the DPdash admin to get access.
 
+- Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+- Import data to mongodb and contact the DPdash admin to get access.
 
 ---
-
 
 ### In a Private Workstation
 
@@ -101,19 +117,36 @@ i. Create a `.env` file in application root directory
 ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
-   ```
-   MONGODB_URI=mongodb://mongodb:27017/dpdmongo?authSource=admin
-   SESSION_SECRET=<your-secure-session-secret>
-   SMTP_HOST=<your-smtp-server>
-   SMTP_PORT=25
-   SMTP_USER=
-   SMTP_PASS=
-   ADMIN_EMAIL=<admin-email>
-   EMAIL_SENDER=<sender-email>
-   HOME_URL=https://dpdash.local
-   IMPORT_API_USERS=<comma-separated-api-users>
-   IMPORT_API_KEYS=<comma-separated-api-keys>
-   ```
+
+```
+# MongoDB Configuration (use individual variables for Docker)
+MONGODB_USER=admin
+MONGODB_PASSWORD=<your-secure-mongodb-password>
+MONGODB_HOST=mongodb
+
+# Session Configuration
+SESSION_SECRET=<your-secure-session-secret>
+
+# SMTP Configuration
+SMTP_HOST=<your-smtp-server>
+SMTP_PORT=25
+SMTP_USER=
+SMTP_PASS=
+
+# Application Configuration
+ADMIN_EMAIL=<admin-email>
+EMAIL_SENDER=<sender-email>
+HOME_URL=https://dpdash.local
+
+# API Configuration
+IMPORT_API_USERS=<comma-separated-api-users>
+IMPORT_API_KEYS=<comma-separated-api-keys>
+```
+
+iv. **Important Notes:**
+
+- `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 To find `SMTP_HOST`, send yourself an email from the server. Open the email within Outlook and `View`-->`View message details`.
 Look for something like:
@@ -189,65 +222,53 @@ First, you will have to set up Nginx proxy via http://dpdash.local:81. Then you 
 
 i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
-   - Default login: `admin@example.com` / `changeme`
-   - Upload the custom SSL certificate that you created:
-     <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
+- Default login: `admin@example.com` / `changeme`
+- Upload the custom SSL certificate that you created:
+  <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
 
-   - From Nginx Proxy Manager dashboard, add this proxy:
-     <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+- From Nginx Proxy Manager dashboard, add this proxy:
+  <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
-   - Attach the SSL certificate:
-     <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
-  
+- Attach the SSL certificate:
+  <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
 
 ii. Access the application at: https://dpdash.local/
 
-   - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
-   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
-   - Import data to mongodb and contact the DPdash admin to get access.
+- Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+- Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+- Import data to mongodb and contact the DPdash admin to get access.
 
 ##### Security Warning
 
 Nginx Proxy Manager should not be exposed to the internet. It is recommended to run it behind another web server that handles authentication and SSL termination. It also isn't required for production, as you can configure SSL termination and authentication at the load balancer level. It is necessary for local development because the application uses secure cookies AND it is considered a best practice to route all traffic over https.
 
-
 ## Maintenance
 
 ### 1. Connecting directly to Mongo
 
-Find the container ID of the mongo container with `docker ps` and then run `docker exec -it <container-id> /bin/bash` to get a terminal within the container. From there you can run `mongosh` to connect to the database.
+Since MongoDB port 27017 is exposed to the host, you can connect directly using [mongosh](https://www.mongodb.com/try/download/shell):
 
-Alternatively, you can download [mongosh](https://www.mongodb.com/try/download/shell) and connect directly as:
+```bash
+mongosh "mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true"
+```
 
-```
-mongosh "mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
-```
+Replace `admin:changeme` with your actual `MONGODB_ADMIN_USER` and `MONGODB_ADMIN_PASSWORD` values from your `.env` file.
 
 ### 2. Importing charts, configs, users
 
-Due to Gnar company's changes in database structure, [this](https://github.com/AMP-SCZ/utility/blob/f84e3d5a211d5e10020c670994dd78e79f07fb17/dpdash_ci_cd/dpdash_ci_cd.sh#L22-L29) method of `mongoimport` no longer works. The new method is:
+You can import MongoDB collections using `mongoimport`:
 
+```bash
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=charts charts_20230728_ci_cd.json
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=configs configs_20230728_ci_cd.json
+mongoimport --uri="mongodb://admin:changeme@127.0.0.1:27017/dpdmongo?authSource=admin&directConnection=true" --collection=users users_20230728_ci_cd.json
 ```
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=charts charts_20230728_ci_cd.json
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=configs configs_20230728_ci_cd.json
-mongoimport --uri="mongodb://127.0.0.1:27017/dpdmongo?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8" --collection=users users_20230728_ci_cd.json
-```
 
-The trailing JSONs can be obtained from rc-predict.partners.org's `mongoexport`.
+Replace `admin:changeme` with your actual `MONGODB_ADMIN_USER` and `MONGODB_ADMIN_PASSWORD` values from your `.env` file.
 
-<details>
-   <summary>mongoexport</summary>
-   
-   ```
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdata?authSource=admin" --collection=charts --out=/tmp/charts_${datestamp}.json
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=configs --out=/tmp/configs_${datestamp}.json
-   mongoexport --ssl --sslCAFile=$state/ssl/ca/cacert.pem --sslPEMKeyFile=$state/ssl/mongo_client.pem --uri="mongodb://dpdash:$MONGO_PASS@$HOST:$PORT/dpdmongo?authSource=admin" --collection=users --out=/tmp/users_${datestamp}.json
-   ```
-   
-</details>
+The JSON files can be obtained from rc-predict.partners.org using `mongoexport` (contact your DPdash admin for access).
 
-
-### 2. Importing data
+### 3. Importing data
 
 The `IMPORT_API_USERS` and `IMPORT_API_KEYS` environment variables are used to authenticate API requests to import data. You can use these credentials with the import script at https://github.com/AMP-SCZ/dpimport to import data to the database. The updated script is on the branch `381-update-import-script-to-json-payload` and can be run by creating a config file like so:
 
