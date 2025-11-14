@@ -16,6 +16,13 @@ const AuthController = {
       async function (err, user) {
         if (err) return next(err)
 
+        // Check if authentication failed (user is false when credentials are invalid)
+        if (!user) {
+          return res
+            .status(401)
+            .json({ error: 'Invalid username or password' })
+        }
+
         const { uid } = user
 
         const { appDb } = req.app.locals
