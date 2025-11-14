@@ -61,7 +61,13 @@ if (process.env.NODE_ENV === 'development') {
 /** favicon setup */
 app.use(favicon(path.join(__dirname, '../public/img/favicon.ico')))
 
-app.use(helmet({ noSniff: true, contentSecurityPolicy: isProduction }))
+// Configure Helmet security headers
+// Only enable full CSP (including upgrade-insecure-requests) when HOME_URL uses HTTPS
+const helmetConfig = {
+  noSniff: true,
+  contentSecurityPolicy: isProduction && useSecureCookies,
+}
+app.use(helmet(helmetConfig))
 
 /** logger setup */
 morgan.token('remote-user', function (req) {
