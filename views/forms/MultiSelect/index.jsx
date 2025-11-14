@@ -35,11 +35,13 @@ export const MultiSelect = (props) => {
           helperText={fieldState?.error?.message}
           InputProps={{
             ...params.InputProps,
-            startAdornment: (
+            startAdornment: props.startAdornment ? (
               <>
                 {props.startAdornment}
                 {params.InputProps.startAdornment}
               </>
+            ) : (
+              params.InputProps.startAdornment
             ),
           }}
           placeholder={props.placeholder}
@@ -47,13 +49,17 @@ export const MultiSelect = (props) => {
       )}
       value={props.value || field.value}
       sx={props.sx || {}}
-      componentsProps={{
-        paper: {
-          onClear: props.onClear || {},
-          onSelectAll: props.onSelectAll || {},
-        },
-      }}
-      PaperComponent={props.displayActions ? MultiSelectFooterActions : null}
+      PaperComponent={
+        props.displayActions
+          ? (paperProps) => (
+              <MultiSelectFooterActions
+                {...paperProps}
+                onClear={props.onClear}
+                onSelectAll={props.onSelectAll}
+              />
+            )
+          : undefined
+      }
     />
   )
 }

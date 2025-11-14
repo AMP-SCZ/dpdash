@@ -44,13 +44,15 @@ const DropdownCheckboxGroup = ({
         <OutlinedInput data-testid={`select-multiple-${label}`} label={label} />
       }
       renderValue={(selected) => {
-        const EtcChip =
-          selected.length > 5 ? <Chip key="etc" label="..." /> : <></>
-
-        return selected
+        const chips = selected
           .slice(0, 5)
           .map((value) => <Chip key={`${value}`} label={value} />)
-          .concat([EtcChip])
+
+        if (selected.length > 5) {
+          chips.push(<Chip key="etc" label="..." />)
+        }
+
+        return <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>{chips}</Box>
       }}
       onClose={onClose}
       MenuProps={MenuProps}
