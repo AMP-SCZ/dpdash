@@ -18,9 +18,7 @@ const AuthController = {
 
         // Check if authentication failed (user is false when credentials are invalid)
         if (!user) {
-          return res
-            .status(401)
-            .json({ error: 'Invalid username or password' })
+          return res.status(401).json({ error: 'Invalid username or password' })
         }
 
         const { uid } = user

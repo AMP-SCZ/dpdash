@@ -17,35 +17,37 @@ i. Create a `.env` file in application root directory
 ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
-   ```
-   # MongoDB Configuration (use individual variables for Docker)
-   MONGODB_USER=admin
-   MONGODB_PASSWORD=<your-secure-mongodb-password>
-   MONGODB_HOST=mongodb
 
-   # Session Configuration
-   SESSION_SECRET=<your-secure-session-secret>
+```
+# MongoDB Configuration (use individual variables for Docker)
+MONGODB_USER=admin
+MONGODB_PASSWORD=<your-secure-mongodb-password>
+MONGODB_HOST=mongodb
 
-   # SMTP Configuration
-   SMTP_HOST=MGB mail relay server
-   SMTP_PORT=25
-   SMTP_USER=
-   SMTP_PASS=
-   SMTP_REJECT_UNAUTHORIZED=false
+# Session Configuration
+SESSION_SECRET=<your-secure-session-secret>
 
-   # Application Configuration
-   ADMIN_EMAIL=<admin-email>
-   EMAIL_SENDER=<sender-email>
-   HOME_URL=https://hostname.mgb.org
+# SMTP Configuration
+SMTP_HOST=MGB mail relay server
+SMTP_PORT=25
+SMTP_USER=
+SMTP_PASS=
+SMTP_REJECT_UNAUTHORIZED=false
 
-   # API Configuration
-   IMPORT_API_USERS=<comma-separated-api-users>
-   IMPORT_API_KEYS=<comma-separated-api-keys>
-   ```
+# Application Configuration
+ADMIN_EMAIL=<admin-email>
+EMAIL_SENDER=<sender-email>
+HOME_URL=https://hostname.mgb.org
+
+# API Configuration
+IMPORT_API_USERS=<comma-separated-api-users>
+IMPORT_API_KEYS=<comma-separated-api-keys>
+```
 
 iv. **Important Notes:**
-   - `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-   - `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
+
+- `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 #### 2. Obtain official SSL certificate from rcc[dot]partners[dot]org
 
@@ -88,24 +90,23 @@ Nginx Proxy Manager from outside the VM.
 
 ii. Access the Nginx Proxy Manager admin interface at: http://hostname.mgb.org:81
 
-   - Default login: `admin@example.com` / `changeme`
-   
-   - Upload the official SSL certificate that you downloaded:
-     <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
+- Default login: `admin@example.com` / `changeme`
 
-   - From Nginx Proxy Manager dashboard, add this proxy:
-     
-     <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+- Upload the official SSL certificate that you downloaded:
+  <img width="1279" height="645" alt="Image" src="https://github.com/user-attachments/assets/38bb5e87-e807-48ae-82f0-b08952ce26ba" />
 
-   - From SSL tab, also attach the uploaded certificate to your domain.
+- From Nginx Proxy Manager dashboard, add this proxy:
+
+  <img width="494" height="550" alt="Image" src="https://github.com/user-attachments/assets/64a39fcf-e4dc-486e-9d38-f89fe495f410" />
+
+- From SSL tab, also attach the uploaded certificate to your domain.
 
 iii. Access the application at: https://hostname.mgb.org
-   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
-   - Import data to mongodb and contact the DPdash admin to get access.
 
+- Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+- Import data to mongodb and contact the DPdash admin to get access.
 
 ---
-
 
 ### In a Private Workstation
 
@@ -116,34 +117,36 @@ i. Create a `.env` file in application root directory
 ii. Copy the contents from `.env.sample`
 
 iii. Set the following required variables:
-   ```
-   # MongoDB Configuration (use individual variables for Docker)
-   MONGODB_USER=admin
-   MONGODB_PASSWORD=<your-secure-mongodb-password>
-   MONGODB_HOST=mongodb
 
-   # Session Configuration
-   SESSION_SECRET=<your-secure-session-secret>
+```
+# MongoDB Configuration (use individual variables for Docker)
+MONGODB_USER=admin
+MONGODB_PASSWORD=<your-secure-mongodb-password>
+MONGODB_HOST=mongodb
 
-   # SMTP Configuration
-   SMTP_HOST=<your-smtp-server>
-   SMTP_PORT=25
-   SMTP_USER=
-   SMTP_PASS=
+# Session Configuration
+SESSION_SECRET=<your-secure-session-secret>
 
-   # Application Configuration
-   ADMIN_EMAIL=<admin-email>
-   EMAIL_SENDER=<sender-email>
-   HOME_URL=https://dpdash.local
+# SMTP Configuration
+SMTP_HOST=<your-smtp-server>
+SMTP_PORT=25
+SMTP_USER=
+SMTP_PASS=
 
-   # API Configuration
-   IMPORT_API_USERS=<comma-separated-api-users>
-   IMPORT_API_KEYS=<comma-separated-api-keys>
-   ```
+# Application Configuration
+ADMIN_EMAIL=<admin-email>
+EMAIL_SENDER=<sender-email>
+HOME_URL=https://dpdash.local
+
+# API Configuration
+IMPORT_API_USERS=<comma-separated-api-users>
+IMPORT_API_KEYS=<comma-separated-api-keys>
+```
 
 iv. **Important Notes:**
-   - `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-   - `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
+
+- `SESSION_SECRET`: Generate a strong random string using: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `HOME_URL`: Must include protocol (`https://` or `http://`). Session cookies automatically use secure mode when URL starts with `https://`
 
 To find `SMTP_HOST`, send yourself an email from the server. Open the email within Outlook and `View`-->`View message details`.
 Look for something like:
@@ -219,27 +222,25 @@ First, you will have to set up Nginx proxy via http://dpdash.local:81. Then you 
 
 i. Access the Nginx Proxy Manager admin interface at: http://dpdash.local:81
 
-   - Default login: `admin@example.com` / `changeme`
-   - Upload the custom SSL certificate that you created:
-     <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
+- Default login: `admin@example.com` / `changeme`
+- Upload the custom SSL certificate that you created:
+  <img width="1246" height="641" alt="image" src="https://github.com/user-attachments/assets/c071df30-8ecb-4f42-85a3-af12727c3050" />
 
-   - From Nginx Proxy Manager dashboard, add this proxy:
-     <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
+- From Nginx Proxy Manager dashboard, add this proxy:
+  <img width="1249" height="674" alt="image" src="https://github.com/user-attachments/assets/9fc72a1e-28e1-4d59-9c8b-39ab9f63d480" />
 
-   - Attach the SSL certificate:
-     <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
-  
+- Attach the SSL certificate:
+  <img width="1245" height="535" alt="image" src="https://github.com/user-attachments/assets/af67841e-b603-4c27-add9-332979db118b" />
 
 ii. Access the application at: https://dpdash.local/
 
-   - Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
-   - Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
-   - Import data to mongodb and contact the DPdash admin to get access.
+- Your browser will show a security warning because of the self-signed certificate. This is expected for local development.
+- Upon signing up, you may get some `Forbidden` issues. But those should go away once the DPdash admin grants you access to some data.
+- Import data to mongodb and contact the DPdash admin to get access.
 
 ##### Security Warning
 
 Nginx Proxy Manager should not be exposed to the internet. It is recommended to run it behind another web server that handles authentication and SSL termination. It also isn't required for production, as you can configure SSL termination and authentication at the load balancer level. It is necessary for local development because the application uses secure cookies AND it is considered a best practice to route all traffic over https.
-
 
 ## Maintenance
 

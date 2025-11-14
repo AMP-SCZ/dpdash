@@ -5,7 +5,7 @@
 1. **Node.js**: Version 22.x must be installed on your system
 2. **MongoDB**: A MongoDB instance (version 5.x or higher) must be running and accessible
 3. **SSL/HTTPS Proxy**: An SSL-terminating reverse proxy (e.g., Nginx, Apache, HAProxy) must be configured to handle HTTPS traffic and forward requests to the Node.js application
-4. **System Dependencies**: 
+4. **System Dependencies**:
    - `wget` (for downloading AWS RDS certificate bundle)
    - Build tools for native npm modules (e.g., `build-essential` on Ubuntu/Debian, Xcode Command Line Tools on macOS)
 
@@ -79,6 +79,7 @@ SERVER_PORT=8000
 ```
 
 **Important Notes:**
+
 - `MONGODB_URI`: Update the connection string with your MongoDB server's hostname, port, username, and password
 - `SESSION_SECRET`: Generate a strong random string for session encryption using:
   ```bash
@@ -106,6 +107,7 @@ npm run transpile
 ```
 
 This will:
+
 - Compile React frontend code into `public/` directory
 - Transpile ES6+ server code into `dist/` directory
 - Copy email templates to `dist/mailer/templates/`
@@ -115,12 +117,14 @@ This will:
 **Important**: The Node.js application runs on HTTP only (default port 8000). You **must** configure an SSL-terminating reverse proxy to handle HTTPS traffic.
 
 The SSL proxy configuration is outside the scope of this document, but your proxy should:
+
 - Listen on port 443 (HTTPS)
 - Terminate SSL/TLS connections
 - Forward requests to `http://localhost:8000` (or the port specified in `SERVER_PORT`)
 - Set appropriate headers (e.g., `X-Forwarded-For`, `X-Forwarded-Proto`)
 
 Popular options include:
+
 - Nginx
 - Apache HTTP Server
 - HAProxy
@@ -299,4 +303,3 @@ pm2 restart dpdash  # or: sudo systemctl start dpdash
 5. **Configure your SSL proxy properly** - use strong TLS versions and cipher suites
 6. **Restrict MongoDB access** - use firewall rules to limit MongoDB connections to trusted hosts only
 7. **Regular backups** - backup MongoDB data and application configuration regularly
-
